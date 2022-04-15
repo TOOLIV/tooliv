@@ -1,5 +1,6 @@
 package com.tooliv.server.domain.user.domain;
 
+import com.tooliv.server.domain.user.domain.enums.UserCode;
 import com.tooliv.server.global.common.BaseEntity;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
@@ -18,28 +19,28 @@ import lombok.ToString;
 @AllArgsConstructor
 public class User extends BaseEntity {
 
-    @Column(name="email")
+    @Column(name = "email")
     private String email;
 
-    @Column(name="name")
+    @Column(name = "name")
     private String name;
 
-    @Column(name="nickname")
+    @Column(name = "nickname")
     private String nickname;
 
-    @Column(name="password")
+    @Column(name = "password")
     private String password;
 
-    @Column(name="created_at")
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @Column(name="updated_at")
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name="deleted_at")
+    @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
-    @Column(name="code")
+    @Column(name = "code")
     private UserCode userCode;
 
 }
