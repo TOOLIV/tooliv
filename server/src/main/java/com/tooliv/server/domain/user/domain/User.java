@@ -1,4 +1,45 @@
 package com.tooliv.server.domain.user.domain;
 
-public class User {
+import com.tooliv.server.global.common.BaseEntity;
+import java.time.LocalDateTime;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+@Entity
+@Getter
+@Builder
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+public class User extends BaseEntity {
+
+    @Column(name="email")
+    private String email;
+
+    @Column(name="name")
+    private String name;
+
+    @Column(name="nickname")
+    private String nickname;
+
+    @Column(name="password")
+    private String password;
+
+    @Column(name="created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name="updated_at")
+    private LocalDateTime updatedAt;
+
+    @Column(name="deleted_at")
+    private LocalDateTime deletedAt;
+
+    @Column(name="code")
+    private UserCode userCode;
+
 }
