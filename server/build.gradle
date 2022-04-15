@@ -19,15 +19,45 @@ repositories {
 }
 
 dependencies {
+	implementation("io.springfox:springfox-boot-starter:3.0.0")
+
+	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	implementation 'mysql:mysql-connector-java'
+
+	implementation("io.springfox:springfox-swagger2:3.0.0")
+	implementation("io.springfox:springfox-swagger-ui:3.0.0")
+	implementation("io.springfox:springfox-data-rest:3.0.0")
+	implementation("io.springfox:springfox-bean-validators:3.0.0")
+
+	implementation("org.projectlombok:lombok:1.18.20")
+
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+
+	implementation('commons-io:commons-io:2.6')
+	implementation("org.apache.commons:commons-collections4:4.4")
+	implementation("org.apache.commons:commons-lang3:3.9")
+
+	// jwt
+	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
+	// validation
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	// jasypt
+	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4'
+
+	// S3 Bucket
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+	implementation 'com.amazonaws:aws-java-sdk:1.12.173'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 }
 
-tasks.named('test') {
+test {
 	useJUnitPlatform()
 }
