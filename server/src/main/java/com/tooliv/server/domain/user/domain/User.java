@@ -41,6 +41,6 @@ public class User extends BaseEntity {
     private LocalDateTime deletedAt;
 
     @Column(name = "code")
-    private UserCode userCode;
+    private UserCode code;
 
 }

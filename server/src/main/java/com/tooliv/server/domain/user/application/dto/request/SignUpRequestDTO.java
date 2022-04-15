@@ -36,5 +36,5 @@ public class SignUpRequestDTO {
 
     @NotNull
     @ApiModelProperty(name = "유저 코드")
-    private UserCode userCode;
+    private UserCode code;
 }

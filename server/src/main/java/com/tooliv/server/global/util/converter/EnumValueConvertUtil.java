@@ -1,4 +1,4 @@
-package com.tooliv.server.global.util;
+package com.tooliv.server.global.util.converter;
 
 import com.tooliv.server.global.common.CommonCode;
 import java.util.EnumSet;

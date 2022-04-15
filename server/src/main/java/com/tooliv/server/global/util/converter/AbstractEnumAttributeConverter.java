@@ -1,9 +1,13 @@
-package com.tooliv.server.global.util;
+package com.tooliv.server.global.util.converter;
 
 import com.tooliv.server.global.common.CommonCode;
 import javax.persistence.AttributeConverter;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
+@Getter
+@AllArgsConstructor
 public class AbstractEnumAttributeConverter<E extends Enum<E> & CommonCode> implements
     AttributeConverter<E, String> {
 
