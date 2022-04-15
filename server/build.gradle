@@ -1,7 +1,7 @@
 plugins {
-	id 'org.springframework.boot' version '2.6.6'
-	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-	id 'java'
+    id 'org.springframework.boot' version '2.6.6'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
 }
 
 group = 'com.tooliv'
@@ -9,58 +9,58 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	implementation("io.springfox:springfox-boot-starter:3.0.0")
+    implementation("io.springfox:springfox-boot-starter:3.0.0")
 
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
 
-	implementation 'mysql:mysql-connector-java'
+    implementation 'mysql:mysql-connector-java'
 
-	implementation("io.springfox:springfox-swagger2:3.0.0")
-	implementation("io.springfox:springfox-swagger-ui:3.0.0")
-	implementation("io.springfox:springfox-data-rest:3.0.0")
-	implementation("io.springfox:springfox-bean-validators:3.0.0")
+    implementation("io.springfox:springfox-swagger2:3.0.0")
+    implementation("io.springfox:springfox-swagger-ui:3.0.0")
+    implementation("io.springfox:springfox-data-rest:3.0.0")
+    implementation("io.springfox:springfox-bean-validators:3.0.0")
 
-	implementation("org.projectlombok:lombok:1.18.20")
+    implementation("org.projectlombok:lombok:1.18.20")
 
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
 
-	implementation('commons-io:commons-io:2.6')
-	implementation("org.apache.commons:commons-collections4:4.4")
-	implementation("org.apache.commons:commons-lang3:3.9")
+    implementation('commons-io:commons-io:2.6')
+    implementation("org.apache.commons:commons-collections4:4.4")
+    implementation("org.apache.commons:commons-lang3:3.9")
 
-	// model mapper
-	implementation("org.modelmapper:modelmapper:2.4.5")
+    // model mapper
+    implementation("org.modelmapper:modelmapper:2.4.5")
 
-	// jwt
-	implementation("io.jsonwebtoken:jjwt:0.9.1")
+    // jwt
+    implementation("io.jsonwebtoken:jjwt:0.9.1")
 
-	// validation
-	implementation("org.springframework.boot:spring-boot-starter-validation")
+    // validation
+    implementation("org.springframework.boot:spring-boot-starter-validation")
 
-	// jasypt
-	implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4")
+    // jasypt
+    implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4")
 
-	// S3 Bucket
-	implementation("org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE")
-	implementation("com.amazonaws:aws-java-sdk:1.12.173")
+    // S3 Bucket
+    implementation("org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE")
+    implementation("com.amazonaws:aws-java-sdk:1.12.173")
 
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
-	testImplementation ("org.springframework.security:spring-security-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.security:spring-security-test")
 }
 
 test {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }
