@@ -2,6 +2,7 @@ package com.tooliv.server.domain.user.application;
 
 import com.tooliv.server.domain.user.application.dto.request.LogInRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.SignUpRequestDTO;
+import com.tooliv.server.domain.user.application.dto.response.LogInResponseDTO;
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
 import com.tooliv.server.global.security.util.JwtAuthenticationProvider;
@@ -32,17 +33,28 @@ public class UserServiceImpl implements UserService {
             .name(signUpRequestDTO.getName())
             .password(passwordEncoder.encode(signUpRequestDTO.getPassword()))
             .createdAt(LocalDateTime.now())
-            .code(signUpRequestDTO.getCode()).build();
+            .userCode(signUpRequestDTO.getUserCode()).build();
 
         userRepository.save(user);
     }
 
     @Override
-    public void logIn(LogInRequestDTO logInRequestDTO) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(logInRequestDTO.getEmail(), logInRequestDTO.getPassword()));
+    public LogInResponseDTO logIn(LogInRequestDTO logInRequestDTO) {
+        Authentication authentication = authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(logInRequestDTO.getEmail(),
+                logInRequestDTO.getPassword()));
+
+        User user = userRepository.findByEmailAndDeletedAt(logInRequestDTO.getEmail(), null)
+            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
 
         String jwt = jwtAuthenticationProvider.createToken(authentication);
 
+        return LogInResponseDTO.builder()
+            .userId(user.getId())
+            .name(user.getName())
+            .nickname(user.getNickname())
+            .userCode(user.getUserCode())
+            .accessToken(jwt).build();
     }
 
 }
