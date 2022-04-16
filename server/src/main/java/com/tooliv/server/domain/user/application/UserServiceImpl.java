@@ -21,12 +21,14 @@ public class UserServiceImpl implements UserService {
         User user = User.builder()
             .email(signUpRequestDTO.getEmail())
             .name(signUpRequestDTO.getName())
-            .nickname(signUpRequestDTO.getNickname())
             .password(passwordEncoder.encode(signUpRequestDTO.getPassword()))
             .createdAt(LocalDateTime.now())
             .code(signUpRequestDTO.getCode()).build();
 
         userRepository.save(user);
     }
+
+    @Override
+    public void login()
 
 }
