@@ -9,6 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public class UserDetailsImpl implements UserDetails {
+
     @Autowired
     User user;
 
@@ -40,7 +41,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return this.user.getDeletedAt()==null;
+        return this.user.getDeletedAt() == null;
     }
 
     @Override
@@ -55,6 +56,6 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return this.user.getDeletedAt()==null;
+        return this.user.getDeletedAt() == null;
     }
 }

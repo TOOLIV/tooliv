@@ -5,13 +5,14 @@ import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-//    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     private final UserRepository userRepository;
 
@@ -21,8 +22,7 @@ public class UserServiceImpl implements UserService {
             .email(signUpRequestDTO.getEmail())
             .name(signUpRequestDTO.getName())
             .nickname(signUpRequestDTO.getNickname())
-//            .password(passwordEncoder.encode(signUpRequestDTO.getPassword()))
-            .password(signUpRequestDTO.getPassword())
+            .password(passwordEncoder.encode(signUpRequestDTO.getPassword()))
             .createdAt(LocalDateTime.now())
             .code(signUpRequestDTO.getCode()).build();
 

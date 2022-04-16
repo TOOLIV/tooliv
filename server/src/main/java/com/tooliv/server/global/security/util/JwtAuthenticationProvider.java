@@ -1,5 +1,6 @@
 package com.tooliv.server.global.security.util;
 
+import com.tooliv.server.global.security.service.UserDetailsServiceImpl;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class JwtAuthenticationProvider {
+
     @Value("${jwt.secret}")
     private String secretKey;
 
@@ -48,21 +50,23 @@ public class JwtAuthenticationProvider {
             .setIssuer(TOKEN_ISSUER) // 토큰 발급자
             .setIssuedAt(now) // 토큰 발행 시간 정보
             .setExpiration(new Date(now.getTime() + tokenValidTime)) // 만료 시간
-            .signWith(SignatureAlgorithm.HS512, secretKey) // 사용할 암호화 알고리즘과 signature 에 들어갈 secret 값 세팅
+            .signWith(SignatureAlgorithm.HS512,
+                secretKey) // 사용할 암호화 알고리즘과 signature 에 들어갈 secret 값 세팅
             .compact();
     }
 
     // JWT 토큰에서 인증 정보 조회
     public Authentication getAuthentication(String token) {
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserAccount(token));
+        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getEmail(token));
 
         // JWT 토큰 서명을 통해 서명이 정상이라면 Authorites 객체 생성
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(userDetails, "",
+            userDetails.getAuthorities());
     }
 
     // 토큰에서 회원 정보 추출
-    public String getUserAccount(String token) {
+    public String getEmail(String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
