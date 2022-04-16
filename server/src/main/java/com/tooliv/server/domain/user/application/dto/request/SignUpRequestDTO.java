@@ -26,11 +26,6 @@ public class SignUpRequestDTO {
 
     @NotBlank
     @NotNull
-    @ApiModelProperty(name = "닉네임")
-    private String nickname;
-
-    @NotBlank
-    @NotNull
     @ApiModelProperty(name = "비밀번호")
     private String password;
 
