@@ -17,3 +17,7 @@ export type iconsTypes = {
     | "xMark"
     | "exit";
 };
+
+export type largeIconTypes = {
+  icon: iconsTypes;
+};
