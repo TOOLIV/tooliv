@@ -14,6 +14,7 @@ import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -62,6 +63,25 @@ public class UserController {
         }
         return ResponseEntity.status(201).body(LogInResponseDTO.of("로그인 성공", logInResponseDTO));
     }
+
+    @PatchMapping()
+    @ApiOperation(value = "닉네임 수정")
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "닉네임 변경 완료"),
+        @ApiResponse(code = 409, message = "닉네임 변경 실패"),
+    })
+    public ResponseEntity<? extends BaseResponseDTO> updateNickname(
+        @RequestBody @ApiParam(value = "수정할 닉네임", required = true) NicknameUpdateRequestDTO nicknameUpdateRequestDTO) {
+        NicknameResponseDTO nicknameResponseDTO = null;
+        
+        try {
+            nicknameResponseDTO = userService.updateNickname(nicknameUpdateRequestDTO);
+        } catch (Exception e) {
+            return ResponseEntity.status(409).body(BaseResponseDTO.of("닉네임 변경 실패"));
+        }
+        return ResponseEntity.status(200).body(NicknameResponseDTO.of("닉네임 변경 완료"), nicknameResponseDTO)l
+    }
+
 
 
 }
