@@ -16,10 +16,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Channel extends BaseEntity {
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "private_yn")
+    @Column(name = "private_yn", columnDefinition="BOOLEAN DEFAULT false")
     private boolean privateYn;
 
     @Column(name = "created_at")
@@ -28,8 +28,11 @@ public class Channel extends BaseEntity {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name = "video_yn")
+    @Column(name = "video_yn", columnDefinition="BOOLEAN DEFAULT false")
     private boolean videoYn;
+
+    @Column(name = "description")
+    private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "workspace_id")
