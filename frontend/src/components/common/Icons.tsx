@@ -1,6 +1,6 @@
 import React from "react";
 import { icons } from "../../shared/icons";
-import { iconsTypes } from "../../types/iconsTypes";
+import { iconsTypes } from "../../types/common/iconsTypes";
 
 const Icons = ({ icon }: iconsTypes) => {
   return (
