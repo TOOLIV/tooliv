@@ -2,12 +2,12 @@ import React from "react";
 import { icons } from "../../shared/icons";
 import { iconsTypes } from "../../types/iconsTypes";
 
-const Icons = ({ icon }: iconsTypes) => {
+const LargeIcons = ({ icon }: iconsTypes) => {
   return (
     <svg
       viewBox="0 0 24 24"
-      width="20"
-      height="20"
+      width="24"
+      height="24"
       xmlns="http:www.w3.org/2000/svg"
       fill="#868E96"
     >
@@ -16,4 +16,4 @@ const Icons = ({ icon }: iconsTypes) => {
   );
 };
 
-export default Icons;
+export default LargeIcons;
