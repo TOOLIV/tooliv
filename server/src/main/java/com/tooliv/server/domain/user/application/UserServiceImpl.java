@@ -1,13 +1,16 @@
 package com.tooliv.server.domain.user.application;
 
 import com.tooliv.server.domain.user.application.dto.request.LogInRequestDTO;
+import com.tooliv.server.domain.user.application.dto.request.NicknameUpdateRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.SignUpRequestDTO;
 import com.tooliv.server.domain.user.application.dto.response.LogInResponseDTO;
+import com.tooliv.server.domain.user.application.dto.response.NicknameResponseDTO;
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
 import com.tooliv.server.global.security.util.JwtAuthenticationProvider;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.jni.Local;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -31,6 +34,7 @@ public class UserServiceImpl implements UserService {
         User user = User.builder()
             .email(signUpRequestDTO.getEmail())
             .name(signUpRequestDTO.getName())
+            .nickname(signUpRequestDTO.getName())
             .password(passwordEncoder.encode(signUpRequestDTO.getPassword()))
             .createdAt(LocalDateTime.now())
             .userCode(signUpRequestDTO.getUserCode()).build();
@@ -55,6 +59,27 @@ public class UserServiceImpl implements UserService {
             .nickname(user.getNickname())
             .userCode(user.getUserCode())
             .accessToken(jwt).build();
+    }
+
+    @Override
+    public NicknameResponseDTO updateNickname(String accessToken,
+        NicknameUpdateRequestDTO nicknameUpdateRequestDTO) {
+        String nickname = nicknameUpdateRequestDTO.getNickname();
+
+        User user = getUserFromAccessToken(accessToken);
+        user.updateNickname(nickname, LocalDateTime.now());
+
+        userRepository.save(user);
+
+        return NicknameResponseDTO.builder()
+            .nickname(nickname).build();
+    }
+
+    public User getUserFromAccessToken(String accessToken) {
+        String email = jwtAuthenticationProvider.getEmail(accessToken.split(" ")[1]);
+
+        return userRepository.findByEmailAndDeletedAt(email, null)
+            .orElseThrow(() -> new IllegalArgumentException("해당 회원을 찾을 수 없습니다."));
     }
 
 }

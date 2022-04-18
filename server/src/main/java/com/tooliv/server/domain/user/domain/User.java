@@ -43,4 +43,8 @@ public class User extends BaseEntity {
     @Column(name = "code")
     private UserCode userCode;
 
+    public void updateNickname(String nickname, LocalDateTime localDateTime) {
+        this.nickname = nickname;
+        this.updatedAt = localDateTime;
+    }
 }

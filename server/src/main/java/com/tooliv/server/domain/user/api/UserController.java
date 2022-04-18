@@ -2,8 +2,10 @@ package com.tooliv.server.domain.user.api;
 
 import com.tooliv.server.domain.user.application.UserService;
 import com.tooliv.server.domain.user.application.dto.request.LogInRequestDTO;
+import com.tooliv.server.domain.user.application.dto.request.NicknameUpdateRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.SignUpRequestDTO;
 import com.tooliv.server.domain.user.application.dto.response.LogInResponseDTO;
+import com.tooliv.server.domain.user.application.dto.response.NicknameResponseDTO;
 import com.tooliv.server.global.common.BaseResponseDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -17,8 +19,10 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
 @CrossOrigin("*")
@@ -71,17 +75,17 @@ public class UserController {
         @ApiResponse(code = 409, message = "닉네임 변경 실패"),
     })
     public ResponseEntity<? extends BaseResponseDTO> updateNickname(
+        @ApiIgnore @RequestHeader("Authorization") String accessToken,
         @RequestBody @ApiParam(value = "수정할 닉네임", required = true) NicknameUpdateRequestDTO nicknameUpdateRequestDTO) {
         NicknameResponseDTO nicknameResponseDTO = null;
 
         try {
-            nicknameResponseDTO = userService.updateNickname(nicknameUpdateRequestDTO);
+            nicknameResponseDTO = userService.updateNickname(accessToken, nicknameUpdateRequestDTO);
         } catch (Exception e) {
             return ResponseEntity.status(409).body(BaseResponseDTO.of("닉네임 변경 실패"));
         }
-        return ResponseEntity.status(200).body(NicknameResponseDTO.of("닉네임 변경 완료"), nicknameResponseDTO)l
+        return ResponseEntity.status(200)
+            .body(NicknameResponseDTO.of("닉네임 변경 완료", nicknameResponseDTO));
     }
-
-
 
 }
