@@ -23,7 +23,7 @@ public class RegisterChannelRequestDTO {
 
     @ApiModelProperty(name = "채널 종류")
     private ChannelCode channelCode;
-    
+
     @ApiModelProperty(name = "채널 설명")
     private String description;
     

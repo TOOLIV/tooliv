@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 
-@ApiModel("RegisterChannelRequestDTO")
+@ApiModel("ModifyChannelRequestDTO")
 @NoArgsConstructor
 @Getter
 public class ModifyChannelRequestDTO {
@@ -19,9 +19,6 @@ public class ModifyChannelRequestDTO {
     @NotNull
     @ApiModelProperty(name = "채널명")
     private String name;
-
-    @ApiModelProperty(name = "비공개 여부")
-    private boolean privateYn;
     
     @ApiModelProperty(name = "채널 설명")
     private String description;

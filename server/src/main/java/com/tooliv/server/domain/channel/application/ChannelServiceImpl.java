@@ -48,7 +48,7 @@ public class ChannelServiceImpl implements  ChannelService {
 
         LocalDateTime now = LocalDateTime.now();
         try {
-            channel.modifyChannel(modifyChannelRequestDTO.getName(), modifyChannelRequestDTO.isPrivateYn(), modifyChannelRequestDTO.getDescription());
+            channel.modifyChannel(modifyChannelRequestDTO.getName(), modifyChannelRequestDTO.getDescription());
         } catch(Exception e) {
             return 409;
         }

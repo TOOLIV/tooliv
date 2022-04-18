@@ -42,9 +42,8 @@ public class Channel extends BaseEntity {
     @JoinColumn(name = "workspace_id")
     private Workspace workspace;
 
-    public void modifyChannel(String name, boolean privateYn, String description) {
+    public void modifyChannel(String name, String description) {
         this.name = name;
-        this.privateYn = privateYn;
         this.description = description;
         this.updatedAt = LocalDateTime.now();
     }

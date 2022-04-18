@@ -6,12 +6,14 @@ import com.tooliv.server.domain.channel.application.dto.request.RegisterChannelR
 import com.tooliv.server.domain.user.application.UserService;
 import com.tooliv.server.domain.user.application.dto.request.SignUpRequestDTO;
 import com.tooliv.server.global.common.BaseResponseDTO;
-import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 @RestController
 @CrossOrigin("*")
@@ -29,7 +31,7 @@ public class ChannelController {
             @ApiResponse(code = 409, message = "채널 등록 실패"),
     })
     public ResponseEntity<? extends BaseResponseDTO> registerChannel(
-            @RequestBody @Valid @ApiParam(value = "채널등록 정보", required = true) RegisterChannelRequestDTO registerChannelRequestDTO) {
+            @RequestBody @ApiParam(value = "채널등록 정보", required = true) RegisterChannelRequestDTO registerChannelRequestDTO) {
         try {
             channelService.registerChannel(registerChannelRequestDTO);
         } catch (Exception e) {
@@ -47,7 +49,7 @@ public class ChannelController {
             @ApiResponse(code=409, message="채널 변경에 실패했습니다."),
     })
     public ResponseEntity<? extends BaseResponseDTO> modifyChannel(
-            @RequestBody @Valid @ApiParam(value="수정할 채널 정보", required=true) ModifyChannelRequestDTO modifyChannelRequestDTO) {
+            @RequestBody @ApiParam(value="수정할 채널 정보", required=true) ModifyChannelRequestDTO modifyChannelRequestDTO) {
 
         try {
             Integer statusCode = channelService.modifyChannel(modifyChannelRequestDTO);
