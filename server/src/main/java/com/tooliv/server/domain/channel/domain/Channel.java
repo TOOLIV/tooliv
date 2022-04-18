@@ -1,5 +1,6 @@
 package com.tooliv.server.domain.channel.domain;
 
+import com.tooliv.server.domain.channel.domain.enums.ChannelCode;
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.workspace.domain.Workspace;
 import com.tooliv.server.global.common.BaseEntity;
@@ -28,8 +29,8 @@ public class Channel extends BaseEntity {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name = "video_yn", columnDefinition="BOOLEAN DEFAULT false")
-    private boolean videoYn;
+    @Column(name = "channel_code", nullable = false)
+    private ChannelCode channelCode;
 
     @Column(name = "description")
     private String description;
@@ -38,10 +39,11 @@ public class Channel extends BaseEntity {
     @JoinColumn(name = "workspace_id")
     private Workspace workspace;
 
-    public void modifyChannel(String name, boolean privateYn, String description) {
+    public void modifyChannel(String name, boolean privateYn, String description, LocalDateTime updatedAt) {
         this.name = name;
         this.privateYn = privateYn;
         this.description = description;
+        this.updatedAt = updatedAt;
     }
 
 }

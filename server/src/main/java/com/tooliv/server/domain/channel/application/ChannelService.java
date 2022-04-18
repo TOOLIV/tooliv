@@ -8,4 +8,5 @@ public interface ChannelService {
     void registerChannel(RegisterChannelRequestDTO registerChannelRequestDTO);
 
     Integer modifyChannel(ModifyChannelRequestDTO modifyChannelRequestDTO);
+
 }

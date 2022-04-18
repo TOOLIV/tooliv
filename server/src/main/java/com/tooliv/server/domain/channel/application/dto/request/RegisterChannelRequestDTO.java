@@ -1,5 +1,6 @@
 package com.tooliv.server.domain.channel.application.dto.request;
 
+import com.tooliv.server.domain.channel.domain.enums.ChannelCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -20,8 +21,8 @@ public class RegisterChannelRequestDTO {
     @ApiModelProperty(name = "비공개 여부")
     private boolean privateYn;
 
-    @ApiModelProperty(name = "화상채널 여부")
-    private boolean videoYn;
+    @ApiModelProperty(name = "채널 종류")
+    private ChannelCode channelCode;
     
     @ApiModelProperty(name = "채널 설명")
     private String description;

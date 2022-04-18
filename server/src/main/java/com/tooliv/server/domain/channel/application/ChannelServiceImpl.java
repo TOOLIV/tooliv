@@ -32,7 +32,7 @@ public class ChannelServiceImpl implements  ChannelService {
                 .name(registerChannelRequestDTO.getName())
                 .privateYn(registerChannelRequestDTO.isPrivateYn())
                 .createdAt(now)
-                .videoYn(registerChannelRequestDTO.isVideoYn())
+                .channelCode(registerChannelRequestDTO.getChannelCode())
                 .description(registerChannelRequestDTO.getDescription())
                 .workspace(workspace)
                 .build();
@@ -40,13 +40,15 @@ public class ChannelServiceImpl implements  ChannelService {
         channelRepository.save(channel);
     }
 
+    @Transactional
     @Override
     public Integer modifyChannel(ModifyChannelRequestDTO modifyChannelRequestDTO) {
         Channel channel = channelRepository.findById(modifyChannelRequestDTO.getId())
                 .orElseThrow(() -> new IllegalArgumentException("채널 정보가 존재하지 않습니다."));
 
+        LocalDateTime now = LocalDateTime.now();
         try {
-            channel.modifyChannel(modifyChannelRequestDTO.getName(), modifyChannelRequestDTO.isPrivateYn(), modifyChannelRequestDTO.getDescription());
+            channel.modifyChannel(modifyChannelRequestDTO.getName(), modifyChannelRequestDTO.isPrivateYn(), modifyChannelRequestDTO.getDescription(),now);
         } catch(Exception e) {
             return 409;
         }
