@@ -1,7 +1,4 @@
-export type SideMenuProps = {
+export interface SideMenuProps {
     title: string,
-}
 
-export type SideMenuItemProps = {
-    
 }
