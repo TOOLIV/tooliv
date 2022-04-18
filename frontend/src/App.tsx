@@ -1,12 +1,12 @@
-import React from 'react';
-import AppRouter from './pages/Router';
-import reset from './shared/reset';
+import React from "react";
+import AppRouter from "./pages/Router";
+import global from "./shared/global";
 import { Global } from "@emotion/react";
 
 function App() {
   return (
     <>
-      <Global styles={reset} />
+      <Global styles={global} />
       <AppRouter />
     </>
   );
