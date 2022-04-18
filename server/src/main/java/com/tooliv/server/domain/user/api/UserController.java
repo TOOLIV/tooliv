@@ -73,7 +73,7 @@ public class UserController {
     public ResponseEntity<? extends BaseResponseDTO> updateNickname(
         @RequestBody @ApiParam(value = "수정할 닉네임", required = true) NicknameUpdateRequestDTO nicknameUpdateRequestDTO) {
         NicknameResponseDTO nicknameResponseDTO = null;
-        
+
         try {
             nicknameResponseDTO = userService.updateNickname(nicknameUpdateRequestDTO);
         } catch (Exception e) {
