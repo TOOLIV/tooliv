@@ -60,4 +60,27 @@ public class ChannelController {
         return ResponseEntity.status(200).body(BaseResponseDTO.of("채널 변경에 성공했습니다."));
     }
 
+    @PatchMapping("/delete/{channelId}")
+    @ApiOperation(value="채널 삭제")
+    @ApiResponses({
+            @ApiResponse(code=200, message="채널 삭제에 성공했습니다."),
+            @ApiResponse(code=404, message="해당 채널을 찾을 수 없습니다."),
+            @ApiResponse(code=409, message="채널 삭제에 실패했습니다."),
+    })
+    public ResponseEntity<? extends BaseResponseDTO> deleteChannel(
+            @PathVariable("channelId") @ApiParam(value="채널 ID", required=true) String channelId) {
+
+        try {
+            Integer statusCode = channelService.deleteChannel(channelId);
+
+            if(statusCode == 409)
+                return ResponseEntity.status(409).body(BaseResponseDTO.of("채널 삭제에 실패했습니다."));
+        } catch (IllegalArgumentException e){
+            return ResponseEntity.status(404).body(BaseResponseDTO.of("해당 채널을 찾을 수 없습니다."));
+        }
+
+        return ResponseEntity.status(200).body(BaseResponseDTO.of("채널 삭제에 성공했습니다."));
+    }
+
+
 }

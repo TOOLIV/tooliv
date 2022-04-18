@@ -29,6 +29,9 @@ public class Channel extends BaseEntity {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
+
     @Column(name = "channel_code", nullable = false)
     private ChannelCode channelCode;
 
@@ -39,11 +42,15 @@ public class Channel extends BaseEntity {
     @JoinColumn(name = "workspace_id")
     private Workspace workspace;
 
-    public void modifyChannel(String name, boolean privateYn, String description, LocalDateTime updatedAt) {
+    public void modifyChannel(String name, boolean privateYn, String description) {
         this.name = name;
         this.privateYn = privateYn;
         this.description = description;
-        this.updatedAt = updatedAt;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void deleteChannel() {
+        this.deletedAt = LocalDateTime.now();
     }
 
 }

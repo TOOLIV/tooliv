@@ -9,4 +9,6 @@ public interface ChannelService {
 
     Integer modifyChannel(ModifyChannelRequestDTO modifyChannelRequestDTO);
 
+    Integer deleteChannel(String channelId);
+
 }

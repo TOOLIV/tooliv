@@ -48,10 +48,26 @@ public class ChannelServiceImpl implements  ChannelService {
 
         LocalDateTime now = LocalDateTime.now();
         try {
-            channel.modifyChannel(modifyChannelRequestDTO.getName(), modifyChannelRequestDTO.isPrivateYn(), modifyChannelRequestDTO.getDescription(),now);
+            channel.modifyChannel(modifyChannelRequestDTO.getName(), modifyChannelRequestDTO.isPrivateYn(), modifyChannelRequestDTO.getDescription());
         } catch(Exception e) {
             return 409;
         }
+        channelRepository.save(channel);
+        return 200;
+    }
+
+    @Transactional
+    @Override
+    public Integer deleteChannel(String channelId) {
+        Channel channel = channelRepository.findById(channelId)
+                .orElseThrow(() -> new IllegalArgumentException("채널 정보가 존재하지 않습니다."));
+
+        try {
+            channel.deleteChannel();
+        } catch(Exception e) {
+            return 409;
+        }
+
         channelRepository.save(channel);
         return 200;
     }
