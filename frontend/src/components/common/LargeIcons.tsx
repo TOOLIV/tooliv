@@ -10,7 +10,7 @@ const LargeIcons = ({ icon, color }: largeIconTypes) => {
       width="30"
       height="30"
       xmlns="http:www.w3.org/2000/svg"
-      fill={color ? color : colors["gray800"]}
+      fill={color ? colors[color] : colors["gray800"]}
     >
       {icons[icon]}
     </svg>
