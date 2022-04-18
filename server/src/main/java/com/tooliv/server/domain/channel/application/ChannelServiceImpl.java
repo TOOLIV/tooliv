@@ -1,5 +1,6 @@
 package com.tooliv.server.domain.channel.application;
 
+import com.tooliv.server.domain.channel.application.dto.request.ModifyChannelRequestDTO;
 import com.tooliv.server.domain.channel.domain.Channel;
 import com.tooliv.server.domain.channel.application.dto.request.RegisterChannelRequestDTO;
 import com.tooliv.server.domain.channel.domain.repository.ChannelRepository;
@@ -37,5 +38,19 @@ public class ChannelServiceImpl implements  ChannelService {
                 .build();
 
         channelRepository.save(channel);
+    }
+
+    @Override
+    public Integer modifyChannel(ModifyChannelRequestDTO modifyChannelRequestDTO) {
+        Channel channel = channelRepository.findById(modifyChannelRequestDTO.getId())
+                .orElseThrow(() -> new IllegalArgumentException("채널 정보가 존재하지 않습니다."));
+
+        try {
+            channel.modifyChannel(modifyChannelRequestDTO.getName(), modifyChannelRequestDTO.isPrivateYn(), modifyChannelRequestDTO.getDescription());
+        } catch(Exception e) {
+            return 409;
+        }
+        channelRepository.save(channel);
+        return 200;
     }
 }
