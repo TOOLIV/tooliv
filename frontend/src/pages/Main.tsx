@@ -9,7 +9,15 @@ const Main = () => {
   const onClick = () => {
     navigate("meeting");
   };
-  return <div onClick={onClick}>Main</div>;
+  return (
+    <div onClick={onClick}>
+      Main
+      <FunctionButton icon="exit" exit />
+      <FunctionButton icon="audioOn" />
+      <FunctionButton icon="videoOn" />
+      <FunctionButton icon="shareMonitor" />
+    </div>
+  );
 };
 
 export default Main;
