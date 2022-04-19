@@ -47,4 +47,8 @@ public class User extends BaseEntity {
         this.nickname = nickname;
         this.updatedAt = localDateTime;
     }
+
+    public void deleteUser(LocalDateTime localDateTime) {
+        this.deletedAt = localDateTime;
+    }
 }
