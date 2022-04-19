@@ -10,4 +10,6 @@ import org.springframework.stereotype.Repository;
 public interface UserRepository extends JpaRepository<User, String> {
 
     Optional<User> findByEmailAndDeletedAt(String email, LocalDateTime localDateTime);
+
+    Optional<User> findByNickname(String nickname);
 }
