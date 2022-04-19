@@ -8,6 +8,7 @@ import com.tooliv.server.domain.workspace.domain.Workspace;
 import com.tooliv.server.domain.workspace.domain.repository.WorkspaceRepository;
 import com.tooliv.server.global.security.util.JwtAuthenticationProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -54,6 +55,16 @@ public class WorkspaceServiceImpl implements  WorkspaceService {
             return 409;
 
         workspace.modifyWorkspace(modifyWorkspaceRequestDTO.getName());
+        workspaceRepository.save(workspace);
+        return 200;
+    }
+
+    @Transactional
+    @Override
+    public Integer deleteWorkspace(String workspaceId) {
+        Workspace workspace = workspaceRepository.findById(workspaceId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 워크스페이스를 찾을 수 없습니다."));
+        workspace.deleteWorkspace();
         workspaceRepository.save(workspace);
         return 200;
     }

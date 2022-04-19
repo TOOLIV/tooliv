@@ -11,4 +11,6 @@ public interface WorkspaceService {
 
     Integer modifyWorkspace(String accessToken, ModifyWorkspaceRequestDTO modifyWorkspaceRequestDTO);
 
+    Integer deleteWorkspace(String workspaceId);
+
 }
