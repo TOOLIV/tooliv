@@ -1,8 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import Icons from "../components/common/Icons";
-import LargeIcons from "../components/common/LargeIcons";
-import FunctionButton from "../components/meeting/FunctionButton";
+import Icons from "../atoms/common/Icons";
+import LargeIcons from "../atoms/common/LargeIcons";
+import FunctionButton from "../atoms/meeting/FunctionButton";
 
 const Main = () => {
   const navigate = useNavigate();

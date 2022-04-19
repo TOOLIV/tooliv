@@ -18,6 +18,7 @@ export type iconsTypes = {
     | "shareMonitor"
     | "xMark"
     | "exit";
+  onClick?: () => void;
 };
 
 export type largeIconTypes = {
