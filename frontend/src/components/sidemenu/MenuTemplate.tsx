@@ -1,8 +1,8 @@
 import styled from "@emotion/styled";
-import { SideMenuProps } from "../../../types/sidemenu";
+import { SideMenuProps } from "../../types/sidemenu";
 
 const Container = styled.div`
-  font-weight: 600;
+  font-weight: 700;
   font-size: 16px;
 `;
 

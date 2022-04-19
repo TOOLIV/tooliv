@@ -2,8 +2,10 @@ import styled from "@emotion/styled";
 import { motion } from "framer-motion";
 import React from "react";
 import { useRecoilState } from "recoil";
-import WorkSpace from "../../../containers/sidemenu/WorkSpace";
-import { isOpenSide } from "../../../recoil/atom";
+import Channels from "../../containers/sidemenu/Channels";
+import Friends from "../../containers/sidemenu/Friends";
+import WorkSpaces from "../../containers/sidemenu/WorkSpaces";
+import { isOpenSide } from "../../recoil/atom";
 
 const Container = styled(motion.div)`
   margin-top: 24px;
@@ -24,7 +26,13 @@ const SideMenu = () => {
       animate={isOpen ? "open" : "closed"}
       variants={variants}
     >
-      <WorkSpace />
+      <WorkSpaces />
+      {isOpen && (
+        <>
+          <Channels />
+          <Friends />
+        </>
+      )}
     </Container>
   );
 };

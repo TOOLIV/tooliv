@@ -2,8 +2,7 @@ import styled from "@emotion/styled";
 import React from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import Nav from "../components/home/Nav";
-import SideMenu from "../components/home/sidemenu/SideMenu";
-import WorkSpace from "../containers/sidemenu/WorkSpace";
+import SideMenu from "../components/sidemenu/SideMenu";
 
 const SideMenuContainer = styled.div`
   margin-top: 24px;
