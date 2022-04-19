@@ -26,7 +26,7 @@ public class AdminController {
 
     private final AdminService adminService;
 
-    @GetMapping
+    @GetMapping("/list/user")
     @ApiOperation(value = "회원 정보 목록 조회")
     @ApiResponses({
         @ApiResponse(code = 200, message = "회원 정보 목록 조회 완료"),
