@@ -18,9 +18,6 @@ public class Workspace extends BaseEntity {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "url")
-    private String url;
-
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 

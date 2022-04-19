@@ -13,4 +13,6 @@ public interface WorkspaceRepository extends JpaRepository<Workspace, String> {
 
     Optional<Workspace> findByIdAndDeletedAtAfter(String id, LocalDateTime deletedAt);
 
+    boolean existsByNameAndDeletedAtBefore(String name, LocalDateTime deletedAt);
+
 }
