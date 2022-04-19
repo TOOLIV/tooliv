@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
-public class WorkspaceServiceImpl implements  WorkspaceService {
+public class WorkspaceServiceImpl implements WorkspaceService {
 
     private final WorkspaceRepository workspaceRepository;
 
@@ -26,20 +26,23 @@ public class WorkspaceServiceImpl implements  WorkspaceService {
 
     @Transactional
     @Override
-    public Integer registerWorkspace(String accessToken, RegisterWorkspaceRequestDTO registerWorkspaceRequestDTO) {
+    public Integer registerWorkspace(RegisterWorkspaceRequestDTO registerWorkspaceRequestDTO) {
 
-        User owner = getUserFromAccessToken(accessToken);
+        User owner = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
+            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+
         LocalDateTime now = LocalDateTime.now();
 
-        boolean existWorkspace = workspaceRepository.existsByNameAndDeletedAtBefore(registerWorkspaceRequestDTO.getName(), now);
-        if (existWorkspace)
+        boolean existWorkspace = workspaceRepository.existsByNameAndDeletedAt(registerWorkspaceRequestDTO.getName(), null);
+        if (existWorkspace) {
             return 409;
+        }
 
         Workspace workspace = Workspace.builder()
-                .name(registerWorkspaceRequestDTO.getName())
-                .createdAt(now)
-                .user(owner)
-                .build();
+            .name(registerWorkspaceRequestDTO.getName())
+            .createdAt(now)
+            .user(owner)
+            .build();
 
         workspaceRepository.save(workspace);
         return 201;
@@ -47,12 +50,16 @@ public class WorkspaceServiceImpl implements  WorkspaceService {
 
     @Transactional
     @Override
-    public Integer modifyWorkspace(String accessToken, ModifyWorkspaceRequestDTO modifyWorkspaceRequestDTO) {
+    public Integer modifyWorkspace(ModifyWorkspaceRequestDTO modifyWorkspaceRequestDTO) {
         Workspace workspace = workspaceRepository.findById(modifyWorkspaceRequestDTO.getId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 워크스페이스를 찾을 수 없습니다."));
-        User owner = getUserFromAccessToken(accessToken);
-        if(!owner.equals(workspace.getUser()))
+            .orElseThrow(() -> new IllegalArgumentException("해당 워크스페이스를 찾을 수 없습니다."));
+
+        User owner = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
+            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+
+        if (!owner.equals(workspace.getUser())) {
             return 409;
+        }
 
         workspace.modifyWorkspace(modifyWorkspaceRequestDTO.getName());
         workspaceRepository.save(workspace);
@@ -63,17 +70,9 @@ public class WorkspaceServiceImpl implements  WorkspaceService {
     @Override
     public Integer deleteWorkspace(String workspaceId) {
         Workspace workspace = workspaceRepository.findById(workspaceId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 워크스페이스를 찾을 수 없습니다."));
+            .orElseThrow(() -> new IllegalArgumentException("해당 워크스페이스를 찾을 수 없습니다."));
         workspace.deleteWorkspace();
         workspaceRepository.save(workspace);
         return 200;
-    }
-
-    public User getUserFromAccessToken(String accessToken) {
-        String token = accessToken.split(" ")[1];
-        String userEmail = jwtAuthenticationProvider.getEmail(token);
-
-        return userRepository.findByEmailAndDeletedAt(userEmail, LocalDateTime.now())
-                .orElseThrow(() -> new IllegalArgumentException("해당 회원을 찾을 수 없습니다."));
     }
 }

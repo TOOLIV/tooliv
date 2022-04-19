@@ -11,8 +11,8 @@ import java.util.Optional;
 @Repository
 public interface WorkspaceRepository extends JpaRepository<Workspace, String> {
 
-    Optional<Workspace> findByIdAndDeletedAtAfter(String id, LocalDateTime deletedAt);
+    Optional<Workspace> findByIdAndDeletedAt(String id, LocalDateTime deletedAt);
 
-    boolean existsByNameAndDeletedAtBefore(String name, LocalDateTime deletedAt);
+    boolean existsByNameAndDeletedAt(String name, LocalDateTime deletedAt);
 
 }

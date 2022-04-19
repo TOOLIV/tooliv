@@ -7,9 +7,9 @@ import com.tooliv.server.domain.workspace.application.dto.request.RegisterWorksp
 
 public interface WorkspaceService {
 
-    Integer registerWorkspace(String accessToken, RegisterWorkspaceRequestDTO registerWorkspaceRequestDTO);
+    Integer registerWorkspace(RegisterWorkspaceRequestDTO registerWorkspaceRequestDTO);
 
-    Integer modifyWorkspace(String accessToken, ModifyWorkspaceRequestDTO modifyWorkspaceRequestDTO);
+    Integer modifyWorkspace(ModifyWorkspaceRequestDTO modifyWorkspaceRequestDTO);
 
     Integer deleteWorkspace(String workspaceId);
 
