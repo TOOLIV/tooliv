@@ -10,10 +10,10 @@ import com.tooliv.server.domain.user.domain.repository.UserRepository;
 import com.tooliv.server.global.security.util.JwtAuthenticationProvider;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.jni.Local;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -62,11 +62,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public NicknameResponseDTO updateNickname(String accessToken,
+    public NicknameResponseDTO updateNickname(
         NicknameUpdateRequestDTO nicknameUpdateRequestDTO) {
         String nickname = nicknameUpdateRequestDTO.getNickname();
 
-        User user = getUserFromAccessToken(accessToken);
+        User user = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
+            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+
         user.updateNickname(nickname, LocalDateTime.now());
 
         userRepository.save(user);
@@ -75,11 +77,14 @@ public class UserServiceImpl implements UserService {
             .nickname(nickname).build();
     }
 
-    public User getUserFromAccessToken(String accessToken) {
-        String email = jwtAuthenticationProvider.getEmail(accessToken.split(" ")[1]);
+    @Override
+    public void deleteUser() {
+        User user = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
+            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
 
-        return userRepository.findByEmailAndDeletedAt(email, null)
-            .orElseThrow(() -> new IllegalArgumentException("해당 회원을 찾을 수 없습니다."));
+        user.deleteUser(LocalDateTime.now());
+
+        userRepository.save(user);
     }
 
 }

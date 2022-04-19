@@ -16,6 +16,7 @@ import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -75,17 +76,32 @@ public class UserController {
         @ApiResponse(code = 409, message = "닉네임 변경 실패"),
     })
     public ResponseEntity<? extends BaseResponseDTO> updateNickname(
-        @ApiIgnore @RequestHeader("Authorization") String accessToken,
         @RequestBody @ApiParam(value = "수정할 닉네임", required = true) NicknameUpdateRequestDTO nicknameUpdateRequestDTO) {
         NicknameResponseDTO nicknameResponseDTO = null;
 
         try {
-            nicknameResponseDTO = userService.updateNickname(accessToken, nicknameUpdateRequestDTO);
+            nicknameResponseDTO = userService.updateNickname(nicknameUpdateRequestDTO);
         } catch (Exception e) {
             return ResponseEntity.status(409).body(BaseResponseDTO.of("닉네임 변경 실패"));
         }
         return ResponseEntity.status(200)
             .body(NicknameResponseDTO.of("닉네임 변경 완료", nicknameResponseDTO));
+    }
+
+    @DeleteMapping()
+    @ApiOperation(value = "회원 탈퇴")
+    @ApiResponses({
+        @ApiResponse(code = 204, message = "회원 탈퇴 완료"),
+        @ApiResponse(code = 409, message = "회원 탈퇴 실패"),
+    })
+    public ResponseEntity<? extends BaseResponseDTO> deleteUser() {
+        try {
+            userService.deleteUser();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(409).body(BaseResponseDTO.of("회원 탈퇴 실패"));
+        }
+
+        return ResponseEntity.status(204).body(BaseResponseDTO.of("회원 탈퇴 완료"));
     }
 
 }
