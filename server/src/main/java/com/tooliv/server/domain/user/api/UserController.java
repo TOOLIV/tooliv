@@ -95,7 +95,13 @@ public class UserController {
         @ApiResponse(code = 409, message = "회원 탈퇴 실패"),
     })
     public ResponseEntity<? extends BaseResponseDTO> deleteUser() {
+        try {
+            userService.deleteUser();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(409).body(BaseResponseDTO.of("회원 탈퇴 실패"));
+        }
 
+        return ResponseEntity.status(204).body(BaseResponseDTO.of("회원 탈퇴 완료"));
     }
 
 }

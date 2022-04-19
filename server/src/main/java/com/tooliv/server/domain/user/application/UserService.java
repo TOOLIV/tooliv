@@ -13,4 +13,6 @@ public interface UserService {
     LogInResponseDTO logIn(LogInRequestDTO logInRequestDTO);
 
     NicknameResponseDTO updateNickname(NicknameUpdateRequestDTO nicknameUpdateRequestDTO);
+
+    void deleteUser();
 }
