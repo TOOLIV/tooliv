@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import React from "react";
-import Icons from "../../components/common/Icons";
-import MenuTemplate from "../../components/sidemenu/MenuTemplate";
+import Icons from "../../atoms/common/Icons";
+import MenuTemplate from "../../atoms/sidemenu/MenuTemplate";
 
 export const TopContainer = styled.div`
   display: flex;

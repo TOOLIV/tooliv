@@ -1,9 +1,9 @@
 import styled from "@emotion/styled";
 import React from "react";
 import { useRecoilState } from "recoil";
-import Icons from "../../components/common/Icons";
-import MenuTemplate from "../../components/sidemenu/MenuTemplate";
-import WorkSpace from "../../components/sidemenu/WorkSpace";
+import Icons from "../../atoms/common/Icons";
+import MenuTemplate from "../../atoms/sidemenu/MenuTemplate";
+import WorkSpace from "../../atoms/sidemenu/WorkSpace";
 import { isOpenSide } from "../../recoil/atom";
 import { workSpaceType } from "../../types/workspace/workSpaceType";
 
@@ -18,11 +18,11 @@ const TopContainer = styled.div`
   align-items: center;
 `;
 
-const WorkSpaceContainer = styled.div`
+const WorkSpaceContainer = styled.div<{ isOpen: boolean }>`
   display: flex;
   width: 100%;
   padding: 0 24px 16px 24px;
-  border-bottom: 1px solid #ffffff;
+  border-bottom: ${(props) => props.isOpen && "1px solid #ffffff"};
 `;
 
 const WorkSpaces = () => {
@@ -50,7 +50,7 @@ const WorkSpaces = () => {
           onClick={onClickSide}
         />
       </TopContainer>
-      <WorkSpaceContainer>
+      <WorkSpaceContainer isOpen={isOpen}>
         {dummyData.map((workspace) => (
           <WorkSpace key={workspace.id} {...workspace} />
         ))}
