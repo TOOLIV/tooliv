@@ -12,6 +12,5 @@ public interface UserService {
 
     LogInResponseDTO logIn(LogInRequestDTO logInRequestDTO);
 
-    NicknameResponseDTO updateNickname(String accessToken,
-        NicknameUpdateRequestDTO nicknameUpdateRequestDTO);
+    NicknameResponseDTO updateNickname(NicknameUpdateRequestDTO nicknameUpdateRequestDTO);
 }
