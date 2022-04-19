@@ -33,6 +33,7 @@ public class Workspace extends BaseEntity {
 
     public void modifyWorkspace(String name) {
         this.name = name;
+        this.updatedAt = LocalDateTime.now();
     }
 
     public void deleteWorkspace() {
