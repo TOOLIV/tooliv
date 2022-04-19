@@ -1,3 +1,5 @@
+import { colorsTypes } from "./colorsTypes";
+
 export type iconsTypes = {
   icon:
     | "lock"
@@ -19,5 +21,6 @@ export type iconsTypes = {
 };
 
 export type largeIconTypes = {
-  icon: iconsTypes;
+  icon: iconsTypes["icon"];
+  color?: colorsTypes["color"];
 };
