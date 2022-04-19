@@ -2,7 +2,8 @@ import styled from "@emotion/styled";
 import React from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import Nav from "../components/home/Nav";
-import Workspace from "../components/home/sidemenu/Workspace";
+import SideMenu from "../components/home/sidemenu/SideMenu";
+import WorkSpace from "../containers/sidemenu/WorkSpace";
 
 const SideMenuContainer = styled.div`
   margin-top: 24px;
@@ -13,7 +14,7 @@ const SideMenuContainer = styled.div`
 const Container = styled.div`
   display: flex;
   flex-direction: row;
-  height: calc(100vh-64px);
+  height: calc(100vh - 40px);
 `;
 
 const Home = () => {
@@ -26,9 +27,7 @@ const Home = () => {
     <>
       <Nav />
       <Container>
-        <SideMenuContainer>
-          <Workspace />
-        </SideMenuContainer>
+        <SideMenu />
         <Outlet />
       </Container>
     </>
