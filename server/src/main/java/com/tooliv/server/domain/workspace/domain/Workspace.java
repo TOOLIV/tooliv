@@ -31,4 +31,7 @@ public class Workspace extends BaseEntity {
     @JoinColumn(name = "owner_id")
     private User user;
 
+    public void modifyWorkspace(String name) {
+        this.name = name;
+    }
 }

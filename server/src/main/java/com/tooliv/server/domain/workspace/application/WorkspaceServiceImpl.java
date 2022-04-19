@@ -2,6 +2,7 @@ package com.tooliv.server.domain.workspace.application;
 
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
+import com.tooliv.server.domain.workspace.application.dto.request.ModifyWorkspaceRequestDTO;
 import com.tooliv.server.domain.workspace.application.dto.request.RegisterWorkspaceRequestDTO;
 import com.tooliv.server.domain.workspace.domain.Workspace;
 import com.tooliv.server.domain.workspace.domain.repository.WorkspaceRepository;
@@ -41,6 +42,20 @@ public class WorkspaceServiceImpl implements  WorkspaceService {
 
         workspaceRepository.save(workspace);
         return 201;
+    }
+
+    @Transactional
+    @Override
+    public Integer modifyWorkspace(String accessToken, ModifyWorkspaceRequestDTO modifyWorkspaceRequestDTO) {
+        Workspace workspace = workspaceRepository.findById(modifyWorkspaceRequestDTO.getId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 워크스페이스를 찾을 수 없습니다."));
+        User owner = getUserFromAccessToken(accessToken);
+        if(!owner.equals(workspace.getUser()))
+            return 409;
+
+        workspace.modifyWorkspace(modifyWorkspaceRequestDTO.getName());
+        workspaceRepository.save(workspace);
+        return 200;
     }
 
     public User getUserFromAccessToken(String accessToken) {

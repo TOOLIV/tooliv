@@ -1,8 +1,10 @@
 package com.tooliv.server.domain.workspace.api;
 
 import com.tooliv.server.domain.channel.application.ChannelService;
+import com.tooliv.server.domain.channel.application.dto.request.ModifyChannelRequestDTO;
 import com.tooliv.server.domain.channel.application.dto.request.RegisterChannelRequestDTO;
 import com.tooliv.server.domain.workspace.application.WorkspaceService;
+import com.tooliv.server.domain.workspace.application.dto.request.ModifyWorkspaceRequestDTO;
 import com.tooliv.server.domain.workspace.application.dto.request.RegisterWorkspaceRequestDTO;
 import com.tooliv.server.global.common.BaseResponseDTO;
 import io.swagger.annotations.*;
@@ -38,5 +40,27 @@ public class WorkspaceController {
             return ResponseEntity.status(404).body(BaseResponseDTO.of("해당 유저를 찾을 수 없습니다."));
         }
         return ResponseEntity.status(201).body(BaseResponseDTO.of("채널 등록 완료"));
+    }
+
+    @PatchMapping
+    @ApiOperation(value="워크스페이스 변경 , 필수 정보 - 워크스페이스ID, 워크스페이스명")
+    @ApiResponses({
+            @ApiResponse(code=200, message="워크스페이스 변경에 성공했습니다."),
+            @ApiResponse(code=404, message="해당 워크스페이스을 찾을 수 없습니다."),
+            @ApiResponse(code=409, message="워크스페이스 변경에 실패했습니다."),
+    })
+    public ResponseEntity<? extends BaseResponseDTO> modifyWorkspace(
+            @ApiIgnore @RequestHeader("Authorization") String accessToken,
+            @RequestBody @ApiParam(value="수정할 워크스페이스 정보", required=true) ModifyWorkspaceRequestDTO modifyWorkspaceRequestDTO) {
+
+        try {
+            Integer statusCode = workspaceService.modifyWorkspace(accessToken, modifyWorkspaceRequestDTO);
+
+            if(statusCode == 409)
+                return ResponseEntity.status(409).body(BaseResponseDTO.of("워크스페이스 변경에 실패했습니다."));
+        } catch (IllegalArgumentException e){
+            return ResponseEntity.status(404).body(BaseResponseDTO.of("해당 워크스페이스를 찾을 수 없습니다."));
+        }
+        return ResponseEntity.status(200).body(BaseResponseDTO.of("워크스페이스 변경에 성공했습니다."));
     }
 }
