@@ -1,13 +1,19 @@
 import React from "react";
 import AppRouter from "./pages/Router";
 import global from "./shared/global";
-import { Global } from "@emotion/react";
+import { Global, ThemeProvider } from "@emotion/react";
+import { light, dark } from "./shared/theme";
+import { useRecoilValue } from "recoil";
+import { appThemeMode } from "./recoil/atom";
 
 function App() {
+  const mode = useRecoilValue(appThemeMode);
   return (
     <>
-      <Global styles={global} />
-      <AppRouter />
+      <ThemeProvider theme={mode === "light" ? light : dark}>
+        <Global styles={global} />
+        <AppRouter />
+      </ThemeProvider>
     </>
   );
 }
