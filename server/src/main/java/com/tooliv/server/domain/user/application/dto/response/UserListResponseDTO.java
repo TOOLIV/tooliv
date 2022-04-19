@@ -1,23 +1,29 @@
 package com.tooliv.server.domain.user.application.dto.response;
 
+import com.tooliv.server.global.common.BaseResponseDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.util.List;
 import lombok.Getter;
 
 @Getter
 @ApiModel("UserListResponseDTO")
-public class UserListResponseDTO {
+public class UserListResponseDTO extends BaseResponseDTO {
 
-    @ApiModelProperty("회원 ID")
-    private String id;
+    @ApiModelProperty("회원 정보 목록")
+    private List<UserInfoResponseDTO> userInfoResponseDTOList;
 
-    @ApiModelProperty("회원 닉네임")
-    private String nickname;
+    public UserListResponseDTO() {
 
-    public UserListResponseDTO() {}
+    }
 
-    public UserListResponseDTO(String id, String nickname) {
-        this.id = id;
-        this.nickname = nickname;
+    public UserListResponseDTO(List<UserInfoResponseDTO> userInfoResponseDTOList) {
+        this.userInfoResponseDTOList = userInfoResponseDTOList;
+    }
+
+    public static UserListResponseDTO of(String message, UserListResponseDTO userListResponseDTO) {
+        userListResponseDTO.setMessage(message);
+
+        return userListResponseDTO;
     }
 }
