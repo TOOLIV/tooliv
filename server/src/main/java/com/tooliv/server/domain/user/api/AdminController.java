@@ -2,6 +2,7 @@ package com.tooliv.server.domain.user.api;
 
 import com.tooliv.server.domain.user.application.dto.request.SignUpRequestDTO;
 import com.tooliv.server.domain.user.application.dto.response.UserListResponseDTO;
+import com.tooliv.server.domain.user.application.service.AdminService;
 import com.tooliv.server.global.common.BaseResponseDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
