@@ -5,7 +5,7 @@ export type colorsTypes = {
     | "third"
     | "lightPrimary"
     | "lightSecondary"
-    | "heavyPrimary"
+    | "darkPrimary"
     | "gray25"
     | "gray50"
     | "gray100"
