@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/chat")
 public class ChatRoomController {
+
     private final ChatService chatService;
     private final UserService userService;
 
