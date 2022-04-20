@@ -1,6 +1,8 @@
 package com.tooliv.server.global.security.util;
 
+import com.tooliv.server.domain.user.domain.enums.UserCode;
 import com.tooliv.server.global.security.service.UserDetailsServiceImpl;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -15,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -36,17 +39,23 @@ public class JwtAuthenticationProvider {
     private UserDetailsServiceImpl userDetailsService;
 
     // JWT 토큰 생성
+//    public String createToken(String email, UserCode userCode) {
     public String createToken(Authentication authentication) {
 
         String authorities = authentication.getAuthorities().stream()
             .map(GrantedAuthority::getAuthority)
+//            .map(role -> new SimpleGrantedAuthority(userDetailsService.loadUserByUsername(authentication.getName())))
             .collect(Collectors.joining(","));
+
+//        Claims claims = Jwts.claims().setSubject(email);
+//        claims.put("roles", "ROLE_" + userCode);
 
         Date now = new Date();
 
         return Jwts.builder()
             .setSubject(authentication.getName()) // 정보 저장
             .claim(AUTHORITIES_KEY, authorities)
+//            .setClaims(claims)
             .setIssuer(TOKEN_ISSUER) // 토큰 발급자
             .setIssuedAt(now) // 토큰 발행 시간 정보
             .setExpiration(new Date(now.getTime() + tokenValidTime)) // 만료 시간

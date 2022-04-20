@@ -36,6 +36,7 @@ public class UserServiceImpl implements UserService {
             .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
 
         String jwt = jwtAuthenticationProvider.createToken(authentication);
+//        String jwt = jwtAuthenticationProvider.createToken(user.getEmail(), user.getUserCode());
 
         return LogInResponseDTO.builder()
             .userId(user.getId())
