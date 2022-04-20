@@ -107,7 +107,7 @@ public class ChannelServiceImpl implements ChannelService {
         List<Channel> channelList = channelMembersRepository.findChannelByUser(user);
         List<ChannelGetResponseDTO> channelGetResponseDTOList = new ArrayList<>();
         channelList.forEach(channel -> {
-            if(channel.getDeletedAt() == null) {
+            if(channel.getDeletedAt() == null  && channel.getWorkspace().getId().equals(workspaceId)) {
                 ChannelGetResponseDTO channelGetResponseDTO = ChannelGetResponseDTO.builder()
                     .id(channel.getId())
                     .name(channel.getName())
