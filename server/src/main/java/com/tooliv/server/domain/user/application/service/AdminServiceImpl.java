@@ -1,6 +1,7 @@
 package com.tooliv.server.domain.user.application.service;
 
 import com.tooliv.server.domain.user.application.dto.request.SignUpRequestDTO;
+import com.tooliv.server.domain.user.application.dto.request.UserCodeUpdateRequestDTO;
 import com.tooliv.server.domain.user.application.dto.response.UserInfoResponseDTO;
 import com.tooliv.server.domain.user.application.dto.response.UserListResponseDTO;
 import com.tooliv.server.domain.user.domain.User;
@@ -39,11 +40,20 @@ public class AdminServiceImpl implements AdminService {
     public UserListResponseDTO getUserList() {
         List<UserInfoResponseDTO> userInfoResponseDTOList = new ArrayList<>();
 
-        for (User user : userRepository.findAllByUserCodeAndDeletedAtOrderByNameAsc(UserCode.USER, null).orElseThrow(() -> new IllegalArgumentException("조회 가능한 회원이 없음"))) {
+        for (User user : userRepository.findAllByUserCodeNotAndDeletedAtOrderByNameAsc(UserCode.ADMIN, null).orElseThrow(() -> new IllegalArgumentException("조회 가능한 회원이 없음"))) {
             userInfoResponseDTOList.add(new UserInfoResponseDTO(user.getId(), user.getEmail(), user.getName(), user.getNickname()));
         }
 
         return new UserListResponseDTO(userInfoResponseDTOList);
+    }
+
+    @Override
+    public void updateUserCode(UserCodeUpdateRequestDTO userCodeUpdateRequestDTO) {
+        User user = userRepository.findByEmailAndDeletedAt(userCodeUpdateRequestDTO.getEmail(), null).orElseThrow(() -> new IllegalArgumentException("조회 가능한 회원이 없음"));
+
+        user.updateUserCode(userCodeUpdateRequestDTO.getUserCode());
+
+        userRepository.save(user);
     }
 
     @Override

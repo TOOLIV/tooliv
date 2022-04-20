@@ -51,4 +51,8 @@ public class User extends BaseEntity {
     public void deleteUser(LocalDateTime localDateTime) {
         this.deletedAt = localDateTime;
     }
+
+    public void updateUserCode(UserCode userCode) {
+        this.userCode = userCode;
+    }
 }

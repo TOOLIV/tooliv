@@ -17,5 +17,5 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     Optional<User> findByNickname(String nickname);
 
-    Optional<List<User>> findAllByUserCodeAndDeletedAtOrderByNameAsc(UserCode userCode, LocalDateTime localDateTime);
+    Optional<List<User>> findAllByUserCodeNotAndDeletedAtOrderByNameAsc(UserCode userCode, LocalDateTime localDateTime);
 }
