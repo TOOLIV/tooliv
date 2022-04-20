@@ -19,7 +19,7 @@ import lombok.ToString;
 @AllArgsConstructor
 public class User extends BaseEntity {
 
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     private String email;
 
     @Column(name = "name")

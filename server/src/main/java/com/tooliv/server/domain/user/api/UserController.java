@@ -87,9 +87,6 @@ public class UserController {
             .body(NicknameResponseDTO.of("닉네임 변경 완료", nicknameResponseDTO));
     }
 
-    @GetMapping()
-    @ApiOperation(value = "")
-
     @DeleteMapping()
     @ApiOperation(value = "회원 탈퇴")
     @ApiResponses({

@@ -5,6 +5,7 @@ import com.tooliv.server.domain.user.application.dto.response.UserListResponseDT
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.enums.UserCode;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
+import com.tooliv.server.domain.user.exception.NotUniqueEmailException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -25,5 +26,14 @@ public class AdminServiceImpl implements AdminService {
         }
 
         return new UserListResponseDTO(userInfoResponseDTOList);
+    }
+
+    @Override
+    public void checkEmail(String email) throws NotUniqueEmailException {
+        boolean emailExists = userRepository.existsByEmailAndDeletedAt(email, null);
+
+        if (emailExists) {
+            throw new NotUniqueEmailException("해당 이메일은 중복임");
+        }
     }
 }
