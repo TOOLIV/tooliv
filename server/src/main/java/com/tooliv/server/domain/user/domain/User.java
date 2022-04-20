@@ -40,7 +40,7 @@ public class User extends BaseEntity {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
-    @Column(name = "code")
+    @Column(name = "user_code")
     private UserCode userCode;
 
     public void updateNickname(String nickname, LocalDateTime localDateTime) {
