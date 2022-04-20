@@ -84,7 +84,7 @@ public class ChannelController {
         return ResponseEntity.status(200).body(BaseResponseDTO.of("채널 삭제에 성공했습니다."));
     }
 
-    @GetMapping("/list/channel/{workspaceId}")
+    @GetMapping("/list/{workspaceId}")
     @ApiOperation(value = "채널 목록 조회")
     @ApiResponses({
         @ApiResponse(code = 200, message = "채널 목록 조회 완료"),
