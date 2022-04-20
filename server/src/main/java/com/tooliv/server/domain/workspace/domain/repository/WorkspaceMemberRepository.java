@@ -1,5 +1,7 @@
 package com.tooliv.server.domain.workspace.domain.repository;
 
+import com.tooliv.server.domain.channel.domain.Channel;
+import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.workspace.domain.Workspace;
 import com.tooliv.server.domain.workspace.domain.WorkspaceMembers;
 import java.time.LocalDateTime;
@@ -9,5 +11,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface WorkspaceMemberRepository extends JpaRepository<WorkspaceMembers, String> {
+
+    void deleteByUserAndWorkspace(User user, Workspace workspace);
 
 }
