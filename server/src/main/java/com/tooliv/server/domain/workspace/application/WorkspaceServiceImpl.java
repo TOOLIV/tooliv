@@ -1,10 +1,16 @@
 package com.tooliv.server.domain.workspace.application;
 
+import com.tooliv.server.domain.channel.domain.Channel;
+import com.tooliv.server.domain.channel.domain.ChannelMembers;
+import com.tooliv.server.domain.channel.domain.enums.ChannelMemberCode;
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
 import com.tooliv.server.domain.workspace.application.dto.request.ModifyWorkspaceRequestDTO;
 import com.tooliv.server.domain.workspace.application.dto.request.RegisterWorkspaceRequestDTO;
 import com.tooliv.server.domain.workspace.domain.Workspace;
+import com.tooliv.server.domain.workspace.domain.WorkspaceMembers;
+import com.tooliv.server.domain.workspace.domain.enums.WorkspaceMemberCode;
+import com.tooliv.server.domain.workspace.domain.repository.WorkspaceMemberRepository;
 import com.tooliv.server.domain.workspace.domain.repository.WorkspaceRepository;
 import com.tooliv.server.global.security.util.JwtAuthenticationProvider;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +26,9 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     private final WorkspaceRepository workspaceRepository;
 
-    private final UserRepository userRepository;
+    private final WorkspaceMemberRepository workspaceMemberRepository;
 
-    private final JwtAuthenticationProvider jwtAuthenticationProvider;
+    private final UserRepository userRepository;
 
     @Transactional
     @Override
@@ -41,10 +47,22 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         Workspace workspace = Workspace.builder()
             .name(registerWorkspaceRequestDTO.getName())
             .createdAt(now)
-            .user(owner)
             .build();
 
         workspaceRepository.save(workspace);
+
+        WorkspaceMembers workspaceMembers = WorkspaceMembers.builder()
+            .createdAt(now)
+            .workspaceMemberCode(WorkspaceMemberCode.WADMIN)
+            .user(owner)
+            .workspace(workspace)
+            .build();
+
+        workspaceMemberRepository.save(workspaceMembers);
+
+        Channel channel = Channel.builder().
+            build();
+
         return 201;
     }
 
@@ -53,13 +71,6 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     public Integer modifyWorkspace(ModifyWorkspaceRequestDTO modifyWorkspaceRequestDTO) {
         Workspace workspace = workspaceRepository.findById(modifyWorkspaceRequestDTO.getId())
             .orElseThrow(() -> new IllegalArgumentException("해당 워크스페이스를 찾을 수 없습니다."));
-
-        User owner = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
-            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
-
-        if (!owner.equals(workspace.getUser())) {
-            return 409;
-        }
 
         workspace.modifyWorkspace(modifyWorkspaceRequestDTO.getName());
         workspaceRepository.save(workspace);
