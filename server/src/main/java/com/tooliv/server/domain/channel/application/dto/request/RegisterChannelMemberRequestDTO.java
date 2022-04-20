@@ -16,4 +16,8 @@ public class RegisterChannelMemberRequestDTO {
     @ApiModelProperty(name = "채널ID")
     private String channelId;
 
+    @NotNull
+    @ApiModelProperty(name = "email")
+    private String email;
+
 }

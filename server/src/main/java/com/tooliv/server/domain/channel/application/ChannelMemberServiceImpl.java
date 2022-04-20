@@ -12,7 +12,6 @@ import com.tooliv.server.domain.user.domain.repository.UserRepository;
 import java.time.LocalDateTime;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,7 +27,7 @@ public class ChannelMemberServiceImpl  implements ChannelMemberService{
     @Transactional
     @Override
     public void addChannelMember(RegisterChannelMemberRequestDTO registerChannelMemberRequestDTO) {
-        User user = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
+        User user = userRepository.findByEmailAndDeletedAt(registerChannelMemberRequestDTO.getEmail(), null)
             .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
 
         Channel channel = channelRepository.findByIdAndDeletedAt(registerChannelMemberRequestDTO.getChannelId(), null)
@@ -47,7 +46,7 @@ public class ChannelMemberServiceImpl  implements ChannelMemberService{
     @Transactional
     @Override
     public void deleteChannelMember(DeleteChannelMemberRequestDTO deleteChannelMemberRequestDTO) {
-        User user = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
+        User user = userRepository.findByEmailAndDeletedAt(deleteChannelMemberRequestDTO.getEmail(), null)
             .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
 
         Channel channel = channelRepository.findByIdAndDeletedAt(deleteChannelMemberRequestDTO.getChannelId(), null)

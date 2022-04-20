@@ -15,4 +15,8 @@ public class DeleteChannelMemberRequestDTO {
     @ApiModelProperty(name = "채널ID")
     private String channelId;
 
+    @NotNull
+    @ApiModelProperty(name = "email")
+    private String email;
+
 }
