@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @CrossOrigin("*")
-@Api(value = "ChannelMembers API", tags = {"ChannelMembers"})
+@Api(value = "ChannelMembers API", tags = {"Channel Members"})
 @RequiredArgsConstructor
 @RequestMapping("/api/channel-member")
 public class ChannelMemberController {
