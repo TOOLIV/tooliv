@@ -7,9 +7,12 @@ import com.tooliv.server.domain.chat.domain.ChatMessage;
 import com.tooliv.server.domain.chat.domain.ChatRoom;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -21,9 +24,13 @@ public class ChatController {
     private final RedisPublisher redisPublisher;
     private final ChatService chatService;
 
-    // websocket "/pub/chat/message"로 들어오는 메시지
-    @ApiOperation(value = "채팅방 메시지", notes = "메시지")
+    // websocket "/api/pub/chat/message"로 들어오는 메시지
     @MessageMapping("/chat/message")
+    @ApiOperation(value = "채팅방 메시지", notes = "메시지")
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "메시지 전송"),
+        @ApiResponse(code = 409, message = "메시지 전송 실패"),
+    })
     public void message(ChatRequestDTO chatRequestDTO) {
         // 로그인 회원 정보로 대화명 설정
         ChatMessage message = chatService.createChatMessage(chatRequestDTO);

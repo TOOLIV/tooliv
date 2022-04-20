@@ -12,15 +12,17 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(final MessageBrokerRegistry registry) {
-        // queue는 1:1 통신, topic은 1:N 통신 컨벤션 룰같은 개념이다
-        registry.enableSimpleBroker("/queue", "/topic");
-        registry.setApplicationDestinationPrefixes("/ws");
+        // prefix 설정
+        // 발행 pub, 구독 sub
+        registry.enableSimpleBroker("/sub");
+        registry.setApplicationDestinationPrefixes("/pub");
     }
 
     @Override
     public void registerStompEndpoints(final StompEndpointRegistry registry) {
         // Cors 설정
-        registry.addEndpoint("/our-websocket")
+        // Stomp endPoint chatting
+        registry.addEndpoint("/chatting")
             .setAllowedOrigins("*")
             .withSockJS();
     }
