@@ -29,6 +29,7 @@ public class AdminServiceImpl implements AdminService {
             .name(signUpRequestDTO.getName())
             .nickname(signUpRequestDTO.getName())
             .password(passwordEncoder.encode(signUpRequestDTO.getPassword()))
+            .userCode(UserCode.USER)
             .createdAt(LocalDateTime.now()).build();
 
         userRepository.save(user);

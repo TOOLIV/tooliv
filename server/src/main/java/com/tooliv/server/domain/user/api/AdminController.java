@@ -30,7 +30,7 @@ public class AdminController {
 
     private final AdminService adminService;
 
-    @PostMapping
+    @PostMapping("/user")
     @ApiOperation(value = "회원가입")
     @ApiResponses({
         @ApiResponse(code = 201, message = "회원가입 완료"),
