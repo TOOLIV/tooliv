@@ -20,7 +20,7 @@ const TopContainer = styled.div`
 
 const WorkSpaceContainer = styled.div<{ isOpen: boolean }>`
   display: flex;
-  width: 100%;
+  /* width: 100%; */
   padding: 0 24px 16px 24px;
   border-bottom: ${(props) => props.isOpen && "1px solid #ffffff"};
 `;

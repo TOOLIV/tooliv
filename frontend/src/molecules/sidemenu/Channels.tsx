@@ -10,7 +10,7 @@ import { sideMenuType } from "../../types/sidemenu/sideMenuType";
 export const TopContainer = styled.div`
   display: flex;
   padding: 16px 18px 16px 18px;
-  width: 280px;
+  /* width: 280px; */
   box-sizing: border-box;
   display: flex;
   justify-content: space-between;
