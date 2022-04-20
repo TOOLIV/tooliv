@@ -29,7 +29,7 @@ public class WorkspaceController {
         @ApiResponse(code = 409, message = "해당 유저를 찾을 수 없습니다."),
         @ApiResponse(code = 409, message = "동일한 이름의 워크스페이스가 존재합니다."),
     })
-    public ResponseEntity<? extends BaseResponseDTO> registerworkspace(
+    public ResponseEntity<? extends BaseResponseDTO> registerWorkspace(
         @RequestBody @ApiParam(value = "워크스페이스 등록 정보", required = true) RegisterWorkspaceRequestDTO registerWorkspaceRequestDTO) {
         try {
             Integer statusCode = workspaceService.registerWorkspace(registerWorkspaceRequestDTO);
@@ -65,7 +65,7 @@ public class WorkspaceController {
     }
 
 
-    @PatchMapping("/delete/{workspacelId}")
+    @DeleteMapping("/{workspacelId}")
     @ApiOperation(value = "워크스페이스 삭제")
     @ApiResponses({
         @ApiResponse(code = 200, message = "워크스페이스 삭제에 성공했습니다."),
@@ -80,7 +80,6 @@ public class WorkspaceController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(404).body(BaseResponseDTO.of("해당 워크스페이스를 찾을 수 없습니다."));
         }
-
         return ResponseEntity.status(200).body(BaseResponseDTO.of("워크스페이스 삭제에 성공했습니다."));
     }
 }

@@ -1,5 +1,4 @@
-import React from "react";
-import { css } from "@emotion/react";
+import { css } from '@emotion/react';
 const reset = css`
   /* http://meyerweb.com/eric/tools/css/reset/ 
    v2.0 | 20110126
@@ -91,7 +90,6 @@ const reset = css`
     padding: 0;
     border: 0;
     font-size: 100%;
-    font: inherit;
     vertical-align: baseline;
   }
   /* HTML5 display-role reset for older browsers */
@@ -110,7 +108,8 @@ const reset = css`
   }
   body {
     line-height: 1;
-    font-family: "SUIT", sans-serif;
+    font-family: 'SUIT', sans-serif;
+    font-weight: 600;
   }
   ol,
   ul {
@@ -124,7 +123,7 @@ const reset = css`
   blockquote:after,
   q:before,
   q:after {
-    content: "";
+    content: '';
     content: none;
   }
   table {

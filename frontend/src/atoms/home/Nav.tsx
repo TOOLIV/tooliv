@@ -1,5 +1,7 @@
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react'
+
 import styled from '@emotion/styled';
-import React from 'react';
 import Logo from '../common/Logo';
 
 const NavContainer = styled.div`
@@ -16,11 +18,19 @@ const NavContainer = styled.div`
     }
 `;
 
+const textStyle = css`
+    margin-left: 40px;
+    font-weight: 600;
+    font-size: 16px;
+    color: white;
+`
+
 const Nav = () => {
     return (
         <NavContainer>
             <Logo />
-            <div className='text'>안녕하세요. </div>
+            {/* <div className='text'>안녕하세요. </div> */}
+            <div css={textStyle}>안녕하세요. </div>
         </NavContainer>
     );
 };

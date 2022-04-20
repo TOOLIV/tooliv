@@ -1,8 +1,8 @@
 package com.tooliv.server.domain.chat.application;
 
 import com.tooliv.server.domain.chat.application.dto.request.ChatRequestDTO;
+import com.tooliv.server.domain.chat.application.dto.response.ChatRoomListResponseDTO;
 import com.tooliv.server.domain.chat.domain.ChatMessage;
-import com.tooliv.server.domain.chat.domain.ChatMessage.MessageType;
 import com.tooliv.server.domain.chat.domain.ChatRoom;
 import com.tooliv.server.domain.chat.domain.repository.ChatRoomRepository;
 import com.tooliv.server.domain.user.domain.User;
@@ -49,7 +49,7 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public ChatRoom createChatRoom(User customer) {
         String name = customer.getName();
-        ChatRoom chatRoom = ChatRoom.create(name, customer);
+        ChatRoom chatRoom = ChatRoom.builder().name(name).customer(customer).build();
         opsHashChatRoom.put(CHAT_ROOMS, chatRoom.getId(), chatRoom);
         chatRoomRepository.save(chatRoom);
         return chatRoom;
@@ -69,7 +69,7 @@ public class ChatServiceImpl implements ChatService {
     public ChatMessage createChatMessage(ChatRequestDTO chatRequestDTO) {
         ChatRoom chatRoom = findRoomById(chatRequestDTO.getRoomId());
         User user = userRepository.findByNickname(chatRequestDTO.getSender()).orElseThrow(null);
-        ChatMessage chatMessage= ChatMessage.builder()
+        ChatMessage chatMessage = ChatMessage.builder()
             .chatRoom(chatRoom)
             .sender(user)
             .content(chatRequestDTO.getContents())

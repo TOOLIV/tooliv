@@ -60,7 +60,7 @@ public class ChannelController {
         return ResponseEntity.status(200).body(BaseResponseDTO.of("채널 변경에 성공했습니다."));
     }
 
-    @PatchMapping("/delete/{channelId}")
+    @DeleteMapping("/{channelId}")
     @ApiOperation(value="채널 삭제")
     @ApiResponses({
             @ApiResponse(code=200, message="채널 삭제에 성공했습니다."),
