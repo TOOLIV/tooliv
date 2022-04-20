@@ -1,13 +1,15 @@
 package com.tooliv.server.domain.chat.application;
 
-import com.tooliv.server.domain.chat.application.dto.request.ChatRequestDTO;
+import com.tooliv.server.domain.chat.application.dto.request.ChatRoomUserInfoRequestDTO;
+import com.tooliv.server.domain.chat.application.dto.response.ChatRoomInfoDTO;
 import com.tooliv.server.domain.chat.application.dto.response.ChatRoomListResponseDTO;
-import com.tooliv.server.domain.chat.domain.ChatMessage;
 import com.tooliv.server.domain.chat.domain.ChatRoom;
 import com.tooliv.server.domain.chat.domain.repository.ChatRoomRepository;
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +21,7 @@ import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
-public class ChatServiceImpl implements ChatService {
+public class ChatRoomServiceImpl implements ChatRoomService {
 
     // 채팅방(topic)에 발행되는 메시지를 처리할 Listner
     private final RedisMessageListenerContainer redisMessageListener;
@@ -47,51 +49,33 @@ public class ChatServiceImpl implements ChatService {
     private final UserRepository userRepository;
 
     @Override
-    public ChatRoom createChatRoom(User customer) {
-        String name = customer.getName();
-        ChatRoom chatRoom = ChatRoom.builder().name(name).customer(customer).build();
+    public ChatRoomListResponseDTO getChatRoomList(String email) {
+        List<ChatRoomInfoDTO> chatRoomListResponseDTO = new ArrayList<>();
+        User user = userRepository.findByEmailAndDeletedAt(email, null)
+            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+        for (ChatRoom chatRoom : chatRoomRepository.findChatRoomsByCustomer(user).orElseThrow(() -> new IllegalArgumentException("조회 가능한 채팅방이 없습니다."))) {
+            chatRoomListResponseDTO.add(new ChatRoomInfoDTO(chatRoom.getId(), chatRoom.getName()));
+        }
+
+        return new ChatRoomListResponseDTO(chatRoomListResponseDTO);
+    }
+
+    @Override
+    public ChatRoom createChatRoom(ChatRoomUserInfoRequestDTO chatRoomUserInfoRequestDTO) {
+        User customer = userRepository.findByEmailAndDeletedAt(chatRoomUserInfoRequestDTO.getEmail(), null)
+            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+        String nickname = customer.getNickname();
+        ChatRoom chatRoom = ChatRoom.builder().name(nickname).customer(customer).build();
+        System.out.println("asdfasdf 정놈");
+        try {
+
         opsHashChatRoom.put(CHAT_ROOMS, chatRoom.getId(), chatRoom);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        System.out.println("asdfasdf 손놈");
         chatRoomRepository.save(chatRoom);
         return chatRoom;
-    }
-
-    @Override
-    public void enterChatRoom(String roomId) {
-        ChannelTopic topic = topics.get(roomId);
-        if (topic == null) {
-            topic = new ChannelTopic(roomId);
-        }
-        redisMessageListener.addMessageListener(redisSubscriber, topic);
-        topics.put(roomId, topic);
-    }
-
-    @Override
-    public ChatMessage createChatMessage(ChatRequestDTO chatRequestDTO) {
-        ChatRoom chatRoom = findRoomById(chatRequestDTO.getRoomId());
-        User user = userRepository.findByNickname(chatRequestDTO.getSender()).orElseThrow(null);
-        ChatMessage chatMessage = ChatMessage.builder()
-            .chatRoom(chatRoom)
-            .sender(user)
-            .content(chatRequestDTO.getContents())
-            .type(chatRequestDTO.getType())
-            .build();
-        return chatMessage;
-    }
-
-    @Override
-    public ChannelTopic getTopic(String roomId) {
-        return topics.get(roomId);
-    }
-
-    @Override
-    public ChatRoom findRoomById(String roomId) {
-        ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElseThrow(null);
-        return chatRoom;
-    }
-
-    @Override
-    public void deleteById(String roomId) {
-        chatRoomRepository.deleteById(roomId);
     }
 
     // 유저가 입장한 채팅방ID와 유저 세션ID 맵핑 정보 저장
