@@ -1,10 +1,26 @@
-import React from "react";
 import { css } from "@emotion/react";
 const reset = css`
   /* http://meyerweb.com/eric/tools/css/reset/ 
    v2.0 | 20110126
    License: none (public domain)
 */
+  @font-face {
+    font-family: 'SUIT';
+    font-style: bold;
+    font-weight: 700;
+    src: url('assets/fonts/SUIT-Bold.woff2') format('woff2'),
+      url('assets/fonts/SUIT-Bold.ttf') format('ttf'),
+      url('assets/fonts/SUIT-Bold.otf') format('otf');
+  }
+
+  @font-face {
+    font-family: 'SUIT';
+    font-style: medium;
+    font-weight: 600;
+    src: url('assets/fonts/SUIT-Medium.woff2') format('woff2'),
+      url('assets/fonts/SUIT-Medium.ttf') format('ttf'),
+      url('assets/fonts/SUIT-Medium.otf') format('otf');
+  }
 
   html,
   body,

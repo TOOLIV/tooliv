@@ -1,23 +1,14 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import Icons from "../components/common/Icons";
-import LargeIcons from "../components/common/LargeIcons";
-import FunctionButton from "../components/meeting/FunctionButton";
+import Icons from "../atoms/common/Icons";
+import FunctionButton from "../atoms/meeting/FunctionButton";
 
 const Main = () => {
   const navigate = useNavigate();
   const onClick = () => {
     navigate("meeting");
   };
-  return (
-    <div onClick={onClick}>
-      Main
-      <FunctionButton icon="exit" exit />
-      <FunctionButton icon="audioOn" />
-      <FunctionButton icon="videoOn" />
-      <FunctionButton icon="shareMonitor" />
-    </div>
-  );
+  return <div onClick={onClick}>Main</div>;
 };
 
 export default Main;
