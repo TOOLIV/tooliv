@@ -37,8 +37,7 @@ public class UserServiceImpl implements UserService {
             .name(signUpRequestDTO.getName())
             .nickname(signUpRequestDTO.getName())
             .password(passwordEncoder.encode(signUpRequestDTO.getPassword()))
-            .createdAt(LocalDateTime.now())
-            .userCode(signUpRequestDTO.getUserCode()).build();
+            .createdAt(LocalDateTime.now()).build();
 
         userRepository.save(user);
     }
