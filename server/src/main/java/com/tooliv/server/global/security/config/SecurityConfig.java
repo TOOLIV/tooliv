@@ -1,5 +1,6 @@
 package com.tooliv.server.global.security.config;
 
+import com.tooliv.server.domain.user.domain.enums.UserCode;
 import com.tooliv.server.global.security.service.UserDetailsServiceImpl;
 import com.tooliv.server.global.security.util.JwtAccessDeniedHandler;
 import com.tooliv.server.global.security.util.JwtAuthenticationEntryPoint;
@@ -76,7 +77,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/api/user/login").permitAll()
             .antMatchers(HttpMethod.DELETE, "/api/user").authenticated()
             .antMatchers(HttpMethod.PATCH, "/api/user").authenticated()
-            .antMatchers(HttpMethod.POST, "/api/admin/user").permitAll()
+            .antMatchers(HttpMethod.POST, "/api/admin/user").hasAnyRole("ADMIN", "MANAGER")
+            .antMatchers(HttpMethod.GET, "/api/admin/check/**").hasAnyRole("ADMIN", "MANAGER")
+            .antMatchers(HttpMethod.PATCH, "/api/admin/code").hasRole("ADMIN")
             .antMatchers("/api/v3/**", "/swagger-ui/**", "/swagger/**", "/swagger-resources/**", "/v3/api-docs").permitAll()
             // 나머지 요청들은 모두 인증되어야 한다.
             .anyRequest().authenticated()

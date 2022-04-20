@@ -15,9 +15,10 @@ public class UserDetailsImpl implements UserDetails {
 
     List<GrantedAuthority> roles = new ArrayList<>();
 
-    public UserDetailsImpl(User user) {
+    public UserDetailsImpl(User user, List<GrantedAuthority> roles) {
         super();
         this.user = user;
+        this.roles = roles;
     }
 
     public User getUser() {
