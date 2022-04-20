@@ -14,7 +14,7 @@ export const TopContainer = styled.div`
   justify-content: space-between;
   align-items: center;
 `;
-const ChannelsContainer = styled.div``;
+
 const ChannelContainer = styled.div`
   display: flex;
   align-items: center;

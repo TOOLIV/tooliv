@@ -1,9 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import Icons from "../atoms/common/Icons";
-import FunctionButton from "../atoms/meeting/FunctionButton";
 
-const Main = () => {
+const Channel = () => {
   const navigate = useNavigate();
   const onClick = () => {
     navigate("meeting");
@@ -11,4 +9,4 @@ const Main = () => {
   return <div onClick={onClick}>Main</div>;
 };
 
-export default Main;
+export default Channel;
