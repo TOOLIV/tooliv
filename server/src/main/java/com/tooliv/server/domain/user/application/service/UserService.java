@@ -8,8 +8,6 @@ import com.tooliv.server.domain.user.application.dto.response.NicknameResponseDT
 
 public interface UserService {
 
-    void signUp(SignUpRequestDTO signUpRequestDTO);
-
     LogInResponseDTO logIn(LogInRequestDTO logInRequestDTO);
 
     NicknameResponseDTO updateNickname(NicknameUpdateRequestDTO nicknameUpdateRequestDTO);
