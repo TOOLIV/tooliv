@@ -68,21 +68,24 @@ public class AdminController {
         return ResponseEntity.status(200).body(BaseResponseDTO.of("이메일 사용 가능"));
     }
 
-    @GetMapping("/list/user")
+    @GetMapping("/list/user/{keyword}")
     @ApiOperation(value = "회원 정보 목록 조회")
     @ApiResponses({
         @ApiResponse(code = 200, message = "회원 정보 목록 조회 완료"),
         @ApiResponse(code = 404, message = "조회 가능한 회원 정보가 없음"),
         @ApiResponse(code = 409, message = "회원 정보 목록 조회 실패"),
     })
-    public ResponseEntity<? extends BaseResponseDTO> getUserList() {
+    public ResponseEntity<? extends BaseResponseDTO> getUserList(
+        @PathVariable("keyword") @ApiParam(value="검색 단어", required = true) String keyword) {
         UserListResponseDTO userListResponseDTO = null;
 
         try {
-            userListResponseDTO = adminService.getUserList();
+            userListResponseDTO = adminService.getUserList(keyword);
         } catch (IllegalArgumentException e) {
+            e.printStackTrace();
             return ResponseEntity.status(409).body(BaseResponseDTO.of("회원 정보 목록 조회 실패"));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(404).body(BaseResponseDTO.of("조회 가능한 회원 정보가 없음"));
         }
 

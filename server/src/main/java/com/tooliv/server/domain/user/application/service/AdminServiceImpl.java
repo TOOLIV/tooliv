@@ -37,10 +37,12 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public UserListResponseDTO getUserList() {
+    public UserListResponseDTO getUserList(String keyword) {
         List<UserInfoResponseDTO> userInfoResponseDTOList = new ArrayList<>();
+//        List<User> userList = userRepository.findUser(keyword, UserCode.ADMIN, null);
 
-        for (User user : userRepository.findAllByUserCodeNotAndDeletedAtOrderByNameAsc(UserCode.ADMIN, null).orElseThrow(() -> new IllegalArgumentException("조회 가능한 회원이 없음"))) {
+        for (User user : userRepository.findAllByUserCodeNotAndDeletedAtAndNameContainingOrderByNameAsc(UserCode.ADMIN, null, keyword)
+            .orElseThrow(() -> new IllegalArgumentException("조회 가능한 회원이 없음"))) {
             userInfoResponseDTOList.add(new UserInfoResponseDTO(user.getId(), user.getEmail(), user.getName(), user.getNickname()));
         }
 
@@ -49,7 +51,8 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public void updateUserCode(UserCodeUpdateRequestDTO userCodeUpdateRequestDTO) {
-        User user = userRepository.findByEmailAndDeletedAt(userCodeUpdateRequestDTO.getEmail(), null).orElseThrow(() -> new IllegalArgumentException("조회 가능한 회원이 없음"));
+        User user = userRepository.findByEmailAndDeletedAt(userCodeUpdateRequestDTO.getEmail(), null)
+            .orElseThrow(() -> new IllegalArgumentException("조회 가능한 회원이 없음"));
 
         user.updateUserCode(userCodeUpdateRequestDTO.getUserCode());
 

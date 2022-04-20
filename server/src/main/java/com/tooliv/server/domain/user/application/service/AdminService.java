@@ -9,7 +9,7 @@ public interface AdminService {
 
     void signUp(SignUpRequestDTO signUpRequestDTO);
 
-    UserListResponseDTO getUserList();
+    UserListResponseDTO getUserList(String searchStr);
 
     void updateUserCode(UserCodeUpdateRequestDTO userCodeUpdateRequestDTO);
 
