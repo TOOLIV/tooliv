@@ -36,7 +36,7 @@ public class ChannelMemberServiceImpl  implements ChannelMemberService{
         ChannelMembers channelMembers = ChannelMembers.builder()
             .channel(channel)
             .createdAt(LocalDateTime.now())
-            .memberCode(ChannelMemberCode.CMEMBER)
+            .channelMemberCode(ChannelMemberCode.CMEMBER)
             .user(user)
             .build();
 

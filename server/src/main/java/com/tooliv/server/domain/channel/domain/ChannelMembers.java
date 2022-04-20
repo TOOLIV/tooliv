@@ -30,8 +30,8 @@ public class ChannelMembers extends BaseEntity {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name = "member_code")
-    private ChannelMemberCode memberCode;
+    @Column(name = "channel_member_code")
+    private ChannelMemberCode channelMemberCode;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "channel_id")

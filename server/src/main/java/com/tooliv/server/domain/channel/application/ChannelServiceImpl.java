@@ -54,7 +54,7 @@ public class ChannelServiceImpl implements ChannelService {
 
         ChannelMembers channelMembers = ChannelMembers.builder()
             .createdAt(now)
-            .memberCode(ChannelMemberCode.CADMIN)
+            .channelMemberCode(ChannelMemberCode.CADMIN)
             .user(owner)
             .channel(channel)
             .build();
