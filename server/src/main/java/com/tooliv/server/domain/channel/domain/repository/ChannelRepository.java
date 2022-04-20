@@ -3,6 +3,7 @@ package com.tooliv.server.domain.channel.domain.repository;
 import com.tooliv.server.domain.channel.domain.Channel;
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.workspace.domain.Workspace;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,6 +13,6 @@ import java.util.Optional;
 @Repository
 public interface ChannelRepository extends JpaRepository<Channel, String> {
 
-    Optional<Channel> findByIdAndDeletedAtAfter(String id, LocalDateTime deletedAt);
+    Optional<Channel> findByIdAndDeletedAt(String id, LocalDateTime deletedAt);
 
 }

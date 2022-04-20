@@ -27,10 +27,6 @@ public class Workspace extends BaseEntity {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner_id")
-    private User user;
-
     public void modifyWorkspace(String name) {
         this.name = name;
         this.updatedAt = LocalDateTime.now();

@@ -3,9 +3,11 @@ package com.tooliv.server.domain.workspace.api;
 import com.tooliv.server.domain.channel.application.ChannelService;
 import com.tooliv.server.domain.channel.application.dto.request.ModifyChannelRequestDTO;
 import com.tooliv.server.domain.channel.application.dto.request.RegisterChannelRequestDTO;
+import com.tooliv.server.domain.channel.application.dto.response.ChannelListGetResponseDTO;
 import com.tooliv.server.domain.workspace.application.WorkspaceService;
 import com.tooliv.server.domain.workspace.application.dto.request.ModifyWorkspaceRequestDTO;
 import com.tooliv.server.domain.workspace.application.dto.request.RegisterWorkspaceRequestDTO;
+import com.tooliv.server.domain.workspace.application.dto.response.WorkspaceListGetResponseDTO;
 import com.tooliv.server.global.common.BaseResponseDTO;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
@@ -81,5 +83,26 @@ public class WorkspaceController {
             return ResponseEntity.status(404).body(BaseResponseDTO.of("해당 워크스페이스를 찾을 수 없습니다."));
         }
         return ResponseEntity.status(200).body(BaseResponseDTO.of("워크스페이스 삭제에 성공했습니다."));
+    }
+
+    @GetMapping("/list")
+    @ApiOperation(value = "워크스페이스 목록 조회")
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "워크스페이스 목록 조회 완료"),
+        @ApiResponse(code = 404, message = "조회 가능한 워크스페이스 정보가 없음"),
+        @ApiResponse(code = 409, message = "워크스페이스 목록 조회 실패"),
+    })
+    public ResponseEntity<? extends BaseResponseDTO> getWorkspaceList() {
+        WorkspaceListGetResponseDTO workspaceListGetResponseDTO = null;
+
+        try {
+            workspaceListGetResponseDTO = workspaceService.getWorkspaceList();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(409).body(BaseResponseDTO.of("워크스페이스 목록 조회 실패"));
+        } catch (Exception e) {
+            return ResponseEntity.status(404).body(BaseResponseDTO.of("조회 가능한 워크스페이스 정보가 없음"));
+        }
+
+        return ResponseEntity.status(200).body(WorkspaceListGetResponseDTO.of("워크스페이스 목록 조회 완료", workspaceListGetResponseDTO));
     }
 }
