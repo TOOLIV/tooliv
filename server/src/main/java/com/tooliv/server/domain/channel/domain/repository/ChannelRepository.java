@@ -3,6 +3,7 @@ package com.tooliv.server.domain.channel.domain.repository;
 import com.tooliv.server.domain.channel.domain.Channel;
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.workspace.domain.Workspace;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

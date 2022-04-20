@@ -1,6 +1,8 @@
 package com.tooliv.server.domain.channel.application;
 
 import com.tooliv.server.domain.channel.application.dto.request.ModifyChannelRequestDTO;
+import com.tooliv.server.domain.channel.application.dto.response.ChannelGetResponseDTO;
+import com.tooliv.server.domain.channel.application.dto.response.ChannelListGetResponseDTO;
 import com.tooliv.server.domain.channel.domain.Channel;
 import com.tooliv.server.domain.channel.application.dto.request.RegisterChannelRequestDTO;
 import com.tooliv.server.domain.channel.domain.ChannelMembers;
@@ -11,6 +13,8 @@ import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
 import com.tooliv.server.domain.workspace.domain.Workspace;
 import com.tooliv.server.domain.workspace.domain.repository.WorkspaceRepository;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -90,9 +94,31 @@ public class ChannelServiceImpl implements ChannelService {
         } catch (Exception e) {
             return 409;
         }
-
         channelRepository.save(channel);
         return 200;
+    }
+
+    @Override
+    public ChannelListGetResponseDTO getChannelList(String workspaceId) {
+
+        User user = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
+            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+
+        List<Channel> channelList = channelMembersRepository.findChannelByUser(user);
+        List<ChannelGetResponseDTO> channelGetResponseDTOList = new ArrayList<>();
+        channelList.forEach(channel -> {
+            if(channel.getDeletedAt() == null) {
+                ChannelGetResponseDTO channelGetResponseDTO = ChannelGetResponseDTO.builder()
+                    .id(channel.getId())
+                    .name(channel.getName())
+                    .privateYn(channel.isPrivateYn())
+                    .channelCode(channel.getChannelCode())
+                    .description(channel.getDescription())
+                    .build();
+                channelGetResponseDTOList.add(channelGetResponseDTO);
+            }
+        });
+        return new ChannelListGetResponseDTO(channelGetResponseDTOList);
     }
 
 }
