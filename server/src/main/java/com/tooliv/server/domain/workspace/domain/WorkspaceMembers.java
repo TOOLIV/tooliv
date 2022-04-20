@@ -1,4 +1,4 @@
-package com.tooliv.server.domain.channel.domain;
+package com.tooliv.server.domain.workspace.domain;
 
 import com.tooliv.server.domain.channel.domain.enums.ChannelMemberCode;
 import com.tooliv.server.domain.user.domain.User;
@@ -22,7 +22,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChannelMembers extends BaseEntity {
+public class WorkspaceMembers extends BaseEntity {
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -34,10 +34,11 @@ public class ChannelMembers extends BaseEntity {
     private ChannelMemberCode memberCode;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "channel_id")
-    private Channel channel;
+    @JoinColumn(name = "workspace_id")
+    private Workspace workspace;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
 }

@@ -1,11 +1,10 @@
 package com.tooliv.server.domain.channel.application;
 
 import com.tooliv.server.domain.channel.application.dto.request.ModifyChannelRequestDTO;
-import com.tooliv.server.domain.channel.application.dto.request.RegisterChannelMemberRequestDTO;
 import com.tooliv.server.domain.channel.domain.Channel;
 import com.tooliv.server.domain.channel.application.dto.request.RegisterChannelRequestDTO;
 import com.tooliv.server.domain.channel.domain.ChannelMembers;
-import com.tooliv.server.domain.channel.domain.enums.MemberCode;
+import com.tooliv.server.domain.channel.domain.enums.ChannelMemberCode;
 import com.tooliv.server.domain.channel.domain.repository.ChannelMembersRepository;
 import com.tooliv.server.domain.channel.domain.repository.ChannelRepository;
 import com.tooliv.server.domain.user.domain.User;
@@ -55,7 +54,7 @@ public class ChannelServiceImpl implements ChannelService {
 
         ChannelMembers channelMembers = ChannelMembers.builder()
             .createdAt(now)
-            .memberCode(MemberCode.OWNER)
+            .memberCode(ChannelMemberCode.CADMIN)
             .user(owner)
             .channel(channel)
             .build();

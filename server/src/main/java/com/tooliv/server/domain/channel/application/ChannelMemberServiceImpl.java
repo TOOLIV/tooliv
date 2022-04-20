@@ -4,7 +4,7 @@ import com.tooliv.server.domain.channel.application.dto.request.DeleteChannelMem
 import com.tooliv.server.domain.channel.application.dto.request.RegisterChannelMemberRequestDTO;
 import com.tooliv.server.domain.channel.domain.Channel;
 import com.tooliv.server.domain.channel.domain.ChannelMembers;
-import com.tooliv.server.domain.channel.domain.enums.MemberCode;
+import com.tooliv.server.domain.channel.domain.enums.ChannelMemberCode;
 import com.tooliv.server.domain.channel.domain.repository.ChannelMembersRepository;
 import com.tooliv.server.domain.channel.domain.repository.ChannelRepository;
 import com.tooliv.server.domain.user.domain.User;
@@ -36,7 +36,7 @@ public class ChannelMemberServiceImpl  implements ChannelMemberService{
         ChannelMembers channelMembers = ChannelMembers.builder()
             .channel(channel)
             .createdAt(LocalDateTime.now())
-            .memberCode(MemberCode.GENERAL)
+            .memberCode(ChannelMemberCode.CMEMBER)
             .user(user)
             .build();
 
