@@ -1,9 +1,9 @@
 import styled from "@emotion/styled";
 import React from "react";
 import { functionButtonTypes } from "../../types/meeting/functionButtonTypes";
-import LargeIcons from "../common/LargeIcons";
 import { colors } from "../../shared/color";
 import { prependOnceListener } from "process";
+import Icons from "../common/Icons";
 
 const Container = styled.div<{ exit?: boolean }>`
   width: 40px;
@@ -25,7 +25,7 @@ const Container = styled.div<{ exit?: boolean }>`
 const FunctionButton = ({ icon, exit }: functionButtonTypes) => {
   return (
     <Container exit={exit}>
-      <LargeIcons icon={icon} color={exit ? "red700" : undefined} />
+      <Icons icon={icon} large color={exit ? "red700" : undefined} />
     </Container>
   );
 };

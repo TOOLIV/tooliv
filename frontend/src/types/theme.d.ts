@@ -5,5 +5,7 @@ declare module "@emotion/react" {
     bgColor: string;
     sideBgColor: string;
     pointColor: string;
+    secondPointColor: string;
+    lightPointColor: string;
   }
 }
