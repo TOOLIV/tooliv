@@ -102,11 +102,12 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         List<WorkspaceGetResponseDTO> workspaceGetResponseDTOList = new ArrayList<>();
 
         workspaceList.forEach(workspace -> {
-            if(workspace.getDeletedAt().equals(null)){
+            if(workspace.getDeletedAt() == null){
                 WorkspaceGetResponseDTO workspaceGetResponseDTO = WorkspaceGetResponseDTO.builder()
                     .id(workspace.getId())
                     .name(workspace.getName())
                     .build();
+
                 workspaceGetResponseDTOList.add((workspaceGetResponseDTO));
             }
         });
