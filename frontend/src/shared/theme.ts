@@ -6,6 +6,7 @@ export const light: Theme = {
   sideBgColor: "#F4F4F4",
   pointColor: colors.primary,
   secondPointColor: colors.darkPrimary,
+  lightPointColor: colors.lightPrimary,
 };
 
 export const dark: Theme = {
@@ -13,4 +14,5 @@ export const dark: Theme = {
   sideBgColor: "#292D32",
   pointColor: colors.secondary,
   secondPointColor: colors.lightSecondary,
+  lightPointColor: colors.lightSecondary,
 };

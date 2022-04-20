@@ -28,9 +28,15 @@ const ChannelContainer = styled.div`
   margin-left: 24px;
   height: 30px;
   padding-left: 8px;
+  transition: 0.3s;
   /* 선택된 채널만 */
   &:nth-child(1) {
     background-color: ${(props) => props.theme.pointColor};
+    border-radius: 10px 0 0 10px;
+    border-right: 4px solid ${(props) => props.theme.secondPointColor};
+  }
+  &:hover {
+    background-color: ${(props) => props.theme.lightPointColor};
     border-radius: 10px 0 0 10px;
     border-right: 4px solid ${(props) => props.theme.secondPointColor};
   }
