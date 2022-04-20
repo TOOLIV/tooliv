@@ -35,13 +35,13 @@ public class ChatController {
         // 로그인 회원 정보로 대화명 설정
         ChatMessage message = chatService.createChatMessage(chatRequestDTO);
         // 채팅방 입장시에는 대화명과 메시지를 자동으로 세팅한다.
-//        if (ChatMessage.MessageType.ENTER.equals(message1.getType())) {
+//        if (ChatMessage.MessageType.ENTER.equals(message.getType())) {
 //            message1.setSender("[알림]");
 //            message1.setMessage(user.getName() + "님이 입장하셨습니다.");
-//        } else if (ChatMessage.MessageType.QUIT.equals(message1.getType())) {
+//        } else if (ChatMessage.MessageType.QUIT.equals(message.getType())) {
 //            message1.setSender("[알림]");
 //            message1.setMessage(user.getName() + "님이 퇴장하셨습니다.");
-//            chatService.deleteById(message1.getChatRoom());
+//            chatService.deleteById(message.getChatRoom());
 //        }
         // Websocket에 발행된 메시지를 redis로 발행(publish)
         redisPublisher.publish(chatService.getTopic(chatRequestDTO.getRoomId()), message);

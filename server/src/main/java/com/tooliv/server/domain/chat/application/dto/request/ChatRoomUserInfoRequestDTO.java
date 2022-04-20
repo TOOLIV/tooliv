@@ -16,4 +16,5 @@ public class ChatRoomUserInfoRequestDTO {
     @NotNull
     @ApiModelProperty(name = "이메일")
     private String email;
+
 }

@@ -66,16 +66,23 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
         String nickname = customer.getNickname();
         ChatRoom chatRoom = ChatRoom.builder().name(nickname).customer(customer).build();
-        System.out.println("asdfasdf 정놈");
+        String id = chatRoomRepository.save(chatRoom).getId();
         try {
-
-        opsHashChatRoom.put(CHAT_ROOMS, chatRoom.getId(), chatRoom);
-        }catch (Exception e){
+            opsHashChatRoom.put(CHAT_ROOMS, id, chatRoom);
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println("asdfasdf 손놈");
-        chatRoomRepository.save(chatRoom);
         return chatRoom;
+    }
+
+    @Override
+    public void enterChatRoom(String roomId) {
+        ChannelTopic topic = topics.get(roomId);
+        if (topic == null) {
+            topic = new ChannelTopic(roomId);
+        }
+        redisMessageListener.addMessageListener(redisSubscriber, topic);
+        topics.put(roomId, topic);
     }
 
     // 유저가 입장한 채팅방ID와 유저 세션ID 맵핑 정보 저장

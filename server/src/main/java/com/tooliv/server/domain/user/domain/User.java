@@ -2,6 +2,7 @@ package com.tooliv.server.domain.user.domain;
 
 import com.tooliv.server.domain.user.domain.enums.UserCode;
 import com.tooliv.server.global.common.BaseEntity;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,7 +18,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class User extends BaseEntity {
+public class User extends BaseEntity implements Serializable {
 
     @Column(name = "email")
     private String email;

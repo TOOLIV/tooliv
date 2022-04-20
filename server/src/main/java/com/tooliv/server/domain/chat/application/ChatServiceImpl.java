@@ -47,25 +47,6 @@ public class ChatServiceImpl implements ChatService {
     private final UserRepository userRepository;
 
     @Override
-    public ChatRoom createChatRoom(User customer) {
-        String name = customer.getName();
-        ChatRoom chatRoom = ChatRoom.builder().name(name).customer(customer).build();
-        opsHashChatRoom.put(CHAT_ROOMS, chatRoom.getId(), chatRoom);
-        chatRoomRepository.save(chatRoom);
-        return chatRoom;
-    }
-
-    @Override
-    public void enterChatRoom(String roomId) {
-        ChannelTopic topic = topics.get(roomId);
-        if (topic == null) {
-            topic = new ChannelTopic(roomId);
-        }
-        redisMessageListener.addMessageListener(redisSubscriber, topic);
-        topics.put(roomId, topic);
-    }
-
-    @Override
     public ChatMessage createChatMessage(ChatRequestDTO chatRequestDTO) {
         ChatRoom chatRoom = findRoomById(chatRequestDTO.getRoomId());
         User user = userRepository.findByNickname(chatRequestDTO.getSender()).orElseThrow(null);
