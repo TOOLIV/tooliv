@@ -4,12 +4,8 @@ import com.tooliv.server.domain.channel.application.dto.request.ModifyChannelReq
 import com.tooliv.server.domain.channel.application.dto.request.RegisterChannelMemberRequestDTO;
 import com.tooliv.server.domain.channel.application.dto.request.RegisterChannelRequestDTO;
 
-public interface ChannelService {
+public interface ChannelMemberService {
 
-    void registerChannel(RegisterChannelRequestDTO registerChannelRequestDTO);
-
-    Integer modifyChannel(ModifyChannelRequestDTO modifyChannelRequestDTO);
-
-    Integer deleteChannel(String channelId);
+    void addChannelMember(RegisterChannelMemberRequestDTO registerChannelMemberRequestDTO);
 
 }

@@ -1,6 +1,7 @@
 package com.tooliv.server.domain.channel.application;
 
 import com.tooliv.server.domain.channel.application.dto.request.ModifyChannelRequestDTO;
+import com.tooliv.server.domain.channel.application.dto.request.RegisterChannelMemberRequestDTO;
 import com.tooliv.server.domain.channel.domain.Channel;
 import com.tooliv.server.domain.channel.application.dto.request.RegisterChannelRequestDTO;
 import com.tooliv.server.domain.channel.domain.ChannelMembers;
@@ -94,4 +95,5 @@ public class ChannelServiceImpl implements ChannelService {
         channelRepository.save(channel);
         return 200;
     }
+
 }

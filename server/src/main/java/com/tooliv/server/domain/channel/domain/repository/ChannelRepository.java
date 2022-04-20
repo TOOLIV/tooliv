@@ -12,6 +12,6 @@ import java.util.Optional;
 @Repository
 public interface ChannelRepository extends JpaRepository<Channel, String> {
 
-    Optional<Channel> findByIdAndDeletedAtAfter(String id, LocalDateTime deletedAt);
+    Optional<Channel> findByIdAndDeletedAt(String id, LocalDateTime deletedAt);
 
 }
