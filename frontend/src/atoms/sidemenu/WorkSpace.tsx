@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { workSpaceType } from "../../types/workspace/workSpaceType";
+import { sideMenuType } from "../../types/sidemenu/sideMenuType";
 
 const Container = styled.div<{ isSelected: boolean }>`
   width: 40px;
@@ -17,7 +17,7 @@ const Container = styled.div<{ isSelected: boolean }>`
     props.isSelected && `1px solid ${props.theme.pointColor}`};
 `;
 
-const WorkSpace = ({ id, name }: workSpaceType) => {
+const WorkSpace = ({ id, name }: sideMenuType) => {
   return <Container isSelected={true}>{name}</Container>;
 };
 
