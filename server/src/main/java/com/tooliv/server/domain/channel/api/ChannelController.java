@@ -3,8 +3,6 @@ package com.tooliv.server.domain.channel.api;
 import com.tooliv.server.domain.channel.application.ChannelService;
 import com.tooliv.server.domain.channel.application.dto.request.ModifyChannelRequestDTO;
 import com.tooliv.server.domain.channel.application.dto.request.RegisterChannelRequestDTO;
-import com.tooliv.server.domain.user.application.UserService;
-import com.tooliv.server.domain.user.application.dto.request.SignUpRequestDTO;
 import com.tooliv.server.global.common.BaseResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
