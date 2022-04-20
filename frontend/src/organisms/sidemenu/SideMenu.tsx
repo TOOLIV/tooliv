@@ -16,7 +16,7 @@ const Container = styled(motion.div)`
 const SideMenu = () => {
   const variants = {
     open: { opacity: 1, x: 0 },
-    closed: { opacity: 1, x: "-80%" },
+    closed: { opacity: 1, x: "-85%" },
   };
 
   const [isOpen, setIsOpen] = useRecoilState<boolean>(isOpenSide);

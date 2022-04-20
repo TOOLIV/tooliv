@@ -13,23 +13,19 @@ import lombok.NoArgsConstructor;
 @Getter
 public class ChatRequestDTO {
 
-    @NotBlank
-    @NotNull
+
     @ApiModelProperty(name = "채팅방 ID")
     private String roomId;
 
-    @NotBlank
-    @NotNull
+
     @ApiModelProperty(name = "보낸사람 name")
     private String sender;
 
-    @NotBlank
-    @NotNull
+
     @ApiModelProperty(name = "내용")
     private String contents;
 
-    @NotBlank
-    @NotNull
+
     @ApiModelProperty(name = "메시지 타입")
     private ChatMessage.MessageType type;
 }

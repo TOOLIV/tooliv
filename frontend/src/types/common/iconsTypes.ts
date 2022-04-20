@@ -2,27 +2,35 @@ import { colorsTypes } from './colorsTypes';
 
 export type iconsTypes = {
   icon:
+    | 'anglesLeft'
+    | 'anglesRight'
+    | 'arrowLeft'
+    | 'arrowRight'
+    | 'setting'
+    | 'download'
+    | 'check'
+    | 'dropdown'
+    | 'plus'
+    | 'xMark'
+    | 'alret'
+    | 'star'
+    | 'solidStar'
     | 'lock'
     | 'public'
+    | 'addPerson'
+    | 'solidPerson'
     | 'person'
-    | 'setting'
-    | 'plus'
+    | 'personGroup'
+    | 'building'
+    | 'audioOn'
+    | 'audioOff'
     | 'videoOn'
     | 'videoOff'
     | 'monitor'
-    | 'audioOn'
-    | 'audioOff'
-    | 'anglesLeft'
-    | 'anglesRight'
-    | 'addPerson'
     | 'shareMonitor'
-    | 'xMark'
     | 'exit';
-  color?: colorsTypes['color'];
-  onClick?: () => void;
-};
 
-export type largeIconTypes = {
-  icon: iconsTypes['icon'];
+  onClick?: () => void;
+  large?: boolean;
   color?: colorsTypes['color'];
 };

@@ -1,13 +1,12 @@
 import React, { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Icons from '../atoms/common/Icons';
-import LargeIcons from '../atoms/common/LargeIcons';
 import Info from '../atoms/info/Info';
 import Input from '../atoms/input/Input';
 import FunctionButton from '../atoms/meeting/FunctionButton';
 import UserBadge from '../atoms/userBadge/UserBadge';
 
-const Main = () => {
+const Test = () => {
   const navigate = useNavigate();
   const onClick = () => {
     navigate('meeting');
@@ -64,4 +63,4 @@ const Main = () => {
   );
 };
 
-export default Main;
+export default Test;
