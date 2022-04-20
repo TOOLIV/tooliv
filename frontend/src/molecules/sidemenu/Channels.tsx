@@ -30,7 +30,7 @@ const ChannelContainer = styled.div`
   padding-left: 8px;
   transition: 0.3s;
   /* 선택된 채널만 */
-  &:nth-child(1) {
+  &:nth-of-type(1) {
     background-color: ${(props) => props.theme.pointColor};
     border-radius: 10px 0 0 10px;
     border-right: 4px solid ${(props) => props.theme.secondPointColor};
@@ -65,11 +65,11 @@ const Channels = () => {
       </TopContainer>
       <ChannelsContainer isOpen={isOpen}>
         {dummyData.map((channel) => (
-          <ChannelContainer>
+          <ChannelContainer key={channel.id}>
             <SideWrapper>
               <Icons icon="lock" />
             </SideWrapper>
-            <Label key={channel.id} {...channel} />
+            <Label {...channel} />
           </ChannelContainer>
         ))}
       </ChannelsContainer>
