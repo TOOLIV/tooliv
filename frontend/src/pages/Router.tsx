@@ -10,7 +10,7 @@ const AppRouter = () => {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />}>
-            <Route path="" element={<Navigate replace to="/1/1" />} />
+            <Route path="" element={<Navigate replace to="/0/0" />} />
             <Route path="/:workspaceId/:channelId" element={<Channel />} />
             <Route
               path="/meeting/:workspaceId/:channelId"
