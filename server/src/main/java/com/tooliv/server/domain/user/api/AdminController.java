@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -68,7 +69,7 @@ public class AdminController {
         return ResponseEntity.status(200).body(BaseResponseDTO.of("이메일 사용 가능"));
     }
 
-    @GetMapping("/list/user/{keyword}")
+    @GetMapping("/list/user")
     @ApiOperation(value = "회원 정보 목록 조회")
     @ApiResponses({
         @ApiResponse(code = 200, message = "회원 정보 목록 조회 완료"),
@@ -76,7 +77,7 @@ public class AdminController {
         @ApiResponse(code = 409, message = "회원 정보 목록 조회 실패"),
     })
     public ResponseEntity<? extends BaseResponseDTO> getUserList(
-        @PathVariable("keyword") @ApiParam(value="검색 단어", required = true) String keyword) {
+        @ApiParam(value="검색 단어", required = true) @RequestParam String keyword) {
         UserListResponseDTO userListResponseDTO = null;
 
         try {
