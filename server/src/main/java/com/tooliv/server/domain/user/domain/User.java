@@ -19,7 +19,7 @@ import lombok.ToString;
 @AllArgsConstructor
 public class User extends BaseEntity {
 
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     private String email;
 
     @Column(name = "name")
@@ -40,7 +40,7 @@ public class User extends BaseEntity {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
-    @Column(name = "code")
+    @Column(name = "user_code")
     private UserCode userCode;
 
     public void updateNickname(String nickname, LocalDateTime localDateTime) {
@@ -50,5 +50,9 @@ public class User extends BaseEntity {
 
     public void deleteUser(LocalDateTime localDateTime) {
         this.deletedAt = localDateTime;
+    }
+
+    public void updateUserCode(UserCode userCode) {
+        this.userCode = userCode;
     }
 }

@@ -7,7 +7,8 @@ import lombok.Getter;
 public enum UserCode implements CommonCode {
 
     ADMIN("U01", "관리자"),
-    USER("U02", "사용자");
+    USER("U02", "사용자"),
+    MANAGER("U03", "매니저");
 
     private String code;
 
