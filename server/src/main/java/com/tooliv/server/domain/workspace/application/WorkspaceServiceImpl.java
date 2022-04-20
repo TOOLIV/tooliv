@@ -3,7 +3,9 @@ package com.tooliv.server.domain.workspace.application;
 import com.tooliv.server.domain.channel.application.dto.response.ChannelGetResponseDTO;
 import com.tooliv.server.domain.channel.domain.Channel;
 import com.tooliv.server.domain.channel.domain.ChannelMembers;
+import com.tooliv.server.domain.channel.domain.enums.ChannelCode;
 import com.tooliv.server.domain.channel.domain.enums.ChannelMemberCode;
+import com.tooliv.server.domain.channel.domain.repository.ChannelRepository;
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
 import com.tooliv.server.domain.workspace.application.dto.request.ModifyWorkspaceRequestDTO;
@@ -33,6 +35,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     private final WorkspaceRepository workspaceRepository;
 
     private final WorkspaceMemberRepository workspaceMemberRepository;
+
+    private final ChannelRepository channelRepository;
 
     private final UserRepository userRepository;
 
@@ -66,8 +70,15 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
         workspaceMemberRepository.save(workspaceMembers);
 
-        Channel channel = Channel.builder().
-            build();
+        Channel channel = Channel.builder()
+            .channelCode(ChannelCode.CHAT)
+            .privateYn(false)
+            .createdAt(now)
+            .description("공지사항")
+            .name("공지사항")
+            .build();
+
+        channelRepository.save(channel);
 
         return 201;
     }
@@ -98,17 +109,18 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         User user = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
             .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
 
-        List<Workspace> workspaceList = workspaceMemberRepository.findWorkspaceByUser(user);
+        List<WorkspaceMembers> workspaceMemberList = workspaceMemberRepository.findByUser(user);
         List<WorkspaceGetResponseDTO> workspaceGetResponseDTOList = new ArrayList<>();
 
-        workspaceList.forEach(workspace -> {
+        workspaceMemberList.forEach(workspaceMember -> {
+            Workspace workspace = workspaceMember.getWorkspace();
             if(workspace.getDeletedAt() == null){
                 WorkspaceGetResponseDTO workspaceGetResponseDTO = WorkspaceGetResponseDTO.builder()
                     .id(workspace.getId())
                     .name(workspace.getName())
                     .build();
 
-                workspaceGetResponseDTOList.add((workspaceGetResponseDTO));
+                workspaceGetResponseDTOList.add(workspaceGetResponseDTO);
             }
         });
         return new WorkspaceListGetResponseDTO(workspaceGetResponseDTOList);

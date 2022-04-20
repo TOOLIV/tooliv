@@ -15,19 +15,10 @@ import lombok.NoArgsConstructor;
 @ApiModel("WorkspaceGetResponseDTO")
 public class WorkspaceGetResponseDTO {
 
-    @ApiModelProperty("채널 ID")
+    @ApiModelProperty("워크스페이스 ID")
     private String id;
 
-    @ApiModelProperty("채널 이름")
+    @ApiModelProperty("워크스페이스 이름")
     private String name;
-
-    @ApiModelProperty("공개 여부")
-    private boolean privateYn;
-
-    @ApiModelProperty("채널 코드")
-    private ChannelCode channelCode;
-
-    @ApiModelProperty("채널 설명")
-    private String description;
 
 }

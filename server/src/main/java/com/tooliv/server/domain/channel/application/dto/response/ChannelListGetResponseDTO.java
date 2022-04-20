@@ -15,13 +15,13 @@ import lombok.NoArgsConstructor;
 public class ChannelListGetResponseDTO extends BaseResponseDTO {
 
     @ApiModelProperty("채널 목록")
-    private List<ChannelGetResponseDTO> ChannelGetResponseDTOList;
+    private List<ChannelGetResponseDTO> channelGetResponseDTOList;
 
     public ChannelListGetResponseDTO() {
     }
 
     public ChannelListGetResponseDTO(List<ChannelGetResponseDTO> channelGetResponseDTOList) {
-        ChannelGetResponseDTOList = channelGetResponseDTOList;
+        this.channelGetResponseDTOList = channelGetResponseDTOList;
     }
 
     public static ChannelListGetResponseDTO of(String message, ChannelListGetResponseDTO channelListGetResponseDTO) {

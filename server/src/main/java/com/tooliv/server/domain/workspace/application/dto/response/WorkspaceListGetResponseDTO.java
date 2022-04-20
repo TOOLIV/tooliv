@@ -17,7 +17,7 @@ public class WorkspaceListGetResponseDTO extends BaseResponseDTO {
     }
 
     public WorkspaceListGetResponseDTO(List<WorkspaceGetResponseDTO> workspaceGetResponseDTOList) {
-        workspaceGetResponseDTOList = workspaceGetResponseDTOList;
+        this.workspaceGetResponseDTOList = workspaceGetResponseDTOList;
     }
 
     public static WorkspaceListGetResponseDTO of(String message, WorkspaceListGetResponseDTO workspaceListGetResponseDTO) {
