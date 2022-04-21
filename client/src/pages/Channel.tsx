@@ -1,17 +1,14 @@
-import styled from '@emotion/styled';
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
-import { isOpenSide } from '../recoil/atom';
-import SockJS from 'sockjs-client';
-import Stomp from 'stompjs';
-import axios from 'axios';
+import styled from "@emotion/styled";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { isOpenSide } from "../recoil/atom";
 
 const Container = styled.div<{ isOpen: boolean }>`
-  width: 100%;
+  /* width: 100%; */
   position: absolute;
   margin-top: 30px;
-  margin-left: ${(props) => (props.isOpen ? '340px' : '60px')};
+  margin-left: ${(props) => (props.isOpen ? "340px" : "60px")};
 `;
 
 const Channel = () => {
