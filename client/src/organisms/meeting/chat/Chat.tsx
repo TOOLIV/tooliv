@@ -4,7 +4,7 @@ import { Variants } from "framer-motion/types/types";
 import React from "react";
 import { useRecoilState } from "recoil";
 import Icons from "../../../atoms/common/Icons";
-import ChatItem from "../../../atoms/meeting/chat/ChatItem";
+import ChatItem from "../../../molecules/meeting/ChatItem";
 import MenuTemplate from "../../../atoms/sidemenu/MenuTemplate";
 import { TopContainer } from "../../../molecules/sidemenu/Channels";
 import { isOpenChat } from "../../../recoil/atom";

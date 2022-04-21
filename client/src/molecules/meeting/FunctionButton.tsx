@@ -3,7 +3,7 @@ import React from "react";
 import { functionButtonTypes } from "../../types/meeting/functionButtonTypes";
 import { colors } from "../../shared/color";
 import { prependOnceListener } from "process";
-import Icons from "../common/Icons";
+import Icons from "../../atoms/common/Icons";
 
 const Container = styled.div<{ exit?: boolean }>`
   width: 40px;
