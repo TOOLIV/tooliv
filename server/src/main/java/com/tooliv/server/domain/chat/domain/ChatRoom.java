@@ -2,6 +2,7 @@ package com.tooliv.server.domain.chat.domain;
 
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.global.common.BaseEntity;
+import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -19,7 +20,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChatRoom extends BaseEntity {
+public class ChatRoom extends BaseEntity implements Serializable {
 
     @Column(name = "name")
     private String name;
@@ -28,11 +29,4 @@ public class ChatRoom extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User customer;
 
-    // 채팅 방 생성
-    public static ChatRoom create(String name, User customer) {
-        ChatRoom chatRoom = new ChatRoom();
-        chatRoom.name = name;
-        chatRoom.customer = customer;
-        return chatRoom;
-    }
 }

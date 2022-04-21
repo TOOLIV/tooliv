@@ -1,13 +1,13 @@
 package com.tooliv.server.domain.chat.application;
 
 import com.tooliv.server.domain.chat.application.dto.request.ChatRequestDTO;
-import com.tooliv.server.domain.chat.application.dto.response.ChatRoomListResponseDTO;
 import com.tooliv.server.domain.chat.domain.ChatMessage;
 import com.tooliv.server.domain.chat.domain.ChatRoom;
 import com.tooliv.server.domain.chat.domain.repository.ChatRoomRepository;
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,8 @@ public class ChatServiceImpl implements ChatService {
     // Redis
     private static final String CHAT_ROOMS = "CHAT_ROOM";
     public static final String ENTER_INFO = "ENTER_INFO"; // 채팅룸에 입장한 클라이언트의 sessionId와 채팅룸 id를 맵핑한 정보 저장
-    private final RedisTemplate<String, Object> redisTemplate;
+//    private final RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, ChatRequestDTO> redisTemplate;
     private HashOperations<String, String, ChatRoom> opsHashChatRoom;
     // 채팅방의 대화 메시지를 발행하기 위한 redis topic 정보. 서버별로 채팅방에 매치되는 topic정보를 Map에 넣어 roomId로 찾을수 있도록 한다.
     private Map<String, ChannelTopic> topics;
@@ -45,25 +46,6 @@ public class ChatServiceImpl implements ChatService {
 
     private final ChatRoomRepository chatRoomRepository;
     private final UserRepository userRepository;
-
-    @Override
-    public ChatRoom createChatRoom(User customer) {
-        String name = customer.getName();
-        ChatRoom chatRoom = ChatRoom.builder().name(name).customer(customer).build();
-        opsHashChatRoom.put(CHAT_ROOMS, chatRoom.getId(), chatRoom);
-        chatRoomRepository.save(chatRoom);
-        return chatRoom;
-    }
-
-    @Override
-    public void enterChatRoom(String roomId) {
-        ChannelTopic topic = topics.get(roomId);
-        if (topic == null) {
-            topic = new ChannelTopic(roomId);
-        }
-        redisMessageListener.addMessageListener(redisSubscriber, topic);
-        topics.put(roomId, topic);
-    }
 
     @Override
     public ChatMessage createChatMessage(ChatRequestDTO chatRequestDTO) {
@@ -92,6 +74,18 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public void deleteById(String roomId) {
         chatRoomRepository.deleteById(roomId);
+    }
+
+    @Override
+    public List<ChatRequestDTO> getChatInfoValue(String key) {
+        List<ChatRequestDTO> chatInfoList = redisTemplate.opsForList().range(key, 0, -1);
+        return chatInfoList;
+
+    }
+
+    @Override
+    public void setChatInfoValue(String key, ChatRequestDTO value) {
+        redisTemplate.opsForList().rightPush(key, value);
     }
 
     // 유저가 입장한 채팅방ID와 유저 세션ID 맵핑 정보 저장

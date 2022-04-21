@@ -1,8 +1,10 @@
 package com.tooliv.server.domain.chat.application;
 
+import com.tooliv.server.domain.chat.application.dto.request.ChatRequestDTO;
 import com.tooliv.server.domain.chat.application.dto.request.ChatRoomUserInfoRequestDTO;
 import com.tooliv.server.domain.chat.application.dto.response.ChatRoomInfoDTO;
 import com.tooliv.server.domain.chat.application.dto.response.ChatRoomListResponseDTO;
+import com.tooliv.server.domain.chat.domain.ChatMessage;
 import com.tooliv.server.domain.chat.domain.ChatRoom;
 import com.tooliv.server.domain.chat.domain.repository.ChatRoomRepository;
 import com.tooliv.server.domain.user.domain.User;
@@ -47,6 +49,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     private final ChatRoomRepository chatRoomRepository;
     private final UserRepository userRepository;
+    private final ChatService chatService;
 
     @Override
     public ChatRoomListResponseDTO getChatRoomList(String email) {
@@ -66,16 +69,34 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
         String nickname = customer.getNickname();
         ChatRoom chatRoom = ChatRoom.builder().name(nickname).customer(customer).build();
-        System.out.println("asdfasdf 정놈");
+        String id = chatRoomRepository.save(chatRoom).getId();
         try {
-
-        opsHashChatRoom.put(CHAT_ROOMS, chatRoom.getId(), chatRoom);
-        }catch (Exception e){
+            opsHashChatRoom.put(CHAT_ROOMS, id, chatRoom);
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println("asdfasdf 손놈");
-        chatRoomRepository.save(chatRoom);
         return chatRoom;
+    }
+
+    @Override
+    public void enterChatRoom(String roomId) {
+        ChannelTopic topic = topics.get(roomId);
+        if (topic == null) {
+            topic = new ChannelTopic(roomId);
+        }
+        redisMessageListener.addMessageListener(redisSubscriber, topic);
+        topics.put(roomId, topic);
+    }
+
+    @Override
+    public List<ChatRequestDTO> getChatList(String roomId) {
+        try {
+            List<ChatRequestDTO> chatMessageList = chatService.getChatInfoValue(roomId);
+            return chatMessageList;
+        } catch (Exception e) {
+            return null;
+        }
+
     }
 
     // 유저가 입장한 채팅방ID와 유저 세션ID 맵핑 정보 저장
