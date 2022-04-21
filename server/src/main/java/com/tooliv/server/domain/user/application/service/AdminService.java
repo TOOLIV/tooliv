@@ -14,4 +14,6 @@ public interface AdminService {
     void updateUserCode(UserCodeUpdateRequestDTO userCodeUpdateRequestDTO);
 
     void checkEmail(String email) throws NotUniqueEmailException;
+
+    String getImageURL(String fileName);
 }

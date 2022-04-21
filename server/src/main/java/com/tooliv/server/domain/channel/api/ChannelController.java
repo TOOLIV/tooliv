@@ -4,7 +4,6 @@ import com.tooliv.server.domain.channel.application.ChannelService;
 import com.tooliv.server.domain.channel.application.dto.request.ModifyChannelRequestDTO;
 import com.tooliv.server.domain.channel.application.dto.request.RegisterChannelRequestDTO;
 import com.tooliv.server.domain.channel.application.dto.response.ChannelListGetResponseDTO;
-import com.tooliv.server.domain.user.application.dto.response.UserListResponseDTO;
 import com.tooliv.server.global.common.BaseResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

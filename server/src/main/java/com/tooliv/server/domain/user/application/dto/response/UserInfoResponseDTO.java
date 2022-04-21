@@ -20,13 +20,17 @@ public class UserInfoResponseDTO {
     @ApiModelProperty("회원 닉네임")
     private String nickname;
 
+    @ApiModelProperty("회원 프로필 이미지")
+    private String profileImage;
+
     public UserInfoResponseDTO() {
     }
 
-    public UserInfoResponseDTO(String id, String email, String name, String nickname) {
+    public UserInfoResponseDTO(String id, String email, String name, String nickname, String profileImage) {
         this.id = id;
         this.email = email;
         this.name = name;
         this.nickname = nickname;
+        this.profileImage = profileImage;
     }
 }
