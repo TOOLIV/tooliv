@@ -5,6 +5,8 @@ import com.tooliv.server.domain.user.application.dto.request.NicknameUpdateReque
 import com.tooliv.server.domain.user.application.dto.request.SignUpRequestDTO;
 import com.tooliv.server.domain.user.application.dto.response.LogInResponseDTO;
 import com.tooliv.server.domain.user.application.dto.response.NicknameResponseDTO;
+import com.tooliv.server.domain.user.domain.User;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface UserService {
 
@@ -13,4 +15,8 @@ public interface UserService {
     NicknameResponseDTO updateNickname(NicknameUpdateRequestDTO nicknameUpdateRequestDTO);
 
     void deleteUser();
+
+    void uploadProfileImage(MultipartFile multipartFile);
+
+    User getUser();
 }

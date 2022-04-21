@@ -6,6 +6,7 @@ import com.tooliv.server.domain.user.application.dto.response.LogInResponseDTO;
 import com.tooliv.server.domain.user.application.dto.response.NicknameResponseDTO;
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
+import com.tooliv.server.global.common.AwsS3Service;
 import com.tooliv.server.global.security.util.JwtAuthenticationProvider;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +26,8 @@ public class UserServiceImpl implements UserService {
     private final JwtAuthenticationProvider jwtAuthenticationProvider;
 
     private final UserRepository userRepository;
+
+    private final AwsS3Service awsS3Service;
 
 
     @Override
@@ -51,8 +55,7 @@ public class UserServiceImpl implements UserService {
         NicknameUpdateRequestDTO nicknameUpdateRequestDTO) {
         String nickname = nicknameUpdateRequestDTO.getNickname();
 
-        User user = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
-            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+        User user = getUser();
 
         user.updateNickname(nickname, LocalDateTime.now());
 
@@ -64,12 +67,29 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser() {
-        User user = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
-            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+        User user = getUser();
 
         user.deleteUser(LocalDateTime.now());
 
         userRepository.save(user);
+    }
+
+    @Override
+    public void uploadProfileImage(MultipartFile multipartFile) {
+        String fileName = awsS3Service.uploadImage(multipartFile);
+
+        User user = getUser();
+        user.updateProfileImage(fileName);
+        
+        userRepository.save(user);
+    }
+
+    @Override
+    public User getUser() {
+        User user = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
+            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+
+        return user;
     }
 
 }
