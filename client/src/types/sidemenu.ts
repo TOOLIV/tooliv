@@ -1,4 +1,3 @@
 export interface SideMenuProps {
-    title: string,
-
+  title: string;
 }
