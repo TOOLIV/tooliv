@@ -75,11 +75,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             // authorizeRequests() : HttpServletRequests 를 사용하는 요청들에 대한 접근 제한을 설정
             .authorizeRequests()
             .antMatchers("/api/user/login").permitAll()
-            .antMatchers(HttpMethod.DELETE, "/api/user").authenticated()
             .antMatchers(HttpMethod.PATCH, "/api/user").authenticated()
+            .antMatchers(HttpMethod.DELETE, "/api/user").authenticated()
             .antMatchers(HttpMethod.POST, "/api/admin/user").permitAll()
-            .antMatchers(HttpMethod.GET, "/api/admin/check/**").hasAnyRole("ADMIN", "MANAGER")
+            .antMatchers(HttpMethod.GET, "/api/admin/**").hasAnyRole("ADMIN", "MANAGER")
             .antMatchers(HttpMethod.PATCH, "/api/admin/code").hasRole("ADMIN")
+            .antMatchers("/api/user/image", "/api/user/list/**").hasAnyRole("ADMIN", "MANAGER", "USER")
             .antMatchers("/api/v3/**", "/swagger-ui/**", "/swagger/**", "/swagger-resources/**", "/v3/api-docs").permitAll()
             .antMatchers("/chatting/**").permitAll()
             // 나머지 요청들은 모두 인증되어야 한다.
