@@ -81,6 +81,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers(HttpMethod.GET, "/api/admin/check/**").hasAnyRole("ADMIN", "MANAGER")
             .antMatchers(HttpMethod.PATCH, "/api/admin/code").hasRole("ADMIN")
             .antMatchers("/api/v3/**", "/swagger-ui/**", "/swagger/**", "/swagger-resources/**", "/v3/api-docs").permitAll()
+            .antMatchers("/chatting/**").permitAll()
             // 나머지 요청들은 모두 인증되어야 한다.
             .anyRequest().authenticated()
             .and()
