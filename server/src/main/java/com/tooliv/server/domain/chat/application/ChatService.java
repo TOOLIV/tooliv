@@ -3,7 +3,7 @@ package com.tooliv.server.domain.chat.application;
 import com.tooliv.server.domain.chat.application.dto.request.ChatRequestDTO;
 import com.tooliv.server.domain.chat.domain.ChatMessage;
 import com.tooliv.server.domain.chat.domain.ChatRoom;
-import com.tooliv.server.domain.user.domain.User;
+import java.util.List;
 import org.springframework.data.redis.listener.ChannelTopic;
 
 public interface ChatService {
@@ -16,4 +16,9 @@ public interface ChatService {
 
     // 채팅방 퇴장
     void deleteById(String roomId);
+
+    List<ChatRequestDTO> getChatInfoValue(String key);
+
+    void setChatInfoValue(String key, ChatRequestDTO value);
+
 }

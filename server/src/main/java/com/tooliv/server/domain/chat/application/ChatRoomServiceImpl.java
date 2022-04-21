@@ -1,8 +1,10 @@
 package com.tooliv.server.domain.chat.application;
 
+import com.tooliv.server.domain.chat.application.dto.request.ChatRequestDTO;
 import com.tooliv.server.domain.chat.application.dto.request.ChatRoomUserInfoRequestDTO;
 import com.tooliv.server.domain.chat.application.dto.response.ChatRoomInfoDTO;
 import com.tooliv.server.domain.chat.application.dto.response.ChatRoomListResponseDTO;
+import com.tooliv.server.domain.chat.domain.ChatMessage;
 import com.tooliv.server.domain.chat.domain.ChatRoom;
 import com.tooliv.server.domain.chat.domain.repository.ChatRoomRepository;
 import com.tooliv.server.domain.user.domain.User;
@@ -47,6 +49,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     private final ChatRoomRepository chatRoomRepository;
     private final UserRepository userRepository;
+    private final ChatService chatService;
 
     @Override
     public ChatRoomListResponseDTO getChatRoomList(String email) {
@@ -83,6 +86,17 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         }
         redisMessageListener.addMessageListener(redisSubscriber, topic);
         topics.put(roomId, topic);
+    }
+
+    @Override
+    public List<ChatRequestDTO> getChatList(String roomId) {
+        try {
+            List<ChatRequestDTO> chatMessageList = chatService.getChatInfoValue(roomId);
+            return chatMessageList;
+        } catch (Exception e) {
+            return null;
+        }
+
     }
 
     // 유저가 입장한 채팅방ID와 유저 세션ID 맵핑 정보 저장

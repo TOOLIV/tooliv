@@ -29,11 +29,4 @@ public class ChatRoom extends BaseEntity implements Serializable {
     @JoinColumn(name = "user_id")
     private User customer;
 
-    // 채팅 방 생성
-    public static ChatRoom create(String name, User customer) {
-        ChatRoom chatRoom = new ChatRoom();
-        chatRoom.name = name;
-        chatRoom.customer = customer;
-        return chatRoom;
-    }
 }
