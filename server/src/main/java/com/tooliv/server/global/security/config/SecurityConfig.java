@@ -1,5 +1,6 @@
 package com.tooliv.server.global.security.config;
 
+import com.tooliv.server.domain.user.domain.enums.UserCode;
 import com.tooliv.server.global.security.service.UserDetailsServiceImpl;
 import com.tooliv.server.global.security.util.JwtAccessDeniedHandler;
 import com.tooliv.server.global.security.util.JwtAuthenticationEntryPoint;
@@ -8,6 +9,7 @@ import com.tooliv.server.global.security.util.JwtAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -72,9 +74,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
             // authorizeRequests() : HttpServletRequests 를 사용하는 요청들에 대한 접근 제한을 설정
             .authorizeRequests()
-            // "/api/auth" 에 대한 요청은 인증 없이 접근을 허용하겠다.
-            .antMatchers("/api/user/**").permitAll()
-            .antMatchers("/api/v3/**", "/swagger-ui/**", "/swagger/**", "/swagger-resources/**", "/v3/api-docs", "/chatting/**").permitAll()
+            .antMatchers("/api/user/login").permitAll()
+            .antMatchers(HttpMethod.DELETE, "/api/user").authenticated()
+            .antMatchers(HttpMethod.PATCH, "/api/user").authenticated()
+            .antMatchers(HttpMethod.POST, "/api/admin/user").hasAnyRole("ADMIN", "MANAGER")
+            .antMatchers(HttpMethod.GET, "/api/admin/check/**").hasAnyRole("ADMIN", "MANAGER")
+            .antMatchers(HttpMethod.PATCH, "/api/admin/code").hasRole("ADMIN")
+            .antMatchers("/api/v3/**", "/swagger-ui/**", "/swagger/**", "/swagger-resources/**", "/v3/api-docs").permitAll()
             // 나머지 요청들은 모두 인증되어야 한다.
             .anyRequest().authenticated()
             .and()

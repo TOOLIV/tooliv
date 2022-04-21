@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,23 +32,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
-
-    @PostMapping
-    @ApiOperation(value = "회원가입")
-    @ApiResponses({
-        @ApiResponse(code = 201, message = "회원가입 완료"),
-        @ApiResponse(code = 409, message = "회원가입 실패"),
-    })
-    public ResponseEntity<? extends BaseResponseDTO> signUp(
-        @RequestBody @Valid @ApiParam(value = "회원가입 정보", required = true) SignUpRequestDTO signUpRequestDTO) {
-        try {
-            userService.signUp(signUpRequestDTO);
-        } catch (Exception e) {
-            return ResponseEntity.status(409).body(BaseResponseDTO.of("회원가입 실패"));
-        }
-
-        return ResponseEntity.status(201).body(BaseResponseDTO.of("회원가입 완료"));
-    }
 
     @PostMapping("/login")
     @ApiOperation(value = "로그인")

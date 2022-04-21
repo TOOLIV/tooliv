@@ -1,6 +1,5 @@
 package com.tooliv.server.domain.user.application.dto.request;
 
-import com.tooliv.server.domain.user.domain.enums.UserCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import javax.validation.constraints.Email;
@@ -28,8 +27,4 @@ public class SignUpRequestDTO {
     @NotNull
     @ApiModelProperty(name = "비밀번호")
     private String password;
-
-    @NotNull
-    @ApiModelProperty(name = "유저 코드")
-    private UserCode userCode;
 }
