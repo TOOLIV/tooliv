@@ -4,15 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { isOpenSide } from "../recoil/atom";
 
-const Container = styled.div<{ isOpen: boolean }>`
-  /* width: 100%; */
-  position: absolute;
-  margin-top: 30px;
-  margin-left: ${(props) => (props.isOpen ? "340px" : "60px")};
-`;
-
 const Channel = () => {
-  const [isOpen, setIsOpen] = useRecoilState<boolean>(isOpenSide);
   const navigate = useNavigate();
   // let sockJS = new SockJS('http://localhost:8080/chatting');
   // let client = Stomp.over(sockJS);
@@ -33,7 +25,7 @@ const Channel = () => {
   //   );
   // }, []);
 
-  return <Container isOpen={isOpen}>Channel</Container>;
+  return <div>Channel</div>;
 };
 
 export default Channel;
