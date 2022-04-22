@@ -1,31 +1,39 @@
 import styled from "@emotion/styled";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
-import { isOpenSide } from "../recoil/atom";
+import SockJS from "sockjs-client";
+import Stomp from "stompjs";
+import Editor from "../molecules/chat/Editor";
 
+const Container = styled.div`
+  width: 100%;
+  height: 100%;
+`;
+const MessageContainer = styled.div`
+  width: 100%;
+  height: 80%;
+`;
 const Channel = () => {
   const navigate = useNavigate();
-  // let sockJS = new SockJS('http://localhost:8080/chatting');
-  // let client = Stomp.over(sockJS);
-  // useEffect(() => {
-  //   // axios.get(`http://localhost:8080/api/admin/list/user`, {
-  //   //   headers: {
-  //   //     Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJpczJkbzNvYkBnbWFpbC5jb20iLCJhdXRoIjoiIiwiaXNzIjoiVG9vbGl2IiwiaWF0IjoxNjUwNDQ1MTkxLCJleHAiOjE2NTA1MzE1OTF9.ssNtMtyMVULNRNLQJywIL5EgFeQIFfjnHlCC6KAnjqnGdO2kC2E2hQCQp3YAIOH7xsik7I9FRL-uiNP3Gl2vBA`,
-  //   //   },
-  //   // });
+  let sockJS = new SockJS("http://localhost:8080/chatting");
+  let client = Stomp.over(sockJS);
+  useEffect(() => {
+    client.connect(
+      {
+        Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGVAbmF2ZXIuY29tIiwiYXV0aCI6IlJPTEVfVVNFUiIsImlzcyI6IlRvb2xpdiIsImlhdCI6MTY1MDU5MDQ5NiwiZXhwIjoxNjUwNjc2ODk2fQ.OR1g0XYiogsIzsjO99MsAti74XKE7GvxKnDCddCvZGKUCq93bu3HnbVxIFq3IL8PTMBJYUjZ8-XTRVaO156LJA`,
+      },
+      (frame) => {
+        console.log("STOMP Connection");
+      }
+    );
+  }, []);
 
-  //   client.connect(
-  //     {
-  //       Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJpczJkbzNvYkBnbWFpbC5jb20iLCJhdXRoIjoiIiwiaXNzIjoiVG9vbGl2IiwiaWF0IjoxNjUwNDQ1MTkxLCJleHAiOjE2NTA1MzE1OTF9.ssNtMtyMVULNRNLQJywIL5EgFeQIFfjnHlCC6KAnjqnGdO2kC2E2hQCQp3YAIOH7xsik7I9FRL-uiNP3Gl2vBA`,
-  //     },
-  //     (frame) => {
-  //       console.log('STOMP Connection');
-  //     }
-  //   );
-  // }, []);
-
-  return <div>Channel</div>;
+  return (
+    <Container>
+      <MessageContainer>message</MessageContainer>
+      <Editor />
+    </Container>
+  );
 };
 
 export default Channel;
