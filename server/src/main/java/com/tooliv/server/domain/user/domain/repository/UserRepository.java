@@ -21,8 +21,7 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     Optional<List<User>> findAllByUserCodeNotAndDeletedAtOrderByNameAsc(UserCode userCode, LocalDateTime localDateTime);
 
-//    @Query(value = "SELECT v FROM User v WHERE v.name Like %:keyword% AND v.userCode Not Like :userCode And v.deletedAt = :deletedAt order by v.name asc")
-//    List<User> findUser(@Param("keyword")String keyword, @Param("userCode")UserCode userCode, @Param("deletedAt")LocalDateTime localDateTime);
+    Optional<List<User>> findAllByDeletedAtAndNameContainingOrderByNameAsc(LocalDateTime localDateTime, String keyword);
 
     Optional<List<User>> findAllByUserCodeNotAndDeletedAtAndNameContainingOrderByNameAsc(UserCode userCode, LocalDateTime localDateTime, String keyword);
 }

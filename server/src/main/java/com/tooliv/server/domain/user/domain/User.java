@@ -44,6 +44,9 @@ public class User extends BaseEntity implements Serializable {
     @Column(name = "user_code")
     private UserCode userCode;
 
+    @Column(name = "profile_image")
+    private String profileImage;
+
     public void updateNickname(String nickname, LocalDateTime localDateTime) {
         this.nickname = nickname;
         this.updatedAt = localDateTime;
@@ -55,5 +58,9 @@ public class User extends BaseEntity implements Serializable {
 
     public void updateUserCode(UserCode userCode) {
         this.userCode = userCode;
+    }
+
+    public void updateProfileImage(String fileName) {
+        this.profileImage = fileName;
     }
 }

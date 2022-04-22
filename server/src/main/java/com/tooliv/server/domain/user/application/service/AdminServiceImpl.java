@@ -43,7 +43,7 @@ public class AdminServiceImpl implements AdminService {
 
         for (User user : userRepository.findAllByUserCodeNotAndDeletedAtAndNameContainingOrderByNameAsc(UserCode.ADMIN, null, keyword)
             .orElseThrow(() -> new IllegalArgumentException("조회 가능한 회원이 없음"))) {
-            userInfoResponseDTOList.add(new UserInfoResponseDTO(user.getId(), user.getEmail(), user.getName(), user.getNickname()));
+            userInfoResponseDTOList.add(new UserInfoResponseDTO(user.getId(), user.getEmail(), user.getName(), user.getNickname(), getImageURL(user.getProfileImage())));
         }
 
         return new UserListResponseDTO(userInfoResponseDTOList);
@@ -66,5 +66,10 @@ public class AdminServiceImpl implements AdminService {
         if (emailExists) {
             throw new NotUniqueEmailException("해당 이메일은 중복임");
         }
+    }
+
+    @Override
+    public String getImageURL(String fileName) {
+        return "https://tooliva402.s3.ap-northeast-2.amazonaws.com/" + fileName;
     }
 }
