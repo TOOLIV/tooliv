@@ -12,11 +12,12 @@ const Container = styled.div<{ width?: string; height?: string }>`
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 `;
 
-const Button = ({ width, height, text }: buttonTypes) => {
+const Button = ({ width, height, text, onClick }: buttonTypes) => {
   return (
-    <Container width={width} height={height}>
+    <Container width={width} height={height} onClick={onClick}>
       {text}
     </Container>
   );

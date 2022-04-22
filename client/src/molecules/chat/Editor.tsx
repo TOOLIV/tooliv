@@ -3,6 +3,7 @@ import React from "react";
 
 import Button from "../../atoms/common/Button";
 import { colors } from "../../shared/color";
+import { editorProps } from "../../types/common/buttonTypes";
 
 const Container = styled.div`
   width: 100%;
@@ -22,12 +23,12 @@ const Wrapper = styled.div`
   right: 16px;
   top: 12px;
 `;
-const Editor = () => {
+const Editor = ({ onClick }: editorProps) => {
   return (
     <Container>
       <InputContainer></InputContainer>
       <Wrapper>
-        <Button width="50px" height="40px" text="전송" />
+        <Button onClick={onClick} width="50px" height="40px" text="전송" />
       </Wrapper>
     </Container>
   );
