@@ -7,6 +7,8 @@ export const light: Theme = {
   pointColor: colors.primary,
   secondPointColor: colors.darkPrimary,
   lightPointColor: colors.lightPrimary,
+  textColor: colors.black,
+  // chatBorderColor: colors.gray200,
 };
 
 export const dark: Theme = {
@@ -15,4 +17,5 @@ export const dark: Theme = {
   pointColor: colors.secondary,
   secondPointColor: colors.lightSecondary,
   lightPointColor: colors.lightSecondary,
+  textColor: colors.white,
 };
