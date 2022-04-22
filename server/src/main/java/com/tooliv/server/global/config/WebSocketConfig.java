@@ -29,13 +29,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         // Cors 설정
         // Stomp endPoint chatting
         registry.addEndpoint("/chatting")
-            .setAllowedOriginPatterns("*");
-//            .withSockJS();
+            .setAllowedOriginPatterns("*")
+            .withSockJS();
     }
 
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
         registration.interceptors(stompHandler);
-
     }
 }

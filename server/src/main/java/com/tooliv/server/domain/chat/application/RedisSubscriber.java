@@ -1,6 +1,8 @@
 package com.tooliv.server.domain.chat.application;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.tooliv.server.domain.chat.application.dto.request.ChatRequestDTO;
 import com.tooliv.server.domain.chat.domain.ChatMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,9 +29,10 @@ public class RedisSubscriber implements MessageListener {
             String publishMessage = (String) redisTemplate.getStringSerializer()
                 .deserialize(message.getBody());
             // ChatMessage 객채로 맵핑
-            ChatMessage roomMessage = objectMapper.readValue(publishMessage, ChatMessage.class);
+            objectMapper.registerModule(new JavaTimeModule());
+            ChatRequestDTO roomMessage = objectMapper.readValue(publishMessage, ChatRequestDTO.class);
             // Websocket 구독자에게 채팅 메시지 Send
-            messagingTemplate.convertAndSend("/sub/chat/room/" + roomMessage.getChatRoom().getId(),
+            messagingTemplate.convertAndSend("/sub/chat/room/" + roomMessage.getRoomId(),
                 roomMessage);
         } catch (Exception e) {
             log.error(e.getMessage());

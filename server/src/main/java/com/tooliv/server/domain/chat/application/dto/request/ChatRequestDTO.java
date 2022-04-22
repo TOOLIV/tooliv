@@ -3,6 +3,7 @@ package com.tooliv.server.domain.chat.application.dto.request;
 import com.tooliv.server.domain.chat.domain.ChatMessage;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Builder
 @AllArgsConstructor
-public class ChatRequestDTO {
+public class ChatRequestDTO implements Serializable {
 
     @ApiModelProperty(name = "채팅방 ID")
     private String roomId;
