@@ -72,7 +72,7 @@ public class UserController {
         return ResponseEntity.status(201).body(BaseResponseDTO.of("프로필 이미지 등록 성공"));
     }
 
-    @GetMapping("/list/user")
+    @GetMapping("/search")
     @ApiOperation(value = "회원 정보 목록 조회")
     @ApiResponses({
         @ApiResponse(code = 200, message = "회원 정보 목록 조회 완료"),

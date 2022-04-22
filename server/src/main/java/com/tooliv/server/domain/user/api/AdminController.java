@@ -67,7 +67,7 @@ public class AdminController {
         return ResponseEntity.status(200).body(BaseResponseDTO.of("이메일 사용 가능"));
     }
 
-    @GetMapping("/list/user")
+    @GetMapping("/search")
     @ApiOperation(value = "회원 정보 목록 조회")
     @ApiResponses({
         @ApiResponse(code = 200, message = "회원 정보 목록 조회 완료"),
