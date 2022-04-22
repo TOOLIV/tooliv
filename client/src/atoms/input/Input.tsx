@@ -4,7 +4,7 @@ import { colors } from '../../shared/color';
 import { colorObjTypes } from '../../types/common/colorsTypes';
 import { inputTypes } from '../../types/common/inputTypes';
 
-const statusColor: colorObjTypes = {
+export const statusColor: colorObjTypes = {
   default: colors.gray500,
   error: colors.error,
   success: colors.blue100,
@@ -15,12 +15,6 @@ const Container = styled.div`
   flex-direction: column;
 `;
 
-export const Label = styled.label`
-  color: ${colors.gray400};
-  font-size: 12px;
-  font-weight: 600;
-  margin-bottom: 8px;
-`;
 const InputText = styled.input<{ status: string }>`
   width: 470px;
   padding: 10px 16px;
@@ -31,17 +25,10 @@ const InputText = styled.input<{ status: string }>`
   margin-bottom: 4px;
 `;
 
-const Message = styled.span<{ status: string }>`
-  color: ${(props) => statusColor[props.status]};
-  cursor: default;
-  font-size: 12px;
-`;
-
 const Input = forwardRef<HTMLInputElement, inputTypes>(
-  ({ label, placeholder, message, status = 'default', onChange }, ref) => {
+  ({ placeholder, status = 'default', onChange }, ref) => {
     return (
       <Container>
-        <Label htmlFor="input">{label}</Label>
         <InputText
           id="input"
           placeholder={placeholder}
@@ -49,7 +36,6 @@ const Input = forwardRef<HTMLInputElement, inputTypes>(
           onChange={onChange}
           ref={ref}
         />
-        <Message status={status}>{message}</Message>
       </Container>
     );
   }

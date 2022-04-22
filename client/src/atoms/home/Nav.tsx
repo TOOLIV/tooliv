@@ -1,8 +1,9 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css } from '@emotion/react';
 
-import styled from "@emotion/styled";
-import Logo from "../common/Logo";
+import styled from '@emotion/styled';
+import { useNavigate } from 'react-router-dom';
+import Logo from '../common/Logo';
 
 const NavContainer = styled.div`
   padding: 0px 40px;
@@ -26,11 +27,14 @@ const textStyle = css`
 `;
 
 const Nav = () => {
+  const navigate = useNavigate();
+
   return (
     <NavContainer>
       <Logo />
       {/* <div className='text'>안녕하세요. </div> */}
       <div css={textStyle}>안녕하세요. </div>
+      <div onClick={() => navigate('admin')}>관리</div>
     </NavContainer>
   );
 };
