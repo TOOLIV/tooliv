@@ -20,7 +20,8 @@ export type colorsTypes = {
     | 'black'
     | 'white'
     | 'lightGreenA700'
-    | 'red700';
+    | 'red700'
+    | 'blue100';
 };
 
 export type colorObjTypes = {
