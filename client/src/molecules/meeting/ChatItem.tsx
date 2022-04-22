@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import React from "react";
-import { chatItemPropsTypes } from "../../../types/meeting/chatTypes";
+import { chatItemPropsTypes } from "../../types/meeting/chatTypes";
 
 const ChatItemContainer = styled.div`
   padding: 8px 16px 8px 16px;
