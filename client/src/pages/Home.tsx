@@ -1,13 +1,15 @@
 import styled from "@emotion/styled";
 import React from "react";
 import { Outlet, useNavigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
 import Nav from "../atoms/home/Nav";
 import SideMenu from "../organisms/sidemenu/SideMenu";
+import { isOpenSide } from "../recoil/atom";
 
-const SideMenuContainer = styled.div`
-  margin-top: 24px;
-  background-color: ${(props) => props.theme.sideBgColor};
-  border-radius: 0 50px 0 0;
+const Wrapper = styled.div<{ isOpen: boolean }>`
+  position: absolute;
+  margin-top: 30px;
+  margin-left: ${(props) => (props.isOpen ? "340px" : "60px")};
 `;
 
 const Container = styled.div`
@@ -18,16 +20,16 @@ const Container = styled.div`
 
 const Home = () => {
   const navigate = useNavigate();
-  const onClick = () => {
-    navigate("meeting");
-  };
+  const [isOpen, setIsOpen] = useRecoilState<boolean>(isOpenSide);
 
   return (
     <>
       <Nav />
       <Container>
         <SideMenu />
-        <Outlet />
+        <Wrapper isOpen={isOpen}>
+          <Outlet />
+        </Wrapper>
       </Container>
     </>
   );
