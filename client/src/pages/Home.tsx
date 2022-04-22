@@ -10,6 +10,10 @@ const Wrapper = styled.div<{ isOpen: boolean }>`
   position: absolute;
   margin-top: 30px;
   margin-left: ${(props) => (props.isOpen ? "340px" : "60px")};
+  width: ${(props) =>
+    props.isOpen ? "calc(100% - 400px)" : "calc(100% - 120px)"};
+  height: calc(100% - 70px);
+  /* width: calc(100% - 400px); */
 `;
 
 const Container = styled.div`
