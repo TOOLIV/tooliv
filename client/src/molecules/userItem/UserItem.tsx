@@ -1,10 +1,9 @@
-import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
 import Dropdown from '../../atoms/dropdown/Dropdown';
 import Avatar from '../../atoms/profile/Avatar';
 import Text from '../../atoms/text/Text';
-import { userItemTypes } from '../../types/common/userTypes';
+import { userItemTypes, userSelectorTypes } from '../../types/common/userTypes';
 
 const Item = styled.div`
   display: flex;
@@ -31,16 +30,28 @@ const DropdownBox = styled.div`
 const ButtonBox = styled.div`
   cursor: pointer;
 `;
-const UserItem = ({ name, email, userCode, onClick }: userItemTypes) => {
+const UserItem = ({
+  name,
+  email,
+  userCode,
+  onClick,
+  onChange,
+}: // onChange,
+userItemTypes) => {
   const [selectedOption, setSelectedOption] = useState({
     value: 'Default',
     label: '일반',
   });
 
+  const handleChangeUserCode = (data: userSelectorTypes) => {
+    setSelectedOption(data);
+    onChange(data.value, email);
+  };
+
   const userInfo = `${name}(${email})`;
   const options = [
-    { value: 'Admin', label: '관리자' },
-    { value: 'User', label: '일반' },
+    { value: 'MANAGER', label: '관리자' },
+    { value: 'USER', label: '일반' },
   ];
   const defaultValue = options.find((op) => op.value === userCode);
   return (
@@ -56,7 +67,8 @@ const UserItem = ({ name, email, userCode, onClick }: userItemTypes) => {
           <Dropdown
             options={options}
             defaultValue={defaultValue!}
-            onChange={setSelectedOption}
+            // onChange={setSelectedOption}
+            onChange={handleChangeUserCode}
             selected={selectedOption}
           />
         </DropdownBox>

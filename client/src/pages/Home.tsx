@@ -10,7 +10,7 @@ import { isOpenSide } from '../recoil/atom';
 const Wrapper = styled.div<{ sideMargin: string }>`
   position: absolute;
   width: calc(100vw - ${(props) => props.sideMargin});
-  margin-top: 30px;
+  /* margin-top: 30px; */
   margin-left: ${(props) => props.sideMargin};
 `;
 
@@ -21,6 +21,8 @@ const Container = styled.div`
 `;
 const InnerContainer = styled.div`
   padding: 30px 40px;
+  height: calc(100vh - 116px);
+  background-color: ${(props) => props.theme.bgColor};
 `;
 
 const Home = () => {
