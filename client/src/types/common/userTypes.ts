@@ -8,7 +8,11 @@ export type userItemTypes = {
   name: string;
   email: string;
   userCode: string;
-  selected: { value: string; label: string };
-  onChange: any;
   onClick: () => void;
+};
+
+export type userListTypes = {
+  name: string;
+  email: string;
+  userCode: string;
 };
