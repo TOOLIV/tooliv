@@ -1,11 +1,12 @@
-import styled from "@emotion/styled";
-import React from "react";
-import { useRecoilState } from "recoil";
-import Icons from "../../atoms/common/Icons";
-import Label from "../../atoms/sidemenu/Label";
-import MenuTemplate from "../../atoms/sidemenu/MenuTemplate";
-import { isOpenSide } from "../../recoil/atom";
-import { sideMenuType } from "../../types/sidemenu/sideMenuType";
+import styled from '@emotion/styled';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
+import Icons from '../../atoms/common/Icons';
+import Label from '../../atoms/sidemenu/Label';
+import MenuTemplate from '../../atoms/sidemenu/MenuTemplate';
+import { isOpenSide } from '../../recoil/atom';
+import { sideMenuType } from '../../types/sidemenu/sideMenuType';
 
 export const TopContainer = styled.div`
   display: flex;
@@ -18,7 +19,7 @@ export const TopContainer = styled.div`
 `;
 
 const ChannelsContainer = styled.div<{ isOpen: boolean }>`
-  border-bottom: ${(props) => props.isOpen && "1px solid #ffffff"};
+  border-bottom: ${(props) => props.isOpen && '1px solid #ffffff'};
   padding-bottom: 16px;
 `;
 
@@ -47,14 +48,15 @@ export const SideWrapper = styled.div`
 
 const Channels = () => {
   const [isOpen, setIsOpen] = useRecoilState<boolean>(isOpenSide);
+  const navigate = useNavigate();
   const dummyData: sideMenuType[] = [
     {
-      id: "0",
-      name: "1. 공지사항",
+      id: '0',
+      name: '1. 공지사항',
     },
     {
-      id: "1",
-      name: "2. 잡담",
+      id: '1',
+      name: '2. 잡담',
     },
   ];
   return (
@@ -65,7 +67,10 @@ const Channels = () => {
       </TopContainer>
       <ChannelsContainer isOpen={isOpen}>
         {dummyData.map((channel) => (
-          <ChannelContainer key={channel.id}>
+          <ChannelContainer
+            key={channel.id}
+            onClick={() => navigate('/meeting/0/0')}
+          >
             <SideWrapper>
               <Icons icon="lock" />
             </SideWrapper>
