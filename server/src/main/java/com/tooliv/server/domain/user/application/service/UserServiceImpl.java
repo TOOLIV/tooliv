@@ -94,7 +94,7 @@ public class UserServiceImpl implements UserService {
 
         for (User user : userRepository.findAllByDeletedAtAndNameContainingOrderByNameAsc(null, keyword)
             .orElseThrow(() -> new IllegalArgumentException("조회 가능한 회원이 없음"))) {
-            userInfoResponseDTOList.add(new UserInfoResponseDTO(user.getId(), user.getEmail(), user.getName(), user.getNickname(), getImageURL(user.getProfileImage())));
+            userInfoResponseDTOList.add(new UserInfoResponseDTO(user.getId(), user.getEmail(), user.getName(), user.getNickname(), user.getUserCode(), getImageURL(user.getProfileImage())));
         }
 
         return new UserListResponseDTO(userInfoResponseDTOList);

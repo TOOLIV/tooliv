@@ -1,6 +1,6 @@
 package com.tooliv.server.domain.chat.api;
 
-import com.tooliv.server.domain.chat.application.ChatRoomService;
+import com.tooliv.server.domain.chat.application.ChatService;
 import com.tooliv.server.domain.chat.application.dto.request.ChatRoomUserInfoRequestDTO;
 import com.tooliv.server.domain.chat.application.dto.response.ChatRoomChatListResponseDTO;
 import com.tooliv.server.domain.chat.application.dto.response.ChatRoomListResponseDTO;
@@ -29,8 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/chat")
 public class ChatRoomController {
 
-    private final ChatRoomService chatRoomService;
-    private final UserService userService;
+    private final ChatService chatService;
 
     @ApiOperation(value = "room 전체 조회", notes = "채팅 룸 전체를 조회한다.")
     @GetMapping("/rooms/{email}")
@@ -42,7 +41,7 @@ public class ChatRoomController {
         ChatRoomListResponseDTO chatRoomListResponseDTO = null;
 
         try {
-            chatRoomListResponseDTO = chatRoomService.getChatRoomList(email);
+            chatRoomListResponseDTO = chatService.getChatRoomList(email);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(409).body(BaseResponseDTO.of("채팅방 목록 조회 실패"));
         }
@@ -59,7 +58,7 @@ public class ChatRoomController {
     })
     public ResponseEntity<? extends BaseResponseDTO> createRoom(@RequestBody @Valid @ApiParam(value = "개설 회원 정보", required = true) ChatRoomUserInfoRequestDTO chatRoomUserInfoRequestDTO) {
         try {
-            chatRoomService.createChatRoom(chatRoomUserInfoRequestDTO);
+            chatService.createChatRoom(chatRoomUserInfoRequestDTO);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(409).body(BaseResponseDTO.of("채팅방 개설 실패"));
         }
@@ -75,7 +74,7 @@ public class ChatRoomController {
     })
     public ResponseEntity<? extends BaseResponseDTO> enterRoom(@PathVariable @ApiParam(value = "방 정보", required = true) String roomId) {
         try {
-            chatRoomService.enterChatRoom(roomId);
+            chatService.enterChatRoom(roomId);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(409).body(BaseResponseDTO.of("채팅방 입장 실패"));
         }
@@ -92,7 +91,7 @@ public class ChatRoomController {
     public ResponseEntity<? extends BaseResponseDTO> getChatListInRoom(@PathVariable @ApiParam(value = "방 정보", required = true) String roomId) {
         ChatRoomChatListResponseDTO chatRoomChatListResponseDTO = null;
         try {
-            chatRoomChatListResponseDTO = new ChatRoomChatListResponseDTO(chatRoomService.getChatList(roomId));
+            chatRoomChatListResponseDTO = new ChatRoomChatListResponseDTO(chatService.getChatInfoValue(roomId));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(409).body(BaseResponseDTO.of("채팅방 데이터 복구 실패"));
         }
