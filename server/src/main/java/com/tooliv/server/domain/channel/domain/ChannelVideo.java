@@ -20,14 +20,19 @@ import lombok.ToString;
 @AllArgsConstructor
 public class ChannelVideo extends BaseEntity {
 
-    @Column(name = "session_id", nullable = false)
+    @Column(name = "session_id")
     private String sessionId;
 
-    @Column(name = "is_active", columnDefinition="BOOLEAN DEFAULT true")
+    @Column(name = "is_active", columnDefinition="BOOLEAN DEFAULT false")
     private boolean isActive;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "channel_id")
     private Channel channel;
+
+    public void modifyChannelVideo(String sessionId,boolean isActive) {
+        this.sessionId = sessionId;
+        this.isActive = isActive;
+    }
 
 }
