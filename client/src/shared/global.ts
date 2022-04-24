@@ -1,9 +1,13 @@
-import { css } from "@emotion/react";
+import { css } from '@emotion/react';
 const reset = css`
   /* http://meyerweb.com/eric/tools/css/reset/ 
    v2.0 | 20110126
    License: none (public domain)
 */
+  * {
+    box-sizing: border-box;
+    /* overflow: hidden; */
+  }
 
   html,
   body,
@@ -108,7 +112,7 @@ const reset = css`
   }
   body {
     line-height: 1;
-    font-family: "SUIT", sans-serif;
+    font-family: 'SUIT', sans-serif;
     font-weight: 600;
   }
   ol,
@@ -123,7 +127,7 @@ const reset = css`
   blockquote:after,
   q:before,
   q:after {
-    content: "";
+    content: '';
     content: none;
   }
   table {

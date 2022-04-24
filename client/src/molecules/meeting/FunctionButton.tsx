@@ -1,16 +1,16 @@
-import styled from "@emotion/styled";
-import React from "react";
-import { functionButtonTypes } from "../../types/meeting/functionButtonTypes";
-import { colors } from "../../shared/color";
-import { prependOnceListener } from "process";
-import Icons from "../../atoms/common/Icons";
+import styled from '@emotion/styled';
+import React from 'react';
+import { functionButtonTypes } from '../../types/meeting/functionButtonTypes';
+import { colors } from '../../shared/color';
+import { prependOnceListener } from 'process';
+import Icons from '../../atoms/common/Icons';
 
-const Container = styled.div<{ exit?: boolean }>`
+export const IconContainer = styled.div<{ exit?: boolean; message?: boolean }>`
   width: 40px;
   height: 40px;
   border-radius: 45px;
   background-color: ${(props) =>
-    props.exit ? colors["secondary"] : colors["gray300"]};
+    props.exit ? colors['secondary'] : colors['gray300']};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -18,15 +18,19 @@ const Container = styled.div<{ exit?: boolean }>`
 
   :hover {
     background-color: ${(props) =>
-      props.exit ? "#EC6A6A" : colors["gray400"]};
+      props.exit ? '#EC6A6A' : colors['gray400']};
   }
+
+  position: ${(props) => (props.message ? 'absolute' : '')};
+  right: ${(props) => (props.message ? '40px' : '')};
+  bottom: ${(props) => (props.message ? '24px' : '')};
 `;
 
 const FunctionButton = ({ icon, exit }: functionButtonTypes) => {
   return (
-    <Container exit={exit}>
-      <Icons icon={icon} large color={exit ? "red700" : undefined} />
-    </Container>
+    <IconContainer exit={exit}>
+      <Icons icon={icon} large color={exit ? 'red700' : undefined} />
+    </IconContainer>
   );
 };
 

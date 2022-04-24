@@ -7,3 +7,7 @@ export type chatTypes = {
 export type chatItemPropsTypes = {
   data: chatTypes;
 };
+
+export type chatButtonPropsTypes = {
+  onClick: () => void;
+};

@@ -1,16 +1,16 @@
-import styled from "@emotion/styled";
-import { motion, AnimatePresence } from "framer-motion";
-import { Variants } from "framer-motion/types/types";
-import React from "react";
-import { useRecoilState } from "recoil";
-import Icons from "../../../atoms/common/Icons";
-import ChatItem from "../../../molecules/meeting/ChatItem";
-import MenuTemplate from "../../../atoms/sidemenu/MenuTemplate";
-import { TopContainer } from "../../../molecules/sidemenu/Channels";
-import { isOpenChat } from "../../../recoil/atom";
-import { chatTypes } from "../../../types/meeting/chatTypes";
+import styled from '@emotion/styled';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Variants } from 'framer-motion/types/types';
+import React from 'react';
+import { useRecoilState } from 'recoil';
+import Icons from '../../../atoms/common/Icons';
+import ChatItem from '../../../molecules/meeting/ChatItem';
+import MenuTemplate from '../../../atoms/sidemenu/MenuTemplate';
+import { TopContainer } from '../../../molecules/sidemenu/Channels';
+import { isOpenChat } from '../../../recoil/atom';
+import { chatTypes } from '../../../types/meeting/chatTypes';
 
-const ChatContainer = styled(motion.div)`
+const ChatContainer = styled.div`
   margin-top: 24px;
   width: 280px;
   background-color: ${(props) => props.theme.sideBgColor};
@@ -22,24 +22,24 @@ const Chat = () => {
 
   const variants: Variants = {
     open: { opacity: 1, x: 0 },
-    closed: { opacity: 1, x: "100%" },
+    closed: { opacity: 1, x: 'calc(100vw - 280px)' },
   };
 
   const testSet: chatTypes[] = [
     {
-      name: "username1",
-      timestamp: "오후 4:08",
-      content: "안녕하세요",
+      name: 'username1',
+      timestamp: '오후 4:08',
+      content: '안녕하세요',
     },
     {
-      name: "username2",
-      timestamp: "오후 4:09",
-      content: "안녕하세요",
+      name: 'username2',
+      timestamp: '오후 4:09',
+      content: '안녕하세요',
     },
     {
-      name: "username3",
-      timestamp: "오후 4:10",
-      content: "안녕하세요",
+      name: 'username3',
+      timestamp: '오후 4:10',
+      content: '안녕하세요',
     },
   ];
 
@@ -50,12 +50,7 @@ const Chat = () => {
   return (
     <AnimatePresence>
       {isChatOpen && (
-        <ChatContainer
-          initial={isChatOpen ? "closed" : "open"}
-          animate={isChatOpen ? "open" : "closed"}
-          variants={variants}
-          exit="closed"
-        >
+        <ChatContainer>
           <>
             <TopContainer>
               <Icons icon="anglesRight" onClick={onCloseChat} />

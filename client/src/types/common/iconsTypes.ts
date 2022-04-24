@@ -28,7 +28,8 @@ export type iconsTypes = {
     | 'videoOff'
     | 'monitor'
     | 'shareMonitor'
-    | 'exit';
+    | 'exit'
+    | 'message';
 
   onClick?: () => void;
   large?: boolean;
