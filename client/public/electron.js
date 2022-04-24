@@ -23,28 +23,34 @@ var createWindow = function () {
     // production에서는 패키지 내부 리소스에 접근.
     // 개발 중에는 개발 도구에서 호스팅하는 주소에서 로드.
     mainWindow.loadURL(isDev
-        ? "http://localhost:3000"
-        : "file://".concat(path.join(__dirname, "../build/index.html")));
+        ? 'http://localhost:3000'
+        : "file://".concat(path.join(__dirname, '../build/index.html')));
     if (isDev) {
-        mainWindow.webContents.openDevTools({ mode: "detach" });
+        mainWindow.webContents.openDevTools({ mode: 'detach' });
     }
     mainWindow.setResizable(true);
     // Emitted when the window is closed.
-    mainWindow.on("closed", function () { return (mainWindow = undefined); });
+    mainWindow.on('closed', function () { return (mainWindow = undefined); });
     mainWindow.focus();
 };
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-electron_1.app.on("ready", createWindow);
+electron_1.app.on('ready', createWindow);
 // Quit when all windows are closed.
-electron_1.app.on("window-all-closed", function () {
-    if (process.platform !== "darwin") {
+electron_1.app.on('window-all-closed', function () {
+    if (process.platform !== 'darwin') {
         electron_1.app.quit();
     }
 });
-electron_1.app.on("activate", function () {
+electron_1.app.on('activate', function () {
     if (mainWindow === null) {
         createWindow();
     }
+});
+electron_1.app.on('certificate-error', function (event, webContents, url, error, certificate, callback) {
+    // On certificate error we disable default behaviour (stop loading the page)
+    // and we then say "it is all fine - true" to the callback
+    event.preventDefault();
+    callback(true);
 });

@@ -9,7 +9,7 @@ import Videos from '../organisms/meeting/video/Videos';
 import { isOpenChat } from '../recoil/atom';
 
 const MeetingContainer = styled.div`
-  background-color: #787878;
+  /* background-color: #787878; */
 `;
 
 const MeetingInnerContainer = styled.div``;
