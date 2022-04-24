@@ -29,7 +29,8 @@ const VideoContainer = styled.div<{ isChatOpen: boolean }>`
 const Videos = () => {
   const isChatOpen = useRecoilValue(isOpenChat);
 
-  const OPENVIDU_SERVER_URL = 'https://' + window.location.hostname + ':4443';
+  // const OPENVIDU_SERVER_URL = 'https://' + window.location.hostname + ':4443';
+  const OPENVIDU_SERVER_URL = 'https://localhost:4443';
   const OPENVIDU_SERVER_SECRET = 'MY_SECRET';
 
   const [isOV, setIsOV] = useState(false);
