@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -74,18 +75,18 @@ public class MatterMostMessageDTO {
             return this;
         }
 
-        public Attachment addExceptionInfo(Exception e, String uri) {
+        public Attachment addExceptionInfo(Exception e, String method, String uri) {
             this.addExceptionInfo(e);
             StringBuilder sb = new StringBuilder(text);
 
-            sb.append("**[ Request URL ]**").append('\n').append('\n').append("```").append(uri).append("```").append('\n').append('\n');
+            sb.append("**[ Request URL ]**").append('\n').append('\n').append("```").append(method.toUpperCase()).append("  ").append(uri).append("```").append('\n').append('\n');
 
             this.text = sb.toString();
             return this;
         }
 
-        public Attachment addExceptionInfo(Exception e, String uri, String params) {
-            this.addExceptionInfo(e, uri);
+        public Attachment addExceptionInfo(Exception e, String method, String uri, String params) {
+            this.addExceptionInfo(e, method, uri);
             StringBuilder sb = new StringBuilder(text);
 
             sb.append("**[ Parameters ]**").append('\n').append('\n').append(params.toString()).append('\n').append('\n');

@@ -13,9 +13,9 @@ public class NotificationManager {
     @Autowired
     private MatterMostSender mmSender;
 
-    public void sendNotification(Exception e, String uri, String params) {
+    public void sendNotification(Exception e, String method, String uri, String params) {
         log.info("#### SEND Notification");
-        mmSender.sendMessage(e, uri, params);
+        mmSender.sendMessage(e, method, uri, params);
     }
 
 }

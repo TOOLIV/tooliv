@@ -27,7 +27,7 @@ public class MatterMostSender {
     private final RestTemplate restTemplate;
     private final MatterMostProperties mmProperties;
 
-    public void sendMessage(Exception excpetion, String uri, String params) {
+    public void sendMessage(Exception excpetion, String method, String uri, String params) {
         if (!mmEnabled) {
             return;
         }
@@ -44,7 +44,7 @@ public class MatterMostSender {
                 .footer(mmProperties.getFooter())
                 .build();
 
-            attachment.addExceptionInfo(excpetion, uri, params);
+            attachment.addExceptionInfo(excpetion, method, uri, params);
             Attachments attachments = new Attachments(attachment);
             attachments.addProps(excpetion);
             String payload = new Gson().toJson(attachments);
