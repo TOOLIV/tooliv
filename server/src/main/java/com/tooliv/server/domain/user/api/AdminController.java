@@ -108,14 +108,14 @@ public class AdminController {
         return ResponseEntity.status(200).body(BaseResponseDTO.of("권한 변경 완료"));
     }
 
-    @DeleteMapping("/{email}")
+    @DeleteMapping()
     @ApiOperation(value = "회원 삭제")
     @ApiResponses({
         @ApiResponse(code = 204, message = "회원 삭제 완료"),
         @ApiResponse(code = 409, message = "회원 삭제 실패"),
     })
     public ResponseEntity<? extends BaseResponseDTO> deleteUser(
-        @PathVariable("email") @ApiParam(value = "이메일", required = true) String email) {
+        @ApiParam(value="삭제할 회원 이메일", required = true) @RequestParam String email) {
         try {
             adminService.deleteUser(email);
         } catch (IllegalArgumentException e) {

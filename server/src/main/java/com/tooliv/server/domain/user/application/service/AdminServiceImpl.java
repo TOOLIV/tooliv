@@ -8,6 +8,7 @@ import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.enums.UserCode;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
 import com.tooliv.server.domain.user.exception.NotUniqueEmailException;
+import com.tooliv.server.domain.user.exception.UserNotFoundException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +72,8 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public void deleteUser(String email) {
-        User user = userRepository.findByEmailAndDeletedAt(email, null).orElseThrow(() -> new UserNotFound)
+        System.out.println("email : " + email);
+        User user = userRepository.findByEmailAndDeletedAt(email, null).orElseThrow(() -> new UserNotFoundException("회원 정보가 존재하지 않습니다."));
 
         user.deleteUser(LocalDateTime.now());
 
