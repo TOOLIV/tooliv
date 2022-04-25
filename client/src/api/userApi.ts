@@ -2,7 +2,6 @@ import instance from '../services/axios';
 import { userCodeTypes, userCreationTypes } from '../types/common/userTypes';
 
 export const findUser = async (keyword: string) => {
-  console.log(keyword);
   const response = await instance.get(`/admin/search?keyword=${keyword}`);
   return response;
 };

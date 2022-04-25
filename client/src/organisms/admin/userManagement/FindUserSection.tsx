@@ -10,13 +10,14 @@ const UserBox = styled.div`
 `;
 const FindUserSection = () => {
   const [userList, setUserList] = useState([]);
+  const [keyword, setKeyword] = useState('');
 
   const inputRef = useRef<HTMLInputElement>(null);
 
   const searchUserList = () => {
     console.log(inputRef.current?.value);
     const keyword = inputRef.current?.value!;
-    userListApi(keyword);
+    setKeyword(keyword);
   };
 
   const changeUserCode = (value: string, email: string) => {
@@ -41,6 +42,11 @@ const FindUserSection = () => {
   const onClick = () => {
     console.log('hello');
   };
+
+  useEffect(() => {
+    userListApi(keyword);
+  }, [keyword]);
+
   return (
     <>
       <InputBox
