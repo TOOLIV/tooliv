@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class NotificationManager {
+
     private Logger log = LoggerFactory.getLogger(NotificationManager.class);
 
     @Autowired

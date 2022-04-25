@@ -1,5 +1,6 @@
 package com.tooliv.server.global.config;
 
+import com.tooliv.server.global.common.NotificationManager;
 import java.util.Enumeration;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class GlobalControllerAdvice {
         Enumeration<String> keys = req.getParameterNames();
         while (keys.hasMoreElements()) {
             String key = keys.nextElement();
-            params.append("- ").append(key).append(" : ").append(req.getParameter(key)).append('/n');
+            params.append("- ").append(key).append(" : ").append(req.getParameter(key)).append('\n');
         }
 
         return params.toString();
