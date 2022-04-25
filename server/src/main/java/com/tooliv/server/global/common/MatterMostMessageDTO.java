@@ -78,7 +78,7 @@ public class MatterMostMessageDTO {
             this.addExceptionInfo(e);
             StringBuilder sb = new StringBuilder(text);
 
-            sb.append("**Reqeust URL**").append("/n").append("/n").append(uri).append("/n").append("/n");
+            sb.append("**Request URL**").append("/n").append("/n").append(uri).append("/n").append("/n");
 
             this.text = sb.toString();
             return this;

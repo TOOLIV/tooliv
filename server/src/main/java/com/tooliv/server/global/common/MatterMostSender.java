@@ -1,7 +1,8 @@
 package com.tooliv.server.global.common;
 
 import com.google.gson.Gson;
-import com.sun.xml.internal.ws.api.message.Attachment;
+import com.tooliv.server.global.common.MatterMostMessageDTO.Attachment;
+import com.tooliv.server.global.common.MatterMostMessageDTO.Attachments;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +25,7 @@ public class MatterMostSender {
     private String webhookUrl;
 
     private final RestTemplate restTemplate;
-    private final MattermostProperties mmProperties;
+    private final MatterMostProperties mmProperties;
 
     public void sendMessage(Exception excpetion, String uri, String params) {
         if (!mmEnabled) {
