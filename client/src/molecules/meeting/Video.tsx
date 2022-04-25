@@ -3,8 +3,8 @@ import React, { useEffect, useRef } from 'react';
 import { videoTypes } from '../../types/meeting/openviduTypes';
 
 const StyeldVideo = styled.video`
-  width: 100px;
-  height: 50px;
+  width: 600px;
+  height: 300px;
 `;
 
 const Video = ({ openviduState }: videoTypes) => {
