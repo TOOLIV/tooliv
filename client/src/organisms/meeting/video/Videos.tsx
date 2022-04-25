@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import axios from 'axios';
-import { OpenVidu } from 'openvidu-browser';
+import { OpenVidu, Session, StreamManager } from 'openvidu-browser';
 import React, { useEffect, useRef, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import Video from '../../../molecules/meeting/Video';
@@ -51,7 +51,7 @@ const Videos = () => {
     return () => {
       window.removeEventListener('beforeunload', onbeforeunload);
     };
-  });
+  }, []);
 
   // componentDidMount() {
   //   window.addEventListener("beforeunload", this.onbeforeunload);
@@ -85,16 +85,17 @@ const Videos = () => {
   //   }
   // }
 
-  // deleteSubscriber(streamManager) {
-  //   let subscribers = this.state.subscribers;
-  //   let index = subscribers.indexOf(streamManager, 0);
-  //   if (index > -1) {
-  //     subscribers.splice(index, 1);
-  //     this.setState({
-  //       subscribers: subscribers,
-  //     });
-  //   }
-  // }
+  const deleteSubscriber = (streamManager: StreamManager) => {
+    let subscribers = openviduState.subscribers;
+    let index = subscribers.indexOf(streamManager, 0);
+    if (index > -1) {
+      subscribers.splice(index, 1);
+      setOpenviduState({
+        ...openviduState,
+        subscribers: subscribers,
+      });
+    }
+  };
 
   useEffect(() => {
     if (!isOV) {
@@ -104,9 +105,11 @@ const Videos = () => {
   }, [isOV]);
 
   const beforeJoinSession = () => {
+    // --- 1) Get an OpenVidu object ---
     const OV = new OpenVidu();
     setOV(OV);
 
+    // --- 2) Init a session ---
     setOpenviduState({
       ...openviduState,
       session: OV.initSession(),
@@ -116,27 +119,17 @@ const Videos = () => {
   };
 
   const joinSession = () => {
-    // --- 1) Get an OpenVidu object ---
-
-    // setOV(new OpenVidu());
-
-    // --- 2) Init a session ---
-    if (OV)
-      setOpenviduState({
-        ...openviduState,
-        session: OV.initSession(),
-      });
     const p = () => {
-      var mySession = openviduState.session;
-
+      var mySession: Session;
+      if (!!openviduState.session) mySession = openviduState.session;
+      else return;
       // --- 3) Specify the actions when events take place in the session ---
 
       // On every new Stream received...
       mySession.on('streamCreated', (event: any) => {
-        console.log('streamCreated>>>>>', event);
         // Subscribe to the Stream to receive it. Second parameter is undefined
         // so OpenVidu doesn't create an HTML video by its own
-        var subscriber = mySession.subscribe(event.stream, undefined);
+        var subscriber = mySession.subscribe(event.stream, '');
         var subscribers = openviduState.subscribers;
         subscribers.push(subscriber);
 
@@ -150,7 +143,7 @@ const Videos = () => {
       // On every Stream destroyed...
       mySession.on('streamDestroyed', (event: any) => {
         // Remove the stream from 'subscribers' array
-        // this.deleteSubscriber(event.stream.streamManager);
+        deleteSubscriber(event.stream.streamManager);
       });
 
       // On every asynchronous exception...
@@ -162,7 +155,7 @@ const Videos = () => {
 
       // 'getToken' method is simulating what your server-side should do.
       // 'token' parameter should be retrieved and returned by your own backend
-      if (OV)
+      const connect = async (OV: OpenVidu) => {
         getToken().then((token: any) => {
           // First param is the token got from OpenVidu Server. Second param can be retrieved by every user on event
           // 'streamCreated' (property Stream.connection.data), and will be appended to DOM as the user's nickname
@@ -210,8 +203,10 @@ const Videos = () => {
               );
             });
         });
+      };
+      if (OV) connect(OV);
     };
-    if (OV) p();
+    p();
   };
 
   const leaveSession = () => {
@@ -366,7 +361,7 @@ const Videos = () => {
         <Video />
         <Video /> */}
       </VideoContainer>
-      <button onClick={leaveSession} />
+      {/* <button onClick={leaveSession} /> */}
     </div>
   );
 };
