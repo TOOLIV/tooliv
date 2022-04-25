@@ -14,8 +14,6 @@ public interface UserService {
 
     NicknameResponseDTO updateNickname(NicknameUpdateRequestDTO nicknameUpdateRequestDTO);
 
-    void deleteUser();
-
     void uploadProfileImage(MultipartFile multipartFile);
 
     UserListResponseDTO getUserList(String keyword);
