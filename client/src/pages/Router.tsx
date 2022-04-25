@@ -16,7 +16,7 @@ import UserManagePage from './UserManagePage';
 const AppRouter = () => {
   return (
     <>
-      <BrowserRouter>
+      <HashRouter>
         <Routes>
           <Route path="/" element={<Home />}>
             <Route path="" element={<Navigate replace to="/0/0" />} />
@@ -29,7 +29,7 @@ const AppRouter = () => {
             <Route path="/admin/*" element={<UserManagePage />} />
           </Route>
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
     </>
   );
 };

@@ -25,7 +25,7 @@ const Container = styled.div`
   justify-content: space-between;
 `;
 const InnerContainer = styled.div<{ leftMargin: number; rightMargin: number }>`
-  /* padding: 30px 40px; */
+  padding: 30px 40px;
   width: inherit;
   height: calc(100vh - 116px);
 `;
