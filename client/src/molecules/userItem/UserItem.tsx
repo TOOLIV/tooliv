@@ -1,10 +1,9 @@
-import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Dropdown from '../../atoms/dropdown/Dropdown';
 import Avatar from '../../atoms/profile/Avatar';
 import Text from '../../atoms/text/Text';
-import { userItemTypes } from '../../types/common/userTypes';
+import { userItemTypes, userSelectorTypes } from '../../types/common/userTypes';
 
 const Item = styled.div`
   display: flex;
@@ -31,20 +30,38 @@ const DropdownBox = styled.div`
 const ButtonBox = styled.div`
   cursor: pointer;
 `;
+
+type selectType = {
+  value: string;
+  label: string;
+};
 const UserItem = ({
   name,
   email,
   userCode,
-  selected,
+  onDelete,
   onChange,
-  onClick,
-}: userItemTypes) => {
+}: // onChange,
+userItemTypes) => {
+  const [selectedOption, setSelectedOption] = useState<selectType>();
+
+  const handleChangeUserCode = (data: userSelectorTypes) => {
+    setSelectedOption(data);
+    onChange(data.value, email);
+  };
+  const handleDelete = () => {
+    onDelete(email);
+  };
   const userInfo = `${name}(${email})`;
   const options = [
-    { value: 'Admin', label: '관리자' },
-    { value: 'User', label: '일반' },
+    { value: 'MANAGER', label: '관리자' },
+    { value: 'USER', label: '일반' },
   ];
-  const defaultValue = options.find((op) => op.value === userCode);
+  useEffect(() => {
+    const defaultValue = options.find((op) => op.value === userCode);
+    setSelectedOption(defaultValue!);
+  }, []);
+
   return (
     <Item>
       <UserBox>
@@ -57,13 +74,12 @@ const UserItem = ({
         <DropdownBox>
           <Dropdown
             options={options}
-            defaultValue={defaultValue!}
-            onChange={onChange}
-            selected={selected}
+            onChange={handleChangeUserCode}
+            selected={selectedOption!}
           />
         </DropdownBox>
-        <ButtonBox onClick={onClick}>
-          <Text size={12} color="gray500">
+        <ButtonBox>
+          <Text size={12} color="gray500" onClick={handleDelete}>
             삭제
           </Text>
         </ButtonBox>

@@ -78,7 +78,7 @@ const Test = () => {
       <TestDiv>
         <Info label="도메인" value="meeting.ssafy.com" />
       </TestDiv>
-
+      {/* 
       <TestDiv>
         <UserItem
           name="송민수"
@@ -88,7 +88,7 @@ const Test = () => {
           onChange={setSelectedOption}
           onClick={onClick}
         />
-      </TestDiv>
+      </TestDiv> */}
 
       {/* <TestDiv>
         <Dropdown
