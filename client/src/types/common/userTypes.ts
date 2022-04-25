@@ -1,14 +1,14 @@
 export type userBadgeTypes = {
   name: string;
   email: string;
-  onClick: () => void;
+  onClick: (id: string) => void;
 };
 
 export type userItemTypes = {
   name: string;
   email: string;
   userCode: string;
-  onClick: () => void;
+  onDelete: (email: string) => void;
   onChange: (value: string, email: string) => void;
 };
 

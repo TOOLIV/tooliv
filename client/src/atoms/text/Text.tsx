@@ -10,9 +10,9 @@ const Container = styled.p<{
   color: ${(props) => props.theme.textColor};
 `;
 
-const Text = ({ children, size, weight = 'medium' }: textType) => {
+const Text = ({ children, size, weight = 'medium', onClick }: textType) => {
   return (
-    <Container size={size} weight={weight}>
+    <Container size={size} weight={weight} onClick={onClick}>
       {children}
     </Container>
   );

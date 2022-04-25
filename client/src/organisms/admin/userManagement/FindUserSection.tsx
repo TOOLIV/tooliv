@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import React, { useEffect, useRef, useState } from 'react';
-import { changeCode, findUser } from '../../../api/userApi';
+import { changeCode, deleteUser, findUser } from '../../../api/userApi';
 import InputBox from '../../../molecules/inputBox/InputBox';
 import UserItem from '../../../molecules/userItem/UserItem';
 import { userCodeTypes, userListTypes } from '../../../types/common/userTypes';
@@ -39,8 +39,15 @@ const FindUserSection = () => {
     console.log(response);
   };
 
-  const onClick = () => {
-    console.log('hello');
+  const onDelete = (id: string) => {
+    // 회원삭제 기능 구현
+    handleDeleteUser(id);
+  };
+
+  const handleDeleteUser = async (email: string) => {
+    const response = await deleteUser(email);
+    userListApi(keyword);
+    console.log(response);
   };
 
   useEffect(() => {
@@ -62,7 +69,7 @@ const FindUserSection = () => {
             name={user.name}
             email={user.email}
             userCode={user.userCode}
-            onClick={onClick}
+            onDelete={onDelete}
             onChange={changeUserCode}
           />
         ))}

@@ -1,5 +1,6 @@
 import { atom } from 'recoil';
 import { ThemeMode } from '../types/common/themeTypes';
+import { userCreationTypes } from '../types/common/userTypes';
 
 export const appThemeMode = atom<ThemeMode>({
   key: 'AppThemeMode',
@@ -16,7 +17,7 @@ export const isOpenChat = atom<boolean>({
   default: false,
 });
 
-export const userCreationList = atom({
+export const userCreationList = atom<userCreationTypes[]>({
   key: 'userCreationList',
   default: [],
 });

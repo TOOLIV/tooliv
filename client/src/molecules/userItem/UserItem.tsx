@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Dropdown from '../../atoms/dropdown/Dropdown';
 import Avatar from '../../atoms/profile/Avatar';
 import Text from '../../atoms/text/Text';
@@ -30,30 +30,38 @@ const DropdownBox = styled.div`
 const ButtonBox = styled.div`
   cursor: pointer;
 `;
+
+type selectType = {
+  value: string;
+  label: string;
+};
 const UserItem = ({
   name,
   email,
   userCode,
-  onClick,
+  onDelete,
   onChange,
 }: // onChange,
 userItemTypes) => {
-  const [selectedOption, setSelectedOption] = useState({
-    value: 'Default',
-    label: '일반',
-  });
+  const [selectedOption, setSelectedOption] = useState<selectType>();
 
   const handleChangeUserCode = (data: userSelectorTypes) => {
     setSelectedOption(data);
     onChange(data.value, email);
   };
-
+  const handleDelete = () => {
+    onDelete(email);
+  };
   const userInfo = `${name}(${email})`;
   const options = [
     { value: 'MANAGER', label: '관리자' },
     { value: 'USER', label: '일반' },
   ];
-  const defaultValue = options.find((op) => op.value === userCode);
+  useEffect(() => {
+    const defaultValue = options.find((op) => op.value === userCode);
+    setSelectedOption(defaultValue!);
+  }, []);
+
   return (
     <Item>
       <UserBox>
@@ -66,14 +74,12 @@ userItemTypes) => {
         <DropdownBox>
           <Dropdown
             options={options}
-            defaultValue={defaultValue!}
-            // onChange={setSelectedOption}
             onChange={handleChangeUserCode}
-            selected={selectedOption}
+            selected={selectedOption!}
           />
         </DropdownBox>
-        <ButtonBox onClick={onClick}>
-          <Text size={12} color="gray500">
+        <ButtonBox>
+          <Text size={12} color="gray500" onClick={handleDelete}>
             삭제
           </Text>
         </ButtonBox>

@@ -1,14 +1,14 @@
 import React, { useRef, useState } from 'react';
+import { useSetRecoilState } from 'recoil';
 import { checkUserEmail, createUser } from '../../../api/userApi';
 import Button from '../../../atoms/common/Button';
 import InputBox from '../../../molecules/inputBox/InputBox';
+import { userCreationList } from '../../../recoil/atom';
 
 const CreateUserSection = () => {
   const [emailStatus, setEmailStatus] = useState('default');
   const [inputMsg, setInputMsg] = useState('');
-  const [email, setEmail] = useState('');
-  const [name, setName] = useState('');
-
+  const setUserCreationList = useSetRecoilState(userCreationList);
   const inputEmailRef = useRef<HTMLInputElement>(null);
   const inputNameRef = useRef<HTMLInputElement>(null);
   const emailPattern =
@@ -29,7 +29,6 @@ const CreateUserSection = () => {
     try {
       await checkUserEmail(email);
       setEmailStatus('success');
-      setEmail(email);
       setInputMsg('사용가능한 이메일입니다.');
     } catch (error) {
       setEmailStatus('error');
@@ -37,21 +36,24 @@ const CreateUserSection = () => {
     }
   };
 
-  const getUserName = () => {
-    const name = inputNameRef.current?.value!;
-    setName(name);
-  };
+  // const getUserName = () => {
+  //   const name = inputNameRef.current?.value!;
+  //   console.log(name);
+  // };
 
   const createUserInfo = async () => {
+    const email = inputEmailRef.current?.value!;
+    const name = inputNameRef.current?.value!;
     const body = {
       email,
       name,
       password: `Tooliv${email}`,
     };
     try {
+      setUserCreationList((prev) => [...prev, body]);
       await createUser(body);
-      setEmail('');
-      setName('');
+      // setEmail('');
+      // setName('');
       setEmailStatus('default');
       setInputMsg('');
       inputEmailRef.current!.value = '';
@@ -73,7 +75,6 @@ const CreateUserSection = () => {
         label="회원"
         placeholder="회원 이름을 입력해주세요."
         ref={inputNameRef}
-        onChange={getUserName}
       />
       <Button width="50" height="35" text="추가" onClick={createUserInfo} />
     </div>

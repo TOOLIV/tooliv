@@ -20,3 +20,8 @@ export const checkUserEmail = async (email: string) => {
   const response = await instance.get(`/admin/check/${email}`);
   return response;
 };
+
+export const deleteUser = async (email: string) => {
+  const response = await instance.delete(`/admin?email=${email}`);
+  return response;
+};
