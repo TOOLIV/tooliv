@@ -1,11 +1,11 @@
-import styled from "@emotion/styled";
-import React from "react";
-import Icons from "../../atoms/common/Icons";
-import Avatar from "../../atoms/profile/Avatar";
-import Label from "../../atoms/sidemenu/Label";
-import MenuTemplate from "../../atoms/sidemenu/MenuTemplate";
-import { sideMenuType } from "../../types/sidemenu/sideMenuType";
-import { SideWrapper, TopContainer } from "./Channels";
+import styled from '@emotion/styled';
+import React from 'react';
+import Icons from '../../atoms/common/Icons';
+import Avatar from '../../atoms/profile/Avatar';
+import Label from '../../atoms/common/Label';
+import MenuTemplate from '../../atoms/sidemenu/MenuTemplate';
+import { labelType } from '../../types/common/labelType';
+import { SideWrapper, TopContainer } from './Channels';
 
 const FriendsContainer = styled.div`
   padding: 0 24px 16px 24px;
@@ -18,14 +18,14 @@ const FriendContainer = styled.div`
 `;
 
 const Friends = () => {
-  const dummyData: sideMenuType[] = [
+  const dummyData: labelType[] = [
     {
-      id: "0",
-      name: "손창현",
+      id: '0',
+      name: '손창현',
     },
     {
-      id: "1",
-      name: "이다예",
+      id: '1',
+      name: '이다예',
     },
   ];
   return (

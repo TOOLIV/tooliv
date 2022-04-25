@@ -1,17 +1,28 @@
-import { atom } from "recoil";
-import { ThemeMode } from "../types/common/themeTypes";
+import { atom } from 'recoil';
+import { contentTypes } from '../types/channel/contentType';
+import { ThemeMode } from '../types/common/themeTypes';
 
 export const appThemeMode = atom<ThemeMode>({
-  key: "AppThemeMode",
-  default: "light",
+  key: 'AppThemeMode',
+  default: 'light',
 });
 
 export const isOpenSide = atom<boolean>({
-  key: "IsOpenSide",
+  key: 'IsOpenSide',
   default: true,
 });
 
 export const isOpenChat = atom<boolean>({
-  key: "IsChatOpen",
+  key: 'IsChatOpen',
   default: false,
+});
+
+export const channelMessage = atom<string>({
+  key: 'ChannelMessage',
+  default: '',
+});
+
+export const channelContents = atom<contentTypes[]>({
+  key: 'ChannelContents',
+  default: [],
 });
