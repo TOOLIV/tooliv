@@ -26,11 +26,11 @@ public class ChannelMemberServiceImpl  implements ChannelMemberService{
 
     @Transactional
     @Override
-    public void addChannelMember(RegisterChannelMemberRequestDTO registerChannelMemberRequestDTO) {
+    public void addChannelMember(String channelId, RegisterChannelMemberRequestDTO registerChannelMemberRequestDTO) {
         User user = userRepository.findByEmailAndDeletedAt(registerChannelMemberRequestDTO.getEmail(), null)
             .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
 
-        Channel channel = channelRepository.findByIdAndDeletedAt(registerChannelMemberRequestDTO.getChannelId(), null)
+        Channel channel = channelRepository.findByIdAndDeletedAt(channelId, null)
             .orElseThrow(() -> new IllegalArgumentException("채널 정보가 존재하지 않습니다."));
 
         ChannelMembers channelMembers = ChannelMembers.builder()
@@ -45,11 +45,11 @@ public class ChannelMemberServiceImpl  implements ChannelMemberService{
 
     @Transactional
     @Override
-    public void deleteChannelMember(DeleteChannelMemberRequestDTO deleteChannelMemberRequestDTO) {
+    public void deleteChannelMember(String channelId, DeleteChannelMemberRequestDTO deleteChannelMemberRequestDTO) {
         User user = userRepository.findByEmailAndDeletedAt(deleteChannelMemberRequestDTO.getEmail(), null)
             .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
 
-        Channel channel = channelRepository.findByIdAndDeletedAt(deleteChannelMemberRequestDTO.getChannelId(), null)
+        Channel channel = channelRepository.findByIdAndDeletedAt(channelId, null)
             .orElseThrow(() -> new IllegalArgumentException("채널 정보가 존재하지 않습니다."));
 
         channelMembersRepository.deleteByUserAndChannel(user, channel);
