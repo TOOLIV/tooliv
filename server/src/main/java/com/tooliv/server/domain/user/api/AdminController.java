@@ -114,9 +114,10 @@ public class AdminController {
         @ApiResponse(code = 204, message = "회원 삭제 완료"),
         @ApiResponse(code = 409, message = "회원 삭제 실패"),
     })
-    public ResponseEntity<? extends BaseResponseDTO> deleteUser() {
+    public ResponseEntity<? extends BaseResponseDTO> deleteUser(
+        @ApiParam(value="삭제할 회원 이메일", required = true) @RequestParam String email) {
         try {
-            adminService.deleteUser();
+            adminService.deleteUser(email);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(409).body(BaseResponseDTO.of("회원 삭제 실패"));
         }

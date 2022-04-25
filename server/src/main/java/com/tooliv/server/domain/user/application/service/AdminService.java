@@ -16,7 +16,7 @@ public interface AdminService {
 
     void checkEmail(String email) throws NotUniqueEmailException;
 
-    void deleteUser();
+    void deleteUser(String email);
 
     User getCurrentUser();
 
