@@ -35,6 +35,7 @@ public class UserInfoResponseDTO {
         this.email = email;
         this.name = name;
         this.nickname = nickname;
+        this.userCode = userCode;
         this.profileImage = profileImage;
     }
 }
