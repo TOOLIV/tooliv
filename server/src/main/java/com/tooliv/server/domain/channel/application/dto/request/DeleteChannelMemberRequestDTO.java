@@ -12,10 +12,6 @@ import lombok.NoArgsConstructor;
 public class DeleteChannelMemberRequestDTO {
 
     @NotNull
-    @ApiModelProperty(name = "채널ID")
-    private String channelId;
-
-    @NotNull
     @ApiModelProperty(name = "email")
     private String email;
 

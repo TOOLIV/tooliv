@@ -3,6 +3,7 @@ package com.tooliv.server.domain.channel.api;
 import com.tooliv.server.domain.channel.application.ChannelMemberService;
 import com.tooliv.server.domain.channel.application.dto.request.DeleteChannelMemberRequestDTO;
 import com.tooliv.server.domain.channel.application.dto.request.RegisterChannelMemberRequestDTO;
+
 import com.tooliv.server.domain.channel.application.dto.response.ChannelMemberListGetResponseDTO;
 import com.tooliv.server.global.common.BaseResponseDTO;
 import io.swagger.annotations.Api;
@@ -10,6 +11,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -25,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin("*")
 @Api(value = "ChannelMembers API", tags = {"Channel Members"})
 @RequiredArgsConstructor
-@RequestMapping("/api/channel-member")
+@RequestMapping("/api/channel/{channelId}/member")
 public class ChannelMemberController {
 
     private final ChannelMemberService channelMemberService;
@@ -37,9 +39,10 @@ public class ChannelMemberController {
         @ApiResponse(code = 409, message = "채널멤버 등록 실패"),
     })
     public ResponseEntity<? extends BaseResponseDTO> registerChannelMember(
+        @PathVariable("channelId") @Valid  @ApiParam(value="채널 ID", required=true) String channelId,
         @RequestBody @ApiParam(value = "채널멤버 등록 정보", required = true) RegisterChannelMemberRequestDTO registerChannelMemberRequestDTO) {
         try {
-            channelMemberService.addChannelMember(registerChannelMemberRequestDTO);
+            channelMemberService.addChannelMember(channelId, registerChannelMemberRequestDTO);
         } catch (Exception e) {
             return ResponseEntity.status(409).body(BaseResponseDTO.of("채널멤버 등록 실패"));
         }
@@ -53,16 +56,17 @@ public class ChannelMemberController {
         @ApiResponse(code = 409, message = "채널멤버 삭제 실패"),
     })
     public ResponseEntity<? extends BaseResponseDTO> deleteChannelMember(
+        @PathVariable("channelId") @Valid @ApiParam(value="채널 ID", required=true) String channelId,
         @RequestBody @ApiParam(value = "채널멤버 등록 삭제", required = true) DeleteChannelMemberRequestDTO deleteChannelMemberRequestDTO) {
         try {
-            channelMemberService.deleteChannelMember(deleteChannelMemberRequestDTO);
+            channelMemberService.deleteChannelMember(channelId, deleteChannelMemberRequestDTO);
         } catch (Exception e) {
             return ResponseEntity.status(409).body(BaseResponseDTO.of("채널멤버 삭제 실패"));
         }
         return ResponseEntity.status(201).body(BaseResponseDTO.of("채널멤버 삭제 완료"));
     }
 
-    @GetMapping("/list/{channelId}")
+    @GetMapping("/list")
     @ApiOperation(value = "채널멤버 목록 조회")
     @ApiResponses({
         @ApiResponse(code = 200, message = "채널멤버 목록 조회 완료"),

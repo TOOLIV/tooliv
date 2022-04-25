@@ -6,9 +6,9 @@ import com.tooliv.server.domain.workspace.application.dto.response.WorkspaceMemb
 
 public interface WorkspaceMemberService {
 
-    void addWorkspaceMember(RegisterWorkspaceMemberRequestDTO registerWorkspaceMemberRequestDTO);
+    void addWorkspaceMember(String workspaceId, RegisterWorkspaceMemberRequestDTO registerWorkspaceMemberRequestDTO);
 
-    void deleteWorkspaceMember(DeleteWorkspaceMemberRequestDTO deleteWorkspaceMemberRequestDTO);
+    void deleteWorkspaceMember(String workspaceId, DeleteWorkspaceMemberRequestDTO deleteWorkspaceMemberRequestDTO);
 
     WorkspaceMemberListGetResponseDTO getWorkspaceMemberList(String workspaceId);
 
