@@ -1,18 +1,14 @@
-import styled from '@emotion/styled';
-import FindUserSection from '../organisms/admin/userManagement/FindUserSection';
-import InfoSection from '../organisms/admin/userManagement/InfoSection';
+import React, { useRef } from 'react';
+import InputBox from '../molecules/inputBox/InputBox';
+import CreateUserSection from '../organisms/admin/userCreation/CreateUserSection';
+import HandleUserSection from '../organisms/admin/userCreation/HandleUserSection';
 
-const Header = styled.div`
-  margin-bottom: 40px;
-`;
 const UserManagePage = () => {
   return (
-    <div>
-      <Header>
-        <InfoSection />
-      </Header>
-      <FindUserSection />
-    </div>
+    <>
+      <CreateUserSection />
+      <HandleUserSection />
+    </>
   );
 };
 

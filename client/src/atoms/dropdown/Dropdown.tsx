@@ -19,7 +19,7 @@ const colourStyles = {
 };
 
 const Dropdown = ({
-  defaultValue,
+  // defaultValue,
   options,
   selected,
   onChange,
@@ -27,7 +27,6 @@ const Dropdown = ({
   return (
     <Container>
       <Select
-        defaultValue={defaultValue}
         options={options}
         onChange={onChange}
         value={selected}
