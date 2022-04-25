@@ -70,8 +70,8 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void deleteUser() {
-        User user = getCurrentUser();
+    public void deleteUser(String email) {
+        User user = userRepository.findByEmailAndDeletedAt(email, null).orElseThrow(() -> new UserNotFound)
 
         user.deleteUser(LocalDateTime.now());
 
