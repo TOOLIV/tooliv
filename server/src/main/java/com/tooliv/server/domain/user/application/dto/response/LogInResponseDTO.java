@@ -24,6 +24,9 @@ public class LogInResponseDTO extends BaseResponseDTO {
     @ApiModelProperty(name = "회원 코드")
     private UserCode userCode;
 
+    @ApiModelProperty(name = "프로필 이미지")
+    private String profileImage;
+
     @ApiModelProperty(name = "AccessToken")
     private String accessToken;
 

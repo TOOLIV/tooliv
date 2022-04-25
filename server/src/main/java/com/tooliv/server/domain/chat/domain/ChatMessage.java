@@ -3,6 +3,7 @@ package com.tooliv.server.domain.chat.domain;
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.global.common.BaseEntity;
 import java.awt.TrayIcon.MessageType;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,6 +15,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Getter
@@ -32,12 +34,12 @@ public class ChatMessage extends BaseEntity {
     private LocalDateTime sendTime;
 
     // 채팅방 => 채널방으로 변경의 여지가 있다.
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "room_id")
     private ChatRoom chatRoom;
 
     // 작성자
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User sender;
 

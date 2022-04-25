@@ -1,9 +1,7 @@
 package com.tooliv.server.domain.user.api;
 
-import com.tooliv.server.domain.user.application.dto.request.NicknameUpdateRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.SignUpRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.UserCodeUpdateRequestDTO;
-import com.tooliv.server.domain.user.application.dto.response.NicknameResponseDTO;
 import com.tooliv.server.domain.user.application.dto.response.UserListResponseDTO;
 import com.tooliv.server.domain.user.application.service.AdminService;
 import com.tooliv.server.domain.user.exception.NotUniqueEmailException;
@@ -16,8 +14,8 @@ import io.swagger.annotations.ApiResponses;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -70,7 +68,7 @@ public class AdminController {
         return ResponseEntity.status(200).body(BaseResponseDTO.of("이메일 사용 가능"));
     }
 
-    @GetMapping("/list/user")
+    @GetMapping("/search")
     @ApiOperation(value = "회원 정보 목록 조회")
     @ApiResponses({
         @ApiResponse(code = 200, message = "회원 정보 목록 조회 완료"),
@@ -108,6 +106,23 @@ public class AdminController {
             return ResponseEntity.status(409).body(BaseResponseDTO.of("권한 변경 실패"));
         }
         return ResponseEntity.status(200).body(BaseResponseDTO.of("권한 변경 완료"));
+    }
+
+    @DeleteMapping()
+    @ApiOperation(value = "회원 삭제")
+    @ApiResponses({
+        @ApiResponse(code = 204, message = "회원 삭제 완료"),
+        @ApiResponse(code = 409, message = "회원 삭제 실패"),
+    })
+    public ResponseEntity<? extends BaseResponseDTO> deleteUser(
+        @ApiParam(value="삭제할 회원 이메일", required = true) @RequestParam String email) {
+        try {
+            adminService.deleteUser(email);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(409).body(BaseResponseDTO.of("회원 삭제 실패"));
+        }
+
+        return ResponseEntity.status(204).body(BaseResponseDTO.of("회원 삭제 완료"));
     }
 
 }

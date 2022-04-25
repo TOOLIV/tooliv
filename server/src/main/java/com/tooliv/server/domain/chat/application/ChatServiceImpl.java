@@ -1,11 +1,14 @@
 package com.tooliv.server.domain.chat.application;
 
 import com.tooliv.server.domain.chat.application.dto.request.ChatRequestDTO;
-import com.tooliv.server.domain.chat.domain.ChatMessage;
+import com.tooliv.server.domain.chat.application.dto.request.ChatRoomUserInfoRequestDTO;
+import com.tooliv.server.domain.chat.application.dto.response.ChatRoomInfoDTO;
+import com.tooliv.server.domain.chat.application.dto.response.ChatRoomListResponseDTO;
 import com.tooliv.server.domain.chat.domain.ChatRoom;
 import com.tooliv.server.domain.chat.domain.repository.ChatRoomRepository;
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +32,6 @@ public class ChatServiceImpl implements ChatService {
     // Redis
     private static final String CHAT_ROOMS = "CHAT_ROOM";
     public static final String ENTER_INFO = "ENTER_INFO"; // 채팅룸에 입장한 클라이언트의 sessionId와 채팅룸 id를 맵핑한 정보 저장
-//    private final RedisTemplate<String, Object> redisTemplate;
     private final RedisTemplate<String, ChatRequestDTO> redisTemplate;
     private HashOperations<String, String, ChatRoom> opsHashChatRoom;
     // 채팅방의 대화 메시지를 발행하기 위한 redis topic 정보. 서버별로 채팅방에 매치되는 topic정보를 Map에 넣어 roomId로 찾을수 있도록 한다.
@@ -48,16 +50,40 @@ public class ChatServiceImpl implements ChatService {
     private final UserRepository userRepository;
 
     @Override
-    public ChatMessage createChatMessage(ChatRequestDTO chatRequestDTO) {
-        ChatRoom chatRoom = findRoomById(chatRequestDTO.getRoomId());
-        User user = userRepository.findByNickname(chatRequestDTO.getSender()).orElseThrow(null);
-        ChatMessage chatMessage = ChatMessage.builder()
-            .chatRoom(chatRoom)
-            .sender(user)
-            .content(chatRequestDTO.getContents())
-            .type(chatRequestDTO.getType())
-            .build();
-        return chatMessage;
+    public ChatRoomListResponseDTO getChatRoomList(String email) {
+        List<ChatRoomInfoDTO> chatRoomListResponseDTO = new ArrayList<>();
+        User user = userRepository.findByEmailAndDeletedAt(email, null)
+            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+        for (ChatRoom chatRoom : chatRoomRepository.findChatRoomsByCustomer(user).orElseThrow(() -> new IllegalArgumentException("조회 가능한 채팅방이 없습니다."))) {
+            chatRoomListResponseDTO.add(new ChatRoomInfoDTO(chatRoom.getId(), chatRoom.getName()));
+        }
+
+        return new ChatRoomListResponseDTO(chatRoomListResponseDTO);
+    }
+
+    @Override
+    public ChatRoom createChatRoom(ChatRoomUserInfoRequestDTO chatRoomUserInfoRequestDTO) {
+        User customer = userRepository.findByEmailAndDeletedAt(chatRoomUserInfoRequestDTO.getEmail(), null)
+            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+        String nickname = customer.getNickname();
+        ChatRoom chatRoom = ChatRoom.builder().name(nickname).customer(customer).build();
+        String id = chatRoomRepository.save(chatRoom).getId();
+        try {
+            opsHashChatRoom.put(CHAT_ROOMS, id, chatRoom);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return chatRoom;
+    }
+
+    @Override
+    public void enterChatRoom(String roomId) {
+        ChannelTopic topic = topics.get(roomId);
+        if (topic == null) {
+            topic = new ChannelTopic(roomId);
+        }
+        redisMessageListener.addMessageListener(redisSubscriber, topic);
+        topics.put(roomId, topic);
     }
 
     @Override
@@ -66,26 +92,19 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public ChatRoom findRoomById(String roomId) {
-        ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElseThrow(null);
-        return chatRoom;
-    }
-
-    @Override
-    public void deleteById(String roomId) {
-        chatRoomRepository.deleteById(roomId);
-    }
-
-    @Override
     public List<ChatRequestDTO> getChatInfoValue(String key) {
-        List<ChatRequestDTO> chatInfoList = redisTemplate.opsForList().range(key, 0, -1);
-        return chatInfoList;
-
+        try {
+            List<ChatRequestDTO> chatInfoList = redisTemplate.opsForList().range(key, 0, -1);
+            return chatInfoList;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
     public void setChatInfoValue(String key, ChatRequestDTO value) {
-        redisTemplate.opsForList().rightPush(key, value);
+        System.out.println(redisTemplate.opsForList().rightPush(key, value));
     }
 
     // 유저가 입장한 채팅방ID와 유저 세션ID 맵핑 정보 저장
