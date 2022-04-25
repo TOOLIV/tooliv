@@ -3,10 +3,8 @@ package com.tooliv.server.domain.channel.api;
 import com.tooliv.server.domain.channel.application.ChannelMemberService;
 import com.tooliv.server.domain.channel.application.dto.request.DeleteChannelMemberRequestDTO;
 import com.tooliv.server.domain.channel.application.dto.request.RegisterChannelMemberRequestDTO;
-<<<<<<< HEAD
-=======
+
 import com.tooliv.server.domain.channel.application.dto.response.ChannelMemberListGetResponseDTO;
->>>>>>> 932ed6b60c3d0ef60b5ed9fb8ffd446f9f05cdc3
 import com.tooliv.server.global.common.BaseResponseDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -18,10 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
-<<<<<<< HEAD
-=======
 import org.springframework.web.bind.annotation.GetMapping;
->>>>>>> 932ed6b60c3d0ef60b5ed9fb8ffd446f9f05cdc3
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -71,7 +66,7 @@ public class ChannelMemberController {
         return ResponseEntity.status(201).body(BaseResponseDTO.of("채널멤버 삭제 완료"));
     }
 
-    @GetMapping("/list/{channelId}")
+    @GetMapping("/list")
     @ApiOperation(value = "채널멤버 목록 조회")
     @ApiResponses({
         @ApiResponse(code = 200, message = "채널멤버 목록 조회 완료"),
