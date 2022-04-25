@@ -6,9 +6,12 @@ import com.tooliv.server.domain.channel.application.dto.response.ChannelListGetR
 import com.tooliv.server.domain.channel.domain.Channel;
 import com.tooliv.server.domain.channel.application.dto.request.RegisterChannelRequestDTO;
 import com.tooliv.server.domain.channel.domain.ChannelMembers;
+import com.tooliv.server.domain.channel.domain.ChannelVideo;
+import com.tooliv.server.domain.channel.domain.enums.ChannelCode;
 import com.tooliv.server.domain.channel.domain.enums.ChannelMemberCode;
 import com.tooliv.server.domain.channel.domain.repository.ChannelMembersRepository;
 import com.tooliv.server.domain.channel.domain.repository.ChannelRepository;
+import com.tooliv.server.domain.channel.domain.repository.ChannelVideoRepository;
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
 import com.tooliv.server.domain.workspace.domain.Workspace;
@@ -31,6 +34,8 @@ public class ChannelServiceImpl implements ChannelService {
     private final ChannelRepository channelRepository;
 
     private final ChannelMembersRepository channelMembersRepository;
+
+    private final ChannelVideoRepository channelVideoRepository;
 
     private final UserRepository userRepository;
 
@@ -55,6 +60,15 @@ public class ChannelServiceImpl implements ChannelService {
             .build();
 
         channelRepository.save(channel);
+
+        if(registerChannelRequestDTO.getChannelCode() == ChannelCode.VIDEO){
+            ChannelVideo channelVideo = ChannelVideo.builder()
+                .isActive(false)
+                .channel(channel)
+                .build();
+
+            channelVideoRepository.save(channelVideo);
+        }
 
         ChannelMembers channelMembers = ChannelMembers.builder()
             .createdAt(now)
@@ -104,7 +118,7 @@ public class ChannelServiceImpl implements ChannelService {
         User user = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
             .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
 
-        List<ChannelMembers> channelMemberList = channelMembersRepository.findChannelByUser(user);
+        List<ChannelMembers> channelMemberList = channelMembersRepository.findByUser(user);
         List<ChannelGetResponseDTO> channelGetResponseDTOList = new ArrayList<>();
         channelMemberList.forEach(channelMember -> {
             Channel channel = channelMember.getChannel();

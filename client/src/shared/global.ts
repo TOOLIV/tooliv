@@ -6,6 +6,7 @@ const reset = css`
 */
   * {
     box-sizing: border-box;
+    /* overflow: hidden; */
   }
 
   html,

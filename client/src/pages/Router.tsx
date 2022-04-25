@@ -17,7 +17,6 @@ import UserManagePage from './UserManagePage';
 const AppRouter = () => {
   return (
     <>
-      {/* <BrowserRouter> */}
       <HashRouter>
         <Routes>
           <Route path="/" element={<Home />}>
