@@ -20,10 +20,12 @@ const Container = styled.div`
 
 const ProfileContainer = styled.div`
   display: flex;
+  align-items: center;
 `;
 
 const ContentContainer = styled.div`
   padding: 16px;
+  padding-left: 30px;
 `;
 
 const Message = ({ roomId, sender, contents, type }: contentTypes) => {
