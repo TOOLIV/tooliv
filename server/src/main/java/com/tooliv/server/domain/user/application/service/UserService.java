@@ -19,6 +19,8 @@ public interface UserService {
 
     void uploadProfileImage(MultipartFile multipartFile);
 
+    void checkEmail(String email);
+
     UserListResponseDTO getUserList(String keyword);
 
     User getCurrentUser();
