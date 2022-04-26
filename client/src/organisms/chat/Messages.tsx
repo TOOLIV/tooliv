@@ -43,9 +43,8 @@ const Messages = () => {
 
   return (
     <Container ref={messageBoxRef}>
-      {contents.map((content, index) => (
-        <Message key={index} {...content} />
-      ))}
+      {contents &&
+        contents.map((content, index) => <Message key={index} {...content} />)}
     </Container>
   );
 };

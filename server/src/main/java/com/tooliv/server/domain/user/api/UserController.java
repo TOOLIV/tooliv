@@ -115,20 +115,4 @@ public class UserController {
             .body(NicknameResponseDTO.of("닉네임 변경 완료", nicknameResponseDTO));
     }
 
-    @DeleteMapping()
-    @ApiOperation(value = "회원 탈퇴")
-    @ApiResponses({
-        @ApiResponse(code = 204, message = "회원 탈퇴 완료"),
-        @ApiResponse(code = 409, message = "회원 탈퇴 실패"),
-    })
-    public ResponseEntity<? extends BaseResponseDTO> deleteUser() {
-        try {
-            userService.deleteUser();
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(409).body(BaseResponseDTO.of("회원 탈퇴 실패"));
-        }
-
-        return ResponseEntity.status(204).body(BaseResponseDTO.of("회원 탈퇴 완료"));
-    }
-
 }

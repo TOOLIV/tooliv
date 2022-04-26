@@ -26,6 +26,9 @@ const IconButton = styled.div`
 
 const UserBadge = ({ name, email, onClick }: userBadgeTypes) => {
   const emailForm = `(${email})`;
+  const handleDelete = () => {
+    onClick(email);
+  };
   return (
     <Container>
       <TextBox>
@@ -33,7 +36,7 @@ const UserBadge = ({ name, email, onClick }: userBadgeTypes) => {
         <Text size={12}>{emailForm}</Text>
       </TextBox>
       <IconButton>
-        <Icons icon="xMark" color="primary" onClick={onClick} />
+        <Icons icon="xMark" color="primary" onClick={handleDelete} />
       </IconButton>
     </Container>
   );

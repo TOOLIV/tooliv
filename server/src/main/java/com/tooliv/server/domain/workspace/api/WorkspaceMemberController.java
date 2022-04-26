@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -25,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin("*")
 @Api(value = "Workspace Members API", tags = {"Workspace Members"})
 @RequiredArgsConstructor
-@RequestMapping("/api/workspace-member")
+@RequestMapping("/api/workspace/{workspaceId}/member")
 public class WorkspaceMemberController {
 
     private final WorkspaceMemberService workspaceMemberService;
@@ -37,9 +38,10 @@ public class WorkspaceMemberController {
         @ApiResponse(code = 409, message = "워크스페이스 멤버 등록 실패"),
     })
     public ResponseEntity<? extends BaseResponseDTO> registerWorkspaceMember(
+        @PathVariable("workspaceId") @Valid @ApiParam(value="워크스페이스 ID", required=true) String workspaceId,
         @RequestBody @ApiParam(value = "워크스페이스 멤버 등록 정보", required = true) RegisterWorkspaceMemberRequestDTO registerWorkspaceMemberRequestDTO) {
         try {
-            workspaceMemberService.addWorkspaceMember(registerWorkspaceMemberRequestDTO);
+            workspaceMemberService.addWorkspaceMember(workspaceId, registerWorkspaceMemberRequestDTO);
         } catch (Exception e) {
             return ResponseEntity.status(409).body(BaseResponseDTO.of("워크스페이스 멤버 등록 실패"));
         }
@@ -53,16 +55,17 @@ public class WorkspaceMemberController {
         @ApiResponse(code = 409, message = "워크스페이스 멤버 삭제 실패"),
     })
     public ResponseEntity<? extends BaseResponseDTO> deleteWorkspaceMember(
+        @PathVariable("workspaceId") @Valid @ApiParam(value="워크스페이스 ID", required=true) String workspaceId,
         @RequestBody @ApiParam(value = "워크스페이스 멤버 등록 삭제", required = true) DeleteWorkspaceMemberRequestDTO deleteWorkspaceMemberRequestDTO) {
         try {
-            workspaceMemberService.deleteWorkspaceMember(deleteWorkspaceMemberRequestDTO);
+            workspaceMemberService.deleteWorkspaceMember(workspaceId, deleteWorkspaceMemberRequestDTO);
         } catch (Exception e) {
             return ResponseEntity.status(409).body(BaseResponseDTO.of("워크스페이스 멤버 삭제 실패"));
         }
         return ResponseEntity.status(201).body(BaseResponseDTO.of("워크스페이스 멤버 삭제 완료"));
     }
 
-    @GetMapping("/list/{workspaceId}")
+    @GetMapping("/list")
     @ApiOperation(value = "워크스페이스멤버 목록 조회")
     @ApiResponses({
         @ApiResponse(code = 200, message = "워크스페이스멤버 목록 조회 완료"),
@@ -70,7 +73,7 @@ public class WorkspaceMemberController {
         @ApiResponse(code = 409, message = "워크스페이스멤버 목록 조회 실패"),
     })
     public ResponseEntity<? extends BaseResponseDTO> getWorkspaceMemberList(
-        @PathVariable("workspaceId") @ApiParam(value="워크스페이스 ID", required=true) String workspaceId) {
+        @PathVariable("workspaceId") @Valid @ApiParam(value="워크스페이스 ID", required=true) String workspaceId) {
         WorkspaceMemberListGetResponseDTO workspacememberListGetResponseDTO = null;
 
         try {

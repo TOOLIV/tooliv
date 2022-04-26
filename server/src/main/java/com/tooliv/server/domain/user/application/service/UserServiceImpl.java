@@ -70,15 +70,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser() {
-        User user = getCurrentUser();
-
-        user.deleteUser(LocalDateTime.now());
-
-        userRepository.save(user);
-    }
-
-    @Override
     public void uploadProfileImage(MultipartFile multipartFile) {
         String fileName = awsS3Service.uploadImage(multipartFile);
 

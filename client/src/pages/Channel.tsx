@@ -26,7 +26,7 @@ const Channel = () => {
   let sockJS = new SockJS('http://localhost:8080/chatting');
   let client = Stomp.over(sockJS);
   const token =
-    'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGVAbmF2ZXIuY29tIiwiYXV0aCI6IlJPTEVfVVNFUiIsImlzcyI6IlRvb2xpdiIsImlhdCI6MTY1MDg2MDQ5NiwiZXhwIjoxNjUwOTQ2ODk2fQ.ciUzoJ91N_CljArGUAGR9NKSdxktZaGmiLIfhMuRmssYbEyM8SiwM-vN0sZlB6_5AqqyozC6WrNU9Mt7fe5pHA';
+    'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGVAbmF2ZXIuY29tIiwiYXV0aCI6IlJPTEVfVVNFUiIsImlzcyI6IlRvb2xpdiIsImlhdCI6MTY1MDkzNzM3MiwiZXhwIjoxNjUxMDIzNzcyfQ.e4HGtKNs-qjsdXowigwbl1rGfZufb3efBw6DBpRp8q9ctC3UbgkVYRRpuvFxlsPUOe5Ri2avjHUpNFzJ1NEbfg';
   const channelId = 'b472907f-122f-4db7-9617-d0d5b5671e36';
 
   useEffect(() => {
@@ -54,6 +54,7 @@ const Channel = () => {
                 }
               )
               .then((res) => {
+                console.log(res);
                 console.log([...contents, res.data.chatMessageDTOList]);
                 setContents(res.data.chatMessageDTOList);
               });

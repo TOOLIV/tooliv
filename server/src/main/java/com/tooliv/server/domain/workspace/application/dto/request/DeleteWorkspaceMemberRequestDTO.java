@@ -12,10 +12,6 @@ import lombok.NoArgsConstructor;
 public class DeleteWorkspaceMemberRequestDTO {
 
     @NotNull
-    @ApiModelProperty(name = "워크스페이스 ID")
-    private String workspaceId;
-
-    @NotNull
     @ApiModelProperty(name = "email")
     private String email;
 

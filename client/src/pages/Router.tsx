@@ -10,13 +10,14 @@ import Home from './Home';
 import Channel from './Channel';
 import Meeting from './Meeting';
 import Test from './Test';
+import UserAuthPage from './UserAuthPage';
 import UserManagePage from './UserManagePage';
 // import Test from './Test';
 
 const AppRouter = () => {
   return (
     <>
-      <HashRouter>
+      <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />}>
             <Route path="" element={<Navigate replace to="/0/0" />} />
@@ -26,10 +27,11 @@ const AppRouter = () => {
               path="/meeting/:workspaceId/:channelId"
               element={<Meeting />}
             />
-            <Route path="/admin/*" element={<UserManagePage />} />
+            <Route path="/admin/auth" element={<UserAuthPage />} />
+            <Route path="/admin/manage" element={<UserManagePage />} />
           </Route>
         </Routes>
-      </HashRouter>
+      </BrowserRouter>
     </>
   );
 };

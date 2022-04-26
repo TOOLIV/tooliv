@@ -30,11 +30,11 @@ public class WorkspaceMemberServiceImpl implements WorkspaceMemberService {
 
     @Transactional
     @Override
-    public void addWorkspaceMember(RegisterWorkspaceMemberRequestDTO registerWorkspaceMemberRequestDTO) {
+    public void addWorkspaceMember(String workspaceId, RegisterWorkspaceMemberRequestDTO registerWorkspaceMemberRequestDTO) {
         User user = userRepository.findByEmailAndDeletedAt(registerWorkspaceMemberRequestDTO.getEmail(), null)
             .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
 
-        Workspace workspace = workspaceRepository.findByIdAndDeletedAt(registerWorkspaceMemberRequestDTO.getWorkspaceId(), null)
+        Workspace workspace = workspaceRepository.findByIdAndDeletedAt(workspaceId, null)
             .orElseThrow(() -> new IllegalArgumentException("워크스페이스 정보가 존재하지 않습니다."));
 
         WorkspaceMembers workspaceMembers = WorkspaceMembers.builder()
@@ -49,11 +49,11 @@ public class WorkspaceMemberServiceImpl implements WorkspaceMemberService {
 
     @Transactional
     @Override
-    public void deleteWorkspaceMember(DeleteWorkspaceMemberRequestDTO deleteWorkspaceMemberRequestDTO) {
+    public void deleteWorkspaceMember(String workspaceId, DeleteWorkspaceMemberRequestDTO deleteWorkspaceMemberRequestDTO) {
         User user = userRepository.findByEmailAndDeletedAt(deleteWorkspaceMemberRequestDTO.getEmail(), null)
             .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
 
-        Workspace workspace = workspaceRepository.findByIdAndDeletedAt(deleteWorkspaceMemberRequestDTO.getWorkspaceId(), null)
+        Workspace workspace = workspaceRepository.findByIdAndDeletedAt(workspaceId, null)
             .orElseThrow(() -> new IllegalArgumentException("워크스페이스 정보가 존재하지 않습니다."));
 
         workspaceMemberRepository.deleteByUserAndWorkspace(user, workspace);

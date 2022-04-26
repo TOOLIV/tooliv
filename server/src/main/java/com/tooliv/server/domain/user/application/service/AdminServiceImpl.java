@@ -8,10 +8,12 @@ import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.enums.UserCode;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
 import com.tooliv.server.domain.user.exception.NotUniqueEmailException;
+import com.tooliv.server.domain.user.exception.UserNotFoundException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -66,6 +68,24 @@ public class AdminServiceImpl implements AdminService {
         if (emailExists) {
             throw new NotUniqueEmailException("해당 이메일은 중복임");
         }
+    }
+
+    @Override
+    public void deleteUser(String email) {
+        System.out.println("email : " + email);
+        User user = userRepository.findByEmailAndDeletedAt(email, null).orElseThrow(() -> new UserNotFoundException("회원 정보가 존재하지 않습니다."));
+
+        user.deleteUser(LocalDateTime.now());
+
+        userRepository.save(user);
+    }
+
+    @Override
+    public User getCurrentUser() {
+        User user = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
+            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+
+        return user;
     }
 
     @Override

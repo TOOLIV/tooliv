@@ -30,7 +30,6 @@ const Input = forwardRef<HTMLInputElement, inputTypes>(
     return (
       <Container>
         <InputText
-          id="input"
           placeholder={placeholder}
           status={status}
           onChange={onChange}

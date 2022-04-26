@@ -1,6 +1,7 @@
 import { atom } from 'recoil';
 import { contentTypes } from '../types/channel/contentType';
 import { ThemeMode } from '../types/common/themeTypes';
+import { userCreationTypes } from '../types/common/userTypes';
 
 export const appThemeMode = atom<ThemeMode>({
   key: 'AppThemeMode',
@@ -24,5 +25,10 @@ export const channelMessage = atom<string>({
 
 export const channelContents = atom<contentTypes[]>({
   key: 'ChannelContents',
+  default: [],
+});
+
+export const userCreationList = atom<userCreationTypes[]>({
+  key: 'userCreationList',
   default: [],
 });

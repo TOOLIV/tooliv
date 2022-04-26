@@ -59,9 +59,8 @@ dependencies {
     // jasypt
     implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4")
 
-    // S3 Bucket
-//    implementation("org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE")
-//    implementation("com.amazonaws:aws-java-sdk:1.12.173")
+    // JSON
+    implementation("com.google.code.gson:gson:2.8.5")
 
     //socket
     implementation 'org.webjars:webjars-locator-core'

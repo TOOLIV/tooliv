@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import React from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import Header from '../atoms/home/Header';
 import Nav from '../atoms/home/Nav';
@@ -28,6 +28,7 @@ const InnerContainer = styled.div<{ leftMargin: number; rightMargin: number }>`
   padding: 30px 40px;
   width: inherit;
   height: calc(100vh - 116px);
+  background-color: ${(props) => props.theme.bgColor};
 `;
 
 const Home = () => {
