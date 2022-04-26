@@ -58,6 +58,9 @@ const Channel = () => {
                 console.log([...contents, res.data.chatMessageDTOList]);
                 setContents(res.data.chatMessageDTOList);
               });
+            client.subscribe(`/sub/chat/room/${channelId}`, (response) => {
+              setContents((prev) => [...prev, JSON.parse(response.body)]);
+            });
           });
       }
     );
@@ -77,6 +80,7 @@ const Channel = () => {
         type: 'TALK',
       })
     );
+    setMessage('');
   };
 
   return (
