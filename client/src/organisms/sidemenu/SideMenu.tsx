@@ -21,6 +21,7 @@ const SideMenu = () => {
   };
 
   const [isOpen, setIsOpen] = useRecoilState<boolean>(isOpenSide);
+
   return (
     <Container
       initial={false}

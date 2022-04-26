@@ -35,15 +35,18 @@ const SignUpBox = styled.div`
 `;
 
 const JoinForm = () => {
+  const inputNameRef = useRef<HTMLInputElement>(null);
   const inputEmailRef = useRef<HTMLInputElement>(null);
   const inputPasswordRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
-  const handleLogin = async () => {
+  const handleJoin = async () => {
+    const name = inputNameRef.current?.value!;
     const email = inputEmailRef.current?.value!;
     const password = inputPasswordRef.current?.value!;
 
     const body = {
+      name,
       email,
       password,
     };
@@ -67,7 +70,7 @@ const JoinForm = () => {
         <InputBox
           label="이름"
           placeholder="이름을 입력해주세요."
-          ref={inputEmailRef}
+          ref={inputNameRef}
         />
         <InputBox
           label="이메일"
@@ -81,12 +84,19 @@ const JoinForm = () => {
           ref={inputPasswordRef}
         />
       </InputArea>
-      <Button width="350" text="회원가입" onClick={handleLogin} />
+      <Button width="350" text="회원가입" onClick={handleJoin} />
       <SignUpBox>
         <Text size={12} color={'gray400'}>
           이미 TOOLIV 회원이신가요?
         </Text>
-        <Text size={12}>로그인</Text>
+        <Text
+          size={12}
+          onClick={() => {
+            navigate('/login');
+          }}
+        >
+          로그인
+        </Text>
       </SignUpBox>
     </Container>
   );

@@ -11,7 +11,9 @@ const LoginLogo = () => {
   return (
     <Container>
       <Logo width="150" height="150" />
-      <Text size={50}>TOOLIV</Text>
+      <Text size={50} weight={'700'}>
+        TOOLIV
+      </Text>
     </Container>
   );
 };

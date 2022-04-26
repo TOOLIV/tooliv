@@ -7,11 +7,13 @@ const Container = styled.p<{
   size: number;
   weight: string;
   color?: colorsTypes['color'];
+  onClick?: () => void;
 }>`
   font-size: ${(props) => props.size}px;
   font-weight: ${(props) => (props.weight === 'medium' ? 600 : 700)};
   color: ${(props) =>
     props.color ? colors[props.color] : props.theme.textColor};
+  cursor: ${(props) => (props.onClick ? 'pointer' : 'default')};
 `;
 
 const Text = ({

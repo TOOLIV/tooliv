@@ -37,7 +37,7 @@ const Editor = ({ onClick }: editorProps) => {
     <Container>
       <Input value={message} onChange={onChange}></Input>
       <Wrapper>
-        <Button onClick={onClick} width="50px" height="40px" text="전송" />
+        <Button onClick={onClick} width="50" height="40" text="전송" />
       </Wrapper>
     </Container>
   );

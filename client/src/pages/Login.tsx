@@ -1,6 +1,8 @@
 import styled from '@emotion/styled';
 import LoginForm from '../organisms/login/LoginForm';
 import LoginLogo from '../organisms/login/LoginLogo';
+import { ReactComponent as LoginImg } from '../assets/img/loginImg.svg';
+
 import { colors } from '../shared/color';
 
 const Container = styled.div`
@@ -13,6 +15,7 @@ const Container = styled.div`
 const LogoContainer = styled.div`
   display: flex;
   flex-direction: column;
+  margin-top: 115px;
   margin-right: 30px;
 `;
 
@@ -21,9 +24,9 @@ const Login = () => {
     <Container>
       <LogoContainer>
         <LoginLogo />
+        <LoginImg />
       </LogoContainer>
       <LoginForm />
-      {/* <LoginImg /> */}
     </Container>
   );
 };

@@ -16,16 +16,13 @@ const instance = axios.create({
 instance.interceptors.request.use(
   (config) => {
     // 추후 로그인 구현시 주석 해제
-    const user = sessionStorage.getItem('user');
+    const user = localStorage.getItem('user');
     if (user) {
       const Juser = JSON.parse(user);
       if (Juser.accessToken) {
         config.headers!.Authorization = 'Bearer ' + Juser.accessToken;
       }
     }
-    // config.headers!.Authorization =
-    //   'Bearer ' +
-    //   'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0aGRhbHN0bjYzNTJAbmF2ZXIuY29tIiwiYXV0aCI6IlJPTEVfVVNFUiIsImlzcyI6IlRvb2xpdiIsImlhdCI6MTY1MDg1MjkxNiwiZXhwIjoxNjUwOTM5MzE2fQ.1CCw0JRK8nEdkuA3m53eacRyRVJcqAwKMbu16a8g49n_6JU1JJpeUskeGDBxbMXbtgfhxKlLl-kEn4kWyQ19ew';
     return config;
   },
   (err) => {

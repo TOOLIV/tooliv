@@ -1,5 +1,5 @@
 import instance from '../services/axios';
-import { userLoginTypes } from '../types/common/userTypes';
+import { userCreationTypes, userLoginTypes } from '../types/common/userTypes';
 
 export const login = async (body: userLoginTypes) => {
   console.log(body);
@@ -9,18 +9,17 @@ export const login = async (body: userLoginTypes) => {
     accessToken: response.data.accessToken,
   };
 
-  sessionStorage.setItem('user', JSON.stringify(user));
+  localStorage.setItem('user', JSON.stringify(user));
   if (response.data.userCode === 'ADMIN')
-    sessionStorage.setItem('isAdmin', JSON.stringify(true));
-  else sessionStorage.removeItem('isAdmin');
+    localStorage.setItem('isAdmin', JSON.stringify(true));
+  else localStorage.removeItem('isAdmin');
 
   console.log(response);
   return response;
 };
 
-export const join = async (body: userLoginTypes) => {
-  console.log(body);
-  const response = await instance.post(`/user/login`, body);
+export const join = async (body: userCreationTypes) => {
+  const response = await instance.post(`/user`, body);
   console.log(response);
   return response;
 };

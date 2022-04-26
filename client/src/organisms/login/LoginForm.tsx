@@ -1,6 +1,8 @@
 import styled from '@emotion/styled';
 import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSetRecoilState } from 'recoil';
+import { token } from 'recoil/auth';
 import { login } from '../../api/userApi';
 import Button from '../../atoms/common/Button';
 import Text from '../../atoms/text/Text';
@@ -38,6 +40,7 @@ const LoginForm = () => {
   const inputEmailRef = useRef<HTMLInputElement>(null);
   const inputPasswordRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+  const setToken = useSetRecoilState(token);
 
   const handleLogin = async () => {
     const email = inputEmailRef.current?.value!;
@@ -49,7 +52,9 @@ const LoginForm = () => {
     };
     try {
       const response = await login(body);
-      console.log(response);
+      setToken({
+        accessToken: response.data.accessToken,
+      });
       navigate('/');
     } catch (error) {
       console.log(error);
@@ -81,7 +86,14 @@ const LoginForm = () => {
         <Text size={12} color={'gray400'}>
           TOOLIV이 처음이신가요?
         </Text>
-        <Text size={12}>회원가입</Text>
+        <Text
+          size={12}
+          onClick={() => {
+            navigate('/join');
+          }}
+        >
+          회원가입
+        </Text>
       </SignUpBox>
     </Container>
   );
