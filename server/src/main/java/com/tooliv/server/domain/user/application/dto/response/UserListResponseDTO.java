@@ -14,15 +14,15 @@ public class UserListResponseDTO extends BaseResponseDTO {
     private List<UserInfoResponseDTO> userInfoResponseDTOList;
 
     @ApiModelProperty("회원 수")
-    private int numberOfUser;
+    private int numberOfUsers;
 
     public UserListResponseDTO() {
 
     }
 
-    public UserListResponseDTO(List<UserInfoResponseDTO> userInfoResponseDTOList, int numberOfUser) {
+    public UserListResponseDTO(List<UserInfoResponseDTO> userInfoResponseDTOList, int numberOfUsers) {
         this.userInfoResponseDTOList = userInfoResponseDTOList;
-        this.numberOfUser = numberOfUser;
+        this.numberOfUsers = numberOfUsers;
     }
 
     public static UserListResponseDTO of(String message, UserListResponseDTO userListResponseDTO) {
