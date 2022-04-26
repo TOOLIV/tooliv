@@ -23,32 +23,16 @@ public class AdminServiceImpl implements AdminService {
 
     private final UserRepository userRepository;
 
-    private final PasswordEncoder passwordEncoder;
-
-    @Override
-    public void signUp(SignUpRequestDTO signUpRequestDTO) {
-        User user = User.builder()
-            .email(signUpRequestDTO.getEmail())
-            .name(signUpRequestDTO.getName())
-            .nickname(signUpRequestDTO.getName())
-            .password(passwordEncoder.encode(signUpRequestDTO.getPassword()))
-            .userCode(UserCode.USER)
-            .createdAt(LocalDateTime.now()).build();
-
-        userRepository.save(user);
-    }
-
     @Override
     public UserListResponseDTO getUserList(String keyword) {
         List<UserInfoResponseDTO> userInfoResponseDTOList = new ArrayList<>();
-//        List<User> userList = userRepository.findUser(keyword, UserCode.ADMIN, null);
 
         for (User user : userRepository.findAllByUserCodeNotAndDeletedAtAndNameContainingOrderByNameAsc(UserCode.ADMIN, null, keyword)
             .orElseThrow(() -> new IllegalArgumentException("조회 가능한 회원이 없음"))) {
             userInfoResponseDTOList.add(new UserInfoResponseDTO(user.getId(), user.getEmail(), user.getName(), user.getNickname(), user.getUserCode(), getImageURL(user.getProfileImage())));
         }
 
-        return new UserListResponseDTO(userInfoResponseDTOList);
+        return new UserListResponseDTO(userInfoResponseDTOList, userInfoResponseDTOList.size());
     }
 
     @Override
