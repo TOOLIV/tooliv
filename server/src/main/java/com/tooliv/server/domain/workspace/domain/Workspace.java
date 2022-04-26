@@ -1,11 +1,14 @@
 package com.tooliv.server.domain.workspace.domain;
 
-import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.global.common.BaseEntity;
-import lombok.*;
-
-import javax.persistence.*;
 import java.time.LocalDateTime;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Getter
@@ -27,8 +30,12 @@ public class Workspace extends BaseEntity {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
-    public void modifyWorkspace(String name) {
+    @Column(name = "thumbnail_image")
+    private String thumbnailImage;
+
+    public void modifyWorkspace(String name, String thumbnailImage) {
         this.name = name;
+        this.thumbnailImage = thumbnailImage;
         this.updatedAt = LocalDateTime.now();
     }
 
