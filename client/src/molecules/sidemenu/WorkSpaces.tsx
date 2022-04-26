@@ -5,7 +5,7 @@ import Icons from '../../atoms/common/Icons';
 import MenuTemplate from '../../atoms/sidemenu/MenuTemplate';
 import WorkSpace from '../../atoms/sidemenu/WorkSpace';
 import { isOpenSide } from '../../recoil/atom';
-import { sideMenuType } from '../../types/sidemenu/sideMenuType';
+import { labelType } from '../../types/common/labelType';
 
 const TopContainer = styled.div`
   display: flex;
@@ -31,7 +31,7 @@ const WorkSpaces = () => {
     setIsOpen((prev) => !prev);
   };
 
-  const dummyData: sideMenuType[] = [
+  const dummyData: labelType[] = [
     {
       id: '0',
       name: '서울 4반',
