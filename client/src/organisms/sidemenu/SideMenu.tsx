@@ -6,6 +6,7 @@ import Channels from '../../molecules/sidemenu/Channels';
 import Friends from '../../molecules/sidemenu/Friends';
 import WorkSpaces from '../../molecules/sidemenu/WorkSpaces';
 import { isOpenSide } from '../../recoil/atom';
+import WorkSpaceSection from './workspace/WorkSpaceSection';
 
 const Container = styled(motion.div)`
   margin-top: 24px;
@@ -28,7 +29,7 @@ const SideMenu = () => {
       animate={isOpen ? 'open' : 'closed'}
       variants={variants}
     >
-      <WorkSpaces />
+      <WorkSpaceSection />
       {isOpen && (
         <>
           <Channels />

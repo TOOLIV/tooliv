@@ -50,13 +50,13 @@ const FileUploader = ({ onChange }: workspaceImgType) => {
     inputRef.current?.click();
   };
 
-  const handleUploadImage = async (event: any) => {
+  const handleUploadImage = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     // setIsLoading(true);
-    const file = event.target.files;
-    onChange(URL.createObjectURL(file[0]));
+    const file = event.target.files!;
+    onChange(file);
     setImgFile(URL.createObjectURL(file[0]));
-    const formData = new FormData();
-    formData.append('file', file[0]);
   };
 
   return (
