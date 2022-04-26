@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -54,7 +53,7 @@ public class WorkspaceController {
         return ResponseEntity.status(201).body(BaseResponseDTO.of("채널 등록 완료"));
     }
 
-    @PatchMapping
+    @PatchMapping(consumes = {"multipart/form-data"})
     @ApiOperation(value = "워크스페이스 변경 , 필수 정보 - 워크스페이스ID, 워크스페이스명")
     @ApiResponses({
         @ApiResponse(code = 200, message = "워크스페이스 변경에 성공했습니다."),
@@ -62,10 +61,11 @@ public class WorkspaceController {
         @ApiResponse(code = 409, message = "워크스페이스 변경에 실패했습니다."),
     })
     public ResponseEntity<? extends BaseResponseDTO> modifyWorkspace(
-        @RequestBody @ApiParam(value = "수정할 워크스페이스 정보", required = true) ModifyWorkspaceRequestDTO modifyWorkspaceRequestDTO) {
+        @ApiParam(value="파일 업로드") @RequestPart(required = false) MultipartFile multipartFile,
+        @ApiParam(value = "수정할 워크스페이스 정보", required = true) @RequestPart ModifyWorkspaceRequestDTO modifyWorkspaceRequestDTO) {
 
         try {
-            Integer statusCode = workspaceService.modifyWorkspace(modifyWorkspaceRequestDTO);
+            Integer statusCode = workspaceService.modifyWorkspace(multipartFile, modifyWorkspaceRequestDTO);
 
             if (statusCode == 409) {
                 return ResponseEntity.status(409).body(BaseResponseDTO.of("워크스페이스 변경에 실패했습니다."));

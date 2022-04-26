@@ -33,8 +33,9 @@ public class Workspace extends BaseEntity {
     @Column(name = "thumbnail_image")
     private String thumbnailImage;
 
-    public void modifyWorkspace(String name) {
+    public void modifyWorkspace(String name, String thumbnailImage) {
         this.name = name;
+        this.thumbnailImage = thumbnailImage;
         this.updatedAt = LocalDateTime.now();
     }
 

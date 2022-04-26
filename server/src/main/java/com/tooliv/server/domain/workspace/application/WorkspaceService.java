@@ -9,7 +9,7 @@ public interface WorkspaceService {
 
     Integer registerWorkspace(MultipartFile multipartFile, RegisterWorkspaceRequestDTO registerWorkspaceRequestDTO);
 
-    Integer modifyWorkspace(ModifyWorkspaceRequestDTO modifyWorkspaceRequestDTO);
+    Integer modifyWorkspace(MultipartFile multipartFile, ModifyWorkspaceRequestDTO modifyWorkspaceRequestDTO);
 
     Integer deleteWorkspace(String workspaceId);
 

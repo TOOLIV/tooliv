@@ -88,11 +88,15 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Transactional
     @Override
-    public Integer modifyWorkspace(ModifyWorkspaceRequestDTO modifyWorkspaceRequestDTO) {
+    public Integer modifyWorkspace(MultipartFile multipartFile, ModifyWorkspaceRequestDTO modifyWorkspaceRequestDTO) {
         Workspace workspace = workspaceRepository.findById(modifyWorkspaceRequestDTO.getId())
             .orElseThrow(() -> new IllegalArgumentException("해당 워크스페이스를 찾을 수 없습니다."));
 
-        workspace.modifyWorkspace(modifyWorkspaceRequestDTO.getName());
+        String fileName = null;
+        if(multipartFile != null)
+            fileName = awsS3Service.uploadImage(multipartFile);
+
+        workspace.modifyWorkspace(modifyWorkspaceRequestDTO.getName(), fileName);
         workspaceRepository.save(workspace);
         return 200;
     }
