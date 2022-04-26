@@ -16,13 +16,24 @@ export const Layout = styled.div`
   flex-direction: column;
 `;
 const InputBox = forwardRef<HTMLInputElement, inputBoxTypes>(
-  ({ label, placeholder, message, status = 'default', onChange }, ref) => {
+  (
+    {
+      label,
+      placeholder,
+      message,
+      status = 'default',
+      type = 'text',
+      onChange,
+    },
+    ref
+  ) => {
     return (
       <Layout>
         <Label label={label} />
         <Input
           placeholder={placeholder}
           status={status}
+          type={type}
           onChange={onChange}
           ref={ref}
         />

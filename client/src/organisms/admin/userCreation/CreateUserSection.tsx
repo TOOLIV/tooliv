@@ -1,9 +1,10 @@
 import React, { useRef, useState } from 'react';
 import { useSetRecoilState } from 'recoil';
-import { checkUserEmail, createUser } from '../../../api/userApi';
+import { checkUserEmail, createUser } from '../../../api/adminApi';
 import Button from '../../../atoms/common/Button';
 import InputBox from '../../../molecules/inputBox/InputBox';
 import { userCreationList } from '../../../recoil/atom';
+import { AdminContainer } from '../userManagement/FindUserSection';
 
 const CreateUserSection = () => {
   const [emailStatus, setEmailStatus] = useState('default');
@@ -62,7 +63,7 @@ const CreateUserSection = () => {
   };
 
   return (
-    <div>
+    <AdminContainer>
       <InputBox
         label="이메일"
         placeholder="사용할 이메일을 입력해주세요."
@@ -77,7 +78,7 @@ const CreateUserSection = () => {
         ref={inputNameRef}
       />
       <Button width="50" height="35" text="추가" onClick={createUserInfo} />
-    </div>
+    </AdminContainer>
   );
 };
 

@@ -29,9 +29,11 @@ export type iconsTypes = {
     | 'monitor'
     | 'shareMonitor'
     | 'exit'
-    | 'message';
+    | 'message'
+    | 'image';
 
   onClick?: () => void;
-  large?: boolean;
+  width?: string;
+  height?: string;
   color?: colorsTypes['color'];
 };

@@ -1,27 +1,25 @@
 import instance from '../services/axios';
-import { userCodeTypes, userCreationTypes } from '../types/common/userTypes';
+import { userCreationTypes, userLoginTypes } from '../types/common/userTypes';
 
-export const findUser = async (keyword: string) => {
-  const response = await instance.get(`/admin/search?keyword=${keyword}`);
+export const login = async (body: userLoginTypes) => {
+  console.log(body);
+  const response = await instance.post(`/user/login`, body);
+  const user = {
+    name: response.data.name,
+    accessToken: response.data.accessToken,
+  };
+
+  localStorage.setItem('user', JSON.stringify(user));
+  if (response.data.userCode === 'ADMIN')
+    localStorage.setItem('isAdmin', JSON.stringify(true));
+  else localStorage.removeItem('isAdmin');
+
+  console.log(response);
   return response;
 };
 
-export const changeCode = async (body: userCodeTypes) => {
-  const response = await instance.patch(`/admin/code`, body);
-  return response;
-};
-
-export const createUser = async (body: userCreationTypes) => {
-  const response = await instance.post(`/admin/user`, body);
-  return response;
-};
-
-export const checkUserEmail = async (email: string) => {
-  const response = await instance.get(`/admin/check/${email}`);
-  return response;
-};
-
-export const deleteUser = async (email: string) => {
-  const response = await instance.delete(`/admin?email=${email}`);
+export const join = async (body: userCreationTypes) => {
+  const response = await instance.post(`/user`, body);
+  console.log(response);
   return response;
 };
