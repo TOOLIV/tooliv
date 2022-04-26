@@ -1,6 +1,7 @@
-import { iconsTypes } from "../common/iconsTypes";
+import { iconsTypes } from '../common/iconsTypes';
 
 export type functionButtonTypes = {
-  icon: iconsTypes["icon"];
+  icon: iconsTypes['icon'];
   exit?: boolean;
+  onClick: () => void;
 };

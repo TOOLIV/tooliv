@@ -1,4 +1,4 @@
-import { Device } from 'openvidu-browser';
+import { Device, Publisher } from 'openvidu-browser';
 
 export type openviduTypes = {
   mySessionId: string;
@@ -12,4 +12,8 @@ export type openviduTypes = {
 
 export type videoTypes = {
   openviduState: openviduTypes;
+};
+
+export type funcButtonPropsTypes = {
+  publisher: Publisher;
 };
