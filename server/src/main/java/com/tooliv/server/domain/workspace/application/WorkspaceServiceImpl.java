@@ -14,6 +14,7 @@ import com.tooliv.server.domain.workspace.domain.WorkspaceMembers;
 import com.tooliv.server.domain.workspace.domain.enums.WorkspaceMemberCode;
 import com.tooliv.server.domain.workspace.domain.repository.WorkspaceMemberRepository;
 import com.tooliv.server.domain.workspace.domain.repository.WorkspaceRepository;
+import com.tooliv.server.global.common.AwsS3Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -34,14 +36,19 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     private final UserRepository userRepository;
 
+    private final AwsS3Service awsS3Service;
+
     @Transactional
     @Override
-    public Integer registerWorkspace(RegisterWorkspaceRequestDTO registerWorkspaceRequestDTO) {
+    public Integer registerWorkspace(MultipartFile multipartFile, RegisterWorkspaceRequestDTO registerWorkspaceRequestDTO) {
 
         User owner = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
             .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
 
         LocalDateTime now = LocalDateTime.now();
+        String fileName = "";
+        if(multipartFile != null)
+            fileName = awsS3Service.uploadImage(multipartFile);
 
         boolean existWorkspace = workspaceRepository.existsByNameAndDeletedAt(registerWorkspaceRequestDTO.getName(), null);
         if (existWorkspace) {
@@ -51,6 +58,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         Workspace workspace = Workspace.builder()
             .name(registerWorkspaceRequestDTO.getName())
             .createdAt(now)
+            .thumbnailImage(fileName)
             .build();
 
         workspaceRepository.save(workspace);
