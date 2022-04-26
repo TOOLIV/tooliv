@@ -46,7 +46,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
 
         LocalDateTime now = LocalDateTime.now();
-        String fileName = "";
+        String fileName = null;
         if(multipartFile != null)
             fileName = awsS3Service.uploadImage(multipartFile);
 
@@ -121,11 +121,19 @@ public class WorkspaceServiceImpl implements WorkspaceService {
                 WorkspaceGetResponseDTO workspaceGetResponseDTO = WorkspaceGetResponseDTO.builder()
                     .id(workspace.getId())
                     .name(workspace.getName())
+                    .thumbnailImage(getImageURL(workspace.getThumbnailImage()))
                     .build();
 
                 workspaceGetResponseDTOList.add(workspaceGetResponseDTO);
             }
         });
         return new WorkspaceListGetResponseDTO(workspaceGetResponseDTOList);
+    }
+
+    @Override
+    public String getImageURL(String fileName) {
+        if(fileName == null)
+            return null;
+        return "https://tooliva402.s3.ap-northeast-2.amazonaws.com/" + fileName;
     }
 }
