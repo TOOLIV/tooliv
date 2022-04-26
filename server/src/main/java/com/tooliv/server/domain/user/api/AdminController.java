@@ -34,23 +34,6 @@ public class AdminController {
 
     private final AdminService adminService;
 
-    @GetMapping("/check/{email}")
-    @ApiOperation(value = "이메일 중복 체크")
-    @ApiResponses({
-        @ApiResponse(code = 200, message = "이메일 사용 가능"),
-        @ApiResponse(code = 409, message = "이메일 사용 불가"),
-    })
-    public ResponseEntity<? extends BaseResponseDTO> checkEmail(
-        @PathVariable("email") @ApiParam(value = "이메일", required = true) String email) {
-        try {
-            adminService.checkEmail(email);
-        } catch (NotUniqueEmailException e) {
-            return ResponseEntity.status(409).body(BaseResponseDTO.of("이메일 사용 불가"));
-        }
-
-        return ResponseEntity.status(200).body(BaseResponseDTO.of("이메일 사용 가능"));
-    }
-
     @GetMapping("/search")
     @ApiOperation(value = "회원 정보 목록 조회")
     @ApiResponses({

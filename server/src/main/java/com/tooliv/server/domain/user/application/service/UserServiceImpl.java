@@ -41,9 +41,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void signUp(SignUpRequestDTO signUpRequestDTO) {
-        if (userRepository.findByEmailAndDeletedAt(signUpRequestDTO.getEmail(), null).isPresent()) {
-            throw new DuplicateEmailException("해당 이메일로 가입된 계정이 있습니다.");
-        }
+        checkEmail(signUpRequestDTO.getEmail());
 
         User user = User.builder()
             .email(signUpRequestDTO.getEmail())
@@ -100,6 +98,16 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
     }
+
+    @Override
+    public void checkEmail(String email) {
+        boolean emailExists = userRepository.existsByEmailAndDeletedAt(email, null);
+
+        if (emailExists) {
+            throw new DuplicateEmailException("해당 이메일은 중복임");
+        }
+    }
+
 
     @Override
     public UserListResponseDTO getUserList(String keyword) {
