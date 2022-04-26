@@ -10,6 +10,7 @@ import com.tooliv.server.domain.user.application.dto.response.UserListResponseDT
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.enums.UserCode;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
+import com.tooliv.server.domain.user.exception.DuplicateEmailException;
 import com.tooliv.server.global.common.AwsS3Service;
 import com.tooliv.server.global.security.util.JwtAuthenticationProvider;
 import java.time.LocalDateTime;
@@ -40,6 +41,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void signUp(SignUpRequestDTO signUpRequestDTO) {
+        if (userRepository.findByEmailAndDeletedAt(signUpRequestDTO.getEmail(), null).isPresent()) {
+            throw new DuplicateEmailException("해당 이메일로 가입된 계정이 있습니다.");
+        }
+
         User user = User.builder()
             .email(signUpRequestDTO.getEmail())
             .name(signUpRequestDTO.getName())
