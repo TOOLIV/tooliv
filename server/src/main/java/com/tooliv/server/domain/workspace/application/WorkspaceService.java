@@ -1,20 +1,20 @@
 package com.tooliv.server.domain.workspace.application;
 
-import com.tooliv.server.domain.channel.application.dto.request.ModifyChannelRequestDTO;
-import com.tooliv.server.domain.channel.application.dto.request.RegisterChannelRequestDTO;
-import com.tooliv.server.domain.channel.application.dto.response.ChannelListGetResponseDTO;
 import com.tooliv.server.domain.workspace.application.dto.request.ModifyWorkspaceRequestDTO;
 import com.tooliv.server.domain.workspace.application.dto.request.RegisterWorkspaceRequestDTO;
 import com.tooliv.server.domain.workspace.application.dto.response.WorkspaceListGetResponseDTO;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface WorkspaceService {
 
-    Integer registerWorkspace(RegisterWorkspaceRequestDTO registerWorkspaceRequestDTO);
+    Integer registerWorkspace(MultipartFile multipartFile, RegisterWorkspaceRequestDTO registerWorkspaceRequestDTO);
 
-    Integer modifyWorkspace(ModifyWorkspaceRequestDTO modifyWorkspaceRequestDTO);
+    Integer modifyWorkspace(MultipartFile multipartFile, ModifyWorkspaceRequestDTO modifyWorkspaceRequestDTO);
 
     Integer deleteWorkspace(String workspaceId);
 
     WorkspaceListGetResponseDTO getWorkspaceList();
+
+    String getImageURL(String fileName);
 
 }
