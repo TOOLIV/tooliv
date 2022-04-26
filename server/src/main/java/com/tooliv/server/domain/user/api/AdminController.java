@@ -34,23 +34,6 @@ public class AdminController {
 
     private final AdminService adminService;
 
-    @PostMapping("/user")
-    @ApiOperation(value = "회원가입")
-    @ApiResponses({
-        @ApiResponse(code = 201, message = "회원가입 완료"),
-        @ApiResponse(code = 409, message = "회원가입 실패"),
-    })
-    public ResponseEntity<? extends BaseResponseDTO> signUp(
-        @RequestBody @Valid @ApiParam(value = "회원가입 정보", required = true) SignUpRequestDTO signUpRequestDTO) {
-        try {
-            adminService.signUp(signUpRequestDTO);
-        } catch (Exception e) {
-            return ResponseEntity.status(409).body(BaseResponseDTO.of("회원가입 실패"));
-        }
-
-        return ResponseEntity.status(201).body(BaseResponseDTO.of("회원가입 완료"));
-    }
-
     @GetMapping("/check/{email}")
     @ApiOperation(value = "이메일 중복 체크")
     @ApiResponses({

@@ -1,9 +1,11 @@
-import styled from "@emotion/styled";
-import React from "react";
+import styled from '@emotion/styled';
+import React from 'react';
+import { useRecoilState } from 'recoil';
 
-import Button from "../../atoms/common/Button";
-import { colors } from "../../shared/color";
-import { editorProps } from "../../types/common/buttonTypes";
+import Button from '../../atoms/common/Button';
+import { channelMessage } from '../../recoil/atom';
+import { colors } from '../../shared/color';
+import { editorProps } from '../../types/common/buttonTypes';
 
 const Container = styled.div`
   width: 100%;
@@ -12,7 +14,7 @@ const Container = styled.div`
   height: 64px;
   position: relative;
 `;
-const InputContainer = styled.input`
+const Input = styled.input`
   width: 85%;
   margin: 12px;
   height: 50%;
@@ -24,9 +26,16 @@ const Wrapper = styled.div`
   top: 12px;
 `;
 const Editor = ({ onClick }: editorProps) => {
+  const [message, setMessage] = useRecoilState<string>(channelMessage);
+  const onChange = (event: React.FormEvent<HTMLInputElement>) => {
+    const {
+      currentTarget: { value },
+    } = event;
+    setMessage(value);
+  };
   return (
     <Container>
-      <InputContainer></InputContainer>
+      <Input value={message} onChange={onChange}></Input>
       <Wrapper>
         <Button onClick={onClick} width="50px" height="40px" text="전송" />
       </Wrapper>

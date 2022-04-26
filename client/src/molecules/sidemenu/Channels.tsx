@@ -3,10 +3,10 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import Icons from '../../atoms/common/Icons';
-import Label from '../../atoms/sidemenu/Label';
+import Label from '../../atoms/common/Label';
 import MenuTemplate from '../../atoms/sidemenu/MenuTemplate';
 import { isOpenSide } from '../../recoil/atom';
-import { sideMenuType } from '../../types/sidemenu/sideMenuType';
+import { labelType } from '../../types/common/labelType';
 
 export const TopContainer = styled.div`
   display: flex;
@@ -49,7 +49,7 @@ export const SideWrapper = styled.div`
 const Channels = () => {
   const [isOpen, setIsOpen] = useRecoilState<boolean>(isOpenSide);
   const navigate = useNavigate();
-  const dummyData: sideMenuType[] = [
+  const dummyData: labelType[] = [
     {
       id: '0',
       name: '1. 공지사항',
