@@ -10,6 +10,7 @@ import com.tooliv.server.domain.user.application.dto.response.UserListResponseDT
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.enums.UserCode;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
+import com.tooliv.server.domain.user.exception.DuplicateEmailException;
 import com.tooliv.server.global.common.AwsS3Service;
 import com.tooliv.server.global.security.util.JwtAuthenticationProvider;
 import java.time.LocalDateTime;
@@ -40,6 +41,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void signUp(SignUpRequestDTO signUpRequestDTO) {
+        checkEmail(signUpRequestDTO.getEmail());
+
         User user = User.builder()
             .email(signUpRequestDTO.getEmail())
             .name(signUpRequestDTO.getName())
@@ -95,6 +98,16 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
     }
+
+    @Override
+    public void checkEmail(String email) {
+        boolean emailExists = userRepository.existsByEmailAndDeletedAt(email, null);
+
+        if (emailExists) {
+            throw new DuplicateEmailException("해당 이메일은 중복임");
+        }
+    }
+
 
     @Override
     public UserListResponseDTO getUserList(String keyword) {

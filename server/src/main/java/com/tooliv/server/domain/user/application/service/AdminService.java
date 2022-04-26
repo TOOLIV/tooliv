@@ -12,8 +12,6 @@ public interface AdminService {
 
     void updateUserCode(UserCodeUpdateRequestDTO userCodeUpdateRequestDTO);
 
-    void checkEmail(String email) throws NotUniqueEmailException;
-
     void deleteUser(String email);
 
     User getCurrentUser();
