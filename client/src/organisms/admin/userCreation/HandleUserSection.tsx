@@ -1,5 +1,5 @@
 import { useRecoilState } from 'recoil';
-import { deleteUser } from '../../../api/userApi';
+import { deleteUser } from '../../../api/adminApi';
 import UserBadge from '../../../molecules/userBadge/UserBadge';
 import { userCreationList } from '../../../recoil/atom';
 

@@ -10,8 +10,10 @@ import Home from './Home';
 import Channel from './Channel';
 import Meeting from './Meeting';
 import Test from './Test';
-import UserAuthPage from './UserAuthPage';
 import UserManagePage from './UserManagePage';
+import UserAuthPage from './UserAuthPage';
+import Login from './Login';
+import Join from './Join';
 // import Test from './Test';
 
 const AppRouter = () => {
@@ -19,6 +21,8 @@ const AppRouter = () => {
     <>
       <BrowserRouter>
         <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/join" element={<Join />} />
           <Route path="/" element={<Home />}>
             <Route path="" element={<Navigate replace to="/0/0" />} />
             <Route path="/test" element={<Test />} />
