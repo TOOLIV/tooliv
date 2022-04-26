@@ -1,10 +1,7 @@
 package com.tooliv.server.domain.workspace.application;
 
-import com.tooliv.server.domain.channel.application.dto.response.ChannelGetResponseDTO;
 import com.tooliv.server.domain.channel.domain.Channel;
-import com.tooliv.server.domain.channel.domain.ChannelMembers;
 import com.tooliv.server.domain.channel.domain.enums.ChannelCode;
-import com.tooliv.server.domain.channel.domain.enums.ChannelMemberCode;
 import com.tooliv.server.domain.channel.domain.repository.ChannelRepository;
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
@@ -17,16 +14,13 @@ import com.tooliv.server.domain.workspace.domain.WorkspaceMembers;
 import com.tooliv.server.domain.workspace.domain.enums.WorkspaceMemberCode;
 import com.tooliv.server.domain.workspace.domain.repository.WorkspaceMemberRepository;
 import com.tooliv.server.domain.workspace.domain.repository.WorkspaceRepository;
-import com.tooliv.server.global.security.util.JwtAuthenticationProvider;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.jdbc.Work;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
-import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -76,6 +70,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             .createdAt(now)
             .description("공지사항")
             .name("공지사항")
+            .workspace(workspace)
             .build();
 
         channelRepository.save(channel);
