@@ -19,6 +19,7 @@ import com.tooliv.server.domain.workspace.domain.enums.WorkspaceMemberCode;
 import com.tooliv.server.domain.workspace.domain.repository.WorkspaceMemberRepository;
 import com.tooliv.server.domain.workspace.domain.repository.WorkspaceRepository;
 import com.tooliv.server.global.common.AwsS3Service;
+import com.tooliv.server.global.exception.UserNotFoundException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,20 +48,21 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Transactional
     @Override
     public RegisterWorkspaceResponseDTO registerWorkspace(MultipartFile multipartFile, RegisterWorkspaceRequestDTO registerWorkspaceRequestDTO) {
-
+        System.out.println("11111111111111111111111");
         User owner = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
-            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+            .orElseThrow(() -> new UserNotFoundException("회원 정보가 존재하지 않습니다."));
 
         LocalDateTime now = LocalDateTime.now();
         String fileName = null;
-        if(multipartFile != null)
+        if (multipartFile != null) {
             fileName = awsS3Service.uploadFile(multipartFile);
+        }
 
         boolean existWorkspace = workspaceRepository.existsByNameAndDeletedAt(registerWorkspaceRequestDTO.getName(), null);
         if (existWorkspace) {
             return null;
         }
-
+        System.out.println("222222222222222222222222");
         Workspace workspace = Workspace.builder()
             .name(registerWorkspaceRequestDTO.getName())
             .createdAt(now)
@@ -112,8 +114,9 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             .orElseThrow(() -> new IllegalArgumentException("해당 워크스페이스를 찾을 수 없습니다."));
 
         String fileName = null;
-        if(multipartFile != null)
+        if (multipartFile != null) {
             fileName = awsS3Service.uploadFile(multipartFile);
+        }
 
         workspace.modifyWorkspace(modifyWorkspaceRequestDTO.getName(), fileName);
         workspaceRepository.save(workspace);
@@ -140,7 +143,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
         workspaceMemberList.forEach(workspaceMember -> {
             Workspace workspace = workspaceMember.getWorkspace();
-            if(workspace.getDeletedAt() == null){
+            if (workspace.getDeletedAt() == null) {
                 WorkspaceGetResponseDTO workspaceGetResponseDTO = WorkspaceGetResponseDTO.builder()
                     .id(workspace.getId())
                     .name(workspace.getName())
@@ -155,8 +158,9 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Override
     public String getImageURL(String fileName) {
-        if(fileName == null)
+        if (fileName == null) {
             return null;
+        }
         return "https://tooliva402.s3.ap-northeast-2.amazonaws.com/" + fileName;
     }
 }
