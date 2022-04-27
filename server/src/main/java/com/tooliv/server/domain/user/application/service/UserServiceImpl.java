@@ -91,7 +91,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void uploadProfileImage(MultipartFile multipartFile) {
-        String fileName = awsS3Service.uploadImage(multipartFile);
+        String fileName = awsS3Service.uploadFile(multipartFile);
 
         User user = getCurrentUser();
         user.updateProfileImage(fileName);
