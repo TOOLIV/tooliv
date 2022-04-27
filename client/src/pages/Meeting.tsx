@@ -1,12 +1,20 @@
 import styled from '@emotion/styled';
 import axios from 'axios';
 import { motion } from 'framer-motion';
-import { OpenVidu, Session, StreamManager } from 'openvidu-browser';
+import isElectron from 'is-electron';
+import {
+  OpenVidu,
+  Publisher,
+  Session,
+  StreamManager,
+  Subscriber,
+} from 'openvidu-browser';
 import React, { useEffect, useState } from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import ChatButton from '../molecules/meeting/ChatButton';
 import Chat from '../organisms/meeting/chat/Chat';
 import FunctionButtons from '../organisms/meeting/FunctionButtons';
+import ScreenShareModal from '../organisms/meeting/video/ScreenShareModal';
 import Videos from '../organisms/meeting/video/Videos';
 import { isOpenChat } from '../recoil/atom';
 import { openviduTypes } from '../types/meeting/openviduTypes';
@@ -19,21 +27,49 @@ const MeetingInnerContainer = styled.div``;
 
 const Meeting = () => {
   const [isChatOpen, setIsChatOpen] = useRecoilState(isOpenChat);
+  const [isScreenShareModal, setIsScreenShareModal] = useState<boolean>(false);
 
   const onOpenChat = () => {
     setIsChatOpen(true);
   };
 
+  /*
+    openvidu setting
+  */
   // const OPENVIDU_SERVER_URL = 'https://' + window.location.hostname + ':4443';
-  const OPENVIDU_SERVER_URL = 'https://localhost:4443';
-  const OPENVIDU_SERVER_SECRET = 'MY_SECRET';
+  const OPENVIDU_SERVER_URL = 'https://k6a402.p.ssafy.io:4443';
+  const OPENVIDU_SERVER_SECRET = 'TOOLIV';
+
+  /*
+    임시 userName
+  */
   const date = new Date();
   const userName = date.getMilliseconds();
 
+  /*
+    openvidu 객체 생성 여부 확인 state
+  */
   const [isOV, setIsOV] = useState(false);
   const [OV, setOV] = useState<OpenVidu | null>();
+
+  /*
+    screen share list
+  */
+  // const [screenList, setScreenList] = useState<any>();
+
+  /*
+    openvidu state
+    
+    mySessionId: 세션 id => channel UUID
+    myUserName: username => video element id => user UUID값
+    session: openvidu Session 객체
+    mainStreamManager: 클릭했을 때 전체 화면에 띄울 publisher
+    publisher: 내 video 정보
+    subscribers: 세션에 참가한 구독자 목록
+    currentVideoDevice: 현재 연결된 비디오 디바이스
+  */
   const [openviduState, setOpenviduState] = useState<openviduTypes>({
-    mySessionId: 'SessionC',
+    mySessionId: 'SessionD',
     myUserName: 'tooliv' + userName,
     session: undefined,
     mainStreamManager: undefined,
@@ -42,40 +78,23 @@ const Meeting = () => {
     currentVideoDevice: undefined,
   });
 
-  useEffect(() => {
-    window.addEventListener('beforeunload', onbeforeunload);
-    // console.log('hello');
-    return () => {
-      console.log('byebye');
-      leaveSession(openviduState.session);
-      window.removeEventListener('beforeunload', onbeforeunload);
-    };
-  }, [isOV]);
-
-  const onbeforeunload = (event: any) => {
-    leaveSession(openviduState.session);
-  };
-
-  const deleteSubscriber = (streamManager: StreamManager) => {
-    let subscribers = openviduState.subscribers;
-    let index = subscribers.indexOf(streamManager, 0);
-    if (index > -1) {
-      subscribers.splice(index, 1);
-      setOpenviduState({
-        ...openviduState,
-        subscribers: subscribers,
-      });
-    }
-  };
-
+  /*
+    마운트 시: OV객체가 없으면 beforeJoinSession() 호출 => new OpenVidu()
+              openviduState의 Session에 initSession() 할당
+              OV객체가 존재하면 JoinSession() 호출 => 내 비디오 정보가 등록
+    언마운트 시: leaveSession() 호출 => Session에서 나옴
+  */
   useEffect(() => {
     if (!isOV) {
+      console.log('userName>>>>>>>>>>>>>>>>>>>>>>', openviduState.myUserName);
       beforeJoinSession();
       setIsOV(true);
     } else {
-      console.log('session>>>>>>>>>>>>>>>', openviduState.session);
       joinSession();
     }
+    return () => {
+      leaveSession(openviduState.session);
+    };
   }, [isOV]);
 
   const beforeJoinSession = () => {
@@ -90,11 +109,19 @@ const Meeting = () => {
     });
   };
 
-  const joinSession = () => {
-    console.log(
-      'joinSession>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>',
-      openviduState.myUserName
-    );
+  const deleteSubscriber = (streamManager: StreamManager) => {
+    let subscribers = openviduState.subscribers;
+    let index = subscribers.indexOf(streamManager, 0);
+    if (index > -1) {
+      subscribers.splice(index, 1);
+      setOpenviduState({
+        ...openviduState,
+        subscribers: subscribers,
+      });
+    }
+  };
+
+  const joinSession = async () => {
     const p = () => {
       var mySession: Session;
       if (!!openviduState.session) mySession = openviduState.session;
@@ -105,8 +132,10 @@ const Meeting = () => {
       mySession.on('streamCreated', (event: any) => {
         // Subscribe to the Stream to receive it. Second parameter is undefined
         // so OpenVidu doesn't create an HTML video by its own
-        var subscriber = mySession.subscribe(event.stream, '');
+        console.log('streamCreated', event);
+        var subscriber: Subscriber = mySession.subscribe(event.stream, '');
         var subscribers = openviduState.subscribers;
+        console.log(subscriber);
         subscribers.push(subscriber);
 
         // Update the state with the new subscribers
@@ -144,32 +173,56 @@ const Meeting = () => {
                 (device) => device.kind === 'videoinput'
               );
 
-              // --- 5) Get your own camera stream ---
+              let publisher: Publisher;
 
+              if (!isElectron()) {
+                publisher = OV.initPublisher(openviduState.myUserName, {
+                  // audioSource: undefined, // The source of audio. If undefined default microphone
+                  // videoSource: videoDevices[0].deviceId, // The source of video. If undefined default webcam
+                  // publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
+                  // publishVideo: true, // Whether you want to start publishing with your video enabled or not
+                  // resolution: '640x480', // The resolution of your video
+                  // frameRate: 30, // The frame rate of your video
+                  // insertMode: 'APPEND', // How the video is inserted in the target element 'video-container'
+                  // mirror: true, // Whether to mirror your local video or not
+                  videoSource: 'screen',
+                });
+                mySession.publish(publisher);
+                setOpenviduState({
+                  ...openviduState,
+                  currentVideoDevice: videoDevices[0],
+                  mainStreamManager: publisher,
+                  publisher: publisher,
+                });
+              }
+
+              // --- 5) Get your own camera stream ---
               // Init a publisher passing undefined as targetElement (we don't want OpenVidu to insert a video
               // element: we will manage it on our own) and with the desired properties
-              let publisher = OV.initPublisher(openviduState.myUserName, {
-                audioSource: undefined, // The source of audio. If undefined default microphone
-                videoSource: videoDevices[0].deviceId, // The source of video. If undefined default webcam
-                publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
-                publishVideo: true, // Whether you want to start publishing with your video enabled or not
-                resolution: '640x480', // The resolution of your video
-                frameRate: 30, // The frame rate of your video
-                insertMode: 'APPEND', // How the video is inserted in the target element 'video-container'
-                mirror: false, // Whether to mirror your local video or not
-              });
-
+              else {
+                publisher = OV.initPublisher(openviduState.myUserName, {
+                  audioSource: undefined, // The source of audio. If undefined default microphone
+                  videoSource: videoDevices[0].deviceId, // The source of video. If undefined default webcam
+                  publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
+                  publishVideo: true, // Whether you want to start publishing with your video enabled or not
+                  resolution: '640x480', // The resolution of your video
+                  frameRate: 30, // The frame rate of your video
+                  insertMode: 'APPEND', // How the video is inserted in the target element 'video-container'
+                  mirror: true, // Whether to mirror your local video or not
+                  // videoSource: 'screen: ' + data[0].id,
+                });
+                mySession.publish(publisher);
+                setOpenviduState({
+                  ...openviduState,
+                  currentVideoDevice: videoDevices[0],
+                  mainStreamManager: publisher,
+                  publisher: publisher,
+                });
+              }
               // --- 6) Publish your stream ---
-
-              mySession.publish(publisher);
+              // mySession.publish(publisher);
 
               // Set the main video in the page to display our webcam and store our Publisher
-              setOpenviduState({
-                ...openviduState,
-                currentVideoDevice: videoDevices[0],
-                mainStreamManager: publisher,
-                publisher: publisher,
-              });
             })
             .catch((error: any) => {
               console.log(
@@ -187,21 +240,16 @@ const Meeting = () => {
 
   const leaveSession = (session: Session) => {
     // --- 7) Leave the session by calling 'disconnect' method over the Session object ---
-    console.log('leaveSession');
-
-    console.log('session>>>>>>>>>>>>>>>>', session);
     if (session) {
-      console.log('disconnect session>>>>>>>>>>>>>>>>', session);
       session.disconnect();
     }
 
     // Empty all properties...
     setOV(null);
     setOpenviduState({
+      ...openviduState,
       session: undefined,
       subscribers: [],
-      mySessionId: 'SessionA',
-      myUserName: 'Participant' + Math.floor(Math.random() * 100),
       mainStreamManager: undefined,
       publisher: undefined,
       currentVideoDevice: undefined,
@@ -333,10 +381,19 @@ const Meeting = () => {
   return (
     <MeetingContainer>
       <MeetingInnerContainer>
-        <Videos openviduState={openviduState} />
-        <FunctionButtons publisher={openviduState.publisher} />
+        <Videos
+          openviduState={openviduState}
+          streamManager={openviduState.subscribers}
+        />
+        <FunctionButtons
+          publisher={openviduState.publisher}
+          setIsScreenShareModal={setIsScreenShareModal}
+        />
         {!isChatOpen && (
           <>{!isChatOpen && <ChatButton onClick={onOpenChat} />}</>
+        )}
+        {isScreenShareModal && isElectron() && (
+          <ScreenShareModal setIsScreenShareModal={setIsScreenShareModal} />
         )}
       </MeetingInnerContainer>
     </MeetingContainer>

@@ -77,17 +77,17 @@ public class WorkspaceController {
     }
 
 
-    @DeleteMapping("/{workspacelId}")
+    @DeleteMapping("/{workspaceId}")
     @ApiOperation(value = "워크스페이스 삭제")
     @ApiResponses({
         @ApiResponse(code = 200, message = "워크스페이스 삭제에 성공했습니다."),
         @ApiResponse(code = 404, message = "해당 워크스페이스를 찾을 수 없습니다.")
     })
     public ResponseEntity<? extends BaseResponseDTO> deleteWorkspace(
-        @PathVariable("workspacelId") @ApiParam(value = "워크스페이스 ID", required = true) String workspacelId) {
+        @PathVariable("workspaceId") @ApiParam(value = "워크스페이스 ID", required = true) String workspaceId) {
 
         try {
-            Integer statusCode = workspaceService.deleteWorkspace(workspacelId);
+            Integer statusCode = workspaceService.deleteWorkspace(workspaceId);
 
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(404).body(BaseResponseDTO.of("해당 워크스페이스를 찾을 수 없습니다."));
