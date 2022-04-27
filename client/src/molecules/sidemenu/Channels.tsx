@@ -1,12 +1,8 @@
 import styled from '@emotion/styled';
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
+import { useNavigate, useParams } from 'react-router-dom';
+import { channelsType } from 'types/channel/contentType';
 import Icons from '../../atoms/common/Icons';
 import Label from '../../atoms/common/Label';
-import MenuTemplate from '../../atoms/sidemenu/MenuTemplate';
-import { isOpenSide } from '../../recoil/atom';
-import { labelType } from '../../types/common/labelType';
 
 export const TopContainer = styled.div`
   display: flex;
@@ -23,7 +19,7 @@ const ChannelsContainer = styled.div`
   padding-bottom: 18px;
 `;
 
-const ChannelContainer = styled.div`
+const ChannelContainer = styled.div<{ isSelected: boolean }>`
   display: flex;
   align-items: center;
   height: 30px;
@@ -31,11 +27,11 @@ const ChannelContainer = styled.div`
   transition: 0.3s;
   cursor: pointer;
   /* 선택된 채널만 */
-  &:nth-of-type(1) {
-    background-color: ${(props) => props.theme.lightPointColor};
-    border-radius: 10px 0 0 10px;
-    border-right: 4px solid ${(props) => props.theme.pointColor};
-  }
+  background-color: ${(props) =>
+    props.isSelected && props.theme.lightPointColor};
+  border-radius: ${(props) => props.isSelected && `10px 0 0 10px`};
+  border-right: ${(props) =>
+    props.isSelected && `4px solid ${props.theme.pointColor}`};
 
   &:hover {
     background-color: ${(props) => props.theme.lightPointColor};
@@ -43,31 +39,27 @@ const ChannelContainer = styled.div`
     border-right: none;
   }
 `;
+
 export const SideWrapper = styled.div`
   margin-right: 10px;
 `;
 
-const Channels = () => {
-  const navigate = useNavigate();
-  const dummyData: labelType[] = [
-    {
-      id: '0',
-      name: '1. 공지사항',
-    },
-    {
-      id: '1',
-      name: '2. 잡담',
-    },
-  ];
+const Channels = ({ channelList, onClick }: channelsType) => {
+  const { channelId } = useParams();
   return (
     <ChannelsContainer>
-      {dummyData.map((channel) => (
+      {channelList.map((channel) => (
         <ChannelContainer
           key={channel.id}
-          onClick={() => navigate('/meeting/0/0')}
+          onClick={() => onClick(channel.id)}
+          isSelected={channel.id === channelId}
         >
           <SideWrapper>
-            <Icons icon="lock" />
+            {channel.privateYn ? (
+              <Icons icon="lock" />
+            ) : (
+              <Icons icon="public" />
+            )}
           </SideWrapper>
           <Label {...channel} />
         </ChannelContainer>

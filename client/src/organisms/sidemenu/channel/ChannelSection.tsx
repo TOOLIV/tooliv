@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { getChannelList } from 'api/channelApi';
 import { getWorkspaceList } from 'api/workspaceApi';
 import Icons from 'atoms/common/Icons';
 import MenuTemplate from 'atoms/sidemenu/MenuTemplate';
@@ -6,8 +7,9 @@ import Channels from 'molecules/sidemenu/Channels';
 import WorkSpaces from 'molecules/sidemenu/WorkSpaces';
 import ChannelModal from 'organisms/modal/ChannelModal';
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { isCreateChannel, isCreateWorkspace, isOpenSide } from 'recoil/atom';
+import { currentWorkspace, isOpenSide, userLog } from 'recoil/atom';
 import { workspaceListType } from 'types/workspace/workspaceTypes';
 
 const Container = styled.div<{ isOpen: boolean }>`
@@ -26,19 +28,21 @@ const Header = styled.div`
 const ChannelSection = () => {
   const isSideOpen = useRecoilValue<boolean>(isOpenSide);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [channelList, setChannelList] = useState([]);
 
-  const [workspaceList, setWorkspaceList] = useState<workspaceListType[]>([]);
-  const isCreate = useRecoilValue(isCreateChannel);
+  const navigate = useNavigate();
 
+  const currentWorkspaceId = useRecoilValue(currentWorkspace);
+  const [userLogList, setUserLogList] = useRecoilState(userLog);
   const handleChannel = async () => {
-    const response = await getWorkspaceList();
-    setWorkspaceList(response.data.workspaceGetResponseDTOList);
+    const response = await getChannelList(currentWorkspaceId);
+    setChannelList(response.data.channelGetResponseDTOList);
     console.log(response);
   };
 
   useEffect(() => {
     handleChannel();
-  }, [isCreate]);
+  }, [currentWorkspaceId]);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -48,13 +52,22 @@ const ChannelSection = () => {
     setIsModalOpen(false);
   };
 
+  const handleClickChannel = (id: string) => {
+    setUserLogList({
+      ...userLogList,
+      [currentWorkspaceId]: id,
+    });
+
+    navigate(`${currentWorkspaceId}/${id}`);
+  };
+
   return (
     <Container isOpen={isSideOpen}>
       <Header>
         <MenuTemplate title="채널" />
         <Icons icon="plus" onClick={handleOpenModal} />
       </Header>
-      <Channels />
+      <Channels channelList={channelList} onClick={handleClickChannel} />
       <ChannelModal isOpen={isModalOpen} onClose={handleCloseModal} />
       {/* <WorkSpaces workspaceList={workspaceList} /> */}
     </Container>

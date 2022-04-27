@@ -1,15 +1,13 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { createWorkspace } from 'api/workspaceApi';
+import { createChannel } from 'api/channelApi';
 import Button from 'atoms/common/Button';
 import Text from 'atoms/text/Text';
 import InputBox from 'molecules/inputBox/InputBox';
 import ChannelRadio from 'molecules/radio/channelRadio/ChannelRadio';
 import VisibilityRadio from 'molecules/radio/visibiltyRadio/VisibilityRadio';
-import FileUploader from 'molecules/uploader/FileUploader';
 import React, { useRef, useState } from 'react';
-import { useRecoilState, useSetRecoilState } from 'recoil';
-import { isCreateChannel, isCreateWorkspace } from 'recoil/atom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { colors } from 'shared/color';
 import { workspaceModalType } from 'types/workspace/workspaceTypes';
 
@@ -60,9 +58,11 @@ const ButtonBox = styled.div`
 
 const ChannelModal = ({ isOpen, onClose }: workspaceModalType) => {
   const inputChannelRef = useRef<HTMLInputElement>(null);
-  const setIsCreate = useSetRecoilState(isCreateChannel);
   const [channelCode, setChannelCode] = useState('CHAT');
   const [privateYn, setPrivateYn] = useState(false);
+
+  const { workspaceId } = useParams();
+  const navigate = useNavigate();
 
   const registChannel = async () => {
     const name = inputChannelRef.current?.value!;
@@ -74,9 +74,15 @@ const ChannelModal = ({ isOpen, onClose }: workspaceModalType) => {
       }
 
       if (name) {
-        // const response = await createWorkspace(formData);
-        // console.log(response);
-        setIsCreate(true);
+        const body = {
+          name,
+          privateYn,
+          channelCode,
+          description: 'test',
+          workspaceId: workspaceId!,
+        };
+        const response = await createChannel(body);
+        console.log(response);
         onClose();
       }
     } catch (error) {

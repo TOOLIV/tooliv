@@ -1,13 +1,15 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
+import { getChannelList } from 'api/channelApi';
 import { createWorkspace } from 'api/workspaceApi';
 import Button from 'atoms/common/Button';
 import Text from 'atoms/text/Text';
 import InputBox from 'molecules/inputBox/InputBox';
 import FileUploader from 'molecules/uploader/FileUploader';
 import React, { useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useSetRecoilState } from 'recoil';
-import { isCreateWorkspace } from 'recoil/atom';
+import { currentChannel, currentWorkspace, userLog } from 'recoil/atom';
 import { colors } from 'shared/color';
 import { workspaceModalType } from 'types/workspace/workspaceTypes';
 
@@ -56,11 +58,15 @@ const ButtonBox = styled.div`
 const WorkspaceModal = ({ isOpen, onClose }: workspaceModalType) => {
   const [file, setFile] = useState<File>();
   const inputWorkspaceRef = useRef<HTMLInputElement>(null);
-  const setIsCreate = useSetRecoilState(isCreateWorkspace);
+  const setCurrentWorkspace = useSetRecoilState(currentWorkspace);
+  const setCurrentChannel = useSetRecoilState(currentChannel);
+  const [userLogList, setUserLogList] = useRecoilState(userLog);
 
   const handleSetImg = (file: FileList) => {
     setFile(file[0]);
   };
+
+  const navigate = useNavigate();
 
   const registWorkspace = async () => {
     const formData = new FormData();
@@ -89,7 +95,14 @@ const WorkspaceModal = ({ isOpen, onClose }: workspaceModalType) => {
       if (name) {
         const response = await createWorkspace(formData);
         console.log(response);
-        setIsCreate(true);
+        const workspaceId = response.data.id;
+        const channelList = await getChannelList(workspaceId);
+        const channelId = channelList.data.channelGetResponseDTOList[0].id;
+        // setIsWorkspaceCreate(true);
+        // setIsChannelCreate(true);
+        setCurrentWorkspace(workspaceId);
+        setCurrentChannel(channelId);
+        navigate(`${workspaceId}/${channelId}`);
         onClose();
       }
     } catch (error) {

@@ -1,11 +1,18 @@
 import styled from '@emotion/styled';
 import { getWorkspaceList } from 'api/workspaceApi';
+import { getChannelList } from 'api/channelApi';
 import Icons from 'atoms/common/Icons';
 import MenuTemplate from 'atoms/sidemenu/MenuTemplate';
 import WorkSpaces from 'molecules/sidemenu/WorkSpaces';
 import React, { useEffect, useState } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { isCreateWorkspace, isOpenSide } from 'recoil/atom';
+import { useNavigate } from 'react-router-dom';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import {
+  currentChannel,
+  currentWorkspace,
+  isOpenSide,
+  userLog,
+} from 'recoil/atom';
 import { workspaceListType } from 'types/workspace/workspaceTypes';
 
 const Container = styled.div<{ isOpen: boolean }>`
@@ -24,7 +31,10 @@ const Header = styled.div`
 const WorkSpaceSection = () => {
   const [isOpen, setIsOpen] = useRecoilState<boolean>(isOpenSide);
   const [workspaceList, setWorkspaceList] = useState<workspaceListType[]>([]);
-  const isCreate = useRecoilValue(isCreateWorkspace);
+  const [curWorkspaceId, setCurWorkspaceId] = useRecoilState(currentWorkspace);
+  const setCurrentChannel = useSetRecoilState(currentChannel);
+  const userLogList = useRecoilValue(userLog);
+  const navigate = useNavigate();
 
   const onClickSide = () => {
     setIsOpen((prev) => !prev);
@@ -32,12 +42,33 @@ const WorkSpaceSection = () => {
   const handleWorkspace = async () => {
     const response = await getWorkspaceList();
     setWorkspaceList(response.data.workspaceGetResponseDTOList);
-    console.log(response);
+  };
+
+  const getNextChannelId = async (workspaceId: string) => {
+    const channelList = await getChannelList(workspaceId);
+    const channelId = channelList.data.channelGetResponseDTOList[0].id;
+    return channelId;
+  };
+
+  const handleClickWorkspace = async (id: string) => {
+    if (userLogList[id]) {
+      // 워크스페이스별 마지막으로 접속한 채널
+      const lastChannelId = userLogList[id];
+      setCurWorkspaceId(id);
+      setCurrentChannel(lastChannelId);
+      navigate(`${id}/${lastChannelId}`);
+    } else {
+      // 워크스페이별 첫번째 채널'
+      setCurWorkspaceId(id);
+      const channelId = await getNextChannelId(id);
+      setCurrentChannel(channelId);
+      navigate(`${id}/${channelId}`);
+    }
   };
 
   useEffect(() => {
     handleWorkspace();
-  }, [isCreate]);
+  }, [curWorkspaceId]);
 
   return (
     <Container isOpen={isOpen}>
@@ -48,7 +79,10 @@ const WorkSpaceSection = () => {
           onClick={onClickSide}
         />
       </Header>
-      <WorkSpaces workspaceList={workspaceList} />
+      <WorkSpaces
+        workspaceList={workspaceList}
+        onClick={handleClickWorkspace}
+      />
     </Container>
   );
 };
