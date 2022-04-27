@@ -13,4 +13,6 @@ public interface ChannelMemberService {
     void deleteChannelMember(String channelId, DeleteChannelMemberRequestDTO deleteChannelMemberRequestDTO);
 
     ChannelMemberListGetResponseDTO getChannelMemberList(String channelId);
+
+    ChannelMemberListGetResponseDTO searchChannelMember(String channelId, String keyword);
 }
