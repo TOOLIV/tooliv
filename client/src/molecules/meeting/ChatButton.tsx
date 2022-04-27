@@ -8,7 +8,7 @@ import { IconContainer } from './FunctionButton';
 const ChatButton = ({ onClick }: chatButtonPropsTypes) => {
   return (
     <IconContainer message onClick={onClick}>
-      <Icons icon="message" large />
+      <Icons icon="message" width="24" height="24" />
     </IconContainer>
   );
 };

@@ -2,7 +2,6 @@
 exports.__esModule = true;
 var electron_1 = require("electron");
 var isDev = require("electron-is-dev");
-var path = require("path");
 var mainWindow;
 var createWindow = function () {
     mainWindow = new electron_1.BrowserWindow({
@@ -24,7 +23,8 @@ var createWindow = function () {
     // 개발 중에는 개발 도구에서 호스팅하는 주소에서 로드.
     mainWindow.loadURL(isDev
         ? 'http://localhost:3000'
-        : "file://".concat(path.join(__dirname, '../build/index.html')));
+        : // : `file://${path.join(__dirname, '../build/index.html')}`
+            "file://".concat(__dirname, "/../build/index.html"));
     if (isDev) {
         mainWindow.webContents.openDevTools({ mode: 'detach' });
     }

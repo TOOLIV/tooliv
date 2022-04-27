@@ -6,6 +6,8 @@ import Info from '../molecules/info/Info';
 import InputBox from '../molecules/inputBox/InputBox';
 import UserItem from '../molecules/userItem/UserItem';
 import Dropdown from '../atoms/dropdown/Dropdown';
+import WorkspaceModal from 'organisms/modal/WorkspaceModal';
+import { colors } from 'shared/color';
 
 const Test = () => {
   const [selectedOption, setSelectedOption] = useState({
@@ -25,6 +27,7 @@ const Test = () => {
     display: flex;
     flex-direction: column;
     padding: 100px;
+    background-color: ${colors.gray300};
   `;
 
   const TestDiv = styled.div`
@@ -77,6 +80,10 @@ const Test = () => {
       </TestDiv>
       <TestDiv>
         <Info label="도메인" value="meeting.ssafy.com" />
+      </TestDiv>
+
+      <TestDiv>
+        <WorkspaceModal />
       </TestDiv>
       {/* 
       <TestDiv>

@@ -36,3 +36,8 @@ export type userCreationTypes = {
   email: string;
   password: string;
 };
+
+export type userLoginTypes = {
+  email: string;
+  password: string;
+};

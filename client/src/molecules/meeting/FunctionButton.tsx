@@ -26,10 +26,15 @@ export const IconContainer = styled.div<{ exit?: boolean; message?: boolean }>`
   bottom: ${(props) => (props.message ? '24px' : '')};
 `;
 
-const FunctionButton = ({ icon, exit }: functionButtonTypes) => {
+const FunctionButton = ({ icon, exit, onClick }: functionButtonTypes) => {
   return (
-    <IconContainer exit={exit}>
-      <Icons icon={icon} large color={exit ? 'red700' : undefined} />
+    <IconContainer exit={exit} onClick={onClick}>
+      <Icons
+        icon={icon}
+        width="24"
+        height="24"
+        color={exit ? 'red700' : undefined}
+      />
     </IconContainer>
   );
 };

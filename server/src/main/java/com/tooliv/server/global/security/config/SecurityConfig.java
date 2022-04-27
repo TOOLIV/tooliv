@@ -77,10 +77,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/api/user/login").permitAll()
             .antMatchers(HttpMethod.PATCH, "/api/user").authenticated()
             .antMatchers(HttpMethod.DELETE, "/api/admin").hasRole("ADMIN")
-            .antMatchers(HttpMethod.POST, "/api/admin/user").permitAll()
+            .antMatchers(HttpMethod.POST, "/api/user").permitAll()
             .antMatchers(HttpMethod.GET, "/api/admin/**").hasAnyRole("ADMIN", "MANAGER")
             .antMatchers(HttpMethod.PATCH, "/api/admin/code").hasRole("ADMIN")
-            .antMatchers("/api/user/image", "/api/user/list/**").hasAnyRole("ADMIN", "MANAGER", "USER")
+            .antMatchers("/api/user/image", "/api/user/search/**").hasAnyRole("ADMIN", "MANAGER", "USER")
             .antMatchers("/api/v3/**", "/swagger-ui/**", "/swagger/**", "/swagger-resources/**", "/v3/api-docs").permitAll()
             .antMatchers("/chatting/**").permitAll()
             // 나머지 요청들은 모두 인증되어야 한다.

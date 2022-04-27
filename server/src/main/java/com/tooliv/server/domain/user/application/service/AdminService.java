@@ -8,13 +8,9 @@ import com.tooliv.server.domain.user.exception.NotUniqueEmailException;
 
 public interface AdminService {
 
-    void signUp(SignUpRequestDTO signUpRequestDTO);
-
     UserListResponseDTO getUserList(String searchStr);
 
     void updateUserCode(UserCodeUpdateRequestDTO userCodeUpdateRequestDTO);
-
-    void checkEmail(String email) throws NotUniqueEmailException;
 
     void deleteUser(String email);
 
