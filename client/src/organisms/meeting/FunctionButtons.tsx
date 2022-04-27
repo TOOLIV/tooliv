@@ -9,7 +9,10 @@ const FucntionButtonsContainer = styled.div`
   justify-content: center;
 `;
 
-const FunctionButtons = ({ publisher }: funcButtonPropsTypes) => {
+const FunctionButtons = ({
+  publisher,
+  setIsScreenShareModal,
+}: funcButtonPropsTypes) => {
   const [audio, setAudio] = useState(true);
   const [video, setVideo] = useState(true);
   const [shareMoniter, setShareMoniter] = useState(false);
@@ -49,7 +52,10 @@ const FunctionButtons = ({ publisher }: funcButtonPropsTypes) => {
         icon={video ? 'videoOn' : 'videoOff'}
         onClick={onhandleVideo}
       />
-      <FunctionButton icon="shareMonitor" onClick={() => {}} />
+      <FunctionButton
+        icon="shareMonitor"
+        onClick={() => setIsScreenShareModal(true)}
+      />
       <FunctionButton icon="exit" exit onClick={() => {}} />
     </FucntionButtonsContainer>
   );

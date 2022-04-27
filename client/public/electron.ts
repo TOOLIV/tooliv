@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain, desktopCapturer } from 'electron';
 import * as isDev from 'electron-is-dev';
 import * as path from 'path';
 
@@ -18,16 +18,21 @@ const createWindow = () => {
       nodeIntegration: true,
       // 개발자도구
       devTools: isDev,
+      contextIsolation: false,
+      preload: __dirname + '/preload.js',
     },
   });
+
+  // require('@electron/remote')
+  //   .require('@electron/remote/main')
+  //   .enable(mainWindow.webContents);
 
   // production에서는 패키지 내부 리소스에 접근.
   // 개발 중에는 개발 도구에서 호스팅하는 주소에서 로드.
   mainWindow.loadURL(
     isDev
       ? 'http://localhost:3000'
-      : // : `file://${path.join(__dirname, '../build/index.html')}`
-        `file://${__dirname}/../build/index.html`
+      : `file://${path.join(__dirname, '../build/index.html')}`
   );
 
   if (isDev) {
@@ -67,4 +72,8 @@ app.on(
     event.preventDefault();
     callback(true);
   }
+);
+
+ipcMain.handle('DESKTOP_CAPTURER_GET_SOURCES', (event, opts) =>
+  desktopCapturer.getSources(opts)
 );
