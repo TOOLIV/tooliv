@@ -81,4 +81,20 @@ public class WorkspaceMemberServiceImpl implements WorkspaceMemberService {
 
         return new WorkspaceMemberListGetResponseDTO(workspaceMemberGetResponseDTOList);
     }
+
+    @Override
+    public WorkspaceMemberListGetResponseDTO searchWorkspaceMember(String workspaceId, String keyword) {
+        List<WorkspaceMemberGetResponseDTO> workspaceMemberGetResponseDTOList = new ArrayList<>();
+        workspaceMemberRepository.findByWorkspaceIdAndKeyword(workspaceId, keyword).forEach(workspaceMember -> {
+            User member = workspaceMember.getUser();
+            WorkspaceMemberGetResponseDTO workspaceMemberGetResponseDTO = WorkspaceMemberGetResponseDTO.builder()
+                .workspaceMemberCode(workspaceMember.getWorkspaceMemberCode())
+                .nickname(member.getNickname())
+                .name(member.getName())
+                .email(member.getEmail())
+                .build();
+            workspaceMemberGetResponseDTOList.add(workspaceMemberGetResponseDTO);
+        });
+        return new WorkspaceMemberListGetResponseDTO(workspaceMemberGetResponseDTOList);
+    }
 }

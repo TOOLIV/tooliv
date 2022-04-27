@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -78,6 +79,28 @@ public class WorkspaceMemberController {
 
         try {
             workspacememberListGetResponseDTO = workspaceMemberService.getWorkspaceMemberList(workspaceId);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(409).body(BaseResponseDTO.of("워크스페이스멤버 목록 조회 실패"));
+        } catch (Exception e) {
+            return ResponseEntity.status(404).body(BaseResponseDTO.of("조회 가능한 워크스페이스멤버 정보가 없음"));
+        }
+        return ResponseEntity.status(200).body(WorkspaceMemberListGetResponseDTO.of("워크스페이스멤버 목록 조회 완료", workspacememberListGetResponseDTO));
+    }
+
+    @GetMapping("/search")
+    @ApiOperation(value = "워크스페이스멤버 목록 조회")
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "워크스페이스멤버 목록 조회 완료"),
+        @ApiResponse(code = 404, message = "조회 가능한 워크스페이스멤버 정보가 없음"),
+        @ApiResponse(code = 409, message = "워크스페이스멤버 목록 조회 실패"),
+    })
+    public ResponseEntity<? extends BaseResponseDTO> getWorkspaceMemberList(
+        @PathVariable("workspaceId") @Valid @ApiParam(value="워크스페이스 ID", required=true) String workspaceId,
+        @RequestParam @ApiParam(value="검색 단어", required = false) String keyword) {
+        WorkspaceMemberListGetResponseDTO workspacememberListGetResponseDTO = null;
+
+        try {
+            workspacememberListGetResponseDTO = workspaceMemberService.searchWorkspaceMember(workspaceId, keyword);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(409).body(BaseResponseDTO.of("워크스페이스멤버 목록 조회 실패"));
         } catch (Exception e) {
