@@ -7,6 +7,7 @@ import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
 import com.tooliv.server.domain.workspace.application.dto.request.ModifyWorkspaceRequestDTO;
 import com.tooliv.server.domain.workspace.application.dto.request.RegisterWorkspaceRequestDTO;
+import com.tooliv.server.domain.workspace.application.dto.response.RegisterWorkspaceResponseDTO;
 import com.tooliv.server.domain.workspace.application.dto.response.WorkspaceGetResponseDTO;
 import com.tooliv.server.domain.workspace.application.dto.response.WorkspaceListGetResponseDTO;
 import com.tooliv.server.domain.workspace.domain.Workspace;
@@ -40,7 +41,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Transactional
     @Override
-    public Integer registerWorkspace(MultipartFile multipartFile, RegisterWorkspaceRequestDTO registerWorkspaceRequestDTO) {
+    public RegisterWorkspaceResponseDTO registerWorkspace(MultipartFile multipartFile, RegisterWorkspaceRequestDTO registerWorkspaceRequestDTO) {
 
         User owner = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
             .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
@@ -52,7 +53,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
         boolean existWorkspace = workspaceRepository.existsByNameAndDeletedAt(registerWorkspaceRequestDTO.getName(), null);
         if (existWorkspace) {
-            return 409;
+            return null;
         }
 
         Workspace workspace = Workspace.builder()
@@ -83,7 +84,11 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
         channelRepository.save(channel);
 
-        return 201;
+        RegisterWorkspaceResponseDTO registerWorkspaceResponseDTO = RegisterWorkspaceResponseDTO.builder()
+            .id(workspace.getId())
+            .build();
+
+        return registerWorkspaceResponseDTO;
     }
 
     @Transactional
