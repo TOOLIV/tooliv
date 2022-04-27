@@ -14,3 +14,23 @@ export type visibilityRadioTypes = {
   value: boolean;
   onChange: (value: boolean) => void;
 };
+
+export type channelListTypes = {
+  channelCode: string;
+  description: string;
+  id: string;
+  name: string;
+  privateYn: boolean;
+};
+export type channelTypes = {
+  channelCode: string;
+  description: string;
+  workspaceId: string;
+  name: string;
+  privateYn: boolean;
+};
+
+export type channelsType = {
+  channelList: channelListTypes[];
+  onClick: (id: string) => void;
+};

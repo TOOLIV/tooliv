@@ -1,7 +1,9 @@
 import styled from '@emotion/styled';
 import Text from 'atoms/text/Text';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { currentWorkspace, userLog } from 'recoil/atom';
 import {
   workspaceListType,
   workspaceType,
@@ -63,15 +65,24 @@ const Container = styled.div<{
   }
 `;
 
-const WorkSpace = ({ id, name, thumbnailImage }: workspaceListType) => {
-  const [isSelected, setIsSelected] = useState(true);
-  const navigate = useNavigate();
+const WorkSpace = ({
+  id,
+  name,
+  thumbnailImage,
+  onClick,
+}: workspaceListType) => {
+  const workspaceId = useRecoilValue(currentWorkspace);
+
+  const handleClickWorkspace = () => {
+    onClick(id);
+  };
+
   return (
     <Container
-      isSelected={isSelected}
+      isSelected={id === workspaceId}
       thumbnail={thumbnailImage}
       data-name={name}
-      onClick={() => navigate(id)}
+      onClick={handleClickWorkspace}
     >
       {thumbnailImage ? null : <Text size={12}>{name}</Text>}
     </Container>

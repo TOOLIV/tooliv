@@ -41,3 +41,7 @@ export type userLoginTypes = {
   email: string;
   password: string;
 };
+
+export type userLogTypes = {
+  [key: string]: string;
+};

@@ -2,6 +2,7 @@ export type workspaceListType = {
   id: string;
   name: string;
   thumbnailImage: string;
+  onClick: (id: string) => void;
 };
 
 export type workspaceImgType = {
@@ -10,6 +11,7 @@ export type workspaceImgType = {
 
 export type workspacesType = {
   workspaceList: workspaceListType[];
+  onClick: (id: string) => void;
 };
 
 export type workspaceType = {
