@@ -1,10 +1,13 @@
 import styled from '@emotion/styled';
 import React, { useEffect, useRef, useState } from 'react';
-import { changeCode, deleteUser, findUser } from '../../../api/userApi';
+import { changeCode, deleteUser, findUser } from '../../../api/adminApi';
 import InputBox from '../../../molecules/inputBox/InputBox';
 import UserItem from '../../../molecules/userItem/UserItem';
 import { userCodeTypes, userListTypes } from '../../../types/common/userTypes';
 
+export const AdminContainer = styled.div`
+  width: 470px;
+`;
 const UserBox = styled.div`
   height: 50vh;
 `;
@@ -55,7 +58,7 @@ const FindUserSection = () => {
   }, [keyword]);
 
   return (
-    <>
+    <AdminContainer>
       <InputBox
         label="이메일"
         placeholder="회원아이디나 이름을 입력해주세요."
@@ -74,7 +77,7 @@ const FindUserSection = () => {
           />
         ))}
       </UserBox>
-    </>
+    </AdminContainer>
   );
 };
 

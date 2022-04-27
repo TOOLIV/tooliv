@@ -34,7 +34,9 @@ const Nav = () => {
       <Logo />
       {/* <div className='text'>안녕하세요. </div> */}
       <div css={textStyle}>안녕하세요. </div>
-      <div onClick={() => navigate('admin')}>관리</div>
+      <div onClick={() => navigate('admin/auth')}>관리</div>
+      <div onClick={() => navigate('login')}>로그인</div>
+      <div onClick={() => navigate('join')}>회원가입</div>
     </NavContainer>
   );
 };

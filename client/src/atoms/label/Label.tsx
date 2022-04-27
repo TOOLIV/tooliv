@@ -5,7 +5,7 @@ export const Container = styled.label`
   color: ${colors.gray400};
   font-size: 12px;
   font-weight: 600;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 `;
 
 type labelProps = {

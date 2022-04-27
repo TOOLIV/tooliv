@@ -1,19 +1,27 @@
 package com.tooliv.server.domain.workspace.api;
 
-import com.tooliv.server.domain.channel.application.ChannelService;
-import com.tooliv.server.domain.channel.application.dto.request.ModifyChannelRequestDTO;
-import com.tooliv.server.domain.channel.application.dto.request.RegisterChannelRequestDTO;
-import com.tooliv.server.domain.channel.application.dto.response.ChannelListGetResponseDTO;
 import com.tooliv.server.domain.workspace.application.WorkspaceService;
 import com.tooliv.server.domain.workspace.application.dto.request.ModifyWorkspaceRequestDTO;
 import com.tooliv.server.domain.workspace.application.dto.request.RegisterWorkspaceRequestDTO;
 import com.tooliv.server.domain.workspace.application.dto.response.WorkspaceListGetResponseDTO;
 import com.tooliv.server.global.common.BaseResponseDTO;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @CrossOrigin("*")
@@ -24,7 +32,7 @@ public class WorkspaceController {
 
     private final WorkspaceService workspaceService;
 
-    @PostMapping
+    @PostMapping(consumes = {"multipart/form-data"})
     @ApiOperation(value = "워크스페이스 등록")
     @ApiResponses({
         @ApiResponse(code = 201, message = "워크스페이스 등록 완료"),
@@ -32,9 +40,10 @@ public class WorkspaceController {
         @ApiResponse(code = 409, message = "동일한 이름의 워크스페이스가 존재합니다."),
     })
     public ResponseEntity<? extends BaseResponseDTO> registerWorkspace(
-        @RequestBody @ApiParam(value = "워크스페이스 등록 정보", required = true) RegisterWorkspaceRequestDTO registerWorkspaceRequestDTO) {
+        @ApiParam(value="파일 업로드") @RequestPart(required = false) MultipartFile multipartFile,
+        @ApiParam(value = "워크스페이스 등록 정보", required = true) @RequestPart RegisterWorkspaceRequestDTO registerWorkspaceRequestDTO) {
         try {
-            Integer statusCode = workspaceService.registerWorkspace(registerWorkspaceRequestDTO);
+            Integer statusCode = workspaceService.registerWorkspace(multipartFile, registerWorkspaceRequestDTO);
             if (statusCode == 409) {
                 return ResponseEntity.status(409).body(BaseResponseDTO.of("동일한 이름의 워크스페이스가 존재합니다."));
             }
@@ -44,7 +53,7 @@ public class WorkspaceController {
         return ResponseEntity.status(201).body(BaseResponseDTO.of("채널 등록 완료"));
     }
 
-    @PatchMapping
+    @PatchMapping(consumes = {"multipart/form-data"})
     @ApiOperation(value = "워크스페이스 변경 , 필수 정보 - 워크스페이스ID, 워크스페이스명")
     @ApiResponses({
         @ApiResponse(code = 200, message = "워크스페이스 변경에 성공했습니다."),
@@ -52,10 +61,11 @@ public class WorkspaceController {
         @ApiResponse(code = 409, message = "워크스페이스 변경에 실패했습니다."),
     })
     public ResponseEntity<? extends BaseResponseDTO> modifyWorkspace(
-        @RequestBody @ApiParam(value = "수정할 워크스페이스 정보", required = true) ModifyWorkspaceRequestDTO modifyWorkspaceRequestDTO) {
+        @ApiParam(value="파일 업로드") @RequestPart(required = false) MultipartFile multipartFile,
+        @ApiParam(value = "수정할 워크스페이스 정보", required = true) @RequestPart ModifyWorkspaceRequestDTO modifyWorkspaceRequestDTO) {
 
         try {
-            Integer statusCode = workspaceService.modifyWorkspace(modifyWorkspaceRequestDTO);
+            Integer statusCode = workspaceService.modifyWorkspace(multipartFile, modifyWorkspaceRequestDTO);
 
             if (statusCode == 409) {
                 return ResponseEntity.status(409).body(BaseResponseDTO.of("워크스페이스 변경에 실패했습니다."));

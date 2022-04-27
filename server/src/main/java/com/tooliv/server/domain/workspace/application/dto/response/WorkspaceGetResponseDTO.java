@@ -1,6 +1,5 @@
 package com.tooliv.server.domain.workspace.application.dto.response;
 
-import com.tooliv.server.domain.channel.domain.enums.ChannelCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -20,5 +19,8 @@ public class WorkspaceGetResponseDTO {
 
     @ApiModelProperty("워크스페이스 이름")
     private String name;
+
+    @ApiModelProperty("워크스페이스 썸네일")
+    private String thumbnailImage;
 
 }
