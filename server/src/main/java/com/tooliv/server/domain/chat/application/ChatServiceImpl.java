@@ -125,7 +125,7 @@ public class ChatServiceImpl implements ChatService {
             ChatFile chatFile = ChatFile.builder()
                 .fileName(fileName)
                 .build();
-            files.add(fileName);
+            files.add(getImageURL(fileName));
             chatFileRepository.save(chatFile);
         });
 
@@ -145,5 +145,9 @@ public class ChatServiceImpl implements ChatService {
     // 유저 세션정보와 맵핑된 채팅방ID 삭제
     public void removeUserEnterInfo(String sessionId) {
         hashOpsEnterInfo.delete(ENTER_INFO, sessionId);
+    }
+
+    private String getImageURL(String fileName) {
+        return "https://tooliva402.s3.ap-northeast-2.amazonaws.com/" + fileName;
     }
 }
