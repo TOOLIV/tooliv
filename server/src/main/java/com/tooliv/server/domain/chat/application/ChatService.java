@@ -6,6 +6,7 @@ import com.tooliv.server.domain.chat.application.dto.response.ChatRoomListRespon
 import com.tooliv.server.domain.chat.domain.ChatRoom;
 import java.util.List;
 import org.springframework.data.redis.listener.ChannelTopic;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface ChatService {
 
@@ -22,5 +23,7 @@ public interface ChatService {
     List<ChatRequestDTO> getChatInfoValue(String key);
 
     void setChatInfoValue(String key, ChatRequestDTO value);
+
+    List<String> getFileURL(List<MultipartFile> multipartFiles);
 
 }

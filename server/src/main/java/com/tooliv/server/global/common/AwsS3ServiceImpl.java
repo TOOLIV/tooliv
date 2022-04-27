@@ -27,8 +27,7 @@ public class AwsS3ServiceImpl implements AwsS3Service {
     private final AmazonS3Client amazonS3Client;
 
     @Override
-    public String uploadImage(MultipartFile multipartFile) {
-
+    public String uploadFile(MultipartFile multipartFile) {
         String fileName = createFileName(multipartFile.getOriginalFilename());
 
         ObjectMetadata objectMetadata = new ObjectMetadata();
@@ -39,7 +38,7 @@ public class AwsS3ServiceImpl implements AwsS3Service {
             amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
                 .withCannedAcl(CannedAccessControlList.PublicRead));
         } catch (IOException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "사진 업로드에 실패했습니다.");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.");
         }
 
         return fileName;

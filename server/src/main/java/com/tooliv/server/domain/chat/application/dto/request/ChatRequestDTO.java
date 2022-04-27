@@ -4,6 +4,7 @@ import com.tooliv.server.domain.chat.domain.ChatMessage;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,4 +28,7 @@ public class ChatRequestDTO implements Serializable {
 
     @ApiModelProperty(name = "메시지 타입")
     private ChatMessage.MessageType type;
+
+    @ApiModelProperty(name = "파일")
+    private List<String> files;
 }

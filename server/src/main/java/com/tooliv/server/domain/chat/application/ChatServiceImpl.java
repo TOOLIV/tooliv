@@ -4,10 +4,13 @@ import com.tooliv.server.domain.chat.application.dto.request.ChatRequestDTO;
 import com.tooliv.server.domain.chat.application.dto.request.ChatRoomUserInfoRequestDTO;
 import com.tooliv.server.domain.chat.application.dto.response.ChatRoomInfoDTO;
 import com.tooliv.server.domain.chat.application.dto.response.ChatRoomListResponseDTO;
+import com.tooliv.server.domain.chat.domain.ChatFile;
 import com.tooliv.server.domain.chat.domain.ChatRoom;
+import com.tooliv.server.domain.chat.domain.repository.ChatFileRepository;
 import com.tooliv.server.domain.chat.domain.repository.ChatRoomRepository;
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
+import com.tooliv.server.global.common.AwsS3Service;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +22,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
 @Service
@@ -48,6 +52,8 @@ public class ChatServiceImpl implements ChatService {
 
     private final ChatRoomRepository chatRoomRepository;
     private final UserRepository userRepository;
+    private final ChatFileRepository chatFileRepository;
+    private final AwsS3Service awsS3Service;
 
     @Override
     public ChatRoomListResponseDTO getChatRoomList(String email) {
@@ -105,6 +111,22 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public void setChatInfoValue(String key, ChatRequestDTO value) {
         System.out.println(redisTemplate.opsForList().rightPush(key, value));
+    }
+
+    @Override
+    public List<String> getFileURL(List<MultipartFile> multipartFiles) {
+        List<String> files = new ArrayList<>();
+        multipartFiles.forEach(file -> {
+            String fileName = awsS3Service.uploadFile(file);
+            ChatFile evidenceFile = ChatFile.builder()
+                .originalFileName(file.getOriginalFilename())
+                .savedFileName(fileName)
+                .chatMessage(null)
+                .build();
+            files.add(fileName);
+            chatFileRepository.save(evidenceFile);
+        });
+        return files;
     }
 
     // 유저가 입장한 채팅방ID와 유저 세션ID 맵핑 정보 저장

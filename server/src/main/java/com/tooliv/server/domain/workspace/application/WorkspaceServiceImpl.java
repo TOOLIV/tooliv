@@ -48,7 +48,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         LocalDateTime now = LocalDateTime.now();
         String fileName = null;
         if(multipartFile != null)
-            fileName = awsS3Service.uploadImage(multipartFile);
+            fileName = awsS3Service.uploadFile(multipartFile);
 
         boolean existWorkspace = workspaceRepository.existsByNameAndDeletedAt(registerWorkspaceRequestDTO.getName(), null);
         if (existWorkspace) {
@@ -94,7 +94,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
         String fileName = null;
         if(multipartFile != null)
-            fileName = awsS3Service.uploadImage(multipartFile);
+            fileName = awsS3Service.uploadFile(multipartFile);
 
         workspace.modifyWorkspace(modifyWorkspaceRequestDTO.getName(), fileName);
         workspaceRepository.save(workspace);
