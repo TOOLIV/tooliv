@@ -18,6 +18,7 @@ const FunctionButtons = ({
   const [shareMoniter, setShareMoniter] = useState(false);
 
   const onhandleAudio = () => {
+    if (!publisher) return;
     if (audio) {
       publisher.publishAudio(false);
       setAudio(false);
@@ -27,6 +28,7 @@ const FunctionButtons = ({
     }
   };
   const onhandleVideo = () => {
+    if (!publisher) return;
     if (video) {
       publisher.publishVideo(false);
       setVideo(false);
