@@ -20,11 +20,8 @@ import lombok.ToString;
 @Entity
 public class ChatFile extends BaseEntity {
 
-    @Column(name = "original_file_name")
-    private String originalFileName;
-
-    @Column(name = "saved_file_name")
-    private String savedFileName;
+    @Column(name = "file_name")
+    private String fileName;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "chat_message")

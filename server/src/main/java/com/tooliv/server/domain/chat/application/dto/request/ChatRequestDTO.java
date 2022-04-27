@@ -1,9 +1,14 @@
 package com.tooliv.server.domain.chat.application.dto.request;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.tooliv.server.domain.chat.domain.ChatMessage;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,8 +32,17 @@ public class ChatRequestDTO implements Serializable {
     private String contents;
 
     @ApiModelProperty(name = "메시지 타입")
-    private ChatMessage.MessageType type;
+    private String type;
+
+    @ApiModelProperty(name = "보낸시간")
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    private LocalDateTime sendTime;
 
     @ApiModelProperty(name = "파일")
     private List<String> files;
+
+    public void updateFiles(List<String> files) {
+        this.files = files;
+    }
 }
