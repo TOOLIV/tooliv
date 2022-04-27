@@ -4,6 +4,7 @@ import com.tooliv.server.domain.chat.application.dto.request.ChatRequestDTO;
 import com.tooliv.server.domain.chat.application.dto.request.ChatRoomUserInfoRequestDTO;
 import com.tooliv.server.domain.chat.application.dto.response.ChatRoomInfoDTO;
 import com.tooliv.server.domain.chat.application.dto.response.ChatRoomListResponseDTO;
+import com.tooliv.server.domain.chat.application.dto.response.FileUrlListResponseDTO;
 import com.tooliv.server.domain.chat.domain.ChatFile;
 import com.tooliv.server.domain.chat.domain.ChatMessage;
 import com.tooliv.server.domain.chat.domain.ChatRoom;
@@ -112,14 +113,12 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public void setChatInfoValue(String key, ChatRequestDTO value, List<MultipartFile> multipartFiles) {
-        //Todo
-        value.updateFiles(getFileURL(multipartFiles));
+    public void setChatInfoValue(String key, ChatRequestDTO value) {
         System.out.println(redisTemplate.opsForList().rightPush(key, value));
     }
 
     @Override
-    public List<String> getFileURL(List<MultipartFile> multipartFiles) {
+    public FileUrlListResponseDTO getFileURL(List<MultipartFile> multipartFiles) {
         List<String> files = new ArrayList<>();
         multipartFiles.forEach(file -> {
             String fileName = awsS3Service.uploadFile(file);
@@ -129,7 +128,8 @@ public class ChatServiceImpl implements ChatService {
             files.add(fileName);
             chatFileRepository.save(chatFile);
         });
-        return files;
+
+        return new FileUrlListResponseDTO(files);
     }
 
     // 유저가 입장한 채팅방ID와 유저 세션ID 맵핑 정보 저장
