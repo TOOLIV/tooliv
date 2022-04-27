@@ -105,5 +105,27 @@ public class ChannelController {
         return ResponseEntity.status(200).body(ChannelListGetResponseDTO.of("채널 목록 조회 완료", channelListGetResponseDTO));
     }
 
+    @GetMapping("/list/public/{workspaceId}")
+    @ApiOperation(value = "채널 목록 조회")
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "채널 목록 조회 완료"),
+        @ApiResponse(code = 404, message = "조회 가능한 채널 정보가 없음"),
+        @ApiResponse(code = 409, message = "채널 목록 조회 실패"),
+    })
+    public ResponseEntity<? extends BaseResponseDTO> getPublicChannelList(
+        @PathVariable("workspaceId") @ApiParam(value="워크스페이스 ID", required=true) String workspaceId) {
+        ChannelListGetResponseDTO channelListGetResponseDTO = null;
+
+        try {
+            channelListGetResponseDTO = channelService.getPublicChannelList(workspaceId);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(409).body(BaseResponseDTO.of("채널 목록 조회 실패"));
+        } catch (Exception e) {
+            return ResponseEntity.status(404).body(BaseResponseDTO.of("조회 가능한 채널 정보가 없음"));
+        }
+
+        return ResponseEntity.status(200).body(ChannelListGetResponseDTO.of("채널 목록 조회 완료", channelListGetResponseDTO));
+    }
+
 
 }
