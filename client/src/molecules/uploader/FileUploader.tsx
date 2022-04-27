@@ -79,7 +79,7 @@ const FileUploader = ({ onChange }: workspaceImgType) => {
           <Text color="gray300" size={14}>
             5MB이내 PNG, JPG, GIF 파일
           </Text>
-          <Button text="이미지 선택하기" onClick={handleUploadBtnClick} />
+          <Button text="이미지 선택하기" />
         </UploadWrapper>
       )}
     </Container>

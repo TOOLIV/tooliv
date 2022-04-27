@@ -2,15 +2,17 @@ import styled from '@emotion/styled';
 import { getWorkspaceList } from 'api/workspaceApi';
 import Icons from 'atoms/common/Icons';
 import MenuTemplate from 'atoms/sidemenu/MenuTemplate';
+import Channels from 'molecules/sidemenu/Channels';
 import WorkSpaces from 'molecules/sidemenu/WorkSpaces';
+import ChannelModal from 'organisms/modal/ChannelModal';
 import React, { useEffect, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { isCreateWorkspace, isOpenSide } from 'recoil/atom';
+import { isCreateChannel, isCreateWorkspace, isOpenSide } from 'recoil/atom';
 import { workspaceListType } from 'types/workspace/workspaceTypes';
 
 const Container = styled.div<{ isOpen: boolean }>`
   width: 280px;
-  padding: 16px 18px 16px 18px;
+  /* padding: 16px 18px 16px 18px; */
   border-bottom: ${(props) => props.isOpen && '1px solid #ffffff'};
 `;
 
@@ -18,39 +20,45 @@ const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 15px;
+  padding: 16px 18px;
 `;
 
-const WorkSpaceSection = () => {
-  const [isOpen, setIsOpen] = useRecoilState<boolean>(isOpenSide);
-  const [workspaceList, setWorkspaceList] = useState<workspaceListType[]>([]);
-  const isCreate = useRecoilValue(isCreateWorkspace);
+const ChannelSection = () => {
+  const isSideOpen = useRecoilValue<boolean>(isOpenSide);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const onClickSide = () => {
-    setIsOpen((prev) => !prev);
-  };
-  const handleWorkspace = async () => {
+  const [workspaceList, setWorkspaceList] = useState<workspaceListType[]>([]);
+  const isCreate = useRecoilValue(isCreateChannel);
+
+  const handleChannel = async () => {
     const response = await getWorkspaceList();
     setWorkspaceList(response.data.workspaceGetResponseDTOList);
     console.log(response);
   };
 
   useEffect(() => {
-    handleWorkspace();
+    handleChannel();
   }, [isCreate]);
 
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
-    <Container isOpen={isOpen}>
+    <Container isOpen={isSideOpen}>
       <Header>
-        <MenuTemplate title="워크 스페이스" />
-        <Icons
-          icon={isOpen ? 'anglesLeft' : 'anglesRight'}
-          onClick={onClickSide}
-        />
+        <MenuTemplate title="채널" />
+        <Icons icon="plus" onClick={handleOpenModal} />
       </Header>
-      <WorkSpaces workspaceList={workspaceList} />
+      <Channels />
+      <ChannelModal isOpen={isModalOpen} onClose={handleCloseModal} />
+      {/* <WorkSpaces workspaceList={workspaceList} /> */}
     </Container>
   );
 };
 
-export default WorkSpaceSection;
+export default ChannelSection;

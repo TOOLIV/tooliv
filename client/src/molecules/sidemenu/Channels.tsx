@@ -18,28 +18,29 @@ export const TopContainer = styled.div`
   align-items: center;
 `;
 
-const ChannelsContainer = styled.div<{ isOpen: boolean }>`
-  border-bottom: ${(props) => props.isOpen && '1px solid #ffffff'};
-  padding-bottom: 16px;
+const ChannelsContainer = styled.div`
+  padding-left: 14px;
+  padding-bottom: 18px;
 `;
 
 const ChannelContainer = styled.div`
   display: flex;
   align-items: center;
-  margin-left: 24px;
   height: 30px;
   padding-left: 8px;
   transition: 0.3s;
+  cursor: pointer;
   /* 선택된 채널만 */
   &:nth-of-type(1) {
-    background-color: ${(props) => props.theme.pointColor};
+    background-color: ${(props) => props.theme.lightPointColor};
     border-radius: 10px 0 0 10px;
-    border-right: 4px solid ${(props) => props.theme.secondPointColor};
+    border-right: 4px solid ${(props) => props.theme.pointColor};
   }
+
   &:hover {
     background-color: ${(props) => props.theme.lightPointColor};
     border-radius: 10px 0 0 10px;
-    border-right: 4px solid ${(props) => props.theme.secondPointColor};
+    border-right: none;
   }
 `;
 export const SideWrapper = styled.div`
@@ -47,7 +48,6 @@ export const SideWrapper = styled.div`
 `;
 
 const Channels = () => {
-  const [isOpen, setIsOpen] = useRecoilState<boolean>(isOpenSide);
   const navigate = useNavigate();
   const dummyData: labelType[] = [
     {
@@ -60,25 +60,19 @@ const Channels = () => {
     },
   ];
   return (
-    <>
-      <TopContainer>
-        <MenuTemplate title="채널" />
-        <Icons icon="plus" />
-      </TopContainer>
-      <ChannelsContainer isOpen={isOpen}>
-        {dummyData.map((channel) => (
-          <ChannelContainer
-            key={channel.id}
-            onClick={() => navigate('/meeting/0/0')}
-          >
-            <SideWrapper>
-              <Icons icon="lock" />
-            </SideWrapper>
-            <Label {...channel} />
-          </ChannelContainer>
-        ))}
-      </ChannelsContainer>
-    </>
+    <ChannelsContainer>
+      {dummyData.map((channel) => (
+        <ChannelContainer
+          key={channel.id}
+          onClick={() => navigate('/meeting/0/0')}
+        >
+          <SideWrapper>
+            <Icons icon="lock" />
+          </SideWrapper>
+          <Label {...channel} />
+        </ChannelContainer>
+      ))}
+    </ChannelsContainer>
   );
 };
 

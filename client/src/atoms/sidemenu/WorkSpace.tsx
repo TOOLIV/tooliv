@@ -1,7 +1,11 @@
 import styled from '@emotion/styled';
 import Text from 'atoms/text/Text';
 import { useState } from 'react';
-import { workspaceType } from 'types/workspace/workspaceTypes';
+import { useNavigate } from 'react-router-dom';
+import {
+  workspaceListType,
+  workspaceType,
+} from 'types/workspace/workspaceTypes';
 
 const Container = styled.div<{
   isSelected: boolean;
@@ -10,6 +14,7 @@ const Container = styled.div<{
 }>`
   width: 40px;
   height: 40px;
+  flex: 0 0 auto;
   border-radius: 10px;
   background-color: #ffffff;
   margin-right: 12px;
@@ -58,14 +63,15 @@ const Container = styled.div<{
   }
 `;
 
-const WorkSpace = ({ name, thumbnailImage }: workspaceType) => {
+const WorkSpace = ({ id, name, thumbnailImage }: workspaceListType) => {
   const [isSelected, setIsSelected] = useState(true);
-
+  const navigate = useNavigate();
   return (
     <Container
       isSelected={isSelected}
       thumbnail={thumbnailImage}
       data-name={name}
+      onClick={() => navigate(id)}
     >
       {thumbnailImage ? null : <Text size={12}>{name}</Text>}
     </Container>

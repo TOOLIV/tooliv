@@ -32,3 +32,13 @@ export const userCreationList = atom<userCreationTypes[]>({
   key: 'userCreationList',
   default: [],
 });
+
+export const isCreateWorkspace = atom<boolean>({
+  key: 'isCreateWorkspace',
+  default: false,
+});
+
+export const isCreateChannel = atom<boolean>({
+  key: 'isCreateChannel',
+  default: false,
+});

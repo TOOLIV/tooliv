@@ -8,8 +8,6 @@ import UserManagePage from './UserManagePage';
 import UserAuthPage from './UserAuthPage';
 import Login from './Login';
 import Join from './Join';
-import { isLoginState } from 'recoil/auth';
-import { useRecoilValue } from 'recoil';
 import PrivateRoute from 'router/PrivateRoute';
 import Main from './Main';
 // import Test from './Test';

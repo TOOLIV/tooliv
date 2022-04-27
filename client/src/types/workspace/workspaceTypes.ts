@@ -16,3 +16,8 @@ export type workspaceType = {
   name: string;
   thumbnailImage: string;
 };
+
+export type workspaceModalType = {
+  isOpen: boolean;
+  onClose: () => void;
+};
