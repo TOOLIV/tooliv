@@ -2,6 +2,7 @@
 exports.__esModule = true;
 var electron_1 = require("electron");
 var isDev = require("electron-is-dev");
+var path = require("path");
 var mainWindow;
 var createWindow = function () {
     mainWindow = new electron_1.BrowserWindow({
@@ -16,15 +17,19 @@ var createWindow = function () {
             // node환경처럼 사용하기
             nodeIntegration: true,
             // 개발자도구
-            devTools: isDev
+            devTools: isDev,
+            contextIsolation: false,
+            preload: __dirname + '/preload.js'
         }
     });
+    // require('@electron/remote')
+    //   .require('@electron/remote/main')
+    //   .enable(mainWindow.webContents);
     // production에서는 패키지 내부 리소스에 접근.
     // 개발 중에는 개발 도구에서 호스팅하는 주소에서 로드.
     mainWindow.loadURL(isDev
         ? 'http://localhost:3000'
-        : // : `file://${path.join(__dirname, '../build/index.html')}`
-            "file://".concat(__dirname, "/../build/index.html"));
+        : "file://".concat(path.join(__dirname, '../build/index.html')));
     if (isDev) {
         mainWindow.webContents.openDevTools({ mode: 'detach' });
     }
@@ -53,4 +58,7 @@ electron_1.app.on('certificate-error', function (event, webContents, url, error,
     // and we then say "it is all fine - true" to the callback
     event.preventDefault();
     callback(true);
+});
+electron_1.ipcMain.handle('DESKTOP_CAPTURER_GET_SOURCES', function (event, opts) {
+    return electron_1.desktopCapturer.getSources(opts);
 });
