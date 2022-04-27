@@ -139,10 +139,7 @@ public class ChannelServiceImpl implements ChannelService {
     @Override
     public ChannelListGetResponseDTO getPublicChannelList(String workspaceId) {
 
-        User user = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
-            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
-
-        List<Channel> channelList = channelRepository.findByUserIdAndWorkspaceId(user.getId(), workspaceId);
+        List<Channel> channelList = channelRepository.findByWorkspaceId(workspaceId);
         List<ChannelGetResponseDTO> channelGetResponseDTOList = new ArrayList<>();
 
         channelList.forEach(channel -> {
