@@ -56,6 +56,10 @@ const LoginForm = () => {
         accessToken: response.data.accessToken,
       });
       navigate('/');
+      // 워크스페이스 목록 불러옴
+      // 첫번째 워크스페이스 id를 가지고
+      // 채널 목록을 검색
+      // navigate
     } catch (error) {
       console.log(error);
     }

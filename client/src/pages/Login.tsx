@@ -15,8 +15,7 @@ const Container = styled.div`
 const LogoContainer = styled.div`
   display: flex;
   flex-direction: column;
-  margin-top: 115px;
-  margin-right: 30px;
+  margin-top: 90px;
 `;
 
 const Login = () => {

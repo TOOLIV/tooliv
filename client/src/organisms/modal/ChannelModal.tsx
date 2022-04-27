@@ -4,10 +4,12 @@ import { createWorkspace } from 'api/workspaceApi';
 import Button from 'atoms/common/Button';
 import Text from 'atoms/text/Text';
 import InputBox from 'molecules/inputBox/InputBox';
+import ChannelRadio from 'molecules/radio/channelRadio/ChannelRadio';
+import VisibilityRadio from 'molecules/radio/visibiltyRadio/VisibilityRadio';
 import FileUploader from 'molecules/uploader/FileUploader';
 import React, { useRef, useState } from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
-import { isCreateWorkspace } from 'recoil/atom';
+import { isCreateChannel, isCreateWorkspace } from 'recoil/atom';
 import { colors } from 'shared/color';
 import { workspaceModalType } from 'types/workspace/workspaceTypes';
 
@@ -32,7 +34,7 @@ const Modal = styled.div<{ isOpen: boolean }>`
 
 const Container = styled.div`
   width: 430px;
-  padding: 25px;
+  padding: 25px 50px;
   background-color: ${colors.white};
   border-radius: 30px;
   box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.06);
@@ -46,49 +48,34 @@ const Title = styled.div`
   margin-bottom: 16px;
 `;
 
+const RadioBtn = styled.div`
+  margin-top: 16px;
+`;
 const ButtonBox = styled.div`
+  width: 100%;
   display: flex;
   justify-content: space-between;
-  width: 80%;
-  margin: 0 auto;
+  margin: 32px auto 0;
 `;
 
-const WorkspaceModal = ({ isOpen, onClose }: workspaceModalType) => {
-  const [file, setFile] = useState<File>();
-  const inputWorkspaceRef = useRef<HTMLInputElement>(null);
-  const setIsCreate = useSetRecoilState(isCreateWorkspace);
+const ChannelModal = ({ isOpen, onClose }: workspaceModalType) => {
+  const inputChannelRef = useRef<HTMLInputElement>(null);
+  const setIsCreate = useSetRecoilState(isCreateChannel);
+  const [channelCode, setChannelCode] = useState('CHAT');
+  const [privateYn, setPrivateYn] = useState(false);
 
-  const handleSetImg = (file: FileList) => {
-    setFile(file[0]);
-  };
+  const registChannel = async () => {
+    const name = inputChannelRef.current?.value!;
 
-  const registWorkspace = async () => {
-    const formData = new FormData();
-    const name = inputWorkspaceRef.current?.value!;
-
-    formData.append('multipartFile', file!);
-    formData.append(
-      'registerWorkspaceRequestDTO',
-      new Blob(
-        [
-          JSON.stringify({
-            name,
-          }),
-        ],
-        {
-          type: 'application/json',
-        }
-      )
-    );
     try {
       if (!name) {
-        alert('워크스페이스명을 입력해주세요.');
-        inputWorkspaceRef.current?.focus();
+        alert('채널명을 입력해주세요.');
+        inputChannelRef.current?.focus();
       }
 
       if (name) {
-        const response = await createWorkspace(formData);
-        console.log(response);
+        // const response = await createWorkspace(formData);
+        // console.log(response);
         setIsCreate(true);
         onClose();
       }
@@ -96,36 +83,44 @@ const WorkspaceModal = ({ isOpen, onClose }: workspaceModalType) => {
       console.log(error);
     }
   };
+
+  const handleChannelCode = (value: string) => {
+    setChannelCode(value);
+  };
+  const handleVisibility = (value: boolean) => {
+    setPrivateYn(value);
+  };
+
   return (
     <Modal isOpen={isOpen}>
       <Container>
         <Title>
-          <Text size={18}>워크스페이스 생성</Text>
+          <Text size={18}>채널 생성</Text>
         </Title>
         <InputBox
-          label="워크스페이스명"
-          placeholder="워크스페이스명을 입력해주세요."
-          ref={inputWorkspaceRef}
+          label="채널명"
+          placeholder="채널명을 입력해주세요."
+          ref={inputChannelRef}
         />
-        <FileUploader onChange={handleSetImg} />
+        <RadioBtn>
+          <ChannelRadio value={channelCode} onChange={handleChannelCode} />
+        </RadioBtn>
+        <RadioBtn>
+          <VisibilityRadio value={privateYn} onChange={handleVisibility} />
+        </RadioBtn>
         <ButtonBox>
           <Button
-            width="125"
+            width="160"
             height="35"
             text="취소"
             bgColor="gray300"
             onClick={onClose}
           />
-          <Button
-            width="125"
-            height="35"
-            text="생성"
-            onClick={registWorkspace}
-          />
+          <Button width="160" height="35" text="생성" onClick={registChannel} />
         </ButtonBox>
       </Container>
     </Modal>
   );
 };
 
-export default WorkspaceModal;
+export default ChannelModal;
