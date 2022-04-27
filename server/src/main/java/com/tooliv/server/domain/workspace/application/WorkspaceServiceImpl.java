@@ -1,7 +1,10 @@
 package com.tooliv.server.domain.workspace.application;
 
 import com.tooliv.server.domain.channel.domain.Channel;
+import com.tooliv.server.domain.channel.domain.ChannelMembers;
 import com.tooliv.server.domain.channel.domain.enums.ChannelCode;
+import com.tooliv.server.domain.channel.domain.enums.ChannelMemberCode;
+import com.tooliv.server.domain.channel.domain.repository.ChannelMembersRepository;
 import com.tooliv.server.domain.channel.domain.repository.ChannelRepository;
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
@@ -32,6 +35,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     private final WorkspaceRepository workspaceRepository;
 
     private final WorkspaceMemberRepository workspaceMemberRepository;
+
+    private final ChannelMembersRepository channelMembersRepository;
 
     private final ChannelRepository channelRepository;
 
@@ -83,6 +88,15 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             .build();
 
         channelRepository.save(channel);
+
+        ChannelMembers channelMembers = ChannelMembers.builder()
+            .channel(channel)
+            .user(owner)
+            .createdAt(now)
+            .channelMemberCode(ChannelMemberCode.CADMIN)
+            .build();
+
+        channelMembersRepository.save(channelMembers);
 
         RegisterWorkspaceResponseDTO registerWorkspaceResponseDTO = RegisterWorkspaceResponseDTO.builder()
             .id(workspace.getId())
