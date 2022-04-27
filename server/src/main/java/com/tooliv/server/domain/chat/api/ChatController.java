@@ -6,10 +6,15 @@ import com.tooliv.server.domain.chat.application.dto.request.ChatRequestDTO;
 import com.tooliv.server.domain.chat.application.dto.request.ChatRoomEnterRequestDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @CrossOrigin("*")
@@ -33,7 +38,7 @@ public class ChatController {
     // websocket "/pub/chat/enter"로 들어오는 메시지
     @MessageMapping("/chat/enter")
     @ApiOperation(value = "채팅방 참여")
-    public void enterChat(ChatRoomEnterRequestDTO chatRoomEnterRequestDTO){
+    public void enterChat(ChatRoomEnterRequestDTO chatRoomEnterRequestDTO) {
         // 채팅방 참여
         chatService.enterChatRoom(chatRoomEnterRequestDTO.getRoomId());
     }

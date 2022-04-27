@@ -36,6 +36,9 @@ const Videos = ({ openviduState }: videoTypes) => {
     <div>
       <VideoContainer isChatOpen={isChatOpen}>
         <Video openviduState={openviduState} />
+        {openviduState?.subscribers.map((sub: StreamManager, i: number) => (
+          <Video openviduState={openviduState} streamManager={sub} key={i} />
+        ))}
         {/* <Video />
         <Video />
         <Video /> */}

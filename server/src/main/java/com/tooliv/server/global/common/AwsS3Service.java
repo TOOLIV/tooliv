@@ -4,7 +4,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface AwsS3Service {
 
-    String uploadImage(MultipartFile multipartFile);
+    String uploadFile(MultipartFile multipartFile);
 
     String createFileName(String fileName);
 
