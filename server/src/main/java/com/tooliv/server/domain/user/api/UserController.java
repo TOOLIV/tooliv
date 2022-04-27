@@ -7,7 +7,7 @@ import com.tooliv.server.domain.user.application.dto.request.LogInRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.NicknameUpdateRequestDTO;
 import com.tooliv.server.domain.user.application.dto.response.LogInResponseDTO;
 import com.tooliv.server.domain.user.application.dto.response.NicknameResponseDTO;
-import com.tooliv.server.global.exception.NotUniqueEmailException;
+import com.tooliv.server.global.exception.DuplicateEmailException;
 import com.tooliv.server.global.common.BaseResponseDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -101,7 +101,7 @@ public class UserController {
         @PathVariable("email") @ApiParam(value = "이메일", required = true) String email) {
         try {
             userService.checkEmail(email);
-        } catch (NotUniqueEmailException e) {
+        } catch (DuplicateEmailException e) {
             return ResponseEntity.status(409).body(BaseResponseDTO.of("이메일 사용 불가"));
         }
 
