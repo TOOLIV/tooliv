@@ -3,4 +3,6 @@ export type contentTypes = {
   sender: string;
   contents: string;
   type: string;
+  sendTime?: string;
+  files?: string[];
 };

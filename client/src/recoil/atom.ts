@@ -32,3 +32,8 @@ export const userCreationList = atom<userCreationTypes[]>({
   key: 'userCreationList',
   default: [],
 });
+
+export const chatFileUrl = atom<string>({
+  key: 'chatFileUrl',
+  default: '',
+});

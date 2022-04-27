@@ -28,7 +28,11 @@ const ContentContainer = styled.div`
   padding-left: 30px;
 `;
 
-const Message = ({ roomId, sender, contents, type }: contentTypes) => {
+const File = styled.img`
+  max-width: 300px;
+`;
+
+const Message = ({ roomId, sender, contents, type, files }: contentTypes) => {
   return (
     <Container>
       <ProfileContainer>
@@ -38,6 +42,13 @@ const Message = ({ roomId, sender, contents, type }: contentTypes) => {
         <Label name={sender} size="16px" />
       </ProfileContainer>
       <ContentContainer>{contents}</ContentContainer>
+      {files && (
+        <ContentContainer>
+          {files.map((file) => (
+            <File src={file}></File>
+          ))}
+        </ContentContainer>
+      )}
     </Container>
   );
 };
