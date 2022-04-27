@@ -88,13 +88,13 @@ public class WorkspaceMemberController {
     }
 
     @GetMapping("/search")
-    @ApiOperation(value = "워크스페이스멤버 목록 조회")
+    @ApiOperation(value = "워크스페이스멤버 검색")
     @ApiResponses({
-        @ApiResponse(code = 200, message = "워크스페이스멤버 목록 조회 완료"),
-        @ApiResponse(code = 404, message = "조회 가능한 워크스페이스멤버 정보가 없음"),
-        @ApiResponse(code = 409, message = "워크스페이스멤버 목록 조회 실패"),
+        @ApiResponse(code = 200, message = "워크스페이스멤버 검색 완료"),
+        @ApiResponse(code = 404, message = "검색 가능한 워크스페이스멤버 정보가 없음"),
+        @ApiResponse(code = 409, message = "워크스페이스멤버 검색 실패"),
     })
-    public ResponseEntity<? extends BaseResponseDTO> getWorkspaceMemberList(
+    public ResponseEntity<? extends BaseResponseDTO> searchWorkspaceMember(
         @PathVariable("workspaceId") @Valid @ApiParam(value="워크스페이스 ID", required=true) String workspaceId,
         @RequestParam @ApiParam(value="검색 단어", required = false) String keyword) {
         WorkspaceMemberListGetResponseDTO workspacememberListGetResponseDTO = null;
@@ -102,10 +102,10 @@ public class WorkspaceMemberController {
         try {
             workspacememberListGetResponseDTO = workspaceMemberService.searchWorkspaceMember(workspaceId, keyword);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(409).body(BaseResponseDTO.of("워크스페이스멤버 목록 조회 실패"));
+            return ResponseEntity.status(409).body(BaseResponseDTO.of("워크스페이스멤버 검색 실패"));
         } catch (Exception e) {
-            return ResponseEntity.status(404).body(BaseResponseDTO.of("조회 가능한 워크스페이스멤버 정보가 없음"));
+            return ResponseEntity.status(404).body(BaseResponseDTO.of("검색 가능한 워크스페이스멤버 정보가 없음"));
         }
-        return ResponseEntity.status(200).body(WorkspaceMemberListGetResponseDTO.of("워크스페이스멤버 목록 조회 완료", workspacememberListGetResponseDTO));
+        return ResponseEntity.status(200).body(WorkspaceMemberListGetResponseDTO.of("워크스페이스멤버 검색 완료", workspacememberListGetResponseDTO));
     }
 }
