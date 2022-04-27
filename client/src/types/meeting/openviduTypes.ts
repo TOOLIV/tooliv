@@ -1,4 +1,5 @@
-import { Device, Publisher } from 'openvidu-browser';
+import { Device, Publisher, StreamManager } from 'openvidu-browser';
+import { Dispatch, SetStateAction } from 'react';
 
 export type openviduTypes = {
   mySessionId: string;
@@ -12,8 +13,14 @@ export type openviduTypes = {
 
 export type videoTypes = {
   openviduState: openviduTypes;
+  streamManager?: StreamManager;
 };
 
 export type funcButtonPropsTypes = {
   publisher: Publisher;
+  setIsScreenShareModal: Dispatch<SetStateAction<boolean>>;
+};
+
+export type screenShareMadalPropsTypes = {
+  setIsScreenShareModal: Dispatch<SetStateAction<boolean>>;
 };

@@ -5,8 +5,10 @@ import { appThemeMode } from './recoil/atom';
 import './App.css';
 import AppRouter from './pages/Router';
 import global from './shared/global';
+
 function App() {
   const mode = useRecoilValue(appThemeMode);
+
   return (
     <>
       <ThemeProvider theme={mode === 'light' ? light : dark}>
