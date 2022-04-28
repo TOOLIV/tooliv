@@ -51,8 +51,8 @@ public class AdminController {
         @RequestBody @ApiParam(value = "유저 권한 변경 정보", required = true) UserCodeUpdateRequestDTO userCodeUpdateRequestDTO) {
         try {
             adminService.updateUserCode(userCodeUpdateRequestDTO);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(409).body(BaseResponseDTO.of("권한 변경 실패"));
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(409).body(BaseResponseDTO.of(e.getMessage()));
         }
         return ResponseEntity.status(200).body(BaseResponseDTO.of("권한 변경 완료"));
     }
