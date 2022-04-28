@@ -17,6 +17,14 @@ public interface ChannelRepository extends JpaRepository<Channel, String> {
     @Query(value="SELECT * "
         + "FROM channel c "
         + "INNER JOIN channel_members m ON m.channel_id = c.id "
-        + "WHERE c.workspace_id = :workspace_id AND c.private_yn = false AND c.deleted_at IS NULL", nativeQuery = true)
+        + "WHERE c.workspace_id = :workspace_id AND c.deleted_at IS NULL AND m.user_id = :user_id "
+        + "ORDER BY c.created_at ASC", nativeQuery = true)
+    List<Channel> findByWorkspaceIdAndUser(@Param("workspace_id") String workspaceId, @Param("user_id") String userId);
+
+    @Query(value="SELECT * "
+        + "FROM channel c "
+        + "INNER JOIN channel_members m ON m.channel_id = c.id "
+        + "WHERE c.workspace_id = :workspace_id AND c.private_yn = false AND c.deleted_at IS NULL "
+        + "ORDER BY c.created_at ASC", nativeQuery = true)
     List<Channel> findByWorkspaceId(@Param("workspace_id") String workspaceId);
 }

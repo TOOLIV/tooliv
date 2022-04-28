@@ -1,11 +1,11 @@
 package com.tooliv.server.domain.channel.application;
 
 import com.tooliv.server.domain.channel.application.dto.request.ModifyChannelRequestDTO;
+import com.tooliv.server.domain.channel.application.dto.request.RegisterChannelRequestDTO;
 import com.tooliv.server.domain.channel.application.dto.response.ChannelGetResponseDTO;
 import com.tooliv.server.domain.channel.application.dto.response.ChannelListGetResponseDTO;
 import com.tooliv.server.domain.channel.application.dto.response.RegisterChannelResponseDTO;
 import com.tooliv.server.domain.channel.domain.Channel;
-import com.tooliv.server.domain.channel.application.dto.request.RegisterChannelRequestDTO;
 import com.tooliv.server.domain.channel.domain.ChannelMembers;
 import com.tooliv.server.domain.channel.domain.ChannelVideo;
 import com.tooliv.server.domain.channel.domain.enums.ChannelCode;
@@ -15,17 +15,15 @@ import com.tooliv.server.domain.channel.domain.repository.ChannelRepository;
 import com.tooliv.server.domain.channel.domain.repository.ChannelVideoRepository;
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
-import com.tooliv.server.domain.workspace.application.dto.response.RegisterWorkspaceResponseDTO;
 import com.tooliv.server.domain.workspace.domain.Workspace;
 import com.tooliv.server.domain.workspace.domain.repository.WorkspaceRepository;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
-import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -124,11 +122,9 @@ public class ChannelServiceImpl implements ChannelService {
         User user = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
             .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
 
-        List<ChannelMembers> channelMemberList = channelMembersRepository.findByUser(user);
+        List<Channel> channelList = channelRepository.findByWorkspaceIdAndUser(workspaceId, user.getId());
         List<ChannelGetResponseDTO> channelGetResponseDTOList = new ArrayList<>();
-        channelMemberList.forEach(channelMember -> {
-            Channel channel = channelMember.getChannel();
-            if(channel.getDeletedAt() == null  && channel.getWorkspace().getId().equals(workspaceId)) {
+        channelList.forEach(channel-> {
                 ChannelGetResponseDTO channelGetResponseDTO = ChannelGetResponseDTO.builder()
                     .id(channel.getId())
                     .name(channel.getName())
@@ -136,7 +132,6 @@ public class ChannelServiceImpl implements ChannelService {
                     .channelCode(channel.getChannelCode())
                     .build();
                 channelGetResponseDTOList.add(channelGetResponseDTO);
-            }
         });
         return new ChannelListGetResponseDTO(channelGetResponseDTOList);
     }
