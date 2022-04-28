@@ -45,7 +45,7 @@ public class UserController {
         @RequestBody @Valid @ApiParam(value = "회원가입 정보", required = true) SignUpRequestDTO signUpRequestDTO) {
         try {
             userService.signUp(signUpRequestDTO);
-        } catch (DuplicateEmailException | UserNotFoundException e) {
+        } catch (DuplicateEmailException e) {
             return ResponseEntity.status(409).body(BaseResponseDTO.of(e.getMessage()));
         }
 
@@ -60,8 +60,8 @@ public class UserController {
 
         try {
             logInResponseDTO = userService.logIn(logInRequestDTO);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(409).body(BaseResponseDTO.of("로그인 실패"));
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(409).body(BaseResponseDTO.of(e.getMessage()));
         }
         return ResponseEntity.status(201).body(LogInResponseDTO.of("로그인 성공", logInResponseDTO));
     }

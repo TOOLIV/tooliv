@@ -12,6 +12,7 @@ import com.tooliv.server.domain.user.domain.enums.UserCode;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
 import com.tooliv.server.global.exception.DuplicateEmailException;
 import com.tooliv.server.global.common.AwsS3Service;
+import com.tooliv.server.global.exception.UserNotFoundException;
 import com.tooliv.server.global.security.util.JwtAuthenticationProvider;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -60,10 +61,10 @@ public class UserServiceImpl implements UserService {
             new UsernamePasswordAuthenticationToken(logInRequestDTO.getEmail(),
                 logInRequestDTO.getPassword()));
 
-        User user = userRepository.findByEmailAndDeletedAt(logInRequestDTO.getEmail(), null)
-            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
-
         String jwt = jwtAuthenticationProvider.createToken(authentication);
+
+        User user = userRepository.findByEmailAndDeletedAt(logInRequestDTO.getEmail(), null)
+            .orElseThrow(() -> new UserNotFoundException("회원 정보가 존재하지 않습니다."));
 
         return LogInResponseDTO.builder()
             .userId(user.getId())
