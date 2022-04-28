@@ -149,7 +149,6 @@ public class ChannelServiceImpl implements ChannelService {
                 .privateYn(channel.isPrivateYn())
                 .channelCode(channel.getChannelCode())
                 .build();
-            System.out.println(channelGetResponseDTO);
             channelGetResponseDTOList.add(channelGetResponseDTO);
         });
 
