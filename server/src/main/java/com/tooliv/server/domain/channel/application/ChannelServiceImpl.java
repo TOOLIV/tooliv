@@ -3,6 +3,7 @@ package com.tooliv.server.domain.channel.application;
 import com.tooliv.server.domain.channel.application.dto.request.ModifyChannelRequestDTO;
 import com.tooliv.server.domain.channel.application.dto.response.ChannelGetResponseDTO;
 import com.tooliv.server.domain.channel.application.dto.response.ChannelListGetResponseDTO;
+import com.tooliv.server.domain.channel.application.dto.response.RegisterChannelResponseDTO;
 import com.tooliv.server.domain.channel.domain.Channel;
 import com.tooliv.server.domain.channel.application.dto.request.RegisterChannelRequestDTO;
 import com.tooliv.server.domain.channel.domain.ChannelMembers;
@@ -14,6 +15,7 @@ import com.tooliv.server.domain.channel.domain.repository.ChannelRepository;
 import com.tooliv.server.domain.channel.domain.repository.ChannelVideoRepository;
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
+import com.tooliv.server.domain.workspace.application.dto.response.RegisterWorkspaceResponseDTO;
 import com.tooliv.server.domain.workspace.domain.Workspace;
 import com.tooliv.server.domain.workspace.domain.repository.WorkspaceRepository;
 import java.util.ArrayList;
@@ -41,7 +43,7 @@ public class ChannelServiceImpl implements ChannelService {
 
     @Transactional
     @Override
-    public void registerChannel(RegisterChannelRequestDTO registerChannelRequestDTO) {
+    public RegisterChannelResponseDTO registerChannel(RegisterChannelRequestDTO registerChannelRequestDTO) {
 
         User owner = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
             .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
@@ -78,6 +80,11 @@ public class ChannelServiceImpl implements ChannelService {
 
         channelMembersRepository.save(channelMembers);
 
+        RegisterChannelResponseDTO registerChannelResponseDTO = RegisterChannelResponseDTO.builder()
+            .id(channel.getId())
+            .build();
+
+        return registerChannelResponseDTO;
     }
 
     @Transactional
