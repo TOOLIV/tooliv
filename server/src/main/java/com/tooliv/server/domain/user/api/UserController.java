@@ -13,8 +13,6 @@ import com.tooliv.server.global.exception.UserNotFoundException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -73,7 +71,6 @@ public class UserController {
         try {
             userService.uploadProfileImage(multipartFile);
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseEntity.status(409).body(BaseResponseDTO.of("프로필 이미지 등록 실패"));
         }
 
@@ -101,12 +98,8 @@ public class UserController {
 
         try {
             userListResponseDTO = userService.getUserList(keyword);
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(409).body(BaseResponseDTO.of("회원 정보 목록 조회 실패"));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(404).body(BaseResponseDTO.of("조회 가능한 회원 정보가 없음"));
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(404).body(BaseResponseDTO.of(e.getMessage()));
         }
 
         return ResponseEntity.status(200).body(UserListResponseDTO.of("회원 정보 목록 조회 완료", userListResponseDTO));
@@ -120,8 +113,8 @@ public class UserController {
 
         try {
             nicknameResponseDTO = userService.updateNickname(nicknameUpdateRequestDTO);
-        } catch (Exception e) {
-            return ResponseEntity.status(409).body(BaseResponseDTO.of("닉네임 변경 실패"));
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(409).body(BaseResponseDTO.of(e.getMessage()));
         }
         return ResponseEntity.status(200)
             .body(NicknameResponseDTO.of("닉네임 변경 완료", nicknameResponseDTO));

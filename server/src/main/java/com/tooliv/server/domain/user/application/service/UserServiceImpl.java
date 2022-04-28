@@ -115,7 +115,7 @@ public class UserServiceImpl implements UserService {
         List<UserInfoResponseDTO> userInfoResponseDTOList = new ArrayList<>();
 
         for (User user : userRepository.findAllByDeletedAtAndNameContainingOrderByNameAsc(null, keyword)
-            .orElseThrow(() -> new IllegalArgumentException("조회 가능한 회원이 없음"))) {
+            .orElseThrow(() -> new UserNotFoundException("조회 가능한 회원이 없음"))) {
             userInfoResponseDTOList.add(new UserInfoResponseDTO(user.getId(), user.getEmail(), user.getName(), user.getNickname(), user.getUserCode(), getImageURL(user.getProfileImage())));
         }
 
@@ -125,7 +125,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getCurrentUser() {
         User user = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
-            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+            .orElseThrow(() -> new UserNotFoundException("회원 정보가 존재하지 않습니다."));
 
         return user;
     }
