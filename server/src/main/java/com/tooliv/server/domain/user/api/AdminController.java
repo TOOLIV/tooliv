@@ -45,8 +45,6 @@ public class AdminController {
             userListResponseDTO = adminService.getUserList(keyword);
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(409).body(BaseResponseDTO.of(e.getMessage()));
-        } catch (Exception e) {
-            return ResponseEntity.status(404).body(BaseResponseDTO.of("조회 가능한 회원 정보가 없음"));
         }
 
         return ResponseEntity.status(200).body(UserListResponseDTO.of("회원 정보 목록 조회 완료", userListResponseDTO));
