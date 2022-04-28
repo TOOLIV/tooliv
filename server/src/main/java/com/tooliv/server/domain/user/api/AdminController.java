@@ -63,8 +63,8 @@ public class AdminController {
         @ApiParam(value="삭제할 회원 이메일", required = true) @RequestParam String email) {
         try {
             adminService.deleteUser(email);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(409).body(BaseResponseDTO.of("회원 삭제 실패"));
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(409).body(BaseResponseDTO.of(e.getMessage()));
         }
 
         return ResponseEntity.status(204).body(BaseResponseDTO.of("회원 삭제 완료"));
