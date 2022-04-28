@@ -32,11 +32,6 @@ public class AdminController {
 
     @GetMapping("/search")
     @ApiOperation(value = "회원 정보 목록 조회")
-    @ApiResponses({
-        @ApiResponse(code = 200, message = "회원 정보 목록 조회 완료"),
-        @ApiResponse(code = 404, message = "조회 가능한 회원 정보가 없음"),
-        @ApiResponse(code = 409, message = "회원 정보 목록 조회 실패"),
-    })
     public ResponseEntity<? extends BaseResponseDTO> getUserList(
         @ApiParam(value="검색 단어", required = true) @RequestParam String keyword) {
         UserListResponseDTO userListResponseDTO = null;
@@ -52,10 +47,6 @@ public class AdminController {
 
     @PatchMapping("/code")
     @ApiOperation(value = "유저 권한 변경")
-    @ApiResponses({
-        @ApiResponse(code = 200, message = "권한 변경 완료"),
-        @ApiResponse(code = 409, message = "권한 변경 실패"),
-    })
     public ResponseEntity<? extends BaseResponseDTO> updateUserCode(
         @RequestBody @ApiParam(value = "유저 권한 변경 정보", required = true) UserCodeUpdateRequestDTO userCodeUpdateRequestDTO) {
         try {
@@ -68,10 +59,6 @@ public class AdminController {
 
     @DeleteMapping()
     @ApiOperation(value = "회원 삭제")
-    @ApiResponses({
-        @ApiResponse(code = 204, message = "회원 삭제 완료"),
-        @ApiResponse(code = 409, message = "회원 삭제 실패"),
-    })
     public ResponseEntity<? extends BaseResponseDTO> deleteUser(
         @ApiParam(value="삭제할 회원 이메일", required = true) @RequestParam String email) {
         try {
