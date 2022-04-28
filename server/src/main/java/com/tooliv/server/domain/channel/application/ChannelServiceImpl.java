@@ -123,6 +123,7 @@ public class ChannelServiceImpl implements ChannelService {
             .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
 
         List<Channel> channelList = channelRepository.findByWorkspaceIdAndUser(workspaceId, user.getId());
+
         List<ChannelGetResponseDTO> channelGetResponseDTOList = new ArrayList<>();
         channelList.forEach(channel-> {
                 ChannelGetResponseDTO channelGetResponseDTO = ChannelGetResponseDTO.builder()

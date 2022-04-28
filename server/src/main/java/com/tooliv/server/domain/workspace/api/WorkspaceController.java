@@ -53,7 +53,7 @@ public class WorkspaceController {
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(404).body(BaseResponseDTO.of(e.getMessage()));
         }
-        return ResponseEntity.status(201).body(RegisterWorkspaceResponseDTO.of("채널 등록 완료", registerWorkspaceResponseDTO));
+        return ResponseEntity.status(201).body(RegisterWorkspaceResponseDTO.of("워크스페이스 등록 완료", registerWorkspaceResponseDTO));
     }
 
     @PatchMapping(consumes = {"multipart/form-data"})

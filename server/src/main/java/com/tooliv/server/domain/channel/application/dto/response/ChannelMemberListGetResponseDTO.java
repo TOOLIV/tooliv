@@ -10,13 +10,17 @@ import lombok.Getter;
 @ApiModel("ChannelMemberListGetResponseDTO")
 public class ChannelMemberListGetResponseDTO extends BaseResponseDTO {
 
+    @ApiModelProperty("채널명")
+    private String channelName;
+
     @ApiModelProperty("채널멤버 목록")
     private List<ChannelMemberGetResponseDTO> channelMemberGetResponseDTOList;
 
     public ChannelMemberListGetResponseDTO() {
     }
 
-    public ChannelMemberListGetResponseDTO(List<ChannelMemberGetResponseDTO> channelMemberGetResponseDTOList) {
+    public ChannelMemberListGetResponseDTO(String channelName, List<ChannelMemberGetResponseDTO> channelMemberGetResponseDTOList) {
+        this.channelName = channelName;
         this.channelMemberGetResponseDTOList = channelMemberGetResponseDTOList;
     }
 
