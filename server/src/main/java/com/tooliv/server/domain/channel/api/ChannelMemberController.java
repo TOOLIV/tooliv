@@ -3,7 +3,6 @@ package com.tooliv.server.domain.channel.api;
 import com.tooliv.server.domain.channel.application.ChannelMemberService;
 import com.tooliv.server.domain.channel.application.dto.request.DeleteChannelMemberRequestDTO;
 import com.tooliv.server.domain.channel.application.dto.request.RegisterChannelMemberRequestDTO;
-
 import com.tooliv.server.domain.channel.application.dto.response.ChannelMemberListGetResponseDTO;
 import com.tooliv.server.global.common.BaseResponseDTO;
 import io.swagger.annotations.Api;
@@ -21,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -85,6 +85,28 @@ public class ChannelMemberController {
             return ResponseEntity.status(404).body(BaseResponseDTO.of("조회 가능한 채널멤버 정보가 없음"));
         }
         return ResponseEntity.status(200).body(ChannelMemberListGetResponseDTO.of("채널멤버 목록 조회 완료", channelMemberListGetResponseDTO));
+    }
+
+    @GetMapping("/search")
+    @ApiOperation(value = "채널멤버 검색")
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "채널멤버 검색 완료"),
+        @ApiResponse(code = 404, message = "검색 가능한 채널멤버 정보가 없음"),
+        @ApiResponse(code = 409, message = "채널멤버 검색 실패"),
+    })
+    public ResponseEntity<? extends BaseResponseDTO> getWorkspaceMemberList(
+        @PathVariable("channelId") @Valid @ApiParam(value="채널 ID", required=true) String channelId,
+        @RequestParam @ApiParam(value="검색 단어", required = false) String keyword) {
+        ChannelMemberListGetResponseDTO channelMemberListGetResponseDTO = null;
+
+        try {
+            channelMemberListGetResponseDTO = channelMemberService.searchChannelMember(channelId, keyword);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(409).body(BaseResponseDTO.of("채널멤버 검색 실패"));
+        } catch (Exception e) {
+            return ResponseEntity.status(404).body(BaseResponseDTO.of("검색 가능한 채널멤버 정보가 없음"));
+        }
+        return ResponseEntity.status(200).body(ChannelMemberListGetResponseDTO.of("채널멤버 검색 완료", channelMemberListGetResponseDTO));
     }
 
 }

@@ -65,7 +65,7 @@ public class ChannelMemberServiceImpl implements ChannelMemberService {
             .orElseThrow(() -> new IllegalArgumentException("채널 정보가 존재하지 않습니다."));
 
         List<ChannelMemberGetResponseDTO> channelMemberGetResponseDTOList = new ArrayList<>();
-        List<ChannelMembers> channelMembersList = channelMembersRepository.findByChannel(channel);
+        List<ChannelMembers> channelMembersList = channelMembersRepository.findByChannel(channel.getId());
         channelMembersList.forEach(channelMembers -> {
             User member = channelMembers.getUser();
             ChannelMemberGetResponseDTO channelMemberGetResponseDTO = ChannelMemberGetResponseDTO.builder()
@@ -77,6 +77,23 @@ public class ChannelMemberServiceImpl implements ChannelMemberService {
 
             channelMemberGetResponseDTOList.add(channelMemberGetResponseDTO);
         });
+        return new ChannelMemberListGetResponseDTO(channelMemberGetResponseDTOList);
+    }
+
+    @Override
+    public ChannelMemberListGetResponseDTO searchChannelMember(String channelId, String keyword) {
+    List<ChannelMemberGetResponseDTO> channelMemberGetResponseDTOList = new ArrayList<>();
+
+    channelMembersRepository.searchByChannelIdAndKeyword(channelId, keyword).forEach(channelMember -> {
+        User member = channelMember.getUser();
+        ChannelMemberGetResponseDTO channelMemberGetResponseDTO = ChannelMemberGetResponseDTO.builder()
+            .channelMemberCode(channelMember.getChannelMemberCode())
+            .nickname(member.getNickname())
+            .name(member.getName())
+            .email(member.getEmail())
+            .build();
+        channelMemberGetResponseDTOList.add(channelMemberGetResponseDTO);
+    });
         return new ChannelMemberListGetResponseDTO(channelMemberGetResponseDTOList);
     }
 }

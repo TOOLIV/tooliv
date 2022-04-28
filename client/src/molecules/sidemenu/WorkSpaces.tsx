@@ -1,68 +1,72 @@
 import styled from '@emotion/styled';
-import { getWorkspaceList } from 'api/workspaceApi';
-import React, { useEffect, useState } from 'react';
-import { useRecoilState } from 'recoil';
-import { workspaceListType } from 'types/workspace/workspaceTypes';
+import WorkspaceModal from 'organisms/modal/WorkspaceModal';
+import { useEffect, useState } from 'react';
+import { workspacesType } from 'types/workspace/workspaceTypes';
 import Icons from '../../atoms/common/Icons';
-import MenuTemplate from '../../atoms/sidemenu/MenuTemplate';
 import WorkSpace from '../../atoms/sidemenu/WorkSpace';
-import { isOpenSide } from '../../recoil/atom';
-import { labelType } from '../../types/common/labelType';
-import { SideWrapper } from './Channels';
-
-const TopContainer = styled.div`
-  display: flex;
-  border-radius: 0 50px 0 0;
-  padding: 16px 18px 16px 18px;
-  width: 280px;
-  box-sizing: border-box;
+import mainSrc from '../../assets/img/logo.svg';
+import { useNavigate } from 'react-router-dom';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { currentWorkspace, userLog } from 'recoil/atom';
+const WorkSpaceContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
 `;
 
-const WorkSpaceContainer = styled.div<{ isOpen: boolean }>`
+const WorkSpaceWrapper = styled.div`
   display: flex;
   align-items: center;
-  /* width: 100%; */
-  padding: 0 24px 22px 24px;
-  border-bottom: ${(props) => props.isOpen && '1px solid #ffffff'};
+  /* width: 90%; */
+  flex-wrap: nowrap;
+  /* overflow-x: scroll; */
 `;
 
-const WorkSpaces = () => {
-  const [isOpen, setIsOpen] = useRecoilState<boolean>(isOpenSide);
-  const [workspaceList, setWorkspaceList] = useState<workspaceListType[]>([]);
+const WorkSpaces = ({ workspaceList, onClick }: workspacesType) => {
+  const [isOpen, setIsOpen] = useState(false);
 
-  const onClickSide = () => {
-    setIsOpen((prev) => !prev);
+  const handleOpenModal = () => {
+    setIsOpen(true);
   };
 
-  const handleWorkspace = async () => {
-    const response = await getWorkspaceList();
-    setWorkspaceList(response.data.workspaceGetResponseDTOList);
-    console.log(response);
+  const handleCloseModal = () => {
+    setIsOpen(false);
   };
 
-  useEffect(() => {
-    handleWorkspace();
-  }, []);
+  const navigate = useNavigate();
+  // const [workspaceId, setWorkspaceId] = useRecoilState(currentWorkspace);
+  // const userLogList = useRecoilValue(userLog);
+
+  // const handleClickWorkspace = (id: string) => {
+  //   const log = userLogList.find((data) => data.workspaceId === id);
+  //   if (log) {
+  //     setWorkspaceId(id);
+  //     navigate(`${log.workspaceId}/${log.channelId}`);
+  //   } else {
+  //   }
+  //   console.log(log);
+  // };
+
+  const handleClickMain = (id: string) => {
+    navigate(id);
+  };
 
   return (
-    <>
-      <TopContainer>
-        <MenuTemplate title="워크 스페이스" />
-        <Icons
-          icon={isOpen ? 'anglesLeft' : 'anglesRight'}
-          onClick={onClickSide}
+    <WorkSpaceContainer>
+      <WorkSpaceWrapper>
+        <WorkSpace
+          id="main"
+          name="홈"
+          thumbnailImage={mainSrc}
+          onClick={handleClickMain}
         />
-      </TopContainer>
-      <WorkSpaceContainer isOpen={isOpen}>
         {workspaceList.map((workspace) => (
-          <WorkSpace key={workspace.id} {...workspace} />
+          <WorkSpace key={workspace.id} {...workspace} onClick={onClick} />
         ))}
-        <Icons icon="plus" />
-      </WorkSpaceContainer>
-    </>
+      </WorkSpaceWrapper>
+      <Icons icon="plus" onClick={handleOpenModal} />
+      <WorkspaceModal isOpen={isOpen} onClose={handleCloseModal} />
+    </WorkSpaceContainer>
   );
 };
 

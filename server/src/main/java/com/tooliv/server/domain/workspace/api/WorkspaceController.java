@@ -3,8 +3,10 @@ package com.tooliv.server.domain.workspace.api;
 import com.tooliv.server.domain.workspace.application.WorkspaceService;
 import com.tooliv.server.domain.workspace.application.dto.request.ModifyWorkspaceRequestDTO;
 import com.tooliv.server.domain.workspace.application.dto.request.RegisterWorkspaceRequestDTO;
+import com.tooliv.server.domain.workspace.application.dto.response.RegisterWorkspaceResponseDTO;
 import com.tooliv.server.domain.workspace.application.dto.response.WorkspaceListGetResponseDTO;
 import com.tooliv.server.global.common.BaseResponseDTO;
+import com.tooliv.server.global.exception.UserNotFoundException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -42,15 +44,16 @@ public class WorkspaceController {
     public ResponseEntity<? extends BaseResponseDTO> registerWorkspace(
         @ApiParam(value="파일 업로드") @RequestPart(required = false) MultipartFile multipartFile,
         @ApiParam(value = "워크스페이스 등록 정보", required = true) @RequestPart RegisterWorkspaceRequestDTO registerWorkspaceRequestDTO) {
+        RegisterWorkspaceResponseDTO registerWorkspaceResponseDTO = null;
         try {
-            Integer statusCode = workspaceService.registerWorkspace(multipartFile, registerWorkspaceRequestDTO);
-            if (statusCode == 409) {
+            registerWorkspaceResponseDTO = workspaceService.registerWorkspace(multipartFile, registerWorkspaceRequestDTO);
+            if (registerWorkspaceResponseDTO == null) {
                 return ResponseEntity.status(409).body(BaseResponseDTO.of("동일한 이름의 워크스페이스가 존재합니다."));
             }
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(404).body(BaseResponseDTO.of("해당 유저를 찾을 수 없습니다."));
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(404).body(BaseResponseDTO.of(e.getMessage()));
         }
-        return ResponseEntity.status(201).body(BaseResponseDTO.of("채널 등록 완료"));
+        return ResponseEntity.status(201).body(RegisterWorkspaceResponseDTO.of("채널 등록 완료", registerWorkspaceResponseDTO));
     }
 
     @PatchMapping(consumes = {"multipart/form-data"})

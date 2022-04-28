@@ -8,6 +8,8 @@ import UserItem from '../molecules/userItem/UserItem';
 import Dropdown from '../atoms/dropdown/Dropdown';
 import WorkspaceModal from 'organisms/modal/WorkspaceModal';
 import { colors } from 'shared/color';
+import ChannelType from 'molecules/radio/channelRadio/ChannelRadio';
+import ChannelModal from 'organisms/modal/ChannelModal';
 
 const Test = () => {
   const [selectedOption, setSelectedOption] = useState({
@@ -82,9 +84,9 @@ const Test = () => {
         <Info label="도메인" value="meeting.ssafy.com" />
       </TestDiv>
 
-      <TestDiv>
-        <WorkspaceModal />
-      </TestDiv>
+      {/* <TestDiv>
+        <ChannelModal isOpen={true} onClose={() => console.log('close')} />
+      </TestDiv> */}
       {/* 
       <TestDiv>
         <UserItem

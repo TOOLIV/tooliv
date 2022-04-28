@@ -7,18 +7,18 @@ const StyeldVideo = styled.video`
   height: 150px;
 `;
 
-const Video = ({ openviduState, streamManager }: videoTypes) => {
+const Video = ({ publisher, subscribers }: videoTypes) => {
   const video = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    if (openviduState?.mainStreamManager && !!video.current) {
-      console.log('mainStreamManager>>>>>>>', openviduState.mainStreamManager);
+    if (publisher && !!video.current) {
+      console.log('mainStreamManager>>>>>>>', publisher);
 
-      openviduState.mainStreamManager.addVideoElement(video.current);
-    } else if (streamManager && !!video.current) {
+      publisher.addVideoElement(video.current);
+    } else if (subscribers && !!video.current) {
       console.log('streamManager>>>>>>>>>>>>>>>>>>>>>');
-      console.log(JSON.parse(streamManager.stream.connection.data).clientData);
-      streamManager.addVideoElement(video.current);
+      console.log(JSON.parse(subscribers.stream.connection.data).clientData);
+      subscribers.addVideoElement(video.current);
       // openviduState?.session.
     }
   }, []);
@@ -28,8 +28,10 @@ const Video = ({ openviduState, streamManager }: videoTypes) => {
       autoPlay={true}
       ref={video}
       className={
-        streamManager &&
-        JSON.parse(streamManager.stream.connection.data).clientData
+        publisher
+          ? JSON.parse(publisher.stream.connection.data).clientData
+          : subscribers &&
+            JSON.parse(subscribers.stream.connection.data).clientData
       }
     ></StyeldVideo>
   );

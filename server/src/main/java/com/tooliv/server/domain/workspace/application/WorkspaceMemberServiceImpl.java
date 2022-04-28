@@ -65,7 +65,7 @@ public class WorkspaceMemberServiceImpl implements WorkspaceMemberService {
         .orElseThrow(() -> new IllegalArgumentException("워크스페이스 정보가 존재하지 않습니다."));
 
         List<WorkspaceMemberGetResponseDTO> workspaceMemberGetResponseDTOList = new ArrayList<>();
-        List<WorkspaceMembers> workspaceMembersList = workspaceMemberRepository.findByWorkspace(workspace);
+        List<WorkspaceMembers> workspaceMembersList = workspaceMemberRepository.findByWorkspace(workspace.getId());
 
         workspaceMembersList.forEach(workspaceMember -> {
             User member = workspaceMember.getUser();
@@ -79,6 +79,22 @@ public class WorkspaceMemberServiceImpl implements WorkspaceMemberService {
             workspaceMemberGetResponseDTOList.add(workspaceMemberGetResponseDTO);
         });
 
+        return new WorkspaceMemberListGetResponseDTO(workspaceMemberGetResponseDTOList);
+    }
+
+    @Override
+    public WorkspaceMemberListGetResponseDTO searchWorkspaceMember(String workspaceId, String keyword) {
+        List<WorkspaceMemberGetResponseDTO> workspaceMemberGetResponseDTOList = new ArrayList<>();
+        workspaceMemberRepository.findByWorkspaceIdAndKeyword(workspaceId, keyword).forEach(workspaceMember -> {
+            User member = workspaceMember.getUser();
+            WorkspaceMemberGetResponseDTO workspaceMemberGetResponseDTO = WorkspaceMemberGetResponseDTO.builder()
+                .workspaceMemberCode(workspaceMember.getWorkspaceMemberCode())
+                .nickname(member.getNickname())
+                .name(member.getName())
+                .email(member.getEmail())
+                .build();
+            workspaceMemberGetResponseDTOList.add(workspaceMemberGetResponseDTO);
+        });
         return new WorkspaceMemberListGetResponseDTO(workspaceMemberGetResponseDTOList);
     }
 }

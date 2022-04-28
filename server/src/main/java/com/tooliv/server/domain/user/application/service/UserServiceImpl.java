@@ -10,7 +10,7 @@ import com.tooliv.server.domain.user.application.dto.response.UserListResponseDT
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.enums.UserCode;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
-import com.tooliv.server.domain.user.exception.DuplicateEmailException;
+import com.tooliv.server.global.exception.DuplicateEmailException;
 import com.tooliv.server.global.common.AwsS3Service;
 import com.tooliv.server.global.security.util.JwtAuthenticationProvider;
 import java.time.LocalDateTime;

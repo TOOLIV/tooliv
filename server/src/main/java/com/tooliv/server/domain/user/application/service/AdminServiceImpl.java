@@ -6,9 +6,7 @@ import com.tooliv.server.domain.user.application.dto.response.UserListResponseDT
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.enums.UserCode;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
-import com.tooliv.server.domain.user.exception.DuplicateEmailException;
-import com.tooliv.server.domain.user.exception.NotUniqueEmailException;
-import com.tooliv.server.domain.user.exception.UserNotFoundException;
+import com.tooliv.server.global.exception.UserNotFoundException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

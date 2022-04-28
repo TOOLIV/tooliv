@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
@@ -7,12 +7,20 @@ import axios from 'axios';
 import Editor from '../molecules/chat/Editor';
 import Message from '../molecules/chat/Message';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { channelContents, channelMessage, chatFileUrl } from '../recoil/atom';
+import {
+  channelContents,
+  channelMessage,
+  chatFiles,
+  chatFileUrl,
+  isDragging,
+} from '../recoil/atom';
 import { contentTypes } from '../types/channel/contentType';
 import Messages from '../organisms/chat/Messages';
 import { enterChannel, subChannel } from 'api/chatApi';
 import { token } from 'recoil/auth';
 import DragDrop from 'organisms/chat/DragDrop';
+import Files from 'organisms/chat/Files';
+import { FileTypes } from 'types/common/fileTypes';
 
 const Container = styled.div`
   width: 100%;
@@ -23,9 +31,10 @@ const Container = styled.div`
 const Channel = () => {
   const navigate = useNavigate();
   const [message, setMessage] = useRecoilState<string>(channelMessage);
+  const [files, setFiles] = useRecoilState<FileTypes[]>(chatFiles);
   const [contents, setContents] =
     useRecoilState<contentTypes[]>(channelContents);
-  const fileUrl = useRecoilValue<string>(chatFileUrl);
+  const fileUrl = useRecoilValue<string[]>(chatFileUrl);
   const { accessToken } = useRecoilValue(token);
   let sockJS = new SockJS('http://localhost:8080/chatting');
   let client = Stomp.over(sockJS);
@@ -64,14 +73,17 @@ const Channel = () => {
       })
     );
     setMessage('');
+    setFiles([]);
   };
 
   return (
-    <Container>
-      <Messages />
-      <DragDrop />
-      <Editor onClick={sendMessage} />
-    </Container>
+    <>
+      <Container>
+        <Messages />
+        <Files />
+        <Editor onClick={sendMessage} />
+      </Container>
+    </>
   );
 };
 

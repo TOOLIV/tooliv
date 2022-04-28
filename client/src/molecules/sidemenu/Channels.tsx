@@ -1,12 +1,8 @@
 import styled from '@emotion/styled';
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
+import { useNavigate, useParams } from 'react-router-dom';
+import { channelsType } from 'types/channel/contentType';
 import Icons from '../../atoms/common/Icons';
 import Label from '../../atoms/common/Label';
-import MenuTemplate from '../../atoms/sidemenu/MenuTemplate';
-import { isOpenSide } from '../../recoil/atom';
-import { labelType } from '../../types/common/labelType';
 
 export const TopContainer = styled.div`
   display: flex;
@@ -18,67 +14,57 @@ export const TopContainer = styled.div`
   align-items: center;
 `;
 
-const ChannelsContainer = styled.div<{ isOpen: boolean }>`
-  border-bottom: ${(props) => props.isOpen && '1px solid #ffffff'};
-  padding-bottom: 16px;
+const ChannelsContainer = styled.div`
+  padding-left: 14px;
+  padding-bottom: 18px;
 `;
 
-const ChannelContainer = styled.div`
+const ChannelContainer = styled.div<{ isSelected: boolean }>`
   display: flex;
   align-items: center;
-  margin-left: 24px;
   height: 30px;
   padding-left: 8px;
   transition: 0.3s;
+  cursor: pointer;
   /* 선택된 채널만 */
-  &:nth-of-type(1) {
-    background-color: ${(props) => props.theme.pointColor};
-    border-radius: 10px 0 0 10px;
-    border-right: 4px solid ${(props) => props.theme.secondPointColor};
-  }
+  background-color: ${(props) =>
+    props.isSelected && props.theme.lightPointColor};
+  border-radius: ${(props) => props.isSelected && `10px 0 0 10px`};
+  border-right: ${(props) =>
+    props.isSelected && `4px solid ${props.theme.pointColor}`};
+
   &:hover {
     background-color: ${(props) => props.theme.lightPointColor};
     border-radius: 10px 0 0 10px;
-    border-right: 4px solid ${(props) => props.theme.secondPointColor};
+    border-right: none;
   }
 `;
+
 export const SideWrapper = styled.div`
   margin-right: 10px;
 `;
 
-const Channels = () => {
-  const [isOpen, setIsOpen] = useRecoilState<boolean>(isOpenSide);
-  const navigate = useNavigate();
-  const dummyData: labelType[] = [
-    {
-      id: '0',
-      name: '1. 공지사항',
-    },
-    {
-      id: '1',
-      name: '2. 잡담',
-    },
-  ];
+const Channels = ({ channelList, onClick }: channelsType) => {
+  const { channelId } = useParams();
   return (
-    <>
-      <TopContainer>
-        <MenuTemplate title="채널" />
-        <Icons icon="plus" />
-      </TopContainer>
-      <ChannelsContainer isOpen={isOpen}>
-        {dummyData.map((channel) => (
-          <ChannelContainer
-            key={channel.id}
-            onClick={() => navigate('/meeting/0/0')}
-          >
-            <SideWrapper>
+    <ChannelsContainer>
+      {channelList.map((channel) => (
+        <ChannelContainer
+          key={channel.id}
+          onClick={() => onClick(channel.id)}
+          isSelected={channel.id === channelId}
+        >
+          <SideWrapper>
+            {channel.privateYn ? (
               <Icons icon="lock" />
-            </SideWrapper>
-            <Label {...channel} />
-          </ChannelContainer>
-        ))}
-      </ChannelsContainer>
-    </>
+            ) : (
+              <Icons icon="public" />
+            )}
+          </SideWrapper>
+          <Label {...channel} />
+        </ChannelContainer>
+      ))}
+    </ChannelsContainer>
   );
 };
 

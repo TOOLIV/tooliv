@@ -1,3 +1,4 @@
+import styled from '@emotion/styled';
 import { fileUpload } from 'api/fileApi';
 import React, {
   useState,
@@ -7,14 +8,24 @@ import React, {
   useRef,
 } from 'react';
 import { useRecoilState } from 'recoil';
-import { chatFileUrl } from 'recoil/atom';
+import { chatFiles, chatFileUrl, isDragging } from 'recoil/atom';
 import { FileTypes } from 'types/common/fileTypes';
 
-const DragDrop = () => {
-  const [isDragging, setIsDragging] = useState<boolean>(false);
-  const [files, setFiles] = useState<FileTypes[]>([]);
-  const [fileUrl, setFileUrl] = useRecoilState<string>(chatFileUrl);
+const Container = styled.div`
+  width: 100%;
+  height: 100%;
+  z-index: 3;
+  position: absolute;
+`;
+const Wrapper = styled.div`
+  width: 100%;
+  height: 100%;
+`;
 
+const DragDrop = () => {
+  const [files, setFiles] = useRecoilState<FileTypes[]>(chatFiles);
+  const [fileUrl, setFileUrl] = useRecoilState<string[]>(chatFileUrl);
+  const [isDrag, setIsDragging] = useRecoilState<boolean>(isDragging);
   const dragRef = useRef<HTMLLabelElement | null>(null);
   const fileId = useRef<number>(0);
 
@@ -59,26 +70,34 @@ const DragDrop = () => {
     [files]
   );
 
-  const handleDragIn = useCallback((e: DragEvent): void => {
-    e.preventDefault();
-    e.stopPropagation();
-  }, []);
-
-  const handleDragOut = useCallback((e: DragEvent): void => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    setIsDragging(false);
-  }, []);
-
-  const handleDragOver = useCallback((e: DragEvent): void => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (e.dataTransfer!.files) {
+  const handleDragIn = useCallback(
+    (e: DragEvent): void => {
+      e.preventDefault();
+      e.stopPropagation();
       setIsDragging(true);
-    }
-  }, []);
+    },
+    [isDrag]
+  );
+
+  const handleDragOut = useCallback(
+    (e: DragEvent): void => {
+      e.preventDefault();
+      e.stopPropagation();
+      setIsDragging(false);
+    },
+    [isDrag]
+  );
+
+  const handleDragOver = useCallback(
+    (e: DragEvent): void => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (e.dataTransfer!.files) {
+        setIsDragging(true);
+      }
+    },
+    [isDrag]
+  );
 
   const handleDrop = useCallback(
     (e: DragEvent): void => {
@@ -109,6 +128,10 @@ const DragDrop = () => {
     }
   }, [handleDragIn, handleDragOut, handleDragOver, handleDrop]);
 
+  const preventClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+  };
+
   useEffect(() => {
     initDragEvents();
 
@@ -116,7 +139,7 @@ const DragDrop = () => {
   }, [initDragEvents, resetDragEvents]);
 
   return (
-    <div className="DragDrop">
+    <Container>
       <input
         type="file"
         id="fileUpload"
@@ -125,15 +148,11 @@ const DragDrop = () => {
         onChange={onChangeFiles}
       />
 
-      <label
-        className={isDragging ? 'DragDrop-File-Dragging' : 'DragDrop-File'}
-        htmlFor="fileUpload"
-        ref={dragRef}
-      >
-        <div>파일 첨부</div>
+      <label htmlFor="fileUpload" ref={dragRef} onClick={preventClick}>
+        <Wrapper />
       </label>
 
-      <div className="DragDrop-Files">
+      {/* <div className="DragDrop-Files">
         {files.length > 0 &&
           files.map((file: FileTypes) => {
             const {
@@ -153,8 +172,8 @@ const DragDrop = () => {
               </div>
             );
           })}
-      </div>
-    </div>
+      </div> */}
+    </Container>
   );
 };
 

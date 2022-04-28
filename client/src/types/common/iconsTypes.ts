@@ -30,7 +30,8 @@ export type iconsTypes = {
     | 'shareMonitor'
     | 'exit'
     | 'message'
-    | 'image';
+    | 'image'
+    | 'file';
 
   onClick?: () => void;
   width?: string;

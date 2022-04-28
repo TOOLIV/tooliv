@@ -1,8 +1,12 @@
+import styled from '@emotion/styled';
 import React from 'react';
 import { colors } from '../../shared/color';
 import { icons } from '../../shared/icons';
 import { iconsTypes } from '../../types/common/iconsTypes';
 
+const Icon = styled.svg<{ onClick?: () => void }>`
+  cursor: ${(props) => (props.onClick ? 'pointer' : 'default')};
+`;
 const Icons = ({
   icon,
   color,
@@ -11,7 +15,7 @@ const Icons = ({
   onClick,
 }: iconsTypes) => {
   return (
-    <svg
+    <Icon
       viewBox="0 0 24 24"
       width={width}
       height={height}
@@ -20,7 +24,7 @@ const Icons = ({
       onClick={onClick}
     >
       {icons[icon]}
-    </svg>
+    </Icon>
   );
 };
 
