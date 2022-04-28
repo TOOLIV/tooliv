@@ -4,6 +4,7 @@ import com.tooliv.server.domain.user.application.dto.request.UserCodeUpdateReque
 import com.tooliv.server.domain.user.application.dto.response.UserListResponseDTO;
 import com.tooliv.server.domain.user.application.service.AdminService;
 import com.tooliv.server.global.common.BaseResponseDTO;
+import com.tooliv.server.global.exception.UserNotFoundException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -42,11 +43,9 @@ public class AdminController {
 
         try {
             userListResponseDTO = adminService.getUserList(keyword);
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(409).body(BaseResponseDTO.of("회원 정보 목록 조회 실패"));
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(409).body(BaseResponseDTO.of(e.getMessage()));
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseEntity.status(404).body(BaseResponseDTO.of("조회 가능한 회원 정보가 없음"));
         }
 

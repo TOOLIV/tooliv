@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
         String jwt = jwtAuthenticationProvider.createToken(authentication);
 
         User user = userRepository.findByEmailAndDeletedAt(logInRequestDTO.getEmail(), null)
-            .orElseThrow(() -> new UserNotFoundException("회원 정보가 존재하지 않습니다."));
+            .orElseThrow(() -> new UserNotFoundException("회원 정보를 찾을 수 없음"));
 
         return LogInResponseDTO.builder()
             .userId(user.getId())
@@ -125,7 +125,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getCurrentUser() {
         User user = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
-            .orElseThrow(() -> new UserNotFoundException("회원 정보가 존재하지 않습니다."));
+            .orElseThrow(() -> new UserNotFoundException("회원 정보를 찾을 수 없음"));
 
         return user;
     }
