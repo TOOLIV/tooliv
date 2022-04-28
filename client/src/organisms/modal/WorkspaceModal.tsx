@@ -9,23 +9,31 @@ import FileUploader from 'molecules/uploader/FileUploader';
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useSetRecoilState } from 'recoil';
-import { currentChannel, currentWorkspace, userLog } from 'recoil/atom';
+import { currentWorkspace, userLog } from 'recoil/atom';
 import { colors } from 'shared/color';
 import { workspaceModalType } from 'types/workspace/workspaceTypes';
 
 const Modal = styled.div<{ isOpen: boolean }>`
   display: none;
   position: fixed;
+  width: 100vw;
+  height: 100vh;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
   z-index: 99;
   background-color: rgba(255, 255, 255, 0.7);
-
+  /* display: flex;
+  justify-content: center;
+  align-items: center; */
   ${(props) =>
     props.isOpen &&
     css`
+      /* display: block;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, 0); */
       display: flex;
       justify-content: center;
       align-items: center;
@@ -59,7 +67,7 @@ const WorkspaceModal = ({ isOpen, onClose }: workspaceModalType) => {
   const [file, setFile] = useState<File>();
   const inputWorkspaceRef = useRef<HTMLInputElement>(null);
   const setCurrentWorkspace = useSetRecoilState(currentWorkspace);
-  const setCurrentChannel = useSetRecoilState(currentChannel);
+  // const setCurrentChannel = useSetRecoilState(currentChannel);
   const [userLogList, setUserLogList] = useRecoilState(userLog);
 
   const handleSetImg = (file: FileList) => {
@@ -101,7 +109,7 @@ const WorkspaceModal = ({ isOpen, onClose }: workspaceModalType) => {
         // setIsWorkspaceCreate(true);
         // setIsChannelCreate(true);
         setCurrentWorkspace(workspaceId);
-        setCurrentChannel(channelId);
+        // setCurrentChannel(channelId);
         navigate(`${workspaceId}/${channelId}`);
         onClose();
       }

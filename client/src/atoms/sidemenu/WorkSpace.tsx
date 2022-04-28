@@ -1,13 +1,7 @@
 import styled from '@emotion/styled';
-import Text from 'atoms/text/Text';
-import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { currentWorkspace, userLog } from 'recoil/atom';
-import {
-  workspaceListType,
-  workspaceType,
-} from 'types/workspace/workspaceTypes';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { currentWorkspace } from 'recoil/atom';
+import { workspaceListType } from 'types/workspace/workspaceTypes';
 
 const Container = styled.div<{
   isSelected: boolean;
@@ -20,6 +14,7 @@ const Container = styled.div<{
   border-radius: 10px;
   background-color: #ffffff;
   margin-right: 12px;
+  margin-bottom: 12px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -65,26 +60,34 @@ const Container = styled.div<{
   }
 `;
 
+const WorkspaceName = styled.div`
+  font-size: 12px;
+  word-break: keep-all;
+  cursor: pointer;
+`;
+
 const WorkSpace = ({
   id,
   name,
   thumbnailImage,
   onClick,
 }: workspaceListType) => {
-  const workspaceId = useRecoilValue(currentWorkspace);
+  const [currentWorkspaceId, setCurrentWorkSpaceId] =
+    useRecoilState(currentWorkspace);
 
   const handleClickWorkspace = () => {
+    setCurrentWorkSpaceId(id);
     onClick(id);
   };
 
   return (
     <Container
-      isSelected={id === workspaceId}
+      isSelected={id === currentWorkspaceId}
       thumbnail={thumbnailImage}
       data-name={name}
       onClick={handleClickWorkspace}
     >
-      {thumbnailImage ? null : <Text size={12}>{name}</Text>}
+      {thumbnailImage ? null : <WorkspaceName>{name}</WorkspaceName>}
     </Container>
   );
 };

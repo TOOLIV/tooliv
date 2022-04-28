@@ -6,8 +6,6 @@ import Icons from '../../atoms/common/Icons';
 import WorkSpace from '../../atoms/sidemenu/WorkSpace';
 import mainSrc from '../../assets/img/logo.svg';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { currentWorkspace, userLog } from 'recoil/atom';
 const WorkSpaceContainer = styled.div`
   display: flex;
   justify-content: space-between;
@@ -18,8 +16,8 @@ const WorkSpaceWrapper = styled.div`
   display: flex;
   align-items: center;
   /* width: 90%; */
-  flex-wrap: nowrap;
-  /* overflow-x: scroll; */
+  flex-wrap: wrap;
+  /* overflow: auto; */
 `;
 
 const WorkSpaces = ({ workspaceList, onClick }: workspacesType) => {
@@ -34,18 +32,6 @@ const WorkSpaces = ({ workspaceList, onClick }: workspacesType) => {
   };
 
   const navigate = useNavigate();
-  // const [workspaceId, setWorkspaceId] = useRecoilState(currentWorkspace);
-  // const userLogList = useRecoilValue(userLog);
-
-  // const handleClickWorkspace = (id: string) => {
-  //   const log = userLogList.find((data) => data.workspaceId === id);
-  //   if (log) {
-  //     setWorkspaceId(id);
-  //     navigate(`${log.workspaceId}/${log.channelId}`);
-  //   } else {
-  //   }
-  //   console.log(log);
-  // };
 
   const handleClickMain = (id: string) => {
     navigate(id);

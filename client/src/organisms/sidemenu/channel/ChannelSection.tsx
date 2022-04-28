@@ -69,7 +69,6 @@ const ChannelSection = () => {
       </Header>
       <Channels channelList={channelList} onClick={handleClickChannel} />
       <ChannelModal isOpen={isModalOpen} onClose={handleCloseModal} />
-      {/* <WorkSpaces workspaceList={workspaceList} /> */}
     </Container>
   );
 };

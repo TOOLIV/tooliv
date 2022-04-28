@@ -33,25 +33,15 @@ export const userCreationList = atom<userCreationTypes[]>({
   default: [],
 });
 
-// export const isCreateWorkspace = atom<boolean>({
-//   key: 'isCreateWorkspace',
-//   default: false,
-// });
-
-// export const isCreateChannel = atom<boolean>({
-//   key: 'isCreateChannel',
-//   default: false,
-// });
-
 export const currentWorkspace = atom<string>({
   key: 'currentWorkspace',
   default: 'main',
 });
 
-export const currentChannel = atom<string>({
-  key: 'currentChannel',
-  default: '',
-});
+// export const currentChannel = atom<string>({
+//   key: 'currentChannel',
+//   default: '',
+// });
 
 export const userLog = atom<userLogTypes>({
   key: 'userLog',
