@@ -1,4 +1,5 @@
 import { atom } from 'recoil';
+import { FileTypes } from 'types/common/fileTypes';
 import { contentTypes } from '../types/channel/contentType';
 import { ThemeMode } from '../types/common/themeTypes';
 import { userCreationTypes, userLogTypes } from '../types/common/userTypes';
@@ -33,6 +34,10 @@ export const userCreationList = atom<userCreationTypes[]>({
   default: [],
 });
 
+export const chatFileUrl = atom<string[]>({
+  key: 'chatFileUrl',
+  default: [],
+});
 // export const isCreateWorkspace = atom<boolean>({
 //   key: 'isCreateWorkspace',
 //   default: false,
@@ -56,4 +61,14 @@ export const currentChannel = atom<string>({
 export const userLog = atom<userLogTypes>({
   key: 'userLog',
   default: {},
+});
+
+export const isDragging = atom<boolean>({
+  key: 'isDragging',
+  default: false,
+});
+
+export const chatFiles = atom<FileTypes[]>({
+  key: 'chatFiles',
+  default: [],
 });

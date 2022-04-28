@@ -1,5 +1,8 @@
 import styled from '@emotion/styled';
-import React from 'react';
+import Icons from 'atoms/common/Icons';
+import DragDrop from 'organisms/chat/DragDrop';
+import FileModal from 'organisms/modal/FileModal';
+import React, { useState } from 'react';
 import { useRecoilState } from 'recoil';
 
 import Button from '../../atoms/common/Button';
@@ -21,25 +24,48 @@ const Input = styled.input`
   border: 0;
 `;
 const Wrapper = styled.div`
+  display: flex;
   position: absolute;
   right: 16px;
   top: 12px;
+  justify-content: center;
+  align-items: center;
 `;
+
 const Editor = ({ onClick }: editorProps) => {
   const [message, setMessage] = useRecoilState<string>(channelMessage);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const onChange = (event: React.FormEvent<HTMLInputElement>) => {
     const {
       currentTarget: { value },
     } = event;
     setMessage(value);
   };
+
+  const preventClick = (e: React.MouseEvent) => {
+    // e.stopPropagation();
+  };
+
+  const handleFileModal = () => {
+    setIsModalOpen((prev) => !prev);
+  };
+
   return (
-    <Container>
-      <Input value={message} onChange={onChange}></Input>
-      <Wrapper>
-        <Button onClick={onClick} width="50" height="40" text="전송" />
-      </Wrapper>
-    </Container>
+    <>
+      <Container>
+        {/* <DragDrop /> */}
+        <Input
+          value={message}
+          onChange={onChange}
+          onClick={preventClick}
+        ></Input>
+        <Wrapper>
+          <Icons icon="file" color="gray500" onClick={handleFileModal} />
+          <Button onClick={onClick} width="50" height="40" text="전송" />
+        </Wrapper>
+      </Container>
+      {isModalOpen && <FileModal onClick={handleFileModal} />}
+    </>
   );
 };
 

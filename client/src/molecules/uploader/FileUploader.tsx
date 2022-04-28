@@ -7,7 +7,7 @@ import { colors } from 'shared/color';
 import { workspaceImgType } from 'types/workspace/workspaceTypes';
 import { ReactComponent as ImageIcon } from '../../assets/img/image.svg';
 
-const Container = styled.div`
+export const Container = styled.div`
   width: 280px;
   /* width: 100%; */
   height: 240px;
