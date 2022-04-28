@@ -1,13 +1,14 @@
 import styled from '@emotion/styled';
 import React, { useEffect, useRef } from 'react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { FileTypes } from 'types/common/fileTypes';
 import Message from '../../molecules/chat/Message';
-import { channelContents } from '../../recoil/atom';
+import { channelContents, chatFiles } from '../../recoil/atom';
 import { colors } from '../../shared/color';
 import { contentTypes } from '../../types/channel/contentType';
-const Container = styled.div`
+const Container = styled.div<{ isFile: boolean }>`
   width: calc(100% + 38px);
-  height: 100%;
+  height: ${(props) => (props.isFile ? 'calc(100% - 70px)' : '100%')};
   overflow-y: auto;
   padding-right: 32px;
   /* 스크롤바 설정*/
@@ -31,6 +32,7 @@ const Container = styled.div`
 
 const Messages = () => {
   const contents = useRecoilValue<contentTypes[]>(channelContents);
+  const [files, setFiles] = useRecoilState<FileTypes[]>(chatFiles);
   const messageBoxRef = useRef<HTMLDivElement>(null);
   const scrollToBottom = () => {
     if (messageBoxRef.current) {
@@ -42,7 +44,7 @@ const Messages = () => {
   }, [contents]);
 
   return (
-    <Container ref={messageBoxRef}>
+    <Container isFile={files.length > 0 ? true : false} ref={messageBoxRef}>
       {contents &&
         contents.map((content, index) => <Message key={index} {...content} />)}
     </Container>

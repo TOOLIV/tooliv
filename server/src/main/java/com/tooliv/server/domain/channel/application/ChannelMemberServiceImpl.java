@@ -77,12 +77,15 @@ public class ChannelMemberServiceImpl implements ChannelMemberService {
 
             channelMemberGetResponseDTOList.add(channelMemberGetResponseDTO);
         });
-        return new ChannelMemberListGetResponseDTO(channelMemberGetResponseDTOList);
+        return new ChannelMemberListGetResponseDTO(channel.getName(), channelMemberGetResponseDTOList);
     }
 
     @Override
     public ChannelMemberListGetResponseDTO searchChannelMember(String channelId, String keyword) {
     List<ChannelMemberGetResponseDTO> channelMemberGetResponseDTOList = new ArrayList<>();
+
+    Channel channel = channelRepository.findByIdAndDeletedAt(channelId, null)
+        .orElseThrow(() -> new IllegalArgumentException("채널 정보가 존재하지 않습니다."));
 
     channelMembersRepository.searchByChannelIdAndKeyword(channelId, keyword).forEach(channelMember -> {
         User member = channelMember.getUser();
@@ -94,6 +97,6 @@ public class ChannelMemberServiceImpl implements ChannelMemberService {
             .build();
         channelMemberGetResponseDTOList.add(channelMemberGetResponseDTO);
     });
-        return new ChannelMemberListGetResponseDTO(channelMemberGetResponseDTOList);
+        return new ChannelMemberListGetResponseDTO(channel.getName(), channelMemberGetResponseDTOList);
     }
 }

@@ -25,7 +25,7 @@ public class AdminServiceImpl implements AdminService {
         List<UserInfoResponseDTO> userInfoResponseDTOList = new ArrayList<>();
 
         for (User user : userRepository.findAllByUserCodeNotAndDeletedAtAndNameContainingOrderByNameAsc(UserCode.ADMIN, null, keyword)
-            .orElseThrow(() -> new IllegalArgumentException("조회 가능한 회원이 없음"))) {
+            .orElseThrow(() -> new UserNotFoundException("조회 가능한 회원이 없음"))) {
             userInfoResponseDTOList.add(new UserInfoResponseDTO(user.getId(), user.getEmail(), user.getName(), user.getNickname(), user.getUserCode(), getImageURL(user.getProfileImage())));
         }
 
@@ -35,7 +35,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public void updateUserCode(UserCodeUpdateRequestDTO userCodeUpdateRequestDTO) {
         User user = userRepository.findByEmailAndDeletedAt(userCodeUpdateRequestDTO.getEmail(), null)
-            .orElseThrow(() -> new IllegalArgumentException("조회 가능한 회원이 없음"));
+            .orElseThrow(() -> new UserNotFoundException("회원 정보를 찾을 수 없음"));
 
         user.updateUserCode(userCodeUpdateRequestDTO.getUserCode());
 
@@ -45,7 +45,8 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public void deleteUser(String email) {
         System.out.println("email : " + email);
-        User user = userRepository.findByEmailAndDeletedAt(email, null).orElseThrow(() -> new UserNotFoundException("회원 정보가 존재하지 않습니다."));
+        User user = userRepository.findByEmailAndDeletedAt(email, null)
+            .orElseThrow(() -> new UserNotFoundException("회원 정보를 찾을 수 없음"));
 
         user.deleteUser(LocalDateTime.now());
 
@@ -55,7 +56,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public User getCurrentUser() {
         User user = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
-            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+            .orElseThrow(() -> new UserNotFoundException("회원 정보를 찾을 수 없음"));
 
         return user;
     }

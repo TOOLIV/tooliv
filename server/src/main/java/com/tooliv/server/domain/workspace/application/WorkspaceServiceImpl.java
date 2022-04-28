@@ -48,7 +48,6 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Transactional
     @Override
     public RegisterWorkspaceResponseDTO registerWorkspace(MultipartFile multipartFile, RegisterWorkspaceRequestDTO registerWorkspaceRequestDTO) {
-        System.out.println("11111111111111111111111");
         User owner = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
             .orElseThrow(() -> new UserNotFoundException("회원 정보가 존재하지 않습니다."));
 
@@ -62,7 +61,6 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         if (existWorkspace) {
             return null;
         }
-        System.out.println("222222222222222222222222");
         Workspace workspace = Workspace.builder()
             .name(registerWorkspaceRequestDTO.getName())
             .createdAt(now)

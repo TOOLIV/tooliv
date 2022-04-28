@@ -51,12 +51,12 @@ const Container = styled.div`
   justify-content: center;
 `;
 
-const Title = styled.div`
+export const Title = styled.div`
   margin: 0 auto;
   margin-bottom: 16px;
 `;
 
-const ButtonBox = styled.div`
+export const ButtonBox = styled.div`
   display: flex;
   justify-content: space-between;
   width: 80%;
