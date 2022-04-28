@@ -7,7 +7,7 @@ import com.tooliv.server.domain.user.application.dto.request.LogInRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.NicknameUpdateRequestDTO;
 import com.tooliv.server.domain.user.application.dto.response.LogInResponseDTO;
 import com.tooliv.server.domain.user.application.dto.response.NicknameResponseDTO;
-import com.tooliv.server.domain.user.exception.NotUniqueEmailException;
+import com.tooliv.server.global.exception.DuplicateEmailException;
 import com.tooliv.server.global.common.BaseResponseDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -18,7 +18,6 @@ import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -102,7 +101,7 @@ public class UserController {
         @PathVariable("email") @ApiParam(value = "이메일", required = true) String email) {
         try {
             userService.checkEmail(email);
-        } catch (NotUniqueEmailException e) {
+        } catch (DuplicateEmailException e) {
             return ResponseEntity.status(409).body(BaseResponseDTO.of("이메일 사용 불가"));
         }
 

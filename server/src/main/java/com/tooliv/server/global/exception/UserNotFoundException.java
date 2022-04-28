@@ -1,4 +1,4 @@
-package com.tooliv.server.domain.user.exception;
+package com.tooliv.server.global.exception;
 
 public class UserNotFoundException extends RuntimeException {
 

@@ -68,7 +68,7 @@ const ScreenShareModal = ({
     } else {
       console.log(screenList);
     }
-  }, []);
+  }, [isLoading]);
 
   const onClickScreenItem = () => {
     setIsScreenShareModal(false);

@@ -5,3 +5,9 @@ export const getWorkspaceList = async () => {
   console.log(response);
   return response;
 };
+
+export const createWorkspace = async (body: any) => {
+  const response = await instance.post(`/workspace`, body);
+  console.log(response);
+  return response;
+};

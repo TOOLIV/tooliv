@@ -6,6 +6,7 @@ import com.tooliv.server.domain.workspace.application.dto.request.RegisterWorksp
 import com.tooliv.server.domain.workspace.application.dto.response.RegisterWorkspaceResponseDTO;
 import com.tooliv.server.domain.workspace.application.dto.response.WorkspaceListGetResponseDTO;
 import com.tooliv.server.global.common.BaseResponseDTO;
+import com.tooliv.server.global.exception.UserNotFoundException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -49,8 +50,8 @@ public class WorkspaceController {
             if (registerWorkspaceResponseDTO == null) {
                 return ResponseEntity.status(409).body(BaseResponseDTO.of("동일한 이름의 워크스페이스가 존재합니다."));
             }
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(404).body(BaseResponseDTO.of("해당 유저를 찾을 수 없습니다."));
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(404).body(BaseResponseDTO.of(e.getMessage()));
         }
         return ResponseEntity.status(201).body(RegisterWorkspaceResponseDTO.of("채널 등록 완료", registerWorkspaceResponseDTO));
     }
