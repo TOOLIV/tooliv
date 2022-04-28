@@ -134,12 +134,10 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         User user = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
             .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
 
-        List<WorkspaceMembers> workspaceMemberList = workspaceMemberRepository.findByUser(user);
+        List<Workspace> workspaceList = workspaceRepository.findByUser(user.getId());
         List<WorkspaceGetResponseDTO> workspaceGetResponseDTOList = new ArrayList<>();
 
-        workspaceMemberList.forEach(workspaceMember -> {
-            Workspace workspace = workspaceMember.getWorkspace();
-            if(workspace.getDeletedAt() == null){
+        workspaceList.forEach(workspace -> {
                 WorkspaceGetResponseDTO workspaceGetResponseDTO = WorkspaceGetResponseDTO.builder()
                     .id(workspace.getId())
                     .name(workspace.getName())
@@ -147,7 +145,6 @@ public class WorkspaceServiceImpl implements WorkspaceService {
                     .build();
 
                 workspaceGetResponseDTOList.add(workspaceGetResponseDTO);
-            }
         });
         return new WorkspaceListGetResponseDTO(workspaceGetResponseDTOList);
     }

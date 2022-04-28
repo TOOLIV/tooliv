@@ -22,7 +22,7 @@ public interface WorkspaceMemberRepository extends JpaRepository<WorkspaceMember
         + "FROM workspace_members m "
         + "INNER JOIN user u ON m.user_id = u.id "
         + "INNER JOIN workspace w ON m.workspace_id = w.id "
-        + "WHERE w.id = :workspace_id AND u.name LIKE %:keyword%", nativeQuery = true)
+        + "WHERE w.id = :workspace_id AND u.name LIKE %:keyword% ", nativeQuery = true)
     List<WorkspaceMembers> findByWorkspaceIdAndKeyword(@Param("workspace_id")String workspaceId, @Param("keyword") String keyword);
 
 }
