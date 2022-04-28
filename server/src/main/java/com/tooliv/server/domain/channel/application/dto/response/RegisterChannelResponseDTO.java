@@ -1,6 +1,6 @@
 package com.tooliv.server.domain.channel.application.dto.response;
 
-import com.tooliv.server.domain.channel.domain.enums.ChannelCode;
+import com.tooliv.server.global.common.BaseResponseDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -12,19 +12,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 @Builder
-@ApiModel("ChannelGetResponseDTO")
-public class ChannelGetResponseDTO {
+@ApiModel("RegisterChannelResponseDTO")
+public class RegisterChannelResponseDTO extends BaseResponseDTO {
 
     @ApiModelProperty("채널 ID")
     private String id;
 
-    @ApiModelProperty("채널 이름")
-    private String name;
-
-    @ApiModelProperty("공개 여부")
-    private boolean privateYn;
-
-    @ApiModelProperty("채널 코드")
-    private ChannelCode channelCode;
+    public static RegisterChannelResponseDTO of(String message, RegisterChannelResponseDTO registerChannelResponseDTO) {
+        registerChannelResponseDTO.setMessage(message);
+        return registerChannelResponseDTO;
+    }
 
 }

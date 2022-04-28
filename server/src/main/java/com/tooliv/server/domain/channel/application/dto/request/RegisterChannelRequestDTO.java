@@ -3,11 +3,9 @@ package com.tooliv.server.domain.channel.application.dto.request;
 import com.tooliv.server.domain.channel.domain.enums.ChannelCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 @ApiModel("RegisterChannelRequestDTO")
 @NoArgsConstructor
@@ -23,9 +21,6 @@ public class RegisterChannelRequestDTO {
 
     @ApiModelProperty(name = "채널 종류")
     private ChannelCode channelCode;
-
-    @ApiModelProperty(name = "채널 설명")
-    private String description;
     
     @NotNull
     @ApiModelProperty(name = "워크스페이스ID")

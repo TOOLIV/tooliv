@@ -4,6 +4,7 @@ import com.tooliv.server.domain.channel.application.ChannelService;
 import com.tooliv.server.domain.channel.application.dto.request.ModifyChannelRequestDTO;
 import com.tooliv.server.domain.channel.application.dto.request.RegisterChannelRequestDTO;
 import com.tooliv.server.domain.channel.application.dto.response.ChannelListGetResponseDTO;
+import com.tooliv.server.domain.channel.application.dto.response.RegisterChannelResponseDTO;
 import com.tooliv.server.global.common.BaseResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -31,13 +32,14 @@ public class ChannelController {
     })
     public ResponseEntity<? extends BaseResponseDTO> registerChannel(
             @RequestBody @ApiParam(value = "채널등록 정보", required = true) RegisterChannelRequestDTO registerChannelRequestDTO) {
+        RegisterChannelResponseDTO registerChannelResponseDTO = null;
         try {
-            channelService.registerChannel(registerChannelRequestDTO);
+            registerChannelResponseDTO = channelService.registerChannel(registerChannelRequestDTO);
         } catch (Exception e) {
             return ResponseEntity.status(409).body(BaseResponseDTO.of("채널 등록 실패"));
         }
 
-        return ResponseEntity.status(201).body(BaseResponseDTO.of("채널 등록 완료"));
+        return ResponseEntity.status(201).body(RegisterChannelResponseDTO.of("채널 등록 완료", registerChannelResponseDTO));
     }
 
     @PatchMapping

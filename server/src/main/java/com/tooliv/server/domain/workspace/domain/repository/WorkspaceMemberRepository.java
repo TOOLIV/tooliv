@@ -14,15 +14,20 @@ public interface WorkspaceMemberRepository extends JpaRepository<WorkspaceMember
 
     void deleteByUserAndWorkspace(User user, Workspace workspace);
 
-    List<WorkspaceMembers> findByUser(User user);
-
-    List<WorkspaceMembers> findByWorkspace(Workspace workspace);
+    @Query(value="SELECT * "
+        + "FROM workspace_members m "
+        + "INNER JOIN user u ON m.user_id = u.id "
+        + "INNER JOIN workspace w ON m.workspace_id = w.id "
+        + "WHERE w.id = :workspace_id "
+        + "ORDER BY u.name", nativeQuery = true)
+    List<WorkspaceMembers> findByWorkspace(@Param("workspace_id") String workspaceId);
 
     @Query(value="SELECT * "
         + "FROM workspace_members m "
         + "INNER JOIN user u ON m.user_id = u.id "
         + "INNER JOIN workspace w ON m.workspace_id = w.id "
-        + "WHERE w.id = :workspace_id AND u.name LIKE %:keyword%", nativeQuery = true)
+        + "WHERE w.id = :workspace_id AND u.name LIKE %:keyword% "
+        + "ORDER BY u.name", nativeQuery = true)
     List<WorkspaceMembers> findByWorkspaceIdAndKeyword(@Param("workspace_id")String workspaceId, @Param("keyword") String keyword);
 
 }
