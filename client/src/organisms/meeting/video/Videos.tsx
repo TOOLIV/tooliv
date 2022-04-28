@@ -7,6 +7,7 @@ import Video from '../../../molecules/meeting/Video';
 import { isOpenChat } from '../../../recoil/atom';
 import {
   openviduTypes,
+  videosTypes,
   videoTypes,
 } from '../../../types/meeting/openviduTypes';
 
@@ -29,16 +30,17 @@ const VideoContainer = styled.div<{ isChatOpen: boolean }>`
 //   border-radius: 10px;
 // `;
 
-const Videos = ({ openviduState }: videoTypes) => {
+const Videos = ({ publisher, subscribers }: videosTypes) => {
   const isChatOpen = useRecoilValue(isOpenChat);
 
   return (
     <div>
       <VideoContainer isChatOpen={isChatOpen}>
-        <Video openviduState={openviduState} />
-        {openviduState?.subscribers.map((sub: StreamManager, i: number) => (
-          <Video openviduState={openviduState} streamManager={sub} key={i} />
-        ))}
+        <Video publisher={publisher} />
+        {subscribers &&
+          subscribers.map((sub: StreamManager, i: number) => (
+            <Video subscribers={sub} key={i} />
+          ))}
         {/* <Video />
         <Video />
         <Video /> */}
