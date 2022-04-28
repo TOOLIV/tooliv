@@ -55,7 +55,6 @@ public class ChannelServiceImpl implements ChannelService {
             .privateYn(registerChannelRequestDTO.isPrivateYn())
             .createdAt(now)
             .channelCode(registerChannelRequestDTO.getChannelCode())
-            .description(registerChannelRequestDTO.getDescription())
             .workspace(workspace)
             .build();
 
@@ -89,7 +88,7 @@ public class ChannelServiceImpl implements ChannelService {
 
         LocalDateTime now = LocalDateTime.now();
         try {
-            channel.modifyChannel(modifyChannelRequestDTO.getName(), modifyChannelRequestDTO.getDescription());
+            channel.modifyChannel(modifyChannelRequestDTO.getName());
         } catch (Exception e) {
             return 409;
         }
@@ -128,7 +127,6 @@ public class ChannelServiceImpl implements ChannelService {
                     .name(channel.getName())
                     .privateYn(channel.isPrivateYn())
                     .channelCode(channel.getChannelCode())
-                    .description(channel.getDescription())
                     .build();
                 channelGetResponseDTOList.add(channelGetResponseDTO);
             }
@@ -148,7 +146,6 @@ public class ChannelServiceImpl implements ChannelService {
                 .name(channel.getName())
                 .privateYn(channel.isPrivateYn())
                 .channelCode(channel.getChannelCode())
-                .description(channel.getDescription())
                 .build();
             System.out.println(channelGetResponseDTO);
             channelGetResponseDTOList.add(channelGetResponseDTO);

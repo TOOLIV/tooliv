@@ -27,7 +27,4 @@ public class ChannelGetResponseDTO {
     @ApiModelProperty("채널 코드")
     private ChannelCode channelCode;
 
-    @ApiModelProperty("채널 설명")
-    private String description;
-
 }

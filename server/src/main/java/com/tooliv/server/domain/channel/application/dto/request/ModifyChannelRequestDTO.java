@@ -19,8 +19,5 @@ public class ModifyChannelRequestDTO {
     @NotNull
     @ApiModelProperty(name = "채널명")
     private String name;
-    
-    @ApiModelProperty(name = "채널 설명")
-    private String description;
 
 }

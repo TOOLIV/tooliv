@@ -82,7 +82,6 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             .channelCode(ChannelCode.CHAT)
             .privateYn(false)
             .createdAt(now)
-            .description("공지사항")
             .name("공지사항")
             .workspace(workspace)
             .build();
