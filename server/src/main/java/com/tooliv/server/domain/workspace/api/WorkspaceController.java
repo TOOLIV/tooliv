@@ -113,7 +113,7 @@ public class WorkspaceController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(409).body(BaseResponseDTO.of("워크스페이스 목록 조회 실패"));
         } catch (Exception e) {
-            return ResponseEntity.status(404).body(BaseResponseDTO.of("조회 가능한 워크스페이스 정보가 없음"));
+            return ResponseEntity.status(404).body(WorkspaceListGetResponseDTO.of("조회 가능한 워크스페이스 정보가 없음", new WorkspaceListGetResponseDTO()));
         }
 
         return ResponseEntity.status(200).body(WorkspaceListGetResponseDTO.of("워크스페이스 목록 조회 완료", workspaceListGetResponseDTO));
