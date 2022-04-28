@@ -9,6 +9,7 @@ import com.tooliv.server.domain.user.application.dto.response.LogInResponseDTO;
 import com.tooliv.server.domain.user.application.dto.response.NicknameResponseDTO;
 import com.tooliv.server.global.exception.DuplicateEmailException;
 import com.tooliv.server.global.common.BaseResponseDTO;
+import com.tooliv.server.global.exception.UserNotFoundException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -48,8 +49,8 @@ public class UserController {
         @RequestBody @Valid @ApiParam(value = "회원가입 정보", required = true) SignUpRequestDTO signUpRequestDTO) {
         try {
             userService.signUp(signUpRequestDTO);
-        } catch (Exception e) {
-            return ResponseEntity.status(409).body(BaseResponseDTO.of("회원가입 실패"));
+        } catch (DuplicateEmailException | UserNotFoundException e) {
+            return ResponseEntity.status(409).body(BaseResponseDTO.of(e.getMessage()));
         }
 
         return ResponseEntity.status(201).body(BaseResponseDTO.of("회원가입 완료"));
