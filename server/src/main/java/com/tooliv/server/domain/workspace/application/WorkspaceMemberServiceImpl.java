@@ -65,7 +65,7 @@ public class WorkspaceMemberServiceImpl implements WorkspaceMemberService {
         .orElseThrow(() -> new IllegalArgumentException("워크스페이스 정보가 존재하지 않습니다."));
 
         List<WorkspaceMemberGetResponseDTO> workspaceMemberGetResponseDTOList = new ArrayList<>();
-        List<WorkspaceMembers> workspaceMembersList = workspaceMemberRepository.findByWorkspace(workspace);
+        List<WorkspaceMembers> workspaceMembersList = workspaceMemberRepository.findByWorkspace(workspace.getId());
 
         workspaceMembersList.forEach(workspaceMember -> {
             User member = workspaceMember.getUser();
