@@ -66,26 +66,26 @@ public class ChannelMemberController {
         return ResponseEntity.status(201).body(BaseResponseDTO.of("채널멤버 삭제 완료"));
     }
 
-    @GetMapping("/list")
-    @ApiOperation(value = "채널멤버 목록 조회")
-    @ApiResponses({
-        @ApiResponse(code = 200, message = "채널멤버 목록 조회 완료"),
-        @ApiResponse(code = 404, message = "조회 가능한 채널멤버 정보가 없음"),
-        @ApiResponse(code = 409, message = "채널멤버 목록 조회 실패"),
-    })
-    public ResponseEntity<? extends BaseResponseDTO> getChannelMemberList(
-        @PathVariable("channelId") @ApiParam(value="채널 ID", required=true) String channelId) {
-        ChannelMemberListGetResponseDTO channelMemberListGetResponseDTO = null;
-
-        try {
-            channelMemberListGetResponseDTO = channelMemberService.getChannelMemberList(channelId);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(409).body(BaseResponseDTO.of("채널멤버 목록 조회 실패"));
-        } catch (Exception e) {
-            return ResponseEntity.status(404).body(BaseResponseDTO.of("조회 가능한 채널멤버 정보가 없음"));
-        }
-        return ResponseEntity.status(200).body(ChannelMemberListGetResponseDTO.of("채널멤버 목록 조회 완료", channelMemberListGetResponseDTO));
-    }
+//    @GetMapping("/list")
+//    @ApiOperation(value = "채널멤버 목록 조회")
+//    @ApiResponses({
+//        @ApiResponse(code = 200, message = "채널멤버 목록 조회 완료"),
+//        @ApiResponse(code = 404, message = "조회 가능한 채널멤버 정보가 없음"),
+//        @ApiResponse(code = 409, message = "채널멤버 목록 조회 실패"),
+//    })
+//    public ResponseEntity<? extends BaseResponseDTO> getChannelMemberList(
+//        @PathVariable("channelId") @ApiParam(value="채널 ID", required=true) String channelId) {
+//        ChannelMemberListGetResponseDTO channelMemberListGetResponseDTO = null;
+//
+//        try {
+//            channelMemberListGetResponseDTO = channelMemberService.getChannelMemberList(channelId);
+//        } catch (IllegalArgumentException e) {
+//            return ResponseEntity.status(409).body(BaseResponseDTO.of("채널멤버 목록 조회 실패"));
+//        } catch (Exception e) {
+//            return ResponseEntity.status(404).body(BaseResponseDTO.of("조회 가능한 채널멤버 정보가 없음"));
+//        }
+//        return ResponseEntity.status(200).body(ChannelMemberListGetResponseDTO.of("채널멤버 목록 조회 완료", channelMemberListGetResponseDTO));
+//    }
 
     @GetMapping("/search")
     @ApiOperation(value = "채널멤버 검색")
@@ -94,7 +94,7 @@ public class ChannelMemberController {
         @ApiResponse(code = 404, message = "검색 가능한 채널멤버 정보가 없음"),
         @ApiResponse(code = 409, message = "채널멤버 검색 실패"),
     })
-    public ResponseEntity<? extends BaseResponseDTO> getWorkspaceMemberList(
+    public ResponseEntity<? extends BaseResponseDTO> searchChannelMemberList(
         @PathVariable("channelId") @Valid @ApiParam(value="채널 ID", required=true) String channelId,
         @RequestParam @ApiParam(value="검색 단어", required = false) String keyword) {
         ChannelMemberListGetResponseDTO channelMemberListGetResponseDTO = null;
@@ -103,6 +103,28 @@ public class ChannelMemberController {
             channelMemberListGetResponseDTO = channelMemberService.searchChannelMember(channelId, keyword);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(409).body(BaseResponseDTO.of("채널멤버 검색 실패"));
+        } catch (Exception e) {
+            return ResponseEntity.status(404).body(BaseResponseDTO.of("검색 가능한 채널멤버 정보가 없음"));
+        }
+        return ResponseEntity.status(200).body(ChannelMemberListGetResponseDTO.of("채널멤버 검색 완료", channelMemberListGetResponseDTO));
+    }
+
+    @GetMapping("/list")
+    @ApiOperation(value = "채널 내 워크스페이스멤버 검색")
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "채널멤버 검색 완료"),
+        @ApiResponse(code = 404, message = "검색 가능한 채널멤버 정보가 없음"),
+        @ApiResponse(code = 409, message = "채널멤버 검색 실패"),
+    })
+    public ResponseEntity<? extends BaseResponseDTO> searchChannelMemberListForRegister(
+        @PathVariable("channelId") @Valid @ApiParam(value="채널 ID", required=true) String channelId,
+        @RequestParam @ApiParam(value="검색 단어", required = false) String keyword) {
+        ChannelMemberListGetResponseDTO channelMemberListGetResponseDTO = null;
+
+        try {
+            channelMemberListGetResponseDTO = channelMemberService.searchChannelMemberForRegister(channelId, keyword);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(409).body(BaseResponseDTO.of("채널 멤버 검색 실패"));
         } catch (Exception e) {
             return ResponseEntity.status(404).body(BaseResponseDTO.of("검색 가능한 채널멤버 정보가 없음"));
         }

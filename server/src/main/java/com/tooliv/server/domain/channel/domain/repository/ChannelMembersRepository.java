@@ -30,6 +30,8 @@ public interface ChannelMembersRepository extends JpaRepository<ChannelMembers, 
         + "ORDER BY u.name", nativeQuery = true)
     List<ChannelMembers> searchByChannelIdAndKeyword(@Param("channel_id")String channelId, @Param("keyword") String keyword);
 
-    boolean existsByUser(User user);
+    List<ChannelMembers> findByChannel(Channel channel);
+
+    boolean existsByChannelAndUser(Channel channel, User user);
 
 }
