@@ -8,7 +8,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
-  currentChannel,
+  // currentChannel,
   currentWorkspace,
   isOpenSide,
   userLog,
@@ -32,7 +32,7 @@ const WorkSpaceSection = () => {
   const [isOpen, setIsOpen] = useRecoilState<boolean>(isOpenSide);
   const [workspaceList, setWorkspaceList] = useState<workspaceListType[]>([]);
   const [curWorkspaceId, setCurWorkspaceId] = useRecoilState(currentWorkspace);
-  const setCurrentChannel = useSetRecoilState(currentChannel);
+  // const setCurrentChannel = useSetRecoilState(currentChannel);
   const userLogList = useRecoilValue(userLog);
   const navigate = useNavigate();
 
@@ -55,13 +55,13 @@ const WorkSpaceSection = () => {
       // 워크스페이스별 마지막으로 접속한 채널
       const lastChannelId = userLogList[id];
       setCurWorkspaceId(id);
-      setCurrentChannel(lastChannelId);
+      // setCurrentChannel(lastChannelId);
       navigate(`${id}/${lastChannelId}`);
     } else {
       // 워크스페이별 첫번째 채널'
       setCurWorkspaceId(id);
       const channelId = await getNextChannelId(id);
-      setCurrentChannel(channelId);
+      // setCurrentChannel(channelId);
       navigate(`${id}/${channelId}`);
     }
   };

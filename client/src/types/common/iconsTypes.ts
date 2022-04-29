@@ -31,7 +31,8 @@ export type iconsTypes = {
     | 'exit'
     | 'message'
     | 'image'
-    | 'file';
+    | 'file'
+    | 'search';
 
   onClick?: () => void;
   width?: string;

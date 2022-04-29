@@ -24,10 +24,10 @@ const IconButton = styled.div`
   height: 16px;
 `;
 
-const UserBadge = ({ name, email, onClick }: userBadgeTypes) => {
+const UserBadge = ({ name, email, onDelete }: userBadgeTypes) => {
   const emailForm = `(${email})`;
   const handleDelete = () => {
-    onClick(email);
+    onDelete(email);
   };
   return (
     <Container>

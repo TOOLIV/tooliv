@@ -7,13 +7,15 @@ const Container = styled.p<{
   size: number;
   weight: string;
   color?: colorsTypes['color'];
+  pointer?: boolean;
   onClick?: () => void;
 }>`
   font-size: ${(props) => props.size}px;
   font-weight: ${(props) => (props.weight === 'medium' ? 600 : 700)};
   color: ${(props) =>
     props.color ? colors[props.color] : props.theme.textColor};
-  cursor: ${(props) => (props.onClick ? 'pointer' : 'default')};
+  cursor: ${(props) =>
+    props.onClick || props.pointer ? 'pointer' : 'default'};
 `;
 
 const Text = ({
@@ -22,9 +24,16 @@ const Text = ({
   color,
   weight = 'medium',
   onClick,
+  pointer,
 }: textType) => {
   return (
-    <Container size={size} weight={weight} color={color} onClick={onClick}>
+    <Container
+      size={size}
+      weight={weight}
+      color={color}
+      onClick={onClick}
+      pointer={pointer}
+    >
       {children}
     </Container>
   );
