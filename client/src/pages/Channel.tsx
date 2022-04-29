@@ -50,6 +50,7 @@ const Channel = () => {
       (frame) => {
         console.log('STOMP Connection');
         enterChannel(channelId).then((res) => {
+          console.log(res);
           subChannel(channelId);
           client.subscribe(`/sub/chat/room/${channelId}`, (response) => {
             setContents((prev) => [...prev, JSON.parse(response.body)]);
@@ -67,7 +68,7 @@ const Channel = () => {
         Authorization: `Bearer ${accessToken}`,
       },
       JSON.stringify({
-        roomId: channelId,
+        channelId: channelId,
         sender: '인주비',
         contents: message,
         type: 'TALK',
