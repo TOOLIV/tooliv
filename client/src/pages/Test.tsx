@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import UserBadge from '../molecules/userBadge/UserBadge';
 import Info from '../molecules/info/Info';
 import InputBox from '../molecules/inputBox/InputBox';
-import UserItem from '../molecules/userItem/UserItem';
+import UserItem from '../organisms/userItem/UserItem';
 import Dropdown from '../atoms/dropdown/Dropdown';
 import WorkspaceModal from 'organisms/modal/WorkspaceModal';
 import { colors } from 'shared/color';
@@ -77,7 +77,7 @@ const Test = () => {
         <UserBadge
           name="송민수"
           email="thdalstn6352@naver.com"
-          onClick={onClick}
+          onDelete={onClick}
         />
       </TestDiv>
       <TestDiv>

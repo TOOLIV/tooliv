@@ -8,7 +8,7 @@ import { useRecoilState } from 'recoil';
 import { FileTypes } from 'types/common/fileTypes';
 import { chatFiles } from 'recoil/atom';
 import Button from 'atoms/common/Button';
-import { fileModalType } from 'types/channel/fileMotalType';
+import { fileModalType } from 'types/channel/fileModalType';
 
 const Modal = styled.div`
   display: none;

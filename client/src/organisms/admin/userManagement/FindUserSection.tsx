@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
+import UserItem from 'organisms/userItem/UserItem';
 import React, { useEffect, useRef, useState } from 'react';
 import { changeCode, deleteUser, findUser } from '../../../api/adminApi';
 import InputBox from '../../../molecules/inputBox/InputBox';
-import UserItem from '../../../molecules/userItem/UserItem';
 import { userCodeTypes, userListTypes } from '../../../types/common/userTypes';
 
 export const AdminContainer = styled.div`

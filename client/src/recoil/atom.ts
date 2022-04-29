@@ -38,15 +38,6 @@ export const chatFileUrl = atom<string[]>({
   key: 'chatFileUrl',
   default: [],
 });
-// export const isCreateWorkspace = atom<boolean>({
-//   key: 'isCreateWorkspace',
-//   default: false,
-// });
-
-// export const isCreateChannel = atom<boolean>({
-//   key: 'isCreateChannel',
-//   default: false,
-// });
 
 export const currentWorkspace = atom<string>({
   key: 'currentWorkspace',

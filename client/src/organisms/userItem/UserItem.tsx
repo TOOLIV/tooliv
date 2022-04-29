@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import UserInfo from 'molecules/userInfo/UserInfo';
 import React, { useEffect, useState } from 'react';
 import Dropdown from '../../atoms/dropdown/Dropdown';
 import Avatar from '../../atoms/profile/Avatar';
@@ -52,7 +53,7 @@ userItemTypes) => {
   const handleDelete = () => {
     onDelete(email);
   };
-  const userInfo = `${name}(${email})`;
+
   const options = [
     { value: 'MANAGER', label: '관리자' },
     { value: 'USER', label: '일반' },
@@ -64,12 +65,13 @@ userItemTypes) => {
 
   return (
     <Item>
-      <UserBox>
+      {/* <UserBox>
         <AvatarBox>
           <Avatar size="24" />
         </AvatarBox>
         <Text size={14}>{userInfo}</Text>
-      </UserBox>
+      </UserBox> */}
+      <UserInfo name={name} email={email} />
       <ControlBox>
         <DropdownBox>
           <Dropdown

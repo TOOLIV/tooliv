@@ -6,4 +6,5 @@ export type textType = {
   weight?: string;
   children: string;
   onClick?: () => void;
+  pointer?: boolean;
 };
