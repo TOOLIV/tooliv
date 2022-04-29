@@ -18,7 +18,7 @@ public interface ChannelMembersRepository extends JpaRepository<ChannelMembers, 
         + "FROM channel_members m "
         + "INNER JOIN user u ON m.user_id = u.id "
         + "INNER JOIN channel c ON m.channel_id = c.id "
-        + "WHERE c.id = :channel_id "
+        + "WHERE c.id = :channel_id AND u.deleted_at IS NULL "
         + "ORDER BY u.name", nativeQuery = true)
     List<ChannelMembers> findByChannel(@Param("channel_id") String channelId);
 
@@ -26,8 +26,10 @@ public interface ChannelMembersRepository extends JpaRepository<ChannelMembers, 
         + "FROM channel_members m "
         + "INNER JOIN user u ON m.user_id = u.id "
         + "INNER JOIN channel c ON m.channel_id = c.id "
-        + "WHERE c.id = :channel_id AND u.name LIKE %:keyword% "
+        + "WHERE c.id = :channel_id AND u.name LIKE %:keyword%  AND u.deleted_at IS NULL "
         + "ORDER BY u.name", nativeQuery = true)
     List<ChannelMembers> searchByChannelIdAndKeyword(@Param("channel_id")String channelId, @Param("keyword") String keyword);
+
+    boolean existsByUser(User user);
 
 }

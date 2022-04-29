@@ -1,13 +1,10 @@
-package com.tooliv.server.domain.chat.domain;
+package com.tooliv.server.domain.channel.domain;
 
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.global.common.BaseEntity;
-import java.awt.TrayIcon.MessageType;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
@@ -15,7 +12,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Getter
@@ -35,8 +31,8 @@ public class ChatMessage extends BaseEntity {
 
     // 채팅방 => 채널방으로 변경의 여지가 있다.
     @ManyToOne
-    @JoinColumn(name = "room_id")
-    private ChatRoom chatRoom;
+    @JoinColumn(name = "channel_id")
+    private Channel channel;
 
     // 작성자
     @ManyToOne

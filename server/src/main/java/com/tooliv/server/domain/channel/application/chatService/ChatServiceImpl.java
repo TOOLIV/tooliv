@@ -1,18 +1,10 @@
-package com.tooliv.server.domain.chat.application;
+package com.tooliv.server.domain.channel.application.chatService;
 
-import com.tooliv.server.domain.chat.application.dto.request.ChatRequestDTO;
-import com.tooliv.server.domain.chat.application.dto.request.ChatRoomUserInfoRequestDTO;
-import com.tooliv.server.domain.chat.application.dto.response.ChatRoomInfoDTO;
-import com.tooliv.server.domain.chat.application.dto.response.ChatRoomListResponseDTO;
-import com.tooliv.server.domain.chat.application.dto.response.FileUrlListResponseDTO;
-import com.tooliv.server.domain.chat.domain.ChatFile;
-import com.tooliv.server.domain.chat.domain.ChatMessage;
-import com.tooliv.server.domain.chat.domain.ChatRoom;
-import com.tooliv.server.domain.chat.domain.repository.ChatFileRepository;
-import com.tooliv.server.domain.chat.domain.repository.ChatMessageRepository;
-import com.tooliv.server.domain.chat.domain.repository.ChatRoomRepository;
-import com.tooliv.server.domain.user.domain.User;
-import com.tooliv.server.domain.user.domain.repository.UserRepository;
+import com.tooliv.server.domain.channel.application.dto.request.ChatRequestDTO;
+import com.tooliv.server.domain.channel.application.dto.response.FileUrlListResponseDTO;
+import com.tooliv.server.domain.channel.domain.Channel;
+import com.tooliv.server.domain.channel.domain.ChatFile;
+import com.tooliv.server.domain.channel.domain.repository.ChatFileRepository;
 import com.tooliv.server.global.common.AwsS3Service;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,72 +31,52 @@ public class ChatServiceImpl implements ChatService {
     // Redis
     private static final String CHAT_ROOMS = "CHAT_ROOM";
     public static final String ENTER_INFO = "ENTER_INFO"; // 채팅룸에 입장한 클라이언트의 sessionId와 채팅룸 id를 맵핑한 정보 저장
-    private final RedisTemplate<String, ChatRequestDTO> redisTemplate;
-    private HashOperations<String, String, ChatRoom> opsHashChatRoom;
+    private final RedisTemplate<String, ChatRequestDTO> redisChannelTemplate;
+    private HashOperations<String, String, Channel> opsHashChatRoom;
     // 채팅방의 대화 메시지를 발행하기 위한 redis topic 정보. 서버별로 채팅방에 매치되는 topic정보를 Map에 넣어 roomId로 찾을수 있도록 한다.
     private Map<String, ChannelTopic> topics;
     private HashOperations<String, String, String> hashOpsEnterInfo;
 
     @PostConstruct
     private void init() {
-        opsHashChatRoom = redisTemplate.opsForHash();
-        hashOpsEnterInfo = redisTemplate.opsForHash();
+        opsHashChatRoom = redisChannelTemplate.opsForHash();
+        hashOpsEnterInfo = redisChannelTemplate.opsForHash();
 
         topics = new HashMap<>();
     }
 
-    private final ChatRoomRepository chatRoomRepository;
-    private final UserRepository userRepository;
     private final ChatFileRepository chatFileRepository;
-    private final ChatMessageRepository chatMessageRepository;
     private final AwsS3Service awsS3Service;
 
     @Override
-    public ChatRoomListResponseDTO getChatRoomList(String email) {
-        List<ChatRoomInfoDTO> chatRoomListResponseDTO = new ArrayList<>();
-        User user = userRepository.findByEmailAndDeletedAt(email, null)
-            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
-        for (ChatRoom chatRoom : chatRoomRepository.findChatRoomsByCustomer(user).orElseThrow(() -> new IllegalArgumentException("조회 가능한 채팅방이 없습니다."))) {
-            chatRoomListResponseDTO.add(new ChatRoomInfoDTO(chatRoom.getId(), chatRoom.getName()));
-        }
-
-        return new ChatRoomListResponseDTO(chatRoomListResponseDTO);
-    }
-
-    @Override
-    public ChatRoom createChatRoom(ChatRoomUserInfoRequestDTO chatRoomUserInfoRequestDTO) {
-        User customer = userRepository.findByEmailAndDeletedAt(chatRoomUserInfoRequestDTO.getEmail(), null)
-            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
-        String nickname = customer.getNickname();
-        ChatRoom chatRoom = ChatRoom.builder().name(nickname).customer(customer).build();
-        String id = chatRoomRepository.save(chatRoom).getId();
+    public void createChatRoom(Channel channel) {
+        String id = channel.getId();
         try {
-            opsHashChatRoom.put(CHAT_ROOMS, id, chatRoom);
+            opsHashChatRoom.put(CHAT_ROOMS, id, channel);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return chatRoom;
     }
 
     @Override
-    public void enterChatRoom(String roomId) {
-        ChannelTopic topic = topics.get(roomId);
+    public void enterChatRoom(String channelId) {
+        ChannelTopic topic = topics.get(channelId);
         if (topic == null) {
-            topic = new ChannelTopic(roomId);
+            topic = new ChannelTopic(channelId);
         }
         redisMessageListener.addMessageListener(redisSubscriber, topic);
-        topics.put(roomId, topic);
+        topics.put(channelId, topic);
     }
 
     @Override
-    public ChannelTopic getTopic(String roomId) {
-        return topics.get(roomId);
+    public ChannelTopic getTopic(String channelId) {
+        return topics.get(channelId);
     }
 
     @Override
     public List<ChatRequestDTO> getChatInfoValue(String key) {
         try {
-            List<ChatRequestDTO> chatInfoList = redisTemplate.opsForList().range(key, 0, -1);
+            List<ChatRequestDTO> chatInfoList = redisChannelTemplate.opsForList().range(key, 0, -1);
             return chatInfoList;
         } catch (Exception e) {
             e.printStackTrace();
@@ -114,7 +86,7 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public void setChatInfoValue(String key, ChatRequestDTO value) {
-        System.out.println(redisTemplate.opsForList().rightPush(key, value));
+        System.out.println(redisChannelTemplate.opsForList().rightPush(key, value));
     }
 
     @Override
