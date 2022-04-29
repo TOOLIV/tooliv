@@ -102,4 +102,5 @@ public class WorkspaceMemberServiceImpl implements WorkspaceMemberService {
         });
         return new WorkspaceMemberListGetResponseDTO(workspaceMemberGetResponseDTOList);
     }
+
 }

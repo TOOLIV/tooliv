@@ -15,4 +15,6 @@ public interface ChannelMemberService {
     ChannelMemberListGetResponseDTO getChannelMemberList(String channelId);
 
     ChannelMemberListGetResponseDTO searchChannelMember(String channelId, String keyword);
+
+    ChannelMemberListGetResponseDTO searchChannelMemberForRegister(String channelId, String keyword);
 }
