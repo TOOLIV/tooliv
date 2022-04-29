@@ -1,6 +1,7 @@
 package com.tooliv.server.domain.channel.domain.repository;
 
 import com.tooliv.server.domain.channel.domain.Channel;
+import com.tooliv.server.domain.workspace.domain.Workspace;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -27,4 +28,6 @@ public interface ChannelRepository extends JpaRepository<Channel, String> {
         + "WHERE c.workspace_id = :workspace_id AND c.private_yn = false AND c.deleted_at IS NULL "
         + "ORDER BY c.created_at ASC", nativeQuery = true)
     List<Channel> findByWorkspaceId(@Param("workspace_id") String workspaceId);
+
+    Optional<Channel> findTopByDeletedAtAndWorkspaceOrderByCreatedAtAsc(LocalDateTime deletedAt, Workspace workspace);
 }

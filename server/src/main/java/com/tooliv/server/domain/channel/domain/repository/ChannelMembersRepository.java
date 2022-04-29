@@ -4,6 +4,7 @@ import com.tooliv.server.domain.channel.domain.Channel;
 import com.tooliv.server.domain.channel.domain.ChannelMembers;
 import com.tooliv.server.domain.user.domain.User;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -30,6 +31,10 @@ public interface ChannelMembersRepository extends JpaRepository<ChannelMembers, 
         + "ORDER BY u.name", nativeQuery = true)
     List<ChannelMembers> searchByChannelIdAndKeyword(@Param("channel_id")String channelId, @Param("keyword") String keyword);
 
-    boolean existsByUser(User user);
+    List<ChannelMembers> findByChannel(Channel channel);
+
+    Optional<ChannelMembers> findByChannelAndUser(Channel channel, User user);
+
+    boolean existsByChannelAndUser(Channel channel, User user);
 
 }

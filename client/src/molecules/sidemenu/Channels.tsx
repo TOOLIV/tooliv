@@ -1,5 +1,7 @@
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useNavigate, useParams } from 'react-router-dom';
+import { colors } from 'shared/color';
 import { channelsType } from 'types/channel/contentType';
 import Icons from '../../atoms/common/Icons';
 import Label from '../../atoms/common/Label';
@@ -27,17 +29,20 @@ const ChannelContainer = styled.div<{ isSelected: boolean }>`
   transition: 0.3s;
   cursor: pointer;
   /* 선택된 채널만 */
-  background-color: ${(props) =>
-    props.isSelected && props.theme.lightPointColor};
+  background-color: ${(props) => props.isSelected && props.theme.pointColor};
   border-radius: ${(props) => props.isSelected && `10px 0 0 10px`};
   border-right: ${(props) =>
     props.isSelected && `4px solid ${props.theme.pointColor}`};
+  ${(props) =>
+    !props.isSelected &&
+    css`
+      &:hover {
+        background-color: ${colors.lightPrimary};
 
-  &:hover {
-    background-color: ${(props) => props.theme.lightPointColor};
-    border-radius: 10px 0 0 10px;
-    border-right: none;
-  }
+        border-radius: 10px 0 0 10px;
+        border-right: none;
+      }
+    `}
 `;
 
 export const SideWrapper = styled.div`

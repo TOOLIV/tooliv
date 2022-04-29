@@ -8,8 +8,6 @@ import com.tooliv.server.domain.channel.application.dto.response.ChannelListGetR
 import com.tooliv.server.domain.channel.application.dto.response.RegisterChannelResponseDTO;
 import com.tooliv.server.domain.channel.domain.Channel;
 import com.tooliv.server.domain.channel.domain.ChannelMembers;
-import com.tooliv.server.domain.channel.domain.ChannelVideo;
-import com.tooliv.server.domain.channel.domain.enums.ChannelCode;
 import com.tooliv.server.domain.channel.domain.enums.ChannelMemberCode;
 import com.tooliv.server.domain.channel.domain.repository.ChannelMembersRepository;
 import com.tooliv.server.domain.channel.domain.repository.ChannelRepository;
@@ -65,14 +63,14 @@ public class ChannelServiceImpl implements ChannelService {
 
         channelRepository.save(channel);
 
-        if(registerChannelRequestDTO.getChannelCode() == ChannelCode.VIDEO){
-            ChannelVideo channelVideo = ChannelVideo.builder()
-                .isActive(false)
-                .channel(channel)
-                .build();
-
-            channelVideoRepository.save(channelVideo);
-        }
+//        if(registerChannelRequestDTO.getChannelCode() == ChannelCode.VIDEO){
+//            ChannelVideo channelVideo = ChannelVideo.builder()
+//                .isActive(false)
+//                .channel(channel)
+//                .build();
+//
+//            channelVideoRepository.save(channelVideo);
+//        }
 
         ChannelMembers channelMembers = ChannelMembers.builder()
             .createdAt(now)

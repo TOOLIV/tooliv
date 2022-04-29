@@ -1,5 +1,10 @@
 package com.tooliv.server.domain.workspace.application;
 
+import com.tooliv.server.domain.channel.domain.Channel;
+import com.tooliv.server.domain.channel.domain.ChannelMembers;
+import com.tooliv.server.domain.channel.domain.enums.ChannelMemberCode;
+import com.tooliv.server.domain.channel.domain.repository.ChannelMembersRepository;
+import com.tooliv.server.domain.channel.domain.repository.ChannelRepository;
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
 import com.tooliv.server.domain.workspace.application.dto.request.DeleteWorkspaceMemberRequestDTO;
@@ -26,6 +31,10 @@ public class WorkspaceMemberServiceImpl implements WorkspaceMemberService {
 
     private final WorkspaceMemberRepository workspaceMemberRepository;
 
+    private final ChannelRepository channelRepository;
+
+    private final ChannelMembersRepository channelMembersRepository;
+
     private final UserRepository userRepository;
 
     @Transactional
@@ -48,6 +57,19 @@ public class WorkspaceMemberServiceImpl implements WorkspaceMemberService {
                 .build();
 
             workspaceMemberRepository.save(workspaceMembers);
+
+            Channel channel = channelRepository.findTopByDeletedAtAndWorkspaceOrderByCreatedAtAsc(null, workspace)
+                .orElseThrow(() -> new IllegalArgumentException("채널 정보가 존재하지 않습니다."));
+
+            ChannelMembers channelMembers = ChannelMembers.builder()
+                .channelMemberCode(ChannelMemberCode.CMEMBER)
+                .channel(channel)
+                .user(user)
+                .createdAt(LocalDateTime.now())
+                .build();
+
+            channelMembersRepository.save(channelMembers);
+
         });
 
     }
@@ -102,4 +124,5 @@ public class WorkspaceMemberServiceImpl implements WorkspaceMemberService {
         });
         return new WorkspaceMemberListGetResponseDTO(workspaceMemberGetResponseDTOList);
     }
+
 }

@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 public class ChatRequestDTO implements Serializable {
 
     @ApiModelProperty(name = "채팅방 ID")
-    private String ChannelId;
+    private String channelId;
 
     @ApiModelProperty(name = "보낸사람 name")
     private String sender;
