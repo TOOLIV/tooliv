@@ -1,5 +1,8 @@
 import styled from '@emotion/styled';
-import { getChannelMemberList, searchChannelMemberList } from 'api/channelApi';
+import {
+  searchChannelMemberList,
+  searchWorkspaceMemberList,
+} from 'api/channelApi';
 import Icons from 'atoms/common/Icons';
 import Text from 'atoms/text/Text';
 import AddMemberModal from 'organisms/modal/AddMemberModal';
@@ -41,16 +44,22 @@ const Header = () => {
   const [addMemeberOpen, setAddMemberOpen] = useState(false);
 
   useEffect(() => {
-    getChannelMember();
+    if (channelId) {
+      console.log(channelId);
+      getChannelMember();
+    }
   }, [channelId]);
 
   useEffect(() => {
-    searchChannelMember();
+    if (channelId) {
+      searchChannelMember();
+      console.log(channelId);
+    }
   }, [keyword]);
 
   const getChannelMember = async () => {
     try {
-      const { data } = await getChannelMemberList(channelId!);
+      const { data } = await searchChannelMemberList(channelId!, keyword);
       setChannelName(data.channelName);
       // setChannelMemberList(data.channelMemberGetResponseDTOList);
       setChannelMemberNum(data.channelMemberGetResponseDTOList.length);

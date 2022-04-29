@@ -106,8 +106,6 @@ const WorkspaceModal = ({ isOpen, onClose }: workspaceModalType) => {
         const workspaceId = response.data.id;
         const channelList = await getChannelList(workspaceId);
         const channelId = channelList.data.channelGetResponseDTOList[0].id;
-        // setIsWorkspaceCreate(true);
-        // setIsChannelCreate(true);
         setCurrentWorkspace(workspaceId);
         // setCurrentChannel(channelId);
         navigate(`${workspaceId}/${channelId}`);

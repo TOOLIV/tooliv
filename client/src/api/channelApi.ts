@@ -11,8 +11,13 @@ export const createChannel = async (body: channelTypes) => {
   return response;
 };
 
-export const getChannelMemberList = async (channelId: string) => {
-  const response = await instance.get(`channel/${channelId}/member/list`);
+export const searchWorkspaceMemberList = async (
+  channelId: string,
+  keyword: string
+) => {
+  const response = await instance.get(
+    `channel/${channelId}/member/list?keyword=${keyword}`
+  );
   return response;
 };
 

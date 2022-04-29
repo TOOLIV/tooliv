@@ -1,6 +1,9 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { getChannelMemberList, searchChannelMemberList } from 'api/channelApi';
+import {
+  searchChannelMemberList,
+  searchWorkspaceMemberList,
+} from 'api/channelApi';
 import Button from 'atoms/common/Button';
 import Icons from 'atoms/common/Icons';
 import Label from 'atoms/label/Label';
@@ -99,12 +102,12 @@ const ChannelAddMemberModal = ({
   };
 
   const userListApi = async (keyword: string) => {
-    const response = await searchChannelMemberList(channelId, keyword);
+    const response = await searchWorkspaceMemberList(channelId, keyword);
     console.log(response);
     const data = response.data.channelMemberGetResponseDTOList;
-    if (data) {
-      setUserList(data);
-    }
+    // if (data) {
+    //   setUserList(data.filter((user) => userBadgeList.includes(user.email)));
+    // }
     console.log(data);
   };
 
@@ -126,7 +129,7 @@ const ChannelAddMemberModal = ({
   };
 
   useEffect(() => {
-    userListApi(keyword);
+    if (channelId) userListApi(keyword);
   }, [keyword]);
 
   const registMember = () => {
@@ -148,38 +151,12 @@ const ChannelAddMemberModal = ({
         />
         <UserBox>
           {userList.map((user: channelMemberType) => (
-            <>
-              <UserInfoWrapper
-                key={user.email}
-                onClick={() => createUserBadge(user.name, user.email)}
-              >
-                <UserInfo name={user.name} email={user.email} />
-              </UserInfoWrapper>
-              <UserInfoWrapper
-                key={user.email}
-                onClick={() => createUserBadge(user.name, user.email)}
-              >
-                <UserInfo name={user.name} email={user.email} />
-              </UserInfoWrapper>
-              <UserInfoWrapper
-                key={user.email}
-                onClick={() => createUserBadge(user.name, user.email)}
-              >
-                <UserInfo name={user.name} email={user.email} />
-              </UserInfoWrapper>
-              <UserInfoWrapper
-                key={user.email}
-                onClick={() => createUserBadge(user.name, user.email)}
-              >
-                <UserInfo name={user.name} email={user.email} />
-              </UserInfoWrapper>
-              <UserInfoWrapper
-                key={user.email}
-                onClick={() => createUserBadge(user.name, user.email)}
-              >
-                <UserInfo name={user.name} email={user.email} />
-              </UserInfoWrapper>
-            </>
+            <UserInfoWrapper
+              key={user.email}
+              onClick={() => createUserBadge(user.name, user.email)}
+            >
+              <UserInfo name={user.name} email={user.email} />
+            </UserInfoWrapper>
           ))}
         </UserBox>
         <Label label="추가 멤버 목록" />
