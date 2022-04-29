@@ -139,13 +139,13 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         List<WorkspaceGetResponseDTO> workspaceGetResponseDTOList = new ArrayList<>();
 
         workspaceList.forEach(workspace -> {
-                WorkspaceGetResponseDTO workspaceGetResponseDTO = WorkspaceGetResponseDTO.builder()
-                    .id(workspace.getId())
-                    .name(workspace.getName())
-                    .thumbnailImage(getImageURL(workspace.getThumbnailImage()))
-                    .build();
+            WorkspaceGetResponseDTO workspaceGetResponseDTO = WorkspaceGetResponseDTO.builder()
+                .id(workspace.getId())
+                .name(workspace.getName())
+                .thumbnailImage(getImageURL(workspace.getThumbnailImage()))
+                .build();
 
-                workspaceGetResponseDTOList.add(workspaceGetResponseDTO);
+            workspaceGetResponseDTOList.add(workspaceGetResponseDTO);
         });
         return new WorkspaceListGetResponseDTO(workspaceGetResponseDTOList);
     }
