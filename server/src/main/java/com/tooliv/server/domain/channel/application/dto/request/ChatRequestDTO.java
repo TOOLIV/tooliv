@@ -1,10 +1,9 @@
-package com.tooliv.server.domain.chat.application.dto.request;
+package com.tooliv.server.domain.channel.application.dto.request;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import com.tooliv.server.domain.chat.domain.ChatMessage;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -23,7 +22,7 @@ import lombok.NoArgsConstructor;
 public class ChatRequestDTO implements Serializable {
 
     @ApiModelProperty(name = "채팅방 ID")
-    private String roomId;
+    private String ChannelId;
 
     @ApiModelProperty(name = "보낸사람 name")
     private String sender;

@@ -1,5 +1,6 @@
 package com.tooliv.server.domain.channel.application;
 
+import com.tooliv.server.domain.channel.application.chatService.ChatService;
 import com.tooliv.server.domain.channel.application.dto.request.ModifyChannelRequestDTO;
 import com.tooliv.server.domain.channel.application.dto.request.RegisterChannelRequestDTO;
 import com.tooliv.server.domain.channel.application.dto.response.ChannelGetResponseDTO;
@@ -39,6 +40,8 @@ public class ChannelServiceImpl implements ChannelService {
 
     private final UserRepository userRepository;
 
+    private final ChatService chatService;
+
     @Transactional
     @Override
     public RegisterChannelResponseDTO registerChannel(RegisterChannelRequestDTO registerChannelRequestDTO) {
@@ -57,6 +60,8 @@ public class ChannelServiceImpl implements ChannelService {
             .channelCode(registerChannelRequestDTO.getChannelCode())
             .workspace(workspace)
             .build();
+
+        chatService.createChatRoom(channel);
 
         channelRepository.save(channel);
 

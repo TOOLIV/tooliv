@@ -1,8 +1,6 @@
-package com.tooliv.server.domain.chat.domain;
+package com.tooliv.server.domain.channel.domain;
 
-import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.global.common.BaseEntity;
-import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,19 +12,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@Entity
 @Getter
-@Builder
 @ToString
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChatRoom extends BaseEntity {
+@Entity
+public class ChatFile extends BaseEntity {
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "file_name")
+    private String fileName;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User customer;
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "chat_message")
+    private ChatMessage chatMessage;
 }
