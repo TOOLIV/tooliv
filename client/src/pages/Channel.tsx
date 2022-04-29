@@ -39,7 +39,7 @@ const Channel = () => {
   const baseURL = localStorage.getItem('baseURL');
   let sockJS = baseURL
     ? new SockJS(`${JSON.parse(baseURL).url}/chatting`)
-    : new SockJS('http://localhost:8080/chatting');
+    : new SockJS(`${process.env.REACT_APP_BASE_SERVER_URL}/chatting`);
   let client = Stomp.over(sockJS);
   const { channelId } = useParams<string>();
   useEffect(() => {
@@ -53,6 +53,7 @@ const Channel = () => {
           console.log(res);
           subChannel(channelId);
           client.subscribe(`/sub/chat/room/${channelId}`, (response) => {
+            console.log(response);
             setContents((prev) => [...prev, JSON.parse(response.body)]);
           });
         });
