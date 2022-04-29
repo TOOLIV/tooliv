@@ -30,4 +30,5 @@ public interface WorkspaceMemberRepository extends JpaRepository<WorkspaceMember
         + "ORDER BY u.name", nativeQuery = true)
     List<WorkspaceMembers> findByWorkspaceIdAndKeyword(@Param("workspace_id")String workspaceId, @Param("keyword") String keyword);
 
+    List<WorkspaceMembers> findByWorkspace(Workspace workspace);
 }

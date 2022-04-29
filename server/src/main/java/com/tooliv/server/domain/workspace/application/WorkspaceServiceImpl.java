@@ -1,5 +1,6 @@
 package com.tooliv.server.domain.workspace.application;
 
+import com.tooliv.server.domain.channel.application.ChannelService;
 import com.tooliv.server.domain.channel.domain.Channel;
 import com.tooliv.server.domain.channel.domain.ChannelMembers;
 import com.tooliv.server.domain.channel.domain.enums.ChannelCode;
@@ -8,6 +9,7 @@ import com.tooliv.server.domain.channel.domain.repository.ChannelMembersReposito
 import com.tooliv.server.domain.channel.domain.repository.ChannelRepository;
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
+import com.tooliv.server.domain.workspace.application.dto.request.DeleteWorkspaceMemberRequestDTO;
 import com.tooliv.server.domain.workspace.application.dto.request.ModifyWorkspaceRequestDTO;
 import com.tooliv.server.domain.workspace.application.dto.request.RegisterWorkspaceRequestDTO;
 import com.tooliv.server.domain.workspace.application.dto.response.RegisterWorkspaceResponseDTO;
@@ -42,6 +44,10 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     private final ChannelRepository channelRepository;
 
     private final UserRepository userRepository;
+
+    private  final WorkspaceMemberService workspaceMemberService;
+
+    private  final ChannelService channelService;
 
     private final AwsS3Service awsS3Service;
 
@@ -125,6 +131,17 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     public Integer deleteWorkspace(String workspaceId) {
         Workspace workspace = workspaceRepository.findById(workspaceId)
             .orElseThrow(() -> new IllegalArgumentException("해당 워크스페이스를 찾을 수 없습니다."));
+
+        List<WorkspaceMembers> workspaceMembersList = workspaceMemberRepository.findByWorkspace(workspace);
+        for (WorkspaceMembers workspaceMember : workspaceMembersList) {
+            workspaceMemberService.deleteWorkspaceMember(workspaceId, new DeleteWorkspaceMemberRequestDTO(workspaceMember.getUser().getEmail()));
+        }
+
+        List<Channel> channelList = channelRepository.findByDeletedAtAndWorkspace(null, workspace);
+        for(Channel channel : channelList){
+            channelService.deleteChannel(channel.getId());
+        }
+
         workspace.deleteWorkspace();
         workspaceRepository.save(workspace);
         return 200;

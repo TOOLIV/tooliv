@@ -30,4 +30,7 @@ public interface ChannelRepository extends JpaRepository<Channel, String> {
     List<Channel> findByWorkspaceId(@Param("workspace_id") String workspaceId);
 
     Optional<Channel> findTopByDeletedAtAndWorkspaceOrderByCreatedAtAsc(LocalDateTime deletedAt, Workspace workspace);
+
+    List<Channel> findByDeletedAtAndWorkspace(LocalDateTime deleted_at, Workspace workspace);
+
 }
