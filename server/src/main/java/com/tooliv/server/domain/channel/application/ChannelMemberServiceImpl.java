@@ -2,6 +2,7 @@ package com.tooliv.server.domain.channel.application;
 
 import com.tooliv.server.domain.channel.application.dto.request.DeleteChannelMemberRequestDTO;
 import com.tooliv.server.domain.channel.application.dto.request.RegisterChannelMemberRequestDTO;
+import com.tooliv.server.domain.channel.application.dto.response.ChannelMemberCodeGetResponseDTO;
 import com.tooliv.server.domain.channel.application.dto.response.ChannelMemberGetResponseDTO;
 import com.tooliv.server.domain.channel.application.dto.response.ChannelMemberListGetResponseDTO;
 import com.tooliv.server.domain.channel.domain.Channel;
@@ -11,7 +12,6 @@ import com.tooliv.server.domain.channel.domain.repository.ChannelMembersReposito
 import com.tooliv.server.domain.channel.domain.repository.ChannelRepository;
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
-import com.tooliv.server.domain.workspace.domain.Workspace;
 import com.tooliv.server.domain.workspace.domain.WorkspaceMembers;
 import com.tooliv.server.domain.workspace.domain.repository.WorkspaceMemberRepository;
 import java.time.LocalDateTime;
@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -145,5 +146,20 @@ public class ChannelMemberServiceImpl implements ChannelMemberService {
 
         }
         return new ChannelMemberListGetResponseDTO(channel.getName(), channelMemberGetResponseDTOList);
+    }
+
+    @Override
+    public ChannelMemberCodeGetResponseDTO getChannelMemberCode(String channelId) {
+
+        User user = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
+            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+
+        Channel channel = channelRepository.findByIdAndDeletedAt(channelId, null)
+            .orElseThrow(() -> new IllegalArgumentException("채널 정보가 존재하지 않습니다."));
+
+        ChannelMembers channelMember = channelMembersRepository.findByChannelAndUser(channel,user)
+            .orElseThrow(() -> new IllegalArgumentException("채널 멤버 정보가 존재하지 않습니다."));
+
+        return new ChannelMemberCodeGetResponseDTO(channelMember.getChannelMemberCode());
     }
 }
