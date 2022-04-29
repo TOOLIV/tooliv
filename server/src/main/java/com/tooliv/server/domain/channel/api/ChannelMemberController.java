@@ -3,6 +3,7 @@ package com.tooliv.server.domain.channel.api;
 import com.tooliv.server.domain.channel.application.ChannelMemberService;
 import com.tooliv.server.domain.channel.application.dto.request.DeleteChannelMemberRequestDTO;
 import com.tooliv.server.domain.channel.application.dto.request.RegisterChannelMemberRequestDTO;
+import com.tooliv.server.domain.channel.application.dto.response.ChannelMemberCodeGetResponseDTO;
 import com.tooliv.server.domain.channel.application.dto.response.ChannelMemberListGetResponseDTO;
 import com.tooliv.server.global.common.BaseResponseDTO;
 import io.swagger.annotations.Api;
@@ -129,6 +130,26 @@ public class ChannelMemberController {
             return ResponseEntity.status(404).body(BaseResponseDTO.of("검색 가능한 채널멤버 정보가 없음"));
         }
         return ResponseEntity.status(200).body(ChannelMemberListGetResponseDTO.of("채널멤버 검색 완료", channelMemberListGetResponseDTO));
+    }
+
+    @GetMapping("/code")
+    @ApiOperation(value = "채널멤버 코드 조회")
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "채널멤버 코드 조회 완료"),
+        @ApiResponse(code = 404, message = "조회 가능한 채널멤버 정보가 없음"),
+        @ApiResponse(code = 409, message = "채널멤버 코드 조회 실패"),
+    })
+    public ResponseEntity<? extends BaseResponseDTO> getChannelMemberCode(
+        @PathVariable("channelId") @Valid @ApiParam(value="채널 ID", required=true) String channelId) {
+        ChannelMemberCodeGetResponseDTO channelMemberCodeGetResponseDTO = null;
+        try {
+            channelMemberCodeGetResponseDTO = channelMemberService.getChannelMemberCode(channelId);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(409).body(BaseResponseDTO.of("조회된 채널멤버 정보가 없음"));
+        } catch (Exception e) {
+            return ResponseEntity.status(404).body(BaseResponseDTO.of("검색 가능한 채널멤버 정보가 없음"));
+        }
+        return ResponseEntity.status(200).body(ChannelMemberCodeGetResponseDTO.of("채널멤버 코드 조회 완료", channelMemberCodeGetResponseDTO));
     }
 
 }

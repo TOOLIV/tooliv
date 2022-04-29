@@ -58,7 +58,7 @@ public class WorkspaceMemberServiceImpl implements WorkspaceMemberService {
 
             workspaceMemberRepository.save(workspaceMembers);
 
-            Channel channel = channelRepository.findTopByDeletedAtOrderByCreatedAtAsc(null)
+            Channel channel = channelRepository.findTopByDeletedAtAndWorkspaceOrderByCreatedAtAsc(null, workspace)
                 .orElseThrow(() -> new IllegalArgumentException("채널 정보가 존재하지 않습니다."));
 
             ChannelMembers channelMembers = ChannelMembers.builder()
