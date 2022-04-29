@@ -39,7 +39,7 @@ const Channel = () => {
   const baseURL = localStorage.getItem('baseURL');
   let sockJS = baseURL
     ? new SockJS(`${JSON.parse(baseURL).url}/chatting`)
-    : new SockJS(`${process.env.REACT_APP_BASE_URL}/chatting`);
+    : new SockJS(`${process.env.REACT_APP_BASE_SERVER_URL}/chatting`);
   let client = Stomp.over(sockJS);
   const { channelId } = useParams<string>();
   useEffect(() => {
