@@ -1,6 +1,6 @@
 import { Global, ThemeProvider } from '@emotion/react';
 import { light, dark } from './shared/theme';
-import { useRecoilValue } from 'recoil';
+import { RecoilRoot, useRecoilValue } from 'recoil';
 import { appThemeMode } from './recoil/atom';
 import './App.css';
 import AppRouter from './pages/Router';
@@ -12,7 +12,6 @@ function App() {
   return (
     <>
       <ThemeProvider theme={mode === 'light' ? light : dark}>
-        {/* <ThemeProvider theme={dark}> */}
         <Global styles={global} />
         <AppRouter />
       </ThemeProvider>
