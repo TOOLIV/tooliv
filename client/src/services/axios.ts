@@ -8,7 +8,7 @@ const baseURL = localStorage.getItem('baseURL');
 if (isElectron() && baseURL) {
   console.log(JSON.parse(baseURL));
   instance = axios.create({
-    baseURL: JSON.parse(baseURL).url,
+    baseURL: JSON.parse(baseURL).url + '/api',
     // TODO timeout 설정
     timeout: 30000,
     headers: {
