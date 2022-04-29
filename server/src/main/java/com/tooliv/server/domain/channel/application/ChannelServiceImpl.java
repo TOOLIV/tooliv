@@ -1,6 +1,7 @@
 package com.tooliv.server.domain.channel.application;
 
 import com.tooliv.server.domain.channel.application.chatService.ChatService;
+import com.tooliv.server.domain.channel.application.dto.request.DeleteChannelMemberRequestDTO;
 import com.tooliv.server.domain.channel.application.dto.request.ModifyChannelRequestDTO;
 import com.tooliv.server.domain.channel.application.dto.request.RegisterChannelRequestDTO;
 import com.tooliv.server.domain.channel.application.dto.response.ChannelGetResponseDTO;
@@ -11,7 +12,6 @@ import com.tooliv.server.domain.channel.domain.ChannelMembers;
 import com.tooliv.server.domain.channel.domain.enums.ChannelMemberCode;
 import com.tooliv.server.domain.channel.domain.repository.ChannelMembersRepository;
 import com.tooliv.server.domain.channel.domain.repository.ChannelRepository;
-import com.tooliv.server.domain.channel.domain.repository.ChannelVideoRepository;
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
 import com.tooliv.server.domain.workspace.domain.Workspace;
@@ -34,9 +34,11 @@ public class ChannelServiceImpl implements ChannelService {
 
     private final ChannelMembersRepository channelMembersRepository;
 
-    private final ChannelVideoRepository channelVideoRepository;
+//    private final ChannelVideoRepository channelVideoRepository;
 
     private final UserRepository userRepository;
+
+    private final ChannelMemberService channelMemberService;
 
     private final ChatService chatService;
 
@@ -111,6 +113,10 @@ public class ChannelServiceImpl implements ChannelService {
             .orElseThrow(() -> new IllegalArgumentException("채널 정보가 존재하지 않습니다."));
 
         try {
+            List<ChannelMembers> memberList = channelMembersRepository.findByChannel(channel);
+            for(ChannelMembers channelMember : memberList) {
+                channelMemberService.deleteChannelMember(channelId, new DeleteChannelMemberRequestDTO(channelMember.getUser().getEmail()));
+            }
             channel.deleteChannel();
         } catch (Exception e) {
             return 409;
