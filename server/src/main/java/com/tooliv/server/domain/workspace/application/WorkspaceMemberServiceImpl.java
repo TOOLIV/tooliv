@@ -31,20 +31,25 @@ public class WorkspaceMemberServiceImpl implements WorkspaceMemberService {
     @Transactional
     @Override
     public void addWorkspaceMember(String workspaceId, RegisterWorkspaceMemberRequestDTO registerWorkspaceMemberRequestDTO) {
-        User user = userRepository.findByEmailAndDeletedAt(registerWorkspaceMemberRequestDTO.getEmail(), null)
-            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+        List<String> emailList = registerWorkspaceMemberRequestDTO.getEmailList();
 
         Workspace workspace = workspaceRepository.findByIdAndDeletedAt(workspaceId, null)
             .orElseThrow(() -> new IllegalArgumentException("워크스페이스 정보가 존재하지 않습니다."));
 
-        WorkspaceMembers workspaceMembers = WorkspaceMembers.builder()
-            .workspace(workspace)
-            .createdAt(LocalDateTime.now())
-            .workspaceMemberCode(WorkspaceMemberCode.WMEMBER)
-            .user(user)
-            .build();
+        emailList.forEach(email -> {
+            User user = userRepository.findByEmailAndDeletedAt(email, null)
+                .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
 
-        workspaceMemberRepository.save(workspaceMembers);
+            WorkspaceMembers workspaceMembers = WorkspaceMembers.builder()
+                .workspace(workspace)
+                .createdAt(LocalDateTime.now())
+                .workspaceMemberCode(WorkspaceMemberCode.WMEMBER)
+                .user(user)
+                .build();
+
+            workspaceMemberRepository.save(workspaceMembers);
+        });
+
     }
 
     @Transactional
