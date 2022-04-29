@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import axios from 'axios';
@@ -36,10 +36,12 @@ const Channel = () => {
     useRecoilState<contentTypes[]>(channelContents);
   const fileUrl = useRecoilValue<string[]>(chatFileUrl);
   const { accessToken } = useRecoilValue(token);
-  let sockJS = new SockJS('http://localhost:8080/chatting');
+  const baseURL = localStorage.getItem('baseURL');
+  let sockJS = baseURL
+    ? new SockJS(`${JSON.parse(baseURL).url}/chatting`)
+    : new SockJS('http://localhost:8080/chatting');
   let client = Stomp.over(sockJS);
-  const channelId = 'b472907f-122f-4db7-9617-d0d5b5671e36';
-
+  const { channelId } = useParams<string>();
   useEffect(() => {
     client.connect(
       {
@@ -48,6 +50,7 @@ const Channel = () => {
       (frame) => {
         console.log('STOMP Connection');
         enterChannel(channelId).then((res) => {
+          console.log(res);
           subChannel(channelId);
           client.subscribe(`/sub/chat/room/${channelId}`, (response) => {
             setContents((prev) => [...prev, JSON.parse(response.body)]);
@@ -65,7 +68,7 @@ const Channel = () => {
         Authorization: `Bearer ${accessToken}`,
       },
       JSON.stringify({
-        roomId: 'b472907f-122f-4db7-9617-d0d5b5671e36',
+        channelId: channelId,
         sender: '인주비',
         contents: message,
         type: 'TALK',
