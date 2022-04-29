@@ -67,7 +67,7 @@ public class WorkspaceMemberServiceImpl implements WorkspaceMemberService {
     @Override
     public WorkspaceMemberListGetResponseDTO getWorkspaceMemberList(String workspaceId) {
         Workspace workspace = workspaceRepository.findByIdAndDeletedAt(workspaceId, null)
-        .orElseThrow(() -> new IllegalArgumentException("워크스페이스 정보가 존재하지 않습니다."));
+            .orElseThrow(() -> new IllegalArgumentException("워크스페이스 정보가 존재하지 않습니다."));
 
         List<WorkspaceMemberGetResponseDTO> workspaceMemberGetResponseDTOList = new ArrayList<>();
         List<WorkspaceMembers> workspaceMembersList = workspaceMemberRepository.findByWorkspace(workspace.getId());
