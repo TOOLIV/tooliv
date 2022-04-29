@@ -1,15 +1,32 @@
 import { createBrowserHistory } from 'history';
-import axios from 'axios';
+import axios, { AxiosInstance } from 'axios';
+import isElectron from 'is-electron';
 
-const instance = axios.create({
-  baseURL: process.env.REACT_APP_API_URL,
-  // TODO timeout 설정
-  timeout: 30000,
-  headers: {
-    'Content-type': 'application/json',
-    'Access-Control-Allow-Credentials': true,
-  },
-});
+let instance: AxiosInstance;
+const baseURL = localStorage.getItem('baseURL');
+
+if (isElectron() && baseURL) {
+  console.log(JSON.parse(baseURL));
+  instance = axios.create({
+    baseURL: JSON.parse(baseURL).url + '/api',
+    // TODO timeout 설정
+    timeout: 30000,
+    headers: {
+      'Content-type': 'application/json',
+      'Access-Control-Allow-Credentials': true,
+    },
+  });
+} else {
+  instance = axios.create({
+    baseURL: process.env.REACT_APP_API_URL,
+    // TODO timeout 설정
+    timeout: 30000,
+    headers: {
+      'Content-type': 'application/json',
+      'Access-Control-Allow-Credentials': true,
+    },
+  });
+}
 
 /* Apply Interceptor */
 // HTTP request interceptor

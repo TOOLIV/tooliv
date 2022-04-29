@@ -10,6 +10,7 @@ import Login from './Login';
 import Join from './Join';
 import PrivateRoute from 'router/PrivateRoute';
 import Main from './Main';
+import EnterPriseTest from './EnterPriseTest';
 // import Test from './Test';
 
 const AppRouter = () => {
@@ -19,12 +20,14 @@ const AppRouter = () => {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/join" element={<Join />} />
+          <Route path="/enterprisetest" element={<EnterPriseTest />} />
           <Route
             path="/"
             element={<PrivateRoute outlet={<Home />} fallback={'login'} />}
           >
             <Route path="" element={<Navigate replace to="/main" />} />
             <Route path="/main" element={<Main />} />
+            <Route path="/test" element={<Test />} />
             <Route path="/test" element={<Test />} />
             <Route path="/:workspaceId/:channelId" element={<Channel />} />
             <Route

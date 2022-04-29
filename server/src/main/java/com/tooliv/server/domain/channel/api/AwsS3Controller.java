@@ -1,19 +1,16 @@
-package com.tooliv.server.domain.chat.api;
+package com.tooliv.server.domain.channel.api;
 
-import com.tooliv.server.domain.chat.application.ChatService;
-import com.tooliv.server.domain.chat.application.dto.response.ChatRoomChatListResponseDTO;
-import com.tooliv.server.domain.chat.application.dto.response.FileUrlListResponseDTO;
+import com.tooliv.server.domain.channel.application.chatService.ChatService;
+import com.tooliv.server.domain.channel.application.dto.response.FileUrlListResponseDTO;
 import com.tooliv.server.global.common.BaseResponseDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,7 +31,7 @@ public class AwsS3Controller {
     })
     public ResponseEntity<? extends BaseResponseDTO> uploadProfileImage(
         @ApiParam(value = "이미지", required = true) @RequestPart List<MultipartFile> multipartFiles) {
-        FileUrlListResponseDTO fileUrlListResponseDTO = null;
+        FileUrlListResponseDTO fileUrlListResponseDTO;
         try {
             fileUrlListResponseDTO = chatService.getFileURL(multipartFiles);
         } catch (Exception e) {

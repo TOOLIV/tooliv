@@ -3,7 +3,7 @@ import JoinForm from '../organisms/join/JoinForm';
 import { colors } from '../shared/color';
 import bgImage from '../assets/img/wavy.svg';
 
-const Container = styled.div`
+export const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;

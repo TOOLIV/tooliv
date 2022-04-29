@@ -1,7 +1,6 @@
-package com.tooliv.server.domain.chat.application;
+package com.tooliv.server.domain.channel.application.chatService;
 
-import com.tooliv.server.domain.chat.application.dto.request.ChatRequestDTO;
-import com.tooliv.server.domain.chat.domain.ChatMessage;
+import com.tooliv.server.domain.channel.application.dto.request.ChatRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
@@ -11,9 +10,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class RedisPublisher {
 
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, Object> redisChannelTemplate;
 
     public void publish(ChannelTopic topic, ChatRequestDTO message) {
-        redisTemplate.convertAndSend(topic.getTopic(), message);
+        redisChannelTemplate.convertAndSend(topic.getTopic(), message);
     }
 }

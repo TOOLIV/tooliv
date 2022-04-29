@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
+import isElectron from 'is-electron';
 import { useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 import { token } from 'recoil/auth';
 import { login } from '../../api/userApi';
@@ -15,13 +16,18 @@ const Container = styled.div`
   background-color: ${colors.white};
   border-radius: 30px;
   box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.06);
+
+  a {
+    text-decoration: none;
+    color: black;
+  }
 `;
 
-const TextBox = styled.div`
+export const TextBox = styled.div`
   margin-bottom: 30px;
 `;
 
-const InputArea = styled.form`
+export const InputArea = styled.form`
   & > div:first-of-type {
     margin-bottom: 15px;
   }
@@ -41,7 +47,9 @@ const LoginForm = () => {
   const inputPasswordRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const setToken = useSetRecoilState(token);
-
+  const isEnterprise = localStorage.getItem('baseURL') ? true : false;
+  const server = localStorage.getItem('baseURL');
+  const serverName: string = server && JSON.parse(server).name;
   const handleLogin = async () => {
     const email = inputEmailRef.current?.value!;
     const password = inputPasswordRef.current?.value!;
@@ -67,10 +75,14 @@ const LoginForm = () => {
 
   return (
     <Container>
+      <SignUpBox>
+        {/* <Link to="/enterprisetest">for enterprise</Link> */}
+      </SignUpBox>
       <TextBox>
         <Text size={36} weight={'bold'}>
           로그인
         </Text>
+        {serverName && isEnterprise && `for ${serverName}`}
       </TextBox>
       <InputArea>
         <InputBox
@@ -99,6 +111,21 @@ const LoginForm = () => {
           회원가입
         </Text>
       </SignUpBox>
+      {isElectron() && (
+        <SignUpBox>
+          <Text size={12} color={'gray400'}>
+            기업용으로 로그인
+          </Text>
+          <Text
+            size={12}
+            onClick={() => {
+              navigate('/enterprisetest');
+            }}
+          >
+            서버 등록
+          </Text>
+        </SignUpBox>
+      )}
     </Container>
   );
 };

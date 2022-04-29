@@ -1,6 +1,6 @@
-package com.tooliv.server.domain.chat.application.dto.response;
+package com.tooliv.server.domain.channel.application.dto.response;
 
-import com.tooliv.server.domain.chat.application.dto.request.ChatRequestDTO;
+import com.tooliv.server.domain.channel.application.dto.request.ChatRequestDTO;
 import com.tooliv.server.global.common.BaseResponseDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
