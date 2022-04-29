@@ -12,6 +12,7 @@ import com.tooliv.server.domain.user.domain.enums.UserCode;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
 import com.tooliv.server.global.exception.DuplicateEmailException;
 import com.tooliv.server.global.common.AwsS3Service;
+import com.tooliv.server.global.exception.UserNotFoundException;
 import com.tooliv.server.global.security.util.JwtAuthenticationProvider;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -60,10 +61,10 @@ public class UserServiceImpl implements UserService {
             new UsernamePasswordAuthenticationToken(logInRequestDTO.getEmail(),
                 logInRequestDTO.getPassword()));
 
-        User user = userRepository.findByEmailAndDeletedAt(logInRequestDTO.getEmail(), null)
-            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
-
         String jwt = jwtAuthenticationProvider.createToken(authentication);
+
+        User user = userRepository.findByEmailAndDeletedAt(logInRequestDTO.getEmail(), null)
+            .orElseThrow(() -> new UserNotFoundException("회원 정보를 찾을 수 없음"));
 
         return LogInResponseDTO.builder()
             .userId(user.getId())
@@ -114,7 +115,7 @@ public class UserServiceImpl implements UserService {
         List<UserInfoResponseDTO> userInfoResponseDTOList = new ArrayList<>();
 
         for (User user : userRepository.findAllByDeletedAtAndNameContainingOrderByNameAsc(null, keyword)
-            .orElseThrow(() -> new IllegalArgumentException("조회 가능한 회원이 없음"))) {
+            .orElseThrow(() -> new UserNotFoundException("조회 가능한 회원이 없음"))) {
             userInfoResponseDTOList.add(new UserInfoResponseDTO(user.getId(), user.getEmail(), user.getName(), user.getNickname(), user.getUserCode(), getImageURL(user.getProfileImage())));
         }
 
@@ -124,7 +125,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getCurrentUser() {
         User user = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
-            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+            .orElseThrow(() -> new UserNotFoundException("회원 정보를 찾을 수 없음"));
 
         return user;
     }
