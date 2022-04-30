@@ -5,7 +5,8 @@ import { icons } from '../../shared/icons';
 import { iconsTypes } from '../../types/common/iconsTypes';
 
 const Icon = styled.svg<{ onClick?: () => void }>`
-  cursor: ${(props) => (props.onClick ? 'pointer' : 'default')};
+  /* cursor: ${(props) => (props.onClick ? 'pointer' : 'default')}; */
+  cursor: pointer;
 `;
 const Icons = ({
   icon,
@@ -20,7 +21,7 @@ const Icons = ({
       width={width}
       height={height}
       xmlns="http:www.w3.org/2000/svg"
-      fill={color ? colors[color] : '#868E96'}
+      fill={color ? colors[color] : colors.gray500}
       onClick={onClick}
     >
       {icons[icon]}

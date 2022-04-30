@@ -1,15 +1,15 @@
 import styled from '@emotion/styled';
+import Header from 'organisms/header/Header';
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
-import Header from '../atoms/home/Header';
 import Nav from '../atoms/home/Nav';
 import Chat from '../organisms/meeting/chat/Chat';
 import SideMenu from '../organisms/sidemenu/SideMenu';
 import { isOpenChat, isOpenSide } from '../recoil/atom';
 
 const Wrapper = styled.div<{ leftMargin: number; rightMargin: number }>`
-  position: absolute;
+  /* position: absolute; */
   width: calc(
     100vw - ${(props) => props.leftMargin + props.rightMargin + 'px'}
   );
@@ -21,7 +21,7 @@ const Wrapper = styled.div<{ leftMargin: number; rightMargin: number }>`
 const Container = styled.div`
   display: flex;
   flex-direction: row;
-  height: calc(100vh - 40px);
+  /* height: calc(100vh - 40px); */
   justify-content: space-between;
 `;
 const InnerContainer = styled.div<{ leftMargin: number; rightMargin: number }>`
