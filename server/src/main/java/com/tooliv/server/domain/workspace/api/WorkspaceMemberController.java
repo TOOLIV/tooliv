@@ -74,11 +74,12 @@ public class WorkspaceMemberController {
         @ApiResponse(code = 409, message = "워크스페이스멤버 목록 조회 실패"),
     })
     public ResponseEntity<? extends BaseResponseDTO> getWorkspaceMemberList(
-        @PathVariable("workspaceId") @Valid @ApiParam(value="워크스페이스 ID", required=true) String workspaceId) {
+        @PathVariable("workspaceId") @Valid @ApiParam(value="워크스페이스 ID", required=true) String workspaceId,
+        @RequestParam @ApiParam(value="검색 단어", required = false) String keyword) {
         WorkspaceMemberListGetResponseDTO workspacememberListGetResponseDTO = null;
 
         try {
-            workspacememberListGetResponseDTO = workspaceMemberService.getWorkspaceMemberList(workspaceId);
+            workspacememberListGetResponseDTO = workspaceMemberService.getWorkspaceMemberListForRegister(workspaceId, keyword);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(409).body(BaseResponseDTO.of("워크스페이스멤버 목록 조회 실패"));
         } catch (Exception e) {

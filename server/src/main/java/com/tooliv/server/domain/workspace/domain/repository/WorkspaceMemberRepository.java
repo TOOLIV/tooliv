@@ -24,6 +24,14 @@ public interface WorkspaceMemberRepository extends JpaRepository<WorkspaceMember
 
     @Query(value="SELECT * "
         + "FROM workspace_members m "
+        + "INNER JOIN workspace w ON m.workspace_id = w.id "
+        + "RIGHT JOIN user u ON m.user_id = u.id "
+        + "WHERE w.id = :workspace_id  AND u.deleted_at IS NULL AND m.id IS NULL"
+        + "ORDER BY u.name", nativeQuery = true)
+    List<WorkspaceMembers> findByWorkspaceForRegisterMember(@Param("workspace_id") String workspaceId);
+
+    @Query(value="SELECT * "
+        + "FROM workspace_members m "
         + "INNER JOIN user u ON m.user_id = u.id "
         + "INNER JOIN workspace w ON m.workspace_id = w.id "
         + "WHERE w.id = :workspace_id AND u.name LIKE %:keyword% AND u.deleted_at IS NULL "

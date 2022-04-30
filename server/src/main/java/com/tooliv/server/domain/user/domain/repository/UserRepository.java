@@ -24,4 +24,16 @@ public interface UserRepository extends JpaRepository<User, String> {
     Optional<List<User>> findAllByDeletedAtAndNameContainingOrderByNameAsc(LocalDateTime localDateTime, String keyword);
 
     Optional<List<User>> findAllByUserCodeNotAndDeletedAtAndNameContainingOrderByNameAsc(UserCode userCode, LocalDateTime localDateTime, String keyword);
+
+    @Query(value="SELECT * \n"
+        + "FROM user u\n"
+        + "WHERE u.deleted_at IS NULL  AND u.name LIKE %:keyword% AND u.id NOT IN (\n"
+        + "SELECT DISTINCT m.user_id\n"
+        + "FROM workspace_members m\n"
+        + "JOIN workspace w ON m.workspace_id = w.id \n"
+        + " WHERE w.id = :workspace_id  AND w.deleted_at IS NULL\n"
+        + ")\n"
+        + "ORDER BY u.name;", nativeQuery = true)
+    List<User> findAllToRegisterWorkspaceMember(@Param("workspace_id") String workspaceId, @Param("keyword") String keyword);
+
 }
