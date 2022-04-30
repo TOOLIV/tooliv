@@ -8,16 +8,18 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
+  currentChannel,
   // currentChannel,
   currentWorkspace,
-  isOpenSide,
   userLog,
 } from 'recoil/atom';
 import { workspaceListType } from 'types/workspace/workspaceTypes';
+import WorkspaceModal from 'organisms/modal/sidemenu/WorkspaceModal';
+import Label from 'atoms/label/Label';
+import Text from 'atoms/text/Text';
 
 const Container = styled.div<{ isOpen: boolean }>`
-  width: 280px;
-  padding: 16px 18px 16px 18px;
+  padding: 16px 0;
   border-bottom: ${(props) => props.isOpen && '1px solid #ffffff'};
 `;
 
@@ -29,16 +31,21 @@ const Header = styled.div`
 `;
 
 const WorkSpaceSection = () => {
-  const [isOpen, setIsOpen] = useRecoilState<boolean>(isOpenSide);
+  const [isOpen, setIsOpen] = useState(false);
+
   const [workspaceList, setWorkspaceList] = useState<workspaceListType[]>([]);
   const [curWorkspaceId, setCurWorkspaceId] = useRecoilState(currentWorkspace);
-  // const setCurrentChannel = useSetRecoilState(currentChannel);
-  const userLogList = useRecoilValue(userLog);
+  const setCurrentChannel = useSetRecoilState(currentChannel);
+  const [userLogList, setUserLogList] = useRecoilState(userLog);
   const navigate = useNavigate();
 
-  const onClickSide = () => {
-    setIsOpen((prev) => !prev);
+  const handleOpenModal = () => {
+    setIsOpen(true);
   };
+  const handleCloseModal = () => {
+    setIsOpen(false);
+  };
+
   const handleWorkspace = async () => {
     const response = await getWorkspaceList();
     setWorkspaceList(response.data.workspaceGetResponseDTOList);
@@ -55,13 +62,17 @@ const WorkSpaceSection = () => {
       // 워크스페이스별 마지막으로 접속한 채널
       const lastChannelId = userLogList[id];
       setCurWorkspaceId(id);
-      // setCurrentChannel(lastChannelId);
+      setCurrentChannel(lastChannelId);
       navigate(`${id}/${lastChannelId}`);
     } else {
       // 워크스페이별 첫번째 채널'
       setCurWorkspaceId(id);
       const channelId = await getNextChannelId(id);
-      // setCurrentChannel(channelId);
+      setUserLogList({
+        ...userLogList,
+        [id]: channelId,
+      });
+      setCurrentChannel(channelId);
       navigate(`${id}/${channelId}`);
     }
   };
@@ -73,16 +84,17 @@ const WorkSpaceSection = () => {
   return (
     <Container isOpen={isOpen}>
       <Header>
-        <MenuTemplate title="워크 스페이스" />
-        <Icons
-          icon={isOpen ? 'anglesLeft' : 'anglesRight'}
-          onClick={onClickSide}
-        />
+        <Text size={14} color="gray600">
+          워크스페이스
+        </Text>
+        {/* <MenuTemplate title="워크 스페이스" /> */}
+        <Icons icon="plus" onClick={handleOpenModal} />
       </Header>
       <WorkSpaces
         workspaceList={workspaceList}
         onClick={handleClickWorkspace}
       />
+      <WorkspaceModal isOpen={isOpen} onClose={handleCloseModal} />
     </Container>
   );
 };

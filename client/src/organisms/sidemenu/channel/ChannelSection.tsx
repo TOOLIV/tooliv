@@ -3,18 +3,22 @@ import { getChannelList } from 'api/channelApi';
 import { getWorkspaceList } from 'api/workspaceApi';
 import Icons from 'atoms/common/Icons';
 import MenuTemplate from 'atoms/sidemenu/MenuTemplate';
+import Text from 'atoms/text/Text';
 import Channels from 'molecules/sidemenu/Channels';
 import WorkSpaces from 'molecules/sidemenu/WorkSpaces';
-import ChannelModal from 'organisms/modal/ChannelModal';
+import ChannelModal from 'organisms/modal/sidemenu/ChannelModal';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { currentWorkspace, isOpenSide, userLog } from 'recoil/atom';
+import {
+  currentChannel,
+  currentWorkspace,
+  isOpenSide,
+  userLog,
+} from 'recoil/atom';
 import { workspaceListType } from 'types/workspace/workspaceTypes';
 
 const Container = styled.div<{ isOpen: boolean }>`
-  width: 280px;
-  /* padding: 16px 18px 16px 18px; */
   border-bottom: ${(props) => props.isOpen && '1px solid #ffffff'};
 `;
 
@@ -22,7 +26,7 @@ const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 18px;
+  padding: 16px 0;
 `;
 
 const ChannelSection = () => {
@@ -33,7 +37,10 @@ const ChannelSection = () => {
   const navigate = useNavigate();
 
   const currentWorkspaceId = useRecoilValue(currentWorkspace);
+  const [currentChannelId, setCurrentChannelId] =
+    useRecoilState(currentChannel);
   const [userLogList, setUserLogList] = useRecoilState(userLog);
+
   const handleChannel = async () => {
     const response = await getChannelList(currentWorkspaceId);
     setChannelList(response.data.channelGetResponseDTOList);
@@ -42,7 +49,7 @@ const ChannelSection = () => {
 
   useEffect(() => {
     handleChannel();
-  }, [currentWorkspaceId]);
+  }, [currentChannelId]);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -57,14 +64,16 @@ const ChannelSection = () => {
       ...userLogList,
       [currentWorkspaceId]: id,
     });
-
+    setCurrentChannelId(id);
     navigate(`${currentWorkspaceId}/${id}`);
   };
 
   return (
     <Container isOpen={isSideOpen}>
       <Header>
-        <MenuTemplate title="채널" />
+        <Text size={14} color="gray600">
+          채널
+        </Text>
         <Icons icon="plus" onClick={handleOpenModal} />
       </Header>
       <Channels channelList={channelList} onClick={handleClickChannel} />

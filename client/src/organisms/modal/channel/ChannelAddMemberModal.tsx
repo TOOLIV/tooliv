@@ -1,9 +1,6 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import {
-  searchChannelMemberList,
-  searchWorkspaceMemberList,
-} from 'api/channelApi';
+import { searchNotChannelMemberList } from 'api/channelApi';
 import Button from 'atoms/common/Button';
 import Icons from 'atoms/common/Icons';
 import Label from 'atoms/label/Label';
@@ -66,7 +63,7 @@ const UserBadgeWrapper = styled.div`
   margin-top: 10px;
   display: flex;
   flex-wrap: wrap;
-  max-height: 18vh;
+  height: 18vh;
   overflow: scroll;
 `;
 
@@ -102,13 +99,16 @@ const ChannelAddMemberModal = ({
   };
 
   const userListApi = async (keyword: string) => {
-    const response = await searchWorkspaceMemberList(channelId, keyword);
+    const response = await searchNotChannelMemberList(channelId, keyword);
     console.log(response);
     const data = response.data.channelMemberGetResponseDTOList;
-    // if (data) {
-    //   setUserList(data.filter((user) => userBadgeList.includes(user.email)));
-    // }
-    console.log(data);
+    if (data) {
+      setUserList(
+        data.filter((user: channelMemberType) =>
+          userBadgeList.find((badge) => badge.email !== user.email)
+        )
+      );
+    }
   };
 
   const createUserBadge = (name: string, email: string) => {

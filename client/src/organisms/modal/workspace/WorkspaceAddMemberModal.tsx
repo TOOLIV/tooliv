@@ -1,53 +1,38 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { getChannelList, searchChannelMemberList } from 'api/channelApi';
-import { createWorkspace } from 'api/workspaceApi';
+import { searchNotChannelMemberList } from 'api/channelApi';
+import { searchNotWorkspaceMemberList } from 'api/workspaceApi';
 import Button from 'atoms/common/Button';
+import Icons from 'atoms/common/Icons';
+import Label from 'atoms/label/Label';
 import Text from 'atoms/text/Text';
 import InputBox from 'molecules/inputBox/InputBox';
-import FileUploader from 'molecules/uploader/FileUploader';
 import UserBadge from 'molecules/userBadge/UserBadge';
 import UserInfo from 'molecules/userInfo/UserInfo';
-import React, { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useRecoilState, useSetRecoilState } from 'recoil';
-import { currentWorkspace, userLog } from 'recoil/atom';
+import { useEffect, useRef, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { colors } from 'shared/color';
 import { addMemberType, channelMemberType } from 'types/channel/contentType';
 import { userBadgeTypes } from 'types/common/userTypes';
-import { workspaceModalType } from 'types/workspace/workspaceTypes';
-import { UserInfoWrapper } from './MemberListModal';
-import { Title } from './WorkspaceModal';
+import {
+  addWorkspaceMemberType,
+  workspaceMemberType,
+} from 'types/workspace/workspaceTypes';
 
 const Modal = styled.div<{ isOpen: boolean }>`
   display: none;
-  position: fixed;
-  width: 100vw;
-  height: 100vh;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 99;
-  background-color: rgba(255, 255, 255, 0.7);
-  /* display: flex;
-  justify-content: center;
-  align-items: center; */
+  position: absolute;
+  top: 80px;
+
   ${(props) =>
     props.isOpen &&
     css`
-      /* display: block;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, 0); */
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      display: block;
     `}
 `;
 
 const Container = styled.div`
-  width: 430px;
+  width: 600px;
   padding: 25px;
   background-color: ${colors.white};
   border-radius: 30px;
@@ -55,48 +40,82 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  position: relative;
 `;
 
-const UserBox = styled.div<{ userList: channelMemberType[] }>`
-  display: ${(props) => (props.userList.length === 0 ? 'none' : 'block')};
-  position: absolute;
-  top: 115px;
-  width: 380px;
-  background-color: rgba(255, 255, 255, 0.7);
-  height: 30vh;
-  overflow: scroll;
+const Header = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
 `;
+
+const UserBox = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  height: 15vh;
+  overflow: scroll;
+  margin-bottom: 10px;
+`;
+
 const ButtonBox = styled.div`
-  width: 80%;
+  width: 50%;
   display: flex;
   justify-content: space-between;
-  margin: 32px auto 0;
+  margin-top: 32px;
+  margin-left: auto;
 `;
 
 const UserBadgeWrapper = styled.div`
   margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  height: 18vh;
+  overflow: scroll;
 `;
-const AddMemberModal = ({ isOpen, onClose, channelId }: addMemberType) => {
-  const [userList, setUserList] = useState<channelMemberType[]>([]);
+
+const BadgeBox = styled.div`
+  margin: 5px;
+`;
+
+const UserInfoWrapper = styled.div`
+  width: fit-content;
+  padding: 10px;
+  border-radius: 8px;
+
+  cursor: pointer;
+  &:hover {
+    background-color: ${colors.gray50};
+  }
+`;
+
+const WorkspaceAddMemberModal = ({
+  isOpen,
+  onClose,
+}: addWorkspaceMemberType) => {
+  const [userList, setUserList] = useState<workspaceMemberType[]>([]);
   const [userBadgeList, setUserBadgeList] = useState<userBadgeTypes[]>([]);
   const [keyword, setKeyword] = useState('');
 
   const inputRef = useRef<HTMLInputElement>(null);
+  const { workspaceId } = useParams();
 
   const searchUserList = () => {
     const keyword = inputRef.current?.value!;
+    console.log(keyword);
     if (keyword) setKeyword(keyword);
   };
 
   const userListApi = async (keyword: string) => {
-    const response = await searchChannelMemberList(channelId, keyword);
+    const response = await searchNotWorkspaceMemberList(workspaceId!, keyword);
     console.log(response);
     const data = response.data.channelMemberGetResponseDTOList;
     if (data) {
-      setUserList(data);
+      setUserList(
+        data.filter((user: workspaceMemberType) =>
+          userBadgeList.find((badge) => badge.email !== user.email)
+        )
+      );
     }
-    console.log(data);
   };
 
   const createUserBadge = (name: string, email: string) => {
@@ -117,28 +136,29 @@ const AddMemberModal = ({ isOpen, onClose, channelId }: addMemberType) => {
   };
 
   useEffect(() => {
-    userListApi(keyword);
-  }, [keyword]);
+    console.log('들어오아나노아뇨');
+    if (workspaceId) userListApi(keyword);
+  }, [keyword, workspaceId]);
 
   const registMember = () => {
     console.log('멤버 추가');
   };
 
-  console.log(userList);
   return (
     <Modal isOpen={isOpen}>
       <Container>
-        <Title>
-          <Text size={18}>멤버 초대</Text>
-        </Title>
+        <Header>
+          <Text size={18}>워크스페이스 멤버 초대</Text>
+          <Icons icon="xMark" width="32" height="32" onClick={onClose} />
+        </Header>
         <InputBox
-          label="멤버 추가"
-          placeholder="사용자 이름을 입력해주세요."
+          label="검색"
+          placeholder="이름을 입력해주세요."
           ref={inputRef}
           onChange={searchUserList}
         />
-        <UserBox userList={userList}>
-          {userList.map((user: channelMemberType) => (
+        <UserBox>
+          {userList.map((user: workspaceMemberType) => (
             <UserInfoWrapper
               key={user.email}
               onClick={() => createUserBadge(user.name, user.email)}
@@ -147,15 +167,18 @@ const AddMemberModal = ({ isOpen, onClose, channelId }: addMemberType) => {
             </UserInfoWrapper>
           ))}
         </UserBox>
+        <Label label="추가 멤버 목록" />
         <UserBadgeWrapper>
           {userBadgeList.map((data) => {
             return (
-              <UserBadge
-                key={data.email}
-                name={data.name}
-                email={data.email}
-                onDelete={data.onDelete}
-              />
+              <BadgeBox>
+                <UserBadge
+                  key={data.email}
+                  name={data.name}
+                  email={data.email}
+                  onDelete={data.onDelete}
+                />
+              </BadgeBox>
             );
           })}
         </UserBadgeWrapper>
@@ -174,4 +197,4 @@ const AddMemberModal = ({ isOpen, onClose, channelId }: addMemberType) => {
   );
 };
 
-export default AddMemberModal;
+export default WorkspaceAddMemberModal;

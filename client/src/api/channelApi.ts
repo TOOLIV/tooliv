@@ -11,7 +11,7 @@ export const createChannel = async (body: channelTypes) => {
   return response;
 };
 
-export const searchWorkspaceMemberList = async (
+export const searchNotChannelMemberList = async (
   channelId: string,
   keyword: string
 ) => {

@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import DragDrop from 'organisms/chat/DragDrop';
 import React, { useCallback } from 'react';
 import { colors } from 'shared/color';
-import { ButtonBox, Title } from './WorkspaceModal';
+import { ButtonBox, Title } from './sidemenu/WorkspaceModal';
 import Text from 'atoms/text/Text';
 import { useRecoilState } from 'recoil';
 import { FileTypes } from 'types/common/fileTypes';

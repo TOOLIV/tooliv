@@ -9,7 +9,7 @@ import FileUploader from 'molecules/uploader/FileUploader';
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useSetRecoilState } from 'recoil';
-import { currentWorkspace, userLog } from 'recoil/atom';
+import { currentChannel, currentWorkspace, userLog } from 'recoil/atom';
 import { colors } from 'shared/color';
 import { workspaceModalType } from 'types/workspace/workspaceTypes';
 
@@ -67,7 +67,7 @@ const WorkspaceModal = ({ isOpen, onClose }: workspaceModalType) => {
   const [file, setFile] = useState<File>();
   const inputWorkspaceRef = useRef<HTMLInputElement>(null);
   const setCurrentWorkspace = useSetRecoilState(currentWorkspace);
-  // const setCurrentChannel = useSetRecoilState(currentChannel);
+  const setCurrentChannel = useSetRecoilState(currentChannel);
   const [userLogList, setUserLogList] = useRecoilState(userLog);
 
   const handleSetImg = (file: FileList) => {
@@ -79,7 +79,6 @@ const WorkspaceModal = ({ isOpen, onClose }: workspaceModalType) => {
   const registWorkspace = async () => {
     const formData = new FormData();
     const name = inputWorkspaceRef.current?.value!;
-
     formData.append('multipartFile', file!);
     formData.append(
       'registerWorkspaceRequestDTO',
@@ -107,8 +106,14 @@ const WorkspaceModal = ({ isOpen, onClose }: workspaceModalType) => {
         const channelList = await getChannelList(workspaceId);
         const channelId = channelList.data.channelGetResponseDTOList[0].id;
         setCurrentWorkspace(workspaceId);
-        // setCurrentChannel(channelId);
+        setCurrentChannel(channelId);
+        setUserLogList({
+          ...userLogList,
+          [workspaceId]: channelId,
+        });
         navigate(`${workspaceId}/${channelId}`);
+        inputWorkspaceRef.current!.value = '';
+        setFile(undefined);
         onClose();
       }
     } catch (error) {
@@ -126,7 +131,7 @@ const WorkspaceModal = ({ isOpen, onClose }: workspaceModalType) => {
           placeholder="워크스페이스명을 입력해주세요."
           ref={inputWorkspaceRef}
         />
-        <FileUploader onChange={handleSetImg} />
+        <FileUploader file={file!} onChange={handleSetImg} />
         <ButtonBox>
           <Button
             width="125"

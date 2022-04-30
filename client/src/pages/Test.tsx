@@ -6,10 +6,9 @@ import Info from '../molecules/info/Info';
 import InputBox from '../molecules/inputBox/InputBox';
 import UserItem from '../organisms/userItem/UserItem';
 import Dropdown from '../atoms/dropdown/Dropdown';
-import WorkspaceModal from 'organisms/modal/WorkspaceModal';
+import WorkspaceModal from 'organisms/modal/sidemenu/WorkspaceModal';
 import { colors } from 'shared/color';
 import ChannelType from 'molecules/radio/channelRadio/ChannelRadio';
-import ChannelModal from 'organisms/modal/ChannelModal';
 
 const Test = () => {
   const [selectedOption, setSelectedOption] = useState({

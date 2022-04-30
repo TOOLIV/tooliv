@@ -1,13 +1,9 @@
 import styled from '@emotion/styled';
-import {
-  searchChannelMemberList,
-  searchWorkspaceMemberList,
-} from 'api/channelApi';
+import { searchChannelMemberList } from 'api/channelApi';
 import Icons from 'atoms/common/Icons';
 import Text from 'atoms/text/Text';
-import AddMemberModal from 'organisms/modal/AddMemberModal';
-import ChannelAddMemberModal from 'organisms/modal/ChannelAddMemberModal';
-import MemberListModal from 'organisms/modal/MemberListModal';
+import ChannelAddMemberModal from 'organisms/modal/channel/ChannelAddMemberModal';
+import MemberListModal from 'organisms/modal/channel/MemberListModal';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { colors } from '../../shared/color';
@@ -34,7 +30,7 @@ const Members = styled.div`
     background-color: ${colors.gray100};
   }
 `;
-const Header = () => {
+const ChannelHeader = () => {
   const { channelId } = useParams();
   const [channelName, setChannelName] = useState('');
   const [channelMemberNum, setChannelMemberNum] = useState(0);
@@ -46,7 +42,7 @@ const Header = () => {
   useEffect(() => {
     if (channelId) {
       console.log(channelId);
-      getChannelMember();
+      getChannelInfo();
     }
   }, [channelId]);
 
@@ -57,7 +53,7 @@ const Header = () => {
     }
   }, [keyword]);
 
-  const getChannelMember = async () => {
+  const getChannelInfo = async () => {
     try {
       const { data } = await searchChannelMemberList(channelId!, keyword);
       setChannelName(data.channelName);
@@ -123,14 +119,8 @@ const Header = () => {
         onClose={closeAddMemberModal}
         channelId={channelId!}
       />
-
-      {/* <AddMemberModal
-        isOpen={addMemeberOpen}
-        onClose={onClose}
-        channelId={channelId!}
-      /> */}
     </Container>
   );
 };
 
-export default Header;
+export default ChannelHeader;

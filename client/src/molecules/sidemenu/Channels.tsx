@@ -8,7 +8,7 @@ import Label from '../../atoms/common/Label';
 
 export const TopContainer = styled.div`
   display: flex;
-  padding: 16px 18px 16px 18px;
+  padding: 16px 0;
   /* width: 280px; */
   box-sizing: border-box;
   display: flex;

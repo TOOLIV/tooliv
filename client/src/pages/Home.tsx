@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import Header from 'organisms/header/Header';
+import ChannelHeader from 'organisms/header/ChannelHeader';
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
@@ -43,7 +43,7 @@ const Home = () => {
       <Container>
         <SideMenu />
         <Wrapper leftMargin={leftMargin} rightMargin={rightMargin}>
-          <Header />
+          <ChannelHeader />
           <InnerContainer leftMargin={leftMargin} rightMargin={rightMargin}>
             <Outlet />
           </InnerContainer>

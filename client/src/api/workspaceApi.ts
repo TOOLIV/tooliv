@@ -11,3 +11,23 @@ export const createWorkspace = async (body: any) => {
   console.log(response);
   return response;
 };
+
+export const searchNotWorkspaceMemberList = async (
+  workspaceId: string,
+  keyword: string
+) => {
+  const response = await instance.get(
+    `workspace/${workspaceId}/member/list?keyword=${keyword}`
+  );
+  return response;
+};
+
+export const searchWorkspaceMemberList = async (
+  workspaceId: string,
+  keyword: string
+) => {
+  const response = await instance.get(
+    `workspace/${workspaceId}/member/search?keyword=${keyword}`
+  );
+  return response;
+};

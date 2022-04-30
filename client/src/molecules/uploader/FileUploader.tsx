@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import Button from 'atoms/common/Button';
 import Icons from 'atoms/common/Icons';
 import Text from 'atoms/text/Text';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { colors } from 'shared/color';
 import { workspaceImgType } from 'types/workspace/workspaceTypes';
 import { ReactComponent as ImageIcon } from '../../assets/img/image.svg';
@@ -42,7 +42,7 @@ const UploadWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
 `;
-const FileUploader = ({ onChange }: workspaceImgType) => {
+const FileUploader = ({ file, onChange }: workspaceImgType) => {
   const [imgFile, setImgFile] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -56,8 +56,13 @@ const FileUploader = ({ onChange }: workspaceImgType) => {
     // setIsLoading(true);
     const file = event.target.files!;
     onChange(file);
-    setImgFile(URL.createObjectURL(file[0]));
+    // setImgFile(URL.createObjectURL(file[0]));
   };
+
+  useEffect(() => {
+    if (file) setImgFile(URL.createObjectURL(file));
+    else setImgFile('');
+  }, [file]);
 
   return (
     <Container onClick={handleUploadBtnClick}>
@@ -69,9 +74,7 @@ const FileUploader = ({ onChange }: workspaceImgType) => {
         accept="image/*"
       />
       {imgFile ? (
-        <Preview src={imgFile}>
-          {/* <img src={imgFile} alt="preview" /> */}
-        </Preview>
+        <Preview src={imgFile} />
       ) : (
         <UploadWrapper>
           {/* <Icons icon="image" width="42" height="42" color="blue100" /> */}
