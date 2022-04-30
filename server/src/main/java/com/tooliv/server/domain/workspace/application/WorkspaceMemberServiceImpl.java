@@ -110,6 +110,28 @@ public class WorkspaceMemberServiceImpl implements WorkspaceMemberService {
     }
 
     @Override
+    public WorkspaceMemberListGetResponseDTO getWorkspaceMemberListForRegister(String workspaceId, String keyword) {
+        Workspace workspace = workspaceRepository.findByIdAndDeletedAt(workspaceId, null)
+            .orElseThrow(() -> new IllegalArgumentException("워크스페이스 정보가 존재하지 않습니다."));
+
+        List<WorkspaceMemberGetResponseDTO> workspaceMemberGetResponseDTOList = new ArrayList<>();
+        List<User> userList = userRepository.findAllToRegisterWorkspaceMember(workspaceId, keyword);
+
+        userList.forEach(user -> {
+            WorkspaceMemberGetResponseDTO workspaceMemberGetResponseDTO = WorkspaceMemberGetResponseDTO.builder()
+                .email(user.getEmail())
+                .name(user.getName())
+                .nickname(user.getNickname())
+                .build();
+
+            workspaceMemberGetResponseDTOList.add(workspaceMemberGetResponseDTO);
+        });
+
+        return new WorkspaceMemberListGetResponseDTO(workspaceMemberGetResponseDTOList);
+
+    }
+
+    @Override
     public WorkspaceMemberListGetResponseDTO searchWorkspaceMember(String workspaceId, String keyword) {
         List<WorkspaceMemberGetResponseDTO> workspaceMemberGetResponseDTOList = new ArrayList<>();
         workspaceMemberRepository.findByWorkspaceIdAndKeyword(workspaceId, keyword).forEach(workspaceMember -> {

@@ -12,6 +12,8 @@ public interface WorkspaceMemberService {
 
     WorkspaceMemberListGetResponseDTO getWorkspaceMemberList(String workspaceId);
 
+    WorkspaceMemberListGetResponseDTO getWorkspaceMemberListForRegister(String workspaceId, String keyword);
+
     WorkspaceMemberListGetResponseDTO searchWorkspaceMember(String workspaceId, String keyword);
 
 }
