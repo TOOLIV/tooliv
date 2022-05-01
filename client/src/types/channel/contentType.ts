@@ -39,9 +39,7 @@ export type channelsType = {
 
 export type channelMemberListType = {
   isOpen: boolean;
-  memberList: channelMemberType[];
   onClick: () => void;
-  onChange: (keyword: string) => void;
   onClose: () => void;
 };
 

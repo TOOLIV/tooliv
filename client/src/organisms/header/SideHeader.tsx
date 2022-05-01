@@ -4,7 +4,7 @@ import Text from 'atoms/text/Text';
 import WorkspaceAddMemberModal from 'organisms/modal/workspace/WorkspaceAddMemberModal';
 import WorkspaceDropDown from 'organisms/modal/workspace/WorkspaceDropDown';
 import WorkspaceMemberListModal from 'organisms/modal/workspace/WorkspaceMemberListModal';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { currentWorkspace, isOpenSide } from 'recoil/atom';
 
@@ -28,6 +28,21 @@ const SideHeader = () => {
   const [memberListOpen, setMemberListOpen] = useState(false);
   const [addMemberModalOpen, setAddMemberModalOpen] = useState(false);
 
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const handleClickOutside = ({ target }: any) => {
+    if (dropdownOpen && !dropdownRef.current?.contains(target)) {
+      setDropdownOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [dropdownOpen]);
+
   const onClickSide = () => {
     setIsOpen((prev) => !prev);
   };
@@ -48,18 +63,14 @@ const SideHeader = () => {
   const closeAddMemberModal = () => {
     setAddMemberModalOpen(false);
   };
+
   return (
     <Container isOpen={isOpen}>
-      <Title>
-        <Text size={24} weight="700" pointer>
-          홈
+      <Title onClick={() => setDropdownOpen(!dropdownOpen)}>
+        <Text size={24} weight="700" pointer={currentWorkspaceId !== 'main'}>
+          {/* 워크스페이스 id로 워크스페이명 불러오는 api 연동. */}홈
         </Text>
-        {currentWorkspaceId !== 'main' ? (
-          <Icons
-            icon="dropdown"
-            onClick={() => setDropdownOpen(!dropdownOpen)}
-          />
-        ) : null}
+        {currentWorkspaceId !== 'main' ? <Icons icon="dropdown" /> : null}
       </Title>
       <Icons
         icon={isOpen ? 'anglesLeft' : 'anglesRight'}
@@ -72,6 +83,7 @@ const SideHeader = () => {
             onClose={closeDropdown}
             openMemberList={openWorkspaceMemberList}
             openAddMemberModal={openAddMemberModal}
+            ref={dropdownRef}
           />
           <WorkspaceMemberListModal
             isOpen={memberListOpen}

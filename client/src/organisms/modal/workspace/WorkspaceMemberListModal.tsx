@@ -5,13 +5,9 @@ import Icons from 'atoms/common/Icons';
 import Text from 'atoms/text/Text';
 import InputBox from 'molecules/inputBox/InputBox';
 import UserInfo from 'molecules/userInfo/UserInfo';
-import { useEffect, useRef, useState } from 'react';
+import { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { colors } from 'shared/color';
-import {
-  channelMemberListType,
-  channelMemberType,
-} from 'types/channel/contentType';
 import {
   workspaceMemberListType,
   workspaceMemberType,
@@ -19,13 +15,20 @@ import {
 
 const Modal = styled.div<{ isOpen: boolean }>`
   display: none;
-  position: absolute;
-  top: 80px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 99;
+  background-color: rgba(255, 255, 255, 0.7);
 
   ${(props) =>
     props.isOpen &&
     css`
-      display: block;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     `}
 `;
 
@@ -73,28 +76,37 @@ const WorkspaceMemberListModal = ({
     console.log(`${email}로 개인메시지 보내는 링크`);
   };
 
-  const searchUserList = () => {
+  const handleSearchUser = useCallback(
+    async (keyword: string) => {
+      const { data } = await searchWorkspaceMemberList(workspaceId!, keyword);
+      setWorkspaceMemberList(data.workspaceMemberGetResponseDTOList);
+      console.log(data);
+    },
+    [workspaceId]
+  );
+
+  const searchUserList = useCallback(() => {
     const keyword = inputRef.current?.value!;
     handleSearchUser(keyword);
-  };
-
-  const handleSearchUser = async (keyword: string) => {
-    const { data } = await searchWorkspaceMemberList(workspaceId!, keyword);
-    setWorkspaceMemberList(data.workspaceMemberGetResponseDTOList);
-    console.log(data);
-  };
+  }, [handleSearchUser]);
 
   useEffect(() => {
-    console.log('들어옴?');
-    handleSearchUser('');
-  }, [workspaceId]);
+    if (isOpen) {
+      handleSearchUser('');
+    }
+  }, [isOpen, handleSearchUser]);
 
+  const exitModal = () => {
+    inputRef.current!.value = '';
+    setWorkspaceMemberList([]);
+    onClose();
+  };
   return (
     <Modal isOpen={isOpen}>
       <Container>
         <Header>
           <Text size={18}>워크스페이스 멤버</Text>
-          <Icons icon="xMark" width="32" height="32" onClick={onClose} />
+          <Icons icon="xMark" width="32" height="32" onClick={exitModal} />
         </Header>
         <InputBox
           label="검색"

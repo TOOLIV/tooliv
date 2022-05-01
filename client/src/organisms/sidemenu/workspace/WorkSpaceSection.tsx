@@ -2,11 +2,10 @@ import styled from '@emotion/styled';
 import { getWorkspaceList } from 'api/workspaceApi';
 import { getChannelList } from 'api/channelApi';
 import Icons from 'atoms/common/Icons';
-import MenuTemplate from 'atoms/sidemenu/MenuTemplate';
 import WorkSpaces from 'molecules/sidemenu/WorkSpaces';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import {
   currentChannel,
   // currentChannel,
@@ -15,7 +14,6 @@ import {
 } from 'recoil/atom';
 import { workspaceListType } from 'types/workspace/workspaceTypes';
 import WorkspaceModal from 'organisms/modal/sidemenu/WorkspaceModal';
-import Label from 'atoms/label/Label';
 import Text from 'atoms/text/Text';
 
 const Container = styled.div<{ isOpen: boolean }>`
@@ -78,7 +76,7 @@ const WorkSpaceSection = () => {
   };
 
   useEffect(() => {
-    handleWorkspace();
+    if (curWorkspaceId) handleWorkspace();
   }, [curWorkspaceId]);
 
   return (
@@ -87,7 +85,6 @@ const WorkSpaceSection = () => {
         <Text size={14} color="gray600">
           워크스페이스
         </Text>
-        {/* <MenuTemplate title="워크 스페이스" /> */}
         <Icons icon="plus" onClick={handleOpenModal} />
       </Header>
       <WorkSpaces

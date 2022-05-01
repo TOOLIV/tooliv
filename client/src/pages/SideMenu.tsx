@@ -2,11 +2,13 @@ import styled from '@emotion/styled';
 import { motion } from 'framer-motion';
 import DirectMessage from 'molecules/sidemenu/DirectMessage';
 import SideHeader from 'organisms/header/SideHeader';
-import { useRecoilValue } from 'recoil';
-import Friends from '../../molecules/sidemenu/Friends';
-import { currentWorkspace, isOpenSide } from '../../recoil/atom';
-import ChannelSection from './channel/ChannelSection';
-import WorkSpaceSection from './workspace/WorkSpaceSection';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import Friends from '../molecules/sidemenu/Friends';
+import { currentChannel, currentWorkspace, isOpenSide } from '../recoil/atom';
+import ChannelSection from '../organisms/sidemenu/channel/ChannelSection';
+import WorkSpaceSection from '../organisms/sidemenu/workspace/WorkSpaceSection';
+import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 
 const Container = styled(motion.div)`
   width: 280px;
@@ -16,7 +18,6 @@ const Container = styled(motion.div)`
   position: absolute;
   height: calc(100vh - 64px);
   padding: 16px 18px;
-  /* position: fixed; */
 `;
 
 const SideMenu = () => {
@@ -26,8 +27,20 @@ const SideMenu = () => {
   };
 
   const isOpen = useRecoilValue(isOpenSide);
-  // const { workspaceId } = useParams();
-  const currentWorkspaceId = useRecoilValue(currentWorkspace);
+  const [currentWorkspaceId, setCurrentWorkspaceId] =
+    useRecoilState(currentWorkspace);
+  const setCurrentChannelId = useSetRecoilState(currentChannel);
+  const { workspaceId, channelId } = useParams();
+
+  useEffect(() => {
+    if (workspaceId && channelId) {
+      setCurrentWorkspaceId(workspaceId);
+      setCurrentChannelId(channelId);
+    }
+  }, []);
+
+  // main과 구별하기 위해 useParams가 아닌 recoil value사용.
+  // main은 workspaceId가 없음. but recoil에 main이라는 id로 저장
   return (
     <Container
       initial={false}

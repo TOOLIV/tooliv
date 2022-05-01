@@ -1,10 +1,12 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
+import { searchChannelMemberList } from 'api/channelApi';
 import Icons from 'atoms/common/Icons';
 import Text from 'atoms/text/Text';
 import InputBox from 'molecules/inputBox/InputBox';
 import UserInfo from 'molecules/userInfo/UserInfo';
-import { useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { colors } from 'shared/color';
 import {
   channelMemberListType,
@@ -55,27 +57,47 @@ export const UserInfoWrapper = styled.div`
   }
 `;
 
-const MemberListModal = ({
+const ChannelMemberListModal = ({
   isOpen,
-  memberList,
   onClick,
-  onChange,
   onClose,
 }: channelMemberListType) => {
+  const [channelMemberList, setChannelMemberList] = useState([]);
+
   const inputRef = useRef<HTMLInputElement>(null);
+  const { channelId } = useParams();
 
   const handleDirectMessage = (email: string) => {
     console.log(`${email}로 개인메시지 보내는 링크`);
   };
 
+  const searchChannelMember = useCallback(
+    async (keyword: string) => {
+      try {
+        const { data } = await searchChannelMemberList(channelId!, keyword);
+        setChannelMemberList(data.channelMemberGetResponseDTOList);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [channelId]
+  );
+
+  const searchUserList = useCallback(() => {
+    const keyword = inputRef.current?.value!;
+    searchChannelMember(keyword);
+  }, [searchChannelMember]);
+
+  useEffect(() => {
+    if (isOpen) {
+      inputRef.current!.value = '';
+      searchChannelMember('');
+    }
+  }, [isOpen, searchChannelMember]);
+
   const handleAddMemberClick = () => {
     onClose();
     onClick();
-  };
-
-  const searchUserList = () => {
-    const keyword = inputRef.current?.value!;
-    onChange(keyword);
   };
 
   return (
@@ -97,7 +119,7 @@ const MemberListModal = ({
           onChange={searchUserList}
         />
         <UserBox>
-          {memberList.map((member: channelMemberType) => (
+          {channelMemberList.map((member: channelMemberType) => (
             <UserInfoWrapper
               key={member.email}
               onClick={() => handleDirectMessage(member.email)}
@@ -111,4 +133,4 @@ const MemberListModal = ({
   );
 };
 
-export default MemberListModal;
+export default ChannelMemberListModal;

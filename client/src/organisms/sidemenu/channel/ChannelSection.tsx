@@ -1,14 +1,11 @@
 import styled from '@emotion/styled';
 import { getChannelList } from 'api/channelApi';
-import { getWorkspaceList } from 'api/workspaceApi';
 import Icons from 'atoms/common/Icons';
-import MenuTemplate from 'atoms/sidemenu/MenuTemplate';
 import Text from 'atoms/text/Text';
 import Channels from 'molecules/sidemenu/Channels';
-import WorkSpaces from 'molecules/sidemenu/WorkSpaces';
 import ChannelModal from 'organisms/modal/sidemenu/ChannelModal';
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
   currentChannel,
@@ -16,7 +13,6 @@ import {
   isOpenSide,
   userLog,
 } from 'recoil/atom';
-import { workspaceListType } from 'types/workspace/workspaceTypes';
 
 const Container = styled.div<{ isOpen: boolean }>`
   border-bottom: ${(props) => props.isOpen && '1px solid #ffffff'};
@@ -48,7 +44,7 @@ const ChannelSection = () => {
   };
 
   useEffect(() => {
-    handleChannel();
+    if (currentChannelId) handleChannel();
   }, [currentChannelId]);
 
   const handleOpenModal = () => {

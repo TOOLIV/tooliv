@@ -34,9 +34,6 @@ export type workspaceDropdownType = {
 
 export type workspaceMemberListType = {
   isOpen: boolean;
-  // memberList: channelMemberType[];
-  // onClick: () => void;
-  // onChange: (keyword: string) => void;
   onClose: () => void;
 };
 
@@ -54,4 +51,9 @@ export type addWorkspaceMemberType = {
 
 export type inviteMembersType = {
   emailList: string[];
+};
+
+export type inviteMembersBadgeType = {
+  name: string;
+  email: string;
 };

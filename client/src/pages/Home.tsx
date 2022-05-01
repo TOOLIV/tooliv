@@ -5,8 +5,8 @@ import { Outlet } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import Nav from '../atoms/home/Nav';
 import Chat from '../organisms/meeting/chat/Chat';
-import SideMenu from '../organisms/sidemenu/SideMenu';
 import { isOpenChat, isOpenSide } from '../recoil/atom';
+import SideMenu from './SideMenu';
 
 const Wrapper = styled.div<{ leftMargin: number; rightMargin: number }>`
   /* position: absolute; */

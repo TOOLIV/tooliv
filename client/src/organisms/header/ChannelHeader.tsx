@@ -3,9 +3,11 @@ import { searchChannelMemberList } from 'api/channelApi';
 import Icons from 'atoms/common/Icons';
 import Text from 'atoms/text/Text';
 import ChannelAddMemberModal from 'organisms/modal/channel/ChannelAddMemberModal';
-import MemberListModal from 'organisms/modal/channel/MemberListModal';
+import ChannelMemberListModal from 'organisms/modal/channel/ChannelMemberListModal';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
+import { currentChannelNum } from 'recoil/atom';
 import { colors } from '../../shared/color';
 
 const Container = styled.div`
@@ -34,10 +36,24 @@ const ChannelHeader = () => {
   const { channelId } = useParams();
   const [channelName, setChannelName] = useState('');
   const [channelMemberNum, setChannelMemberNum] = useState(0);
-  const [channelMemberList, setChannelMemberList] = useState([]);
-  const [keyword, setKeyword] = useState('');
   const [memeberListOpen, setMemberListOpen] = useState(false);
   const [addMemeberOpen, setAddMemberOpen] = useState(false);
+
+  const [currentChannelMemberNum, setCurrentChannelMemberNum] =
+    useRecoilState(currentChannelNum);
+
+  useEffect(() => {
+    console.log(currentChannelMemberNum);
+    if (currentChannelMemberNum === 0) {
+      getChannelInfo();
+    }
+  }, []);
+
+  useEffect(() => {
+    if (currentChannelMemberNum !== 0) {
+      setChannelMemberNum(currentChannelMemberNum);
+    }
+  }, [currentChannelMemberNum]);
 
   useEffect(() => {
     if (channelId) {
@@ -46,28 +62,13 @@ const ChannelHeader = () => {
     }
   }, [channelId]);
 
-  useEffect(() => {
-    if (channelId) {
-      searchChannelMember();
-      console.log(channelId);
-    }
-  }, [keyword]);
-
   const getChannelInfo = async () => {
     try {
-      const { data } = await searchChannelMemberList(channelId!, keyword);
+      // channelId로 channel명 및 명수 받아오는 api 있으면 좋을듯
+      const { data } = await searchChannelMemberList(channelId!, '');
       setChannelName(data.channelName);
-      // setChannelMemberList(data.channelMemberGetResponseDTOList);
       setChannelMemberNum(data.channelMemberGetResponseDTOList.length);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const searchChannelMember = async () => {
-    try {
-      const { data } = await searchChannelMemberList(channelId!, keyword);
-      setChannelMemberList(data.channelMemberGetResponseDTOList);
+      setCurrentChannelMemberNum(data.channelMemberGetResponseDTOList.length);
     } catch (error) {
       console.log(error);
     }
@@ -82,10 +83,6 @@ const ChannelHeader = () => {
 
   const closeAddMemberModal = () => {
     setAddMemberOpen(false);
-  };
-
-  const handleSearchChange = (keyword: string) => {
-    setKeyword(keyword);
   };
 
   return (
@@ -106,11 +103,9 @@ const ChannelHeader = () => {
           {String(channelMemberNum)}
         </Text>
       </Members>
-      <MemberListModal
+      <ChannelMemberListModal
         isOpen={memeberListOpen}
-        memberList={channelMemberList}
         onClick={handleAddMemberModalOpen}
-        onChange={handleSearchChange}
         onClose={closeMemberList}
       />
 
