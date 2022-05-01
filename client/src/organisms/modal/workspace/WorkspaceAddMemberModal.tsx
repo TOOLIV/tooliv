@@ -1,7 +1,10 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { searchNotChannelMemberList } from 'api/channelApi';
-import { searchNotWorkspaceMemberList } from 'api/workspaceApi';
+import {
+  inviteWorkspaceMember,
+  searchNotWorkspaceMemberList,
+} from 'api/workspaceApi';
 import Button from 'atoms/common/Button';
 import Icons from 'atoms/common/Icons';
 import Label from 'atoms/label/Label';
@@ -12,10 +15,10 @@ import UserInfo from 'molecules/userInfo/UserInfo';
 import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { colors } from 'shared/color';
-import { addMemberType, channelMemberType } from 'types/channel/contentType';
 import { userBadgeTypes } from 'types/common/userTypes';
 import {
   addWorkspaceMemberType,
+  inviteMembersType,
   workspaceMemberType,
 } from 'types/workspace/workspaceTypes';
 
@@ -94,6 +97,8 @@ const WorkspaceAddMemberModal = ({
 }: addWorkspaceMemberType) => {
   const [userList, setUserList] = useState<workspaceMemberType[]>([]);
   const [userBadgeList, setUserBadgeList] = useState<userBadgeTypes[]>([]);
+  const [inviteUserList, setInviteUserList] = useState<string[]>([]);
+
   const [keyword, setKeyword] = useState('');
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -101,21 +106,26 @@ const WorkspaceAddMemberModal = ({
 
   const searchUserList = () => {
     const keyword = inputRef.current?.value!;
-    console.log(keyword);
-    if (keyword) setKeyword(keyword);
+    setKeyword(keyword);
   };
 
   const userListApi = async (keyword: string) => {
     const response = await searchNotWorkspaceMemberList(workspaceId!, keyword);
-    console.log(response);
-    const data = response.data.channelMemberGetResponseDTOList;
+    const data = response.data.workspaceMemberGetResponseDTOList;
     if (data) {
-      setUserList(
-        data.filter((user: workspaceMemberType) =>
-          userBadgeList.find((badge) => badge.email !== user.email)
-        )
-      );
+      const list = data.filter((user: workspaceMemberType) => {
+        return userBadgeList.find((badge) => badge.email === user.email)
+          ? false
+          : true;
+      });
+
+      setUserList(list);
     }
+  };
+
+  const inviteUserApi = async (body: inviteMembersType) => {
+    const response = await inviteWorkspaceMember(workspaceId!, body);
+    console.log(response);
   };
 
   const createUserBadge = (name: string, email: string) => {
@@ -127,21 +137,25 @@ const WorkspaceAddMemberModal = ({
         onDelete: deleteUserBadge,
       },
     ]);
+    setInviteUserList([...inviteUserList, email]);
     setUserList([]);
     inputRef.current!.value = '';
   };
 
   const deleteUserBadge = (email: string) => {
     setUserBadgeList(userBadgeList.filter((data) => data.email !== email));
+    setInviteUserList(inviteUserList.filter((data) => data !== email));
   };
 
   useEffect(() => {
-    console.log('들어오아나노아뇨');
-    if (workspaceId) userListApi(keyword);
+    if (workspaceId && keyword) userListApi(keyword);
   }, [keyword, workspaceId]);
 
   const registMember = () => {
-    console.log('멤버 추가');
+    const body = {
+      emailList: inviteUserList,
+    };
+    inviteUserApi(body);
   };
 
   return (
@@ -171,9 +185,8 @@ const WorkspaceAddMemberModal = ({
         <UserBadgeWrapper>
           {userBadgeList.map((data) => {
             return (
-              <BadgeBox>
+              <BadgeBox key={data.email}>
                 <UserBadge
-                  key={data.email}
                   name={data.name}
                   email={data.email}
                   onDelete={data.onDelete}

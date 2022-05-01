@@ -51,3 +51,7 @@ export type addWorkspaceMemberType = {
   isOpen: boolean;
   onClose: () => void;
 };
+
+export type inviteMembersType = {
+  emailList: string[];
+};

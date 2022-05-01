@@ -23,6 +23,7 @@ const Title = styled.div`
 
 const SideHeader = () => {
   const [isOpen, setIsOpen] = useRecoilState<boolean>(isOpenSide);
+  const currentWorkspaceId = useRecoilValue(currentWorkspace);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [memberListOpen, setMemberListOpen] = useState(false);
   const [addMemberModalOpen, setAddMemberModalOpen] = useState(false);
@@ -53,26 +54,35 @@ const SideHeader = () => {
         <Text size={24} weight="700" pointer>
           홈
         </Text>
-        <Icons icon="dropdown" onClick={() => setDropdownOpen(!dropdownOpen)} />
+        {currentWorkspaceId !== 'main' ? (
+          <Icons
+            icon="dropdown"
+            onClick={() => setDropdownOpen(!dropdownOpen)}
+          />
+        ) : null}
       </Title>
       <Icons
         icon={isOpen ? 'anglesLeft' : 'anglesRight'}
         onClick={onClickSide}
       />
-      <WorkspaceDropDown
-        isOpen={dropdownOpen}
-        onClose={closeDropdown}
-        openMemberList={openWorkspaceMemberList}
-        openAddMemberModal={openAddMemberModal}
-      />
-      <WorkspaceMemberListModal
-        isOpen={memberListOpen}
-        onClose={closeWorkspaceMemberList}
-      />
-      <WorkspaceAddMemberModal
-        isOpen={addMemberModalOpen}
-        onClose={closeAddMemberModal}
-      />
+      {currentWorkspaceId !== 'main' ? (
+        <>
+          <WorkspaceDropDown
+            isOpen={dropdownOpen}
+            onClose={closeDropdown}
+            openMemberList={openWorkspaceMemberList}
+            openAddMemberModal={openAddMemberModal}
+          />
+          <WorkspaceMemberListModal
+            isOpen={memberListOpen}
+            onClose={closeWorkspaceMemberList}
+          />
+          <WorkspaceAddMemberModal
+            isOpen={addMemberModalOpen}
+            onClose={closeAddMemberModal}
+          />
+        </>
+      ) : null}
     </Container>
   );
 };
