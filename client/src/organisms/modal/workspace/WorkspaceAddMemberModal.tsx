@@ -12,25 +12,34 @@ import Text from 'atoms/text/Text';
 import InputBox from 'molecules/inputBox/InputBox';
 import UserBadge from 'molecules/userBadge/UserBadge';
 import UserInfo from 'molecules/userInfo/UserInfo';
-import { useEffect, useRef, useState } from 'react';
+import { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import { currentChannelNum } from 'recoil/atom';
 import { colors } from 'shared/color';
 import { userBadgeTypes } from 'types/common/userTypes';
 import {
   addWorkspaceMemberType,
+  inviteMembersBadgeType,
   inviteMembersType,
   workspaceMemberType,
 } from 'types/workspace/workspaceTypes';
 
 const Modal = styled.div<{ isOpen: boolean }>`
   display: none;
-  position: absolute;
-  top: 80px;
-
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 99;
+  background-color: rgba(255, 255, 255, 0.7);
   ${(props) =>
     props.isOpen &&
     css`
-      display: block;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     `}
 `;
 
@@ -55,7 +64,7 @@ const Header = styled.div`
 const UserBox = styled.div`
   display: flex;
   flex-wrap: wrap;
-  height: 15vh;
+  max-height: 15vh;
   overflow: scroll;
   margin-bottom: 10px;
 `;
@@ -71,85 +80,106 @@ const ButtonBox = styled.div`
 const UserBadgeWrapper = styled.div`
   margin-top: 10px;
   display: flex;
+  align-content: flex-start;
   flex-wrap: wrap;
   height: 18vh;
   overflow: scroll;
 `;
 
 const BadgeBox = styled.div`
-  margin: 5px;
+  padding: 5px;
+  height: fit-content;
 `;
 
 const UserInfoWrapper = styled.div`
-  width: fit-content;
+  width: 50%;
+  height: fit-content;
   padding: 10px;
   border-radius: 8px;
-
+  overflow: hidden;
+  word-break: nowrap;
   cursor: pointer;
   &:hover {
     background-color: ${colors.gray50};
   }
 `;
 
-const WorkspaceAddMemberModal = ({
-  isOpen,
-  onClose,
-}: addWorkspaceMemberType) => {
+const WorkspaceAddMemberModal = forwardRef<
+  HTMLDivElement,
+  addWorkspaceMemberType
+>(({ isOpen, onClose }, ref) => {
   const [userList, setUserList] = useState<workspaceMemberType[]>([]);
-  const [userBadgeList, setUserBadgeList] = useState<userBadgeTypes[]>([]);
+  const [userBadgeList, setUserBadgeList] = useState<inviteMembersBadgeType[]>(
+    []
+  );
   const [inviteUserList, setInviteUserList] = useState<string[]>([]);
-
   const [keyword, setKeyword] = useState('');
 
   const inputRef = useRef<HTMLInputElement>(null);
   const { workspaceId } = useParams();
 
-  const searchUserList = () => {
+  const setCurrentChannelMemberNum = useSetRecoilState(currentChannelNum);
+
+  const searchUserList = useCallback(() => {
     const keyword = inputRef.current?.value!;
     setKeyword(keyword);
-  };
+  }, []);
 
-  const userListApi = async (keyword: string) => {
-    const response = await searchNotWorkspaceMemberList(workspaceId!, keyword);
-    const data = response.data.workspaceMemberGetResponseDTOList;
-    if (data) {
-      const list = data.filter((user: workspaceMemberType) => {
-        return userBadgeList.find((badge) => badge.email === user.email)
-          ? false
-          : true;
-      });
-
-      setUserList(list);
-    }
-  };
-
-  const inviteUserApi = async (body: inviteMembersType) => {
-    const response = await inviteWorkspaceMember(workspaceId!, body);
-    console.log(response);
-  };
-
-  const createUserBadge = (name: string, email: string) => {
-    setUserBadgeList([
-      ...userBadgeList,
-      {
-        name,
-        email,
-        onDelete: deleteUserBadge,
-      },
-    ]);
-    setInviteUserList([...inviteUserList, email]);
-    setUserList([]);
-    inputRef.current!.value = '';
-  };
-
-  const deleteUserBadge = (email: string) => {
-    setUserBadgeList(userBadgeList.filter((data) => data.email !== email));
-    setInviteUserList(inviteUserList.filter((data) => data !== email));
-  };
+  const userListApi = useCallback(
+    async (keyword: string) => {
+      const response = await searchNotWorkspaceMemberList(
+        workspaceId!,
+        keyword
+      );
+      const data = response.data.workspaceMemberGetResponseDTOList;
+      if (data) {
+        const list = data.filter((user: workspaceMemberType) => {
+          return userBadgeList.find((badge) => badge.email === user.email)
+            ? false
+            : true;
+        });
+        setUserList(list);
+      }
+    },
+    [workspaceId, userBadgeList]
+  );
 
   useEffect(() => {
-    if (workspaceId && keyword) userListApi(keyword);
-  }, [keyword, workspaceId]);
+    if (keyword) {
+      userListApi(keyword);
+    } else setUserList([]);
+  }, [keyword, workspaceId, userListApi]);
+
+  const deleteUserBadge = useCallback(
+    (email: string) => {
+      setUserBadgeList(userBadgeList.filter((data) => data.email !== email));
+      setInviteUserList(inviteUserList.filter((data) => data !== email));
+    },
+    [userBadgeList, inviteUserList]
+  );
+
+  const createUserBadge = useCallback(
+    (name: string, email: string) => {
+      setUserBadgeList([
+        ...userBadgeList,
+        {
+          name,
+          email,
+        },
+      ]);
+      setInviteUserList([...inviteUserList, email]);
+    },
+    [inviteUserList, userBadgeList]
+  );
+
+  const exitModal = useCallback(() => {
+    setKeyword('');
+    inputRef.current!.value = '';
+    setUserBadgeList([]);
+    setInviteUserList([]);
+    setUserList([]);
+    onClose();
+  }, [onClose]);
 
   const registMember = () => {
     const body = {
@@ -158,12 +188,26 @@ const WorkspaceAddMemberModal = ({
     inviteUserApi(body);
   };
 
+  const inviteUserApi = useCallback(
+    async (body: inviteMembersType) => {
+      try {
+        await inviteWorkspaceMember(workspaceId!, body);
+        const newMember = body.emailList.length;
+        setCurrentChannelMemberNum((prev) => prev + newMember);
+        exitModal();
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [workspaceId, setCurrentChannelMemberNum, exitModal]
+  );
+
   return (
     <Modal isOpen={isOpen}>
-      <Container>
+      <Container ref={ref}>
         <Header>
           <Text size={18}>워크스페이스 멤버 초대</Text>
-          <Icons icon="xMark" width="32" height="32" onClick={onClose} />
+          <Icons icon="xMark" width="32" height="32" onClick={exitModal} />
         </Header>
         <InputBox
           label="검색"
@@ -189,7 +233,7 @@ const WorkspaceAddMemberModal = ({
                 <UserBadge
                   name={data.name}
                   email={data.email}
-                  onDelete={data.onDelete}
+                  onDelete={deleteUserBadge}
                 />
               </BadgeBox>
             );
@@ -201,13 +245,13 @@ const WorkspaceAddMemberModal = ({
             height="35"
             text="취소"
             bgColor="gray300"
-            onClick={onClose}
+            onClick={exitModal}
           />
           <Button width="125" height="35" text="추가" onClick={registMember} />
         </ButtonBox>
       </Container>
     </Modal>
   );
-};
+});
 
 export default WorkspaceAddMemberModal;

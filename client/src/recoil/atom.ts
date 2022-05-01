@@ -49,6 +49,11 @@ export const currentChannel = atom<string>({
   default: '',
 });
 
+export const currentChannelNum = atom<number>({
+  key: 'currentChannelNum',
+  default: 0,
+});
+
 export const userLog = atom<userLogTypes>({
   key: 'userLog',
   default: {},

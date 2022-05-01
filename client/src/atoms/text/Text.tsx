@@ -12,6 +12,7 @@ const Container = styled.p<{
 }>`
   font-size: ${(props) => props.size}px;
   font-weight: ${(props) => (props.weight === 'medium' ? 600 : 700)};
+  word-break: keep-all;
   color: ${(props) =>
     props.color ? colors[props.color] : props.theme.textColor};
   cursor: ${(props) =>

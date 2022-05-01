@@ -3,7 +3,6 @@ import { HashRouter, Navigate, Route, Routes } from 'react-router-dom';
 import Home from './Home';
 import Channel from './Channel';
 import Meeting from './Meeting';
-import Test from './Test';
 import UserManagePage from './UserManagePage';
 import UserAuthPage from './UserAuthPage';
 import Login from './Login';
@@ -27,8 +26,6 @@ const AppRouter = () => {
           >
             <Route path="" element={<Navigate replace to="/main" />} />
             <Route path="/main" element={<Main />} />
-            <Route path="/test" element={<Test />} />
-            <Route path="/test" element={<Test />} />
             <Route path="/:workspaceId/:channelId" element={<Channel />} />
             <Route
               path="/meeting/:workspaceId/:channelId"
