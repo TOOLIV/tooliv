@@ -6,9 +6,10 @@ import Label from '../../atoms/common/Label';
 import MenuTemplate from '../../atoms/sidemenu/MenuTemplate';
 import { labelType } from '../../types/common/labelType';
 import { SideWrapper, TopContainer } from './Channels';
+import Text from 'atoms/text/Text';
 
 const FriendsContainer = styled.div`
-  padding: 0 24px 16px 24px;
+  padding: 16px 0;
 `;
 const FriendContainer = styled.div`
   display: flex;
@@ -31,7 +32,9 @@ const Friends = () => {
   return (
     <>
       <TopContainer>
-        <MenuTemplate title="친구" />
+        <Text size={14} color="gray600">
+          친구
+        </Text>
         <Icons icon="plus" />
       </TopContainer>
       <FriendsContainer>

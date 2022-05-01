@@ -1,4 +1,5 @@
 import { channelTypes } from 'types/channel/contentType';
+import { inviteMembersType } from 'types/workspace/workspaceTypes';
 import instance from '../services/axios';
 
 export const getChannelList = async (workspaceId: string) => {
@@ -11,7 +12,7 @@ export const createChannel = async (body: channelTypes) => {
   return response;
 };
 
-export const searchWorkspaceMemberList = async (
+export const searchNotChannelMemberList = async (
   channelId: string,
   keyword: string
 ) => {
@@ -28,5 +29,13 @@ export const searchChannelMemberList = async (
   const response = await instance.get(
     `channel/${channelId}/member/search?keyword=${keyword}`
   );
+  return response;
+};
+
+export const inviteChannelMember = async (
+  channelId: string,
+  body: inviteMembersType
+) => {
+  const response = await instance.post(`channel/${channelId}/member`, body);
   return response;
 };

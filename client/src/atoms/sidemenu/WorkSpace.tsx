@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useParams } from 'react-router-dom';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { currentWorkspace } from 'recoil/atom';
 import { workspaceListType } from 'types/workspace/workspaceTypes';
 
@@ -72,9 +73,9 @@ const WorkSpace = ({
   thumbnailImage,
   onClick,
 }: workspaceListType) => {
-  const [currentWorkspaceId, setCurrentWorkSpaceId] =
-    useRecoilState(currentWorkspace);
-
+  const setCurrentWorkSpaceId = useSetRecoilState(currentWorkspace);
+  const { workspaceId } = useParams();
+  const currentWorkSpace = workspaceId ? workspaceId : 'main';
   const handleClickWorkspace = () => {
     setCurrentWorkSpaceId(id);
     onClick(id);
@@ -82,7 +83,7 @@ const WorkSpace = ({
 
   return (
     <Container
-      isSelected={id === currentWorkspaceId}
+      isSelected={id === currentWorkSpace}
       thumbnail={thumbnailImage}
       data-name={name}
       onClick={handleClickWorkspace}

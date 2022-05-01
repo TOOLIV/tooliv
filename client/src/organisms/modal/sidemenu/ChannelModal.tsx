@@ -8,6 +8,8 @@ import ChannelRadio from 'molecules/radio/channelRadio/ChannelRadio';
 import VisibilityRadio from 'molecules/radio/visibiltyRadio/VisibilityRadio';
 import React, { useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useSetRecoilState } from 'recoil';
+import { currentChannel } from 'recoil/atom';
 import { colors } from 'shared/color';
 import { workspaceModalType } from 'types/workspace/workspaceTypes';
 
@@ -60,7 +62,7 @@ const ChannelModal = ({ isOpen, onClose }: workspaceModalType) => {
   const inputChannelRef = useRef<HTMLInputElement>(null);
   const [channelCode, setChannelCode] = useState('CHAT');
   const [privateYn, setPrivateYn] = useState(false);
-
+  const setCurrentChannelId = useSetRecoilState(currentChannel);
   const { workspaceId } = useParams();
   const navigate = useNavigate();
 
@@ -83,6 +85,9 @@ const ChannelModal = ({ isOpen, onClose }: workspaceModalType) => {
         };
         const response = await createChannel(body);
         console.log(response);
+        const channelId = response.data.id;
+        setCurrentChannelId(channelId);
+        navigate(`${workspaceId}/${channelId}`);
         onClose();
       }
     } catch (error) {

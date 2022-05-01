@@ -6,6 +6,7 @@ export type workspaceListType = {
 };
 
 export type workspaceImgType = {
+  file: File;
   onChange: (file: FileList) => void;
 };
 
@@ -22,4 +23,35 @@ export type workspaceType = {
 export type workspaceModalType = {
   isOpen: boolean;
   onClose: () => void;
+};
+
+export type workspaceDropdownType = {
+  isOpen: boolean;
+  openMemberList: () => void;
+  openAddMemberModal: () => void;
+  onClose: () => void;
+};
+
+export type workspaceMemberListType = {
+  isOpen: boolean;
+  // memberList: channelMemberType[];
+  // onClick: () => void;
+  // onChange: (keyword: string) => void;
+  onClose: () => void;
+};
+
+export type workspaceMemberType = {
+  email: string;
+  name: string;
+  nickname: string;
+  workspaceMemberCode: string;
+};
+
+export type addWorkspaceMemberType = {
+  isOpen: boolean;
+  onClose: () => void;
+};
+
+export type inviteMembersType = {
+  emailList: string[];
 };

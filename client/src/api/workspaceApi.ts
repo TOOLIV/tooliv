@@ -1,3 +1,4 @@
+import { inviteMembersType } from 'types/workspace/workspaceTypes';
 import instance from '../services/axios';
 
 export const getWorkspaceList = async () => {
@@ -9,5 +10,33 @@ export const getWorkspaceList = async () => {
 export const createWorkspace = async (body: any) => {
   const response = await instance.post(`/workspace`, body);
   console.log(response);
+  return response;
+};
+
+export const searchNotWorkspaceMemberList = async (
+  workspaceId: string,
+  keyword: string
+) => {
+  const response = await instance.get(
+    `workspace/${workspaceId}/member/list?keyword=${keyword}`
+  );
+  return response;
+};
+
+export const searchWorkspaceMemberList = async (
+  workspaceId: string,
+  keyword: string
+) => {
+  const response = await instance.get(
+    `workspace/${workspaceId}/member/search?keyword=${keyword}`
+  );
+  return response;
+};
+
+export const inviteWorkspaceMember = async (
+  workspaceId: string,
+  body: inviteMembersType
+) => {
+  const response = await instance.post(`workspace/${workspaceId}/member`, body);
   return response;
 };

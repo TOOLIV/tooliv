@@ -1,8 +1,8 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import {
-  searchChannelMemberList,
-  searchWorkspaceMemberList,
+  inviteChannelMember,
+  searchNotChannelMemberList,
 } from 'api/channelApi';
 import Button from 'atoms/common/Button';
 import Icons from 'atoms/common/Icons';
@@ -15,6 +15,7 @@ import { useEffect, useRef, useState } from 'react';
 import { colors } from 'shared/color';
 import { addMemberType, channelMemberType } from 'types/channel/contentType';
 import { userBadgeTypes } from 'types/common/userTypes';
+import { inviteMembersType } from 'types/workspace/workspaceTypes';
 
 const Modal = styled.div<{ isOpen: boolean }>`
   display: none;
@@ -66,7 +67,7 @@ const UserBadgeWrapper = styled.div`
   margin-top: 10px;
   display: flex;
   flex-wrap: wrap;
-  max-height: 18vh;
+  height: 18vh;
   overflow: scroll;
 `;
 
@@ -92,23 +93,35 @@ const ChannelAddMemberModal = ({
 }: addMemberType) => {
   const [userList, setUserList] = useState<channelMemberType[]>([]);
   const [userBadgeList, setUserBadgeList] = useState<userBadgeTypes[]>([]);
+  const [inviteUserList, setInviteUserList] = useState<string[]>([]);
+
   const [keyword, setKeyword] = useState('');
 
   const inputRef = useRef<HTMLInputElement>(null);
 
   const searchUserList = () => {
     const keyword = inputRef.current?.value!;
-    if (keyword) setKeyword(keyword);
+    setKeyword(keyword);
   };
 
   const userListApi = async (keyword: string) => {
-    const response = await searchWorkspaceMemberList(channelId, keyword);
+    const response = await searchNotChannelMemberList(channelId, keyword);
     console.log(response);
     const data = response.data.channelMemberGetResponseDTOList;
-    // if (data) {
-    //   setUserList(data.filter((user) => userBadgeList.includes(user.email)));
-    // }
-    console.log(data);
+    if (data) {
+      const list = data.filter((user: channelMemberType) => {
+        return userBadgeList.find((badge) => badge.email === user.email)
+          ? false
+          : true;
+      });
+
+      setUserList(list);
+    }
+  };
+
+  const inviteUserApi = async (body: inviteMembersType) => {
+    const response = await inviteChannelMember(channelId!, body);
+    console.log(response);
   };
 
   const createUserBadge = (name: string, email: string) => {
@@ -120,20 +133,27 @@ const ChannelAddMemberModal = ({
         onDelete: deleteUserBadge,
       },
     ]);
+    setInviteUserList([...inviteUserList, email]);
     setUserList([]);
     inputRef.current!.value = '';
   };
 
   const deleteUserBadge = (email: string) => {
     setUserBadgeList(userBadgeList.filter((data) => data.email !== email));
+    setInviteUserList(inviteUserList.filter((data) => data !== email));
   };
 
   useEffect(() => {
-    if (channelId) userListApi(keyword);
-  }, [keyword]);
+    if (channelId && keyword) {
+      userListApi(keyword);
+    }
+  }, [keyword, channelId]);
 
   const registMember = () => {
-    console.log('멤버 추가');
+    const body = {
+      emailList: inviteUserList,
+    };
+    inviteUserApi(body);
   };
 
   return (
@@ -163,9 +183,8 @@ const ChannelAddMemberModal = ({
         <UserBadgeWrapper>
           {userBadgeList.map((data) => {
             return (
-              <BadgeBox>
+              <BadgeBox key={data.email}>
                 <UserBadge
-                  key={data.email}
                   name={data.name}
                   email={data.email}
                   onDelete={data.onDelete}

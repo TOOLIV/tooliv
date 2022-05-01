@@ -1,22 +1,21 @@
 import styled from '@emotion/styled';
 import { motion } from 'framer-motion';
 import DirectMessage from 'molecules/sidemenu/DirectMessage';
-import React from 'react';
-import { useParams } from 'react-router-dom';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import Channels from '../../molecules/sidemenu/Channels';
+import SideHeader from 'organisms/header/SideHeader';
+import { useRecoilValue } from 'recoil';
 import Friends from '../../molecules/sidemenu/Friends';
-import WorkSpaces from '../../molecules/sidemenu/WorkSpaces';
 import { currentWorkspace, isOpenSide } from '../../recoil/atom';
 import ChannelSection from './channel/ChannelSection';
 import WorkSpaceSection from './workspace/WorkSpaceSection';
 
 const Container = styled(motion.div)`
+  width: 280px;
   margin-top: 24px;
   background-color: ${(props) => props.theme.sideBgColor};
   border-radius: 0 50px 0 0;
   position: absolute;
   height: calc(100vh - 64px);
+  padding: 16px 18px;
   /* position: fixed; */
 `;
 
@@ -35,6 +34,7 @@ const SideMenu = () => {
       animate={isOpen ? 'open' : 'closed'}
       variants={variants}
     >
+      <SideHeader />
       <WorkSpaceSection />
       {isOpen && currentWorkspaceId === 'main' ? (
         <>

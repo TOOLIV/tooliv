@@ -3,7 +3,7 @@ import Button from 'atoms/common/Button';
 import Text from 'atoms/text/Text';
 import InputBox from 'molecules/inputBox/InputBox';
 import { InputArea, TextBox } from 'organisms/login/LoginForm';
-import { ButtonBox } from 'organisms/modal/WorkspaceModal';
+import { ButtonBox } from 'organisms/modal/sidemenu/WorkspaceModal';
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { colors } from 'shared/color';

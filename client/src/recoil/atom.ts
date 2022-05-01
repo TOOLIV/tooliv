@@ -44,10 +44,10 @@ export const currentWorkspace = atom<string>({
   default: 'main',
 });
 
-// export const currentChannel = atom<string>({
-//   key: 'currentChannel',
-//   default: '',
-// });
+export const currentChannel = atom<string>({
+  key: 'currentChannel',
+  default: '',
+});
 
 export const userLog = atom<userLogTypes>({
   key: 'userLog',
