@@ -29,6 +29,15 @@ public class ChatController {
         redisPublisher.publish(chatService.getTopic(chatRequestDTO.getChannelId()), chatRequestDTO);
     }
 
+    @MessageMapping("/chat/directMessage")
+    @ApiOperation(value = "채팅방 메시지", notes = "메시지")
+    public void directMessage(ChatRequestDTO chatRequestDTO) {
+        // 로그인 회원 정보로 대화명 설정
+        chatService.setChatInfoValue(chatRequestDTO.getChannelId(), chatRequestDTO);
+        // Websocket에 발행된 메시지를 redis로 발행(publish)
+        redisPublisher.publish(chatService.getTopic(chatRequestDTO.getChannelId()), chatRequestDTO);
+    }
+
     // websocket "/pub/chat/enter"로 들어오는 메시지
     @MessageMapping("/chat/enter")
     @ApiOperation(value = "채팅방 참여")
