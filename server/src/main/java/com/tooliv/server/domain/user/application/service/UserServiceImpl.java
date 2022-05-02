@@ -69,6 +69,7 @@ public class UserServiceImpl implements UserService {
         return LogInResponseDTO.builder()
             .userId(user.getId())
             .name(user.getName())
+            .email(user.getEmail())
             .nickname(user.getNickname())
             .userCode(user.getUserCode())
             .profileImage(getImageURL(user.getProfileImage()))
