@@ -64,6 +64,7 @@ const Container = styled.div<{
 const WorkspaceName = styled.div`
   font-size: 12px;
   word-break: keep-all;
+  overflow: hidden;
   cursor: pointer;
 `;
 

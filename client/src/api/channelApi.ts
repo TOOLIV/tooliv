@@ -41,6 +41,12 @@ export const inviteChannelMember = async (
   channelId: string,
   body: inviteMembersType
 ) => {
+  console.log(body);
   const response = await instance.post(`channel/${channelId}/member`, body);
+  return response;
+};
+
+export const getChannelInfo = async (channelId: string) => {
+  const response = await instance.get(`channel/${channelId}/member/info`);
   return response;
 };
