@@ -73,7 +73,7 @@ const Meeting = () => {
       leaveSession();
       window.removeEventListener('beforeunload', onbeforeunload);
     };
-  }, []);
+  }, [session]);
 
   useEffect(() => {
     window.addEventListener('beforeunload', onbeforeunload);
@@ -84,7 +84,7 @@ const Meeting = () => {
       leaveScreenSharingSession();
       window.removeEventListener('beforeunload', onbeforeunload);
     };
-  }, []);
+  }, [sessionForScreen]);
 
   const onbeforeunload = (event: any) => {
     leaveSession();
@@ -98,7 +98,6 @@ const Meeting = () => {
 
       // On every new Stream received...
       mySession.on('streamCreated', (event) => {
-        // if (event.stream.typeOfVideo === 'CAMERA') {
         // Subscribe to the Stream to receive it. Second parameter is undefined
         // so OpenVidu doesn't create an HTML video by its own
         const newSubscriber = mySession.subscribe(
@@ -108,31 +107,14 @@ const Meeting = () => {
         const newSubscribers = subscribers;
         newSubscribers.push(newSubscriber);
         setSubscribers([...newSubscribers]);
-        // } else if (event.stream.typeOfVideo === 'SCREEN') {
-        //   const newSubscriber = mySession.subscribe(
-        //     event.stream,
-        //     JSON.parse(event.stream.connection.data).clientData
-        //   );
-        //   const newSubscribers = [];
-        //   newSubscribers.push(newSubscriber);
-        //   setSubscribersForScreenShare([...newSubscribers]);
-        //   setTest(true);
-        // }
 
         // Update the state with the new subscribers
       });
 
       // On every Stream destroyed...
       mySession.on('streamDestroyed', (event) => {
-        if (event.stream.typeOfVideo === 'CAMERA') {
-          // Remove the stream from 'subscribers' array
-          deleteSubscriber(event.stream.streamManager);
-        } else if (event.stream.typeOfVideo === 'SCREEN') {
-          deleteSubscriberForScreenShare(event.stream.streamManager);
-          setIsScreenSharing(false);
-          setTest(false);
-          // leaveScreenSharingSession();
-        }
+        // Remove the stream from 'subscribers' array
+        deleteSubscriber(event.stream.streamManager);
       });
 
       mySession.on('sessionDisconnected', (event) => {
@@ -207,23 +189,23 @@ const Meeting = () => {
 
       mySession.on('streamCreated', (event) => {
         console.log('>>>>>>>>>>>>>>>>>>> screenshareCreated');
-        const newSubscriber = mySession.subscribe(
-          event.stream,
-          JSON.parse(event.stream.connection.data).clientData
-        );
-        setMainStreamManager(newSubscriber);
+        mySession
+          .subscribeAsync(
+            event.stream,
+            JSON.parse(event.stream.connection.data).clientData
+          )
+          .then((newSubscriber) => {
+            checkIsSharing();
+            setMainStreamManager(newSubscriber);
+          });
         // 다른사람이 화면 공유할 때, 내가 화면 공유 중이라면 종료
-        // if (isScreenSharing) {
-        //   console.log('session 종료');
-        //   leaveScreenSharingSession();
-        //   joinSessionForScreenShare();
-        // }
+
         console.log(event);
       });
 
       mySession.on('streamDestroyed', (event) => {
         console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>> screenShareStopped');
-        console.log(event);
+        setMainStreamManager(undefined);
       });
 
       getTokenForScreenShare().then((token: any) => {
@@ -233,6 +215,16 @@ const Meeting = () => {
       });
     }
   }, [sessionForScreen]);
+
+  const checkIsSharing = () => {
+    if (isScreenSharing) {
+      console.log('화면 공유 중');
+      setIsScreenSharing(false);
+    } else {
+      console.log('화면 공유 중 아님');
+      setIsScreenSharing(true);
+    }
+  };
 
   useEffect(() => {
     if (!isScreenSharing) {
@@ -286,7 +278,6 @@ const Meeting = () => {
 
   const leaveSession = () => {
     // --- 7) Leave the session by calling 'disconnect' method over the Session object ---
-    console.log(session);
     if (!session) return;
     const mySession = session;
 
@@ -385,6 +376,8 @@ const Meeting = () => {
             console.warn('ScreenShare: Access Denied');
           });
 
+          setScreenPublisher(publisher);
+
           // Set the main video in the page to display our webcam and store our Publisher
           // setMainStreamManager(publisher);
         })
@@ -399,7 +392,8 @@ const Meeting = () => {
   };
 
   const stopScreenShare = () => {
-    sessionForScreen?.disconnect();
+    if (sessionForScreen) sessionForScreen?.disconnect();
+    console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
     joinSessionForScreenShare();
   };
 
@@ -531,13 +525,9 @@ const Meeting = () => {
     <MeetingContainer>
       <MeetingInnerContainer>
         <VideosCopy publisher={publisher} subscribers={subscribers} />
-        {test && !isScreenSharing && (
-          <VideosCopy subscribers={subscribersForScreenShare} />
-        )}
+        <VideoCopy publisher={screenPublisher} />
         <VideoCopy subscribe={mainStreamManager} />
-        <button onClick={() => setIsScreenSharing(!isScreenSharing)}>
-          화면공유
-        </button>
+        <button onClick={checkIsSharing}>화면공유</button>
         <button onClick={deleletAllSession}>세션나가기</button>
       </MeetingInnerContainer>
       <FunctionButtons
