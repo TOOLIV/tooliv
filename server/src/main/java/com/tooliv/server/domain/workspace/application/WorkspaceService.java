@@ -4,6 +4,7 @@ import com.tooliv.server.domain.workspace.application.dto.request.ModifyWorkspac
 import com.tooliv.server.domain.workspace.application.dto.request.RegisterWorkspaceRequestDTO;
 import com.tooliv.server.domain.workspace.application.dto.response.RegisterWorkspaceResponseDTO;
 import com.tooliv.server.domain.workspace.application.dto.response.WorkspaceListGetResponseDTO;
+import com.tooliv.server.domain.workspace.application.dto.response.WorkspaceNameGetResponseDTO;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface WorkspaceService {
@@ -17,5 +18,7 @@ public interface WorkspaceService {
     WorkspaceListGetResponseDTO getWorkspaceList();
 
     String getImageURL(String fileName);
+
+    WorkspaceNameGetResponseDTO getWorkspaceName(String workspaceId);
 
 }

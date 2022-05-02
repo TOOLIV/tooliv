@@ -15,6 +15,7 @@ import com.tooliv.server.domain.workspace.application.dto.request.RegisterWorksp
 import com.tooliv.server.domain.workspace.application.dto.response.RegisterWorkspaceResponseDTO;
 import com.tooliv.server.domain.workspace.application.dto.response.WorkspaceGetResponseDTO;
 import com.tooliv.server.domain.workspace.application.dto.response.WorkspaceListGetResponseDTO;
+import com.tooliv.server.domain.workspace.application.dto.response.WorkspaceNameGetResponseDTO;
 import com.tooliv.server.domain.workspace.domain.Workspace;
 import com.tooliv.server.domain.workspace.domain.WorkspaceMembers;
 import com.tooliv.server.domain.workspace.domain.enums.WorkspaceMemberCode;
@@ -173,5 +174,17 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             return null;
         }
         return "https://tooliva402.s3.ap-northeast-2.amazonaws.com/" + fileName;
+    }
+
+    @Override
+    public WorkspaceNameGetResponseDTO getWorkspaceName(String workspaceId) {
+        Workspace workspace = workspaceRepository.findById(workspaceId)
+            .orElseThrow(() -> new IllegalArgumentException("해당 워크스페이스를 찾을 수 없습니다."));
+
+        WorkspaceNameGetResponseDTO workspaceNameGetResponseDTO = WorkspaceNameGetResponseDTO.builder()
+            .name(workspace.getName())
+            .build();
+
+        return workspaceNameGetResponseDTO;
     }
 }
