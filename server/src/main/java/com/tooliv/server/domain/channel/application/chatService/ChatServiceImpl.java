@@ -4,8 +4,11 @@ import com.tooliv.server.domain.channel.application.dto.request.ChatRequestDTO;
 import com.tooliv.server.domain.channel.application.dto.response.FileUrlListResponseDTO;
 import com.tooliv.server.domain.channel.domain.Channel;
 import com.tooliv.server.domain.channel.domain.ChatFile;
+import com.tooliv.server.domain.channel.domain.DirectChatRoom;
 import com.tooliv.server.domain.channel.domain.repository.ChatFileRepository;
+import com.tooliv.server.domain.channel.domain.repository.DirectChatRoomRepository;
 import com.tooliv.server.global.common.AwsS3Service;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +36,7 @@ public class ChatServiceImpl implements ChatService {
     public static final String ENTER_INFO = "ENTER_INFO"; // 채팅룸에 입장한 클라이언트의 sessionId와 채팅룸 id를 맵핑한 정보 저장
     private final RedisTemplate<String, ChatRequestDTO> redisChannelTemplate;
     private HashOperations<String, String, Channel> opsHashChatRoom;
+    private HashOperations<String, String, DirectChatRoom> opsHashDirectChatRoom;
     // 채팅방의 대화 메시지를 발행하기 위한 redis topic 정보. 서버별로 채팅방에 매치되는 topic정보를 Map에 넣어 roomId로 찾을수 있도록 한다.
     private Map<String, ChannelTopic> topics;
     private HashOperations<String, String, String> hashOpsEnterInfo;
@@ -40,12 +44,14 @@ public class ChatServiceImpl implements ChatService {
     @PostConstruct
     private void init() {
         opsHashChatRoom = redisChannelTemplate.opsForHash();
+        opsHashDirectChatRoom = redisChannelTemplate.opsForHash();
         hashOpsEnterInfo = redisChannelTemplate.opsForHash();
 
         topics = new HashMap<>();
     }
 
     private final ChatFileRepository chatFileRepository;
+    private final DirectChatRoomRepository directChatRoomRepository;
     private final AwsS3Service awsS3Service;
 
     @Override
@@ -53,6 +59,24 @@ public class ChatServiceImpl implements ChatService {
         String id = channel.getId();
         try {
             opsHashChatRoom.put(CHAT_ROOMS, id, channel);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void createDirectChatRoom(String receiverName) {
+        LocalDateTime now = LocalDateTime.now();
+
+        DirectChatRoom directChatRoom = DirectChatRoom.builder().name(receiverName)
+            .createdAt(now)
+            .build();
+        String id = directChatRoom.getId();
+
+        directChatRoomRepository.save(directChatRoom);
+
+        try {
+            opsHashDirectChatRoom.put(CHAT_ROOMS, id, directChatRoom);
         } catch (Exception e) {
             e.printStackTrace();
         }
