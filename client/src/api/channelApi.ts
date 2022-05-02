@@ -7,6 +7,11 @@ export const getChannelList = async (workspaceId: string) => {
   return response;
 };
 
+export const getPublicChannelList = async (workspaceId: string) => {
+  const response = await instance.get(`/channel/list/public/${workspaceId}`);
+  return response;
+};
+
 export const createChannel = async (body: channelTypes) => {
   const response = await instance.post(`/channel`, body);
   return response;

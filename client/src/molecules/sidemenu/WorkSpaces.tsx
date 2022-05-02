@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 const WorkSpaceContainer = styled.div`
   display: flex;
-  justify-content: space-between;
+  /* justify-content: ; */
   align-items: flex-start;
   overflow: scroll;
   height: 80px;

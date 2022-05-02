@@ -102,6 +102,8 @@ const ChannelModal = ({ isOpen, onClose }: workspaceModalType) => {
     setPrivateYn(value);
   };
 
+  console.log(isOpen);
+
   return (
     <Modal isOpen={isOpen}>
       <Container>

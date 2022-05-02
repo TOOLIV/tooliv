@@ -55,3 +55,10 @@ export type addMemberType = {
   onClose: () => void;
   channelId: string;
 };
+
+export type channelDropdownType = {
+  isOpen: boolean;
+  openCreateChannelModal: () => void;
+  openPublicChannelListModal: () => void;
+  onClose: () => void;
+};
