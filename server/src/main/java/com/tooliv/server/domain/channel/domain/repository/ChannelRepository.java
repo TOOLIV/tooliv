@@ -29,7 +29,7 @@ public interface ChannelRepository extends JpaRepository<Channel, String> {
         + "FROM channel_members m "
         + "WHERE m.user_id = :user_id "
         + ") "
-        + "ORDER BY c.created_at ASC", nativeQuery = true)
+        + "ORDER BY created_at ASC", nativeQuery = true)
     List<String> findByWorkspaceId(@Param("workspace_id") String workspaceId, @Param("user_id") String userId);
 
     Optional<Channel> findTopByDeletedAtAndWorkspaceOrderByCreatedAtAsc(LocalDateTime deletedAt, Workspace workspace);
