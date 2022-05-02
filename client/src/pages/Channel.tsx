@@ -39,9 +39,11 @@ const Channel = () => {
   const baseURL = localStorage.getItem('baseURL');
   let sockJS = baseURL
     ? new SockJS(`${JSON.parse(baseURL).url}/chatting`)
-    : new SockJS(`${process.env.REACT_APP_BASE_SERVER_URL}/chatting`);
+    : // 로컬에서 테스트시 REACT_APP_BASE_URL, server 주소는 REACT_APP_BASE_SERVER_URL
+      new SockJS(`${process.env.REACT_APP_BASE_URL}/chatting`);
   let client = Stomp.over(sockJS);
   const { channelId } = useParams<string>();
+
   useEffect(() => {
     client.connect(
       {

@@ -1,4 +1,5 @@
 import { css } from '@emotion/react';
+import { colors } from './color';
 const reset = css`
   /* http://meyerweb.com/eric/tools/css/reset/ 
    v2.0 | 20110126
@@ -133,6 +134,22 @@ const reset = css`
   table {
     border-collapse: collapse;
     border-spacing: 0;
+  }
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  /* 스크롤바 막대 설정*/
+  &::-webkit-scrollbar-thumb {
+    height: 17%;
+    background-color: ${colors.gray300};
+    /* 스크롤바 둥글게 설정    */
+    border-radius: 10px;
+  }
+
+  /* 스크롤바 뒷 배경 설정*/
+  &::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0);
   }
 `;
 
