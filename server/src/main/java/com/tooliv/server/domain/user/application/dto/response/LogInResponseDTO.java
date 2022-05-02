@@ -18,6 +18,9 @@ public class LogInResponseDTO extends BaseResponseDTO {
     @ApiModelProperty(name = "이름")
     private String name;
 
+    @ApiModelProperty(name = "이메일")
+    private String email;
+
     @ApiModelProperty(name = "닉네임")
     private String nickname;
 

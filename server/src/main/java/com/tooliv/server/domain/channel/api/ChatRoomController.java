@@ -26,6 +26,21 @@ public class ChatRoomController {
 
     private final ChatService chatService;
 
+    @ApiOperation(value = "개인 채팅방 생성", notes = "채팅방을 생성한다.")
+    @PostMapping("/directChat/{receiverName}")
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "채팅방 입장 완료"),
+        @ApiResponse(code = 409, message = "채팅방 입장 실패"),
+    })
+    public ResponseEntity<? extends BaseResponseDTO> createDirectRoom(@PathVariable @ApiParam(value = "유저 이름", required = true) String receiverName) {
+        try {
+            chatService.createDirectChatRoom(receiverName);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(409).body(BaseResponseDTO.of("채팅방 입장 실패"));
+        }
+        return ResponseEntity.status(200).body(BaseResponseDTO.of("채팅방 입장 완료"));
+    }
+
     @ApiOperation(value = "채팅방 입장", notes = "채팅방을 입장한다.")
     @PostMapping("/channel/{channelId}")
     @ApiResponses({
@@ -39,17 +54,33 @@ public class ChatRoomController {
             return ResponseEntity.status(409).body(BaseResponseDTO.of("채팅방 입장 실패"));
         }
         return ResponseEntity.status(200).body(BaseResponseDTO.of("채팅방 입장 완료"));
-
     }
 
-    @ApiOperation(value = "채팅방 이전 채팅 데이터", notes = "채팅방을 입장한다.")
+    @ApiOperation(value = "채널 채팅방 이전 채팅 데이터")
     @GetMapping("/channel/{channelId}")
     @ApiResponses({
         @ApiResponse(code = 200, message = "채팅방 데이터 복구"),
         @ApiResponse(code = 409, message = "채팅방 데이터 복구 실패"),
     })
     public ResponseEntity<? extends BaseResponseDTO> getChatListInRoom(@PathVariable @ApiParam(value = "방 정보", required = true) String channelId) {
-        ChatRoomChatListResponseDTO chatRoomChatListResponseDTO = null;
+        ChatRoomChatListResponseDTO chatRoomChatListResponseDTO;
+        try {
+            chatRoomChatListResponseDTO = new ChatRoomChatListResponseDTO(chatService.getChatInfoValue(channelId));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(409).body(BaseResponseDTO.of("채팅방 데이터 복구 실패"));
+        }
+        return ResponseEntity.status(200).body(ChatRoomChatListResponseDTO.of("채팅방 기존 데이터", chatRoomChatListResponseDTO));
+
+    }
+
+    @ApiOperation(value = "개인 채팅방 이전 채팅 데이터")
+    @GetMapping("/user/{channelId}")
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "채팅방 데이터 복구"),
+        @ApiResponse(code = 409, message = "채팅방 데이터 복구 실패"),
+    })
+    public ResponseEntity<? extends BaseResponseDTO> getChatListInDirectRoom(@PathVariable @ApiParam(value = "방 정보", required = true) String channelId) {
+        ChatRoomChatListResponseDTO chatRoomChatListResponseDTO;
         try {
             chatRoomChatListResponseDTO = new ChatRoomChatListResponseDTO(chatService.getChatInfoValue(channelId));
         } catch (IllegalArgumentException e) {
