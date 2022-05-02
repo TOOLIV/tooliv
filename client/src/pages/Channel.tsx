@@ -41,7 +41,7 @@ const Channel = () => {
   let sockJS = baseURL
     ? new SockJS(`${JSON.parse(baseURL).url}/chatting`)
     : // 로컬에서 테스트시 REACT_APP_BASE_URL, server 주소는 REACT_APP_BASE_SERVER_URL
-      new SockJS(`${process.env.REACT_APP_BASE_URL}/chatting`);
+      new SockJS(`${process.env.REACT_APP_BASE_SERVER_URL}/chatting`);
   let client = Stomp.over(sockJS);
   const { channelId } = useParams<string>();
 
@@ -66,22 +66,7 @@ const Channel = () => {
 
   const onSendClick = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
-    // client.send(
-    //   '/pub/chat/message',
-    //   {
-    //     Authorization: `Bearer ${accessToken}`,
-    //   },
-    //   JSON.stringify({
-    //     channelId: channelId,
-    //     sender: '인주비',
-    //     contents: getMarkdownText(),
-    //     type: 'TALK',
-    //     files: fileUrl ? fileUrl : null,
-    //   })
-    // );
     sendMessage();
-    // setMessage('');
-    // setFiles([]);
   };
 
   const sendMessage = () => {
@@ -98,19 +83,22 @@ const Channel = () => {
         files: fileUrl ? fileUrl : null,
       })
     );
-    console.log('hi');
     setMessage('');
     setFiles([]);
     setFileUrl([]);
   };
 
   const getMarkdownText = () => {
-    const rawMarkup = marked(message, {
-      gfm: true,
-      breaks: true,
-      xhtml: true,
-    });
-    console.log(rawMarkup);
+    const rawMarkup = marked(
+      message,
+      // .replace(/\n/g, '<br />')
+      {
+        gfm: true,
+        breaks: true,
+        xhtml: true,
+        // sanitize: true,
+      }
+    );
     return rawMarkup;
   };
 

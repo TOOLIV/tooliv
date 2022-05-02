@@ -12,13 +12,13 @@ const Container = styled.div`
   width: 100%;
   border-radius: 10px;
   border: 1px solid ${colors.gray200};
-  height: 64px;
+  min-height: 64px;
   position: relative;
 `;
-const Input = styled.input`
+const Input = styled.textarea`
   width: 85%;
   margin: 12px;
-  height: 50%;
+  min-height: 50%;
   border: 0;
 `;
 const Wrapper = styled.div`
@@ -34,18 +34,22 @@ const Editor = ({ onClick, sendMessage }: editorProps) => {
   const [message, setMessage] = useRecoilState<string>(channelMessage);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-  const onChange = (event: React.FormEvent<HTMLInputElement>) => {
+  const onChange = (event: React.FormEvent<HTMLTextAreaElement>) => {
     const {
       currentTarget: { value },
     } = event;
     setMessage(value);
   };
 
-  const onKeyUp = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    console.log(event);
+  const onKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.code === 'Enter') {
-      if (sendMessage) {
-        sendMessage();
+      if (event.shiftKey) {
+        // setMessage((prev) => prev + '<br />');
+      } else {
+        event.preventDefault();
+        if (sendMessage) {
+          sendMessage();
+        }
       }
     }
   };
@@ -58,10 +62,9 @@ const Editor = ({ onClick, sendMessage }: editorProps) => {
       <Container>
         {/* <DragDrop /> */}
         <Input
-          type="textarea"
           value={message}
           onChange={onChange}
-          onKeyPress={onKeyUp}
+          onKeyPress={onKeyPress}
         ></Input>
         <Wrapper>
           <Icons icon="file" color="gray500" onClick={handleFileModal} />
