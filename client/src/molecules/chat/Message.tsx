@@ -26,6 +26,7 @@ const ProfileContainer = styled.div`
 const ContentContainer = styled.div`
   padding: 16px;
   padding-left: 30px;
+  line-height: 1.2;
 `;
 
 const File = styled.img`
@@ -41,8 +42,10 @@ const Message = ({ roomId, sender, contents, type, files }: contentTypes) => {
         </SideWrapper>
         <Label name={sender} size="16px" />
       </ProfileContainer>
-      <ContentContainer>{contents}</ContentContainer>
-      {files && (
+      <ContentContainer
+        dangerouslySetInnerHTML={{ __html: contents }}
+      ></ContentContainer>
+      {files && files.length > 0 && (
         <ContentContainer>
           {files.map((file) => (
             <File src={file}></File>
