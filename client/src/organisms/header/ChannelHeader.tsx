@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { searchChannelMemberList } from 'api/channelApi';
+import { getChannelInfo, searchChannelMemberList } from 'api/channelApi';
 import Icons from 'atoms/common/Icons';
 import Text from 'atoms/text/Text';
 import ChannelAddMemberModal from 'organisms/modal/channel/ChannelAddMemberModal';
@@ -45,7 +45,7 @@ const ChannelHeader = () => {
   useEffect(() => {
     console.log(currentChannelMemberNum);
     if (currentChannelMemberNum === 0) {
-      getChannelInfo();
+      handleChannelInfo();
     }
   }, []);
 
@@ -58,17 +58,18 @@ const ChannelHeader = () => {
   useEffect(() => {
     if (channelId) {
       console.log(channelId);
-      getChannelInfo();
+      handleChannelInfo();
     }
   }, [channelId]);
 
-  const getChannelInfo = async () => {
+  const handleChannelInfo = async () => {
     try {
       // channelId로 channel명 및 명수 받아오는 api 있으면 좋을듯
-      const { data } = await searchChannelMemberList(channelId!, '');
-      setChannelName(data.channelName);
-      setChannelMemberNum(data.channelMemberGetResponseDTOList.length);
-      setCurrentChannelMemberNum(data.channelMemberGetResponseDTOList.length);
+      const { data } = await getChannelInfo(channelId!);
+      console.log(data);
+      setChannelName(data.name);
+      setChannelMemberNum(data.numOfPeople);
+      setCurrentChannelMemberNum(data.numOfPeople);
     } catch (error) {
       console.log(error);
     }

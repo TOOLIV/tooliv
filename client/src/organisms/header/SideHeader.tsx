@@ -1,10 +1,12 @@
 import styled from '@emotion/styled';
+import { getWorkspaceInfo } from 'api/workspaceApi';
 import Icons from 'atoms/common/Icons';
 import Text from 'atoms/text/Text';
 import WorkspaceAddMemberModal from 'organisms/modal/workspace/WorkspaceAddMemberModal';
 import WorkspaceDropDown from 'organisms/modal/workspace/WorkspaceDropDown';
 import WorkspaceMemberListModal from 'organisms/modal/workspace/WorkspaceMemberListModal';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { currentWorkspace, isOpenSide } from 'recoil/atom';
 
@@ -27,7 +29,7 @@ const SideHeader = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [memberListOpen, setMemberListOpen] = useState(false);
   const [addMemberModalOpen, setAddMemberModalOpen] = useState(false);
-
+  const [workspaceName, setWorkspaceName] = useState('홈');
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleClickOutside = ({ target }: any) => {
@@ -42,6 +44,16 @@ const SideHeader = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [dropdownOpen]);
+
+  const handleWorkspaceInfo = useCallback(async () => {
+    const { data } = await getWorkspaceInfo(currentWorkspaceId);
+    setWorkspaceName(data.name);
+  }, [currentWorkspaceId]);
+
+  useEffect(() => {
+    if (currentWorkspaceId !== 'main') handleWorkspaceInfo();
+    else setWorkspaceName('홈');
+  }, [currentWorkspaceId, handleWorkspaceInfo]);
 
   const onClickSide = () => {
     setIsOpen((prev) => !prev);
@@ -68,7 +80,8 @@ const SideHeader = () => {
     <Container isOpen={isOpen}>
       <Title onClick={() => setDropdownOpen(!dropdownOpen)}>
         <Text size={24} weight="700" pointer={currentWorkspaceId !== 'main'}>
-          {/* 워크스페이스 id로 워크스페이명 불러오는 api 연동. */}홈
+          {/* 워크스페이스 id로 워크스페이명 불러오는 api 연동. */}
+          {workspaceName}
         </Text>
         {currentWorkspaceId !== 'main' ? <Icons icon="dropdown" /> : null}
       </Title>

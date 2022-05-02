@@ -2,11 +2,12 @@ import instance from '../services/axios';
 import { userCreationTypes, userLoginTypes } from '../types/common/userTypes';
 
 export const login = async (body: userLoginTypes) => {
-  console.log(body);
   const response = await instance.post(`/user/login`, body);
   const user = {
     name: response.data.name,
     accessToken: response.data.accessToken,
+    nickname: response.data.nickname,
+    email: response.data.email,
   };
 
   localStorage.setItem('user', JSON.stringify(user));

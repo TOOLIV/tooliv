@@ -8,11 +8,12 @@ import Text from 'atoms/text/Text';
 import InputBox from 'molecules/inputBox/InputBox';
 import UserInfo from 'molecules/userInfo/UserInfo';
 import { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { useSetRecoilState } from 'recoil';
-import { currentChannelNum } from 'recoil/atom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { currentChannel, currentChannelNum, userLog } from 'recoil/atom';
+import { user } from 'recoil/auth';
 import { colors } from 'shared/color';
-import { channelListTypes } from 'types/channel/contentType';
+import { channelListTypes, publicChannelType } from 'types/channel/contentType';
 import {
   inviteMembersType,
   workspaceMemberListType,
@@ -77,11 +78,16 @@ const PublicChannelListModal = ({
   isOpen,
   onClose,
 }: workspaceMemberListType) => {
-  const [publicChannelList, setPublicChannelList] = useState([]);
-  // const inputRef = useRef<HTMLInputElement>(null);
+  const [publicChannelList, setPublicChannelList] = useState<
+    publicChannelType[]
+  >([]);
   const { workspaceId, channelId } = useParams();
   const setCurrentChannelMemberNum = useSetRecoilState(currentChannelNum);
+  const setCurrentChannelId = useSetRecoilState(currentChannel);
+  const [userLogList, setUserLogList] = useRecoilState(userLog);
 
+  const userInfo = useRecoilValue(user);
+  const navigate = useNavigate();
   useEffect(() => {
     if (isOpen) {
       getPublicChannels();
@@ -91,24 +97,30 @@ const PublicChannelListModal = ({
   const getPublicChannels = useCallback(async () => {
     const { data } = await getPublicChannelList(workspaceId!);
     setPublicChannelList(data.channelGetResponseDTOList);
-    console.log(data);
   }, [workspaceId]);
 
   const inviteUserApi = useCallback(
     async (body: inviteMembersType) => {
-      await inviteChannelMember(channelId!, body);
+      await inviteChannelMember(publicChannelList[0].id, body);
       const newMember = body.emailList.length;
       setCurrentChannelMemberNum((prev) => prev + newMember);
+      setUserLogList({
+        ...userLogList,
+        [workspaceId!]: publicChannelList[0].id,
+      });
+      setCurrentChannelId(publicChannelList[0].id);
+      navigate(`${workspaceId}/${publicChannelList[0].id}`);
       exitModal();
     },
-    [channelId]
+    [channelId, publicChannelList, workspaceId]
   );
 
   const registChannel = () => {
+    console.log(userInfo.email);
     const body = {
-      // emailList: email,
+      emailList: [userInfo.email],
     };
-    // inviteUserApi(body);
+    inviteUserApi(body);
   };
 
   const exitModal = () => {
@@ -129,7 +141,7 @@ const PublicChannelListModal = ({
           onChange={searchUserList}
         /> */}
         <ChannelBox>
-          {publicChannelList.map((channel: channelListTypes) => (
+          {publicChannelList.map((channel: publicChannelType) => (
             <ChannelWrapper key={channel.id}>
               <Text size={16}>{channel.name}</Text>
               <Button

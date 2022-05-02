@@ -40,3 +40,10 @@ export const inviteWorkspaceMember = async (
   const response = await instance.post(`workspace/${workspaceId}/member`, body);
   return response;
 };
+
+export const getWorkspaceInfo = async (workspaceId: string) => {
+  const response = await instance.get(
+    `workspace/info?workspaceId=${workspaceId}`
+  );
+  return response;
+};
