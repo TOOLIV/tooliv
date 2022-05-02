@@ -22,7 +22,7 @@ public interface ChannelRepository extends JpaRepository<Channel, String> {
         + "ORDER BY c.created_at ASC", nativeQuery = true)
     List<Channel> findByWorkspaceIdAndUser(@Param("workspace_id") String workspaceId, @Param("user_id") String userId);
 
-    @Query(value="SELECT distinct c.id "
+    @Query(value="SELECT c.id "
         + "FROM channel c "
         + "WHERE c.workspace_id = :workspace_id AND c.private_yn = false AND c.deleted_at IS NULL AND c.id NOT IN ("
         + "SELECT m.channel_id "
