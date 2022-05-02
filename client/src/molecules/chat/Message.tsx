@@ -41,7 +41,9 @@ const Message = ({ roomId, sender, contents, type, files }: contentTypes) => {
         </SideWrapper>
         <Label name={sender} size="16px" />
       </ProfileContainer>
-      <ContentContainer>{contents}</ContentContainer>
+      <ContentContainer
+        dangerouslySetInnerHTML={{ __html: contents }}
+      ></ContentContainer>
       {files && (
         <ContentContainer>
           {files.map((file) => (

@@ -21,6 +21,7 @@ import { token } from 'recoil/auth';
 import DragDrop from 'organisms/chat/DragDrop';
 import Files from 'organisms/chat/Files';
 import { FileTypes } from 'types/common/fileTypes';
+import { marked } from 'marked';
 
 const Container = styled.div`
   width: 100%;
@@ -34,7 +35,7 @@ const Channel = () => {
   const [files, setFiles] = useRecoilState<FileTypes[]>(chatFiles);
   const [contents, setContents] =
     useRecoilState<contentTypes[]>(channelContents);
-  const fileUrl = useRecoilValue<string[]>(chatFileUrl);
+  const [fileUrl, setFileUrl] = useRecoilState<string[]>(chatFileUrl);
   const { accessToken } = useRecoilValue(token);
   const baseURL = localStorage.getItem('baseURL');
   let sockJS = baseURL
@@ -63,8 +64,27 @@ const Channel = () => {
     );
   }, []);
 
-  const sendMessage = (event: React.MouseEvent<HTMLElement>) => {
+  const onSendClick = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
+    // client.send(
+    //   '/pub/chat/message',
+    //   {
+    //     Authorization: `Bearer ${accessToken}`,
+    //   },
+    //   JSON.stringify({
+    //     channelId: channelId,
+    //     sender: '인주비',
+    //     contents: getMarkdownText(),
+    //     type: 'TALK',
+    //     files: fileUrl ? fileUrl : null,
+    //   })
+    // );
+    sendMessage();
+    // setMessage('');
+    // setFiles([]);
+  };
+
+  const sendMessage = () => {
     client.send(
       '/pub/chat/message',
       {
@@ -73,13 +93,25 @@ const Channel = () => {
       JSON.stringify({
         channelId: channelId,
         sender: '인주비',
-        contents: message,
+        contents: getMarkdownText(),
         type: 'TALK',
         files: fileUrl ? fileUrl : null,
       })
     );
+    console.log('hi');
     setMessage('');
     setFiles([]);
+    setFileUrl([]);
+  };
+
+  const getMarkdownText = () => {
+    const rawMarkup = marked(message, {
+      gfm: true,
+      breaks: true,
+      xhtml: true,
+    });
+    console.log(rawMarkup);
+    return rawMarkup;
   };
 
   return (
@@ -87,7 +119,7 @@ const Channel = () => {
       <Container>
         <Messages />
         <Files />
-        <Editor onClick={sendMessage} />
+        <Editor onClick={onSendClick} sendMessage={sendMessage} />
       </Container>
     </>
   );

@@ -1,10 +1,8 @@
 import styled from '@emotion/styled';
 import Icons from 'atoms/common/Icons';
-import DragDrop from 'organisms/chat/DragDrop';
 import FileModal from 'organisms/modal/FileModal';
 import React, { useState } from 'react';
 import { useRecoilState } from 'recoil';
-
 import Button from '../../atoms/common/Button';
 import { channelMessage } from '../../recoil/atom';
 import { colors } from '../../shared/color';
@@ -32,9 +30,10 @@ const Wrapper = styled.div`
   align-items: center;
 `;
 
-const Editor = ({ onClick }: editorProps) => {
+const Editor = ({ onClick, sendMessage }: editorProps) => {
   const [message, setMessage] = useRecoilState<string>(channelMessage);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
   const onChange = (event: React.FormEvent<HTMLInputElement>) => {
     const {
       currentTarget: { value },
@@ -42,22 +41,27 @@ const Editor = ({ onClick }: editorProps) => {
     setMessage(value);
   };
 
-  const preventClick = (e: React.MouseEvent) => {
-    // e.stopPropagation();
+  const onKeyUp = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    console.log(event);
+    if (event.code === 'Enter') {
+      if (sendMessage) {
+        sendMessage();
+      }
+    }
   };
 
   const handleFileModal = () => {
     setIsModalOpen((prev) => !prev);
   };
-
   return (
     <>
       <Container>
         {/* <DragDrop /> */}
         <Input
+          type="textarea"
           value={message}
           onChange={onChange}
-          onClick={preventClick}
+          onKeyPress={onKeyUp}
         ></Input>
         <Wrapper>
           <Icons icon="file" color="gray500" onClick={handleFileModal} />
