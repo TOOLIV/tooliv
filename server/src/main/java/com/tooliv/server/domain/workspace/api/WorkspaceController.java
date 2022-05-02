@@ -5,6 +5,7 @@ import com.tooliv.server.domain.workspace.application.dto.request.ModifyWorkspac
 import com.tooliv.server.domain.workspace.application.dto.request.RegisterWorkspaceRequestDTO;
 import com.tooliv.server.domain.workspace.application.dto.response.RegisterWorkspaceResponseDTO;
 import com.tooliv.server.domain.workspace.application.dto.response.WorkspaceListGetResponseDTO;
+import com.tooliv.server.domain.workspace.application.dto.response.WorkspaceNameGetResponseDTO;
 import com.tooliv.server.global.common.BaseResponseDTO;
 import com.tooliv.server.global.exception.UserNotFoundException;
 import io.swagger.annotations.Api;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -117,5 +119,27 @@ public class WorkspaceController {
         }
 
         return ResponseEntity.status(200).body(WorkspaceListGetResponseDTO.of("워크스페이스 목록 조회 완료", workspaceListGetResponseDTO));
+    }
+
+    @GetMapping("/info")
+    @ApiOperation(value = "워크스페이스명 조회")
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "워크스페이스명 조회 완료"),
+        @ApiResponse(code = 404, message = "조회 가능한 워크스페이스 정보가 없음"),
+        @ApiResponse(code = 409, message = "워크스페이스명 조회 실패"),
+    })
+    public ResponseEntity<? extends BaseResponseDTO> getWorkspaceInfo(
+        @RequestParam @ApiParam(value="워크스페이스 ID", required = true) String workspaceId) {
+        WorkspaceNameGetResponseDTO workspaceNameGetResponseDTO = null;
+
+        try {
+            workspaceNameGetResponseDTO = workspaceService.getWorkspaceName(workspaceId);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(409).body(BaseResponseDTO.of("워크스페이스명 조회 실패"));
+        } catch (Exception e) {
+            return ResponseEntity.status(404).body(WorkspaceListGetResponseDTO.of("조회 가능한 워크스페이스 정보가 없음", new WorkspaceListGetResponseDTO()));
+        }
+
+        return ResponseEntity.status(200).body(WorkspaceNameGetResponseDTO.of("워크스페이스명 조회 완료", workspaceNameGetResponseDTO));
     }
 }
