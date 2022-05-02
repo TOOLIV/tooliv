@@ -13,8 +13,23 @@ export const createToken = (sessionId: string) => {
   });
 };
 
+export const getSession = (sessionId: string) => {
+  return new Promise(async (resolve, reject) => {
+    await openviduInstance
+      .get(`/openvidu/api/sessions/${sessionId}`)
+      .then((response) => {
+        console.log('GET SESSION', response);
+        resolve(response);
+      })
+      .catch((e) => {
+        const err = Object.assign({}, e);
+      });
+  });
+};
+
 export const createSession = (sessionId: string) => {
   const data = JSON.stringify({ customSessionId: sessionId });
+  console.log(data);
   return new Promise(async (resolve, reject) => {
     await openviduInstance
       .post(`/openvidu/api/sessions`, data)

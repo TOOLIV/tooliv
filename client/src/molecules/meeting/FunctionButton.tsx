@@ -23,7 +23,7 @@ export const IconContainer = styled.div<{ exit?: boolean; message?: boolean }>`
 
   position: ${(props) => (props.message ? 'absolute' : '')};
   right: ${(props) => (props.message ? '40px' : '')};
-  bottom: ${(props) => (props.message ? '24px' : '')};
+  bottom: ${(props) => (props.message ? '30px' : '')};
 `;
 
 const FunctionButton = ({ icon, exit, onClick }: functionButtonTypes) => {
