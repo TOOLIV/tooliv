@@ -114,7 +114,7 @@ public class ChannelServiceImpl implements ChannelService {
 
         try {
             List<ChannelMembers> memberList = channelMembersRepository.findByChannel(channel);
-            for(ChannelMembers channelMember : memberList) {
+            for (ChannelMembers channelMember : memberList) {
                 channelMemberService.deleteChannelMember(channelId, new DeleteChannelMemberRequestDTO(channelMember.getUser().getEmail()));
             }
             channel.deleteChannel();
@@ -134,14 +134,14 @@ public class ChannelServiceImpl implements ChannelService {
         List<Channel> channelList = channelRepository.findByWorkspaceIdAndUser(workspaceId, user.getId());
 
         List<ChannelGetResponseDTO> channelGetResponseDTOList = new ArrayList<>();
-        channelList.forEach(channel-> {
-                ChannelGetResponseDTO channelGetResponseDTO = ChannelGetResponseDTO.builder()
-                    .id(channel.getId())
-                    .name(channel.getName())
-                    .privateYn(channel.isPrivateYn())
-                    .channelCode(channel.getChannelCode())
-                    .build();
-                channelGetResponseDTOList.add(channelGetResponseDTO);
+        channelList.forEach(channel -> {
+            ChannelGetResponseDTO channelGetResponseDTO = ChannelGetResponseDTO.builder()
+                .id(channel.getId())
+                .name(channel.getName())
+                .privateYn(channel.isPrivateYn())
+                .channelCode(channel.getChannelCode())
+                .build();
+            channelGetResponseDTOList.add(channelGetResponseDTO);
         });
         return new ChannelListGetResponseDTO(channelGetResponseDTOList);
     }
@@ -149,12 +149,17 @@ public class ChannelServiceImpl implements ChannelService {
     @Override
     public ChannelListGetResponseDTO getPublicChannelList(String workspaceId) {
 
-        List<Channel> channelList = channelRepository.findByWorkspaceId(workspaceId);
+        User user = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
+            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+
+        List<String> channelIdList = channelRepository.findByWorkspaceId(workspaceId, user.getId());
         List<ChannelGetResponseDTO> channelGetResponseDTOList = new ArrayList<>();
 
-        channelList.forEach(channel -> {
+        channelIdList.forEach(channelId -> {
+            Channel channel = channelRepository.findById(channelId)
+                .orElseThrow(() -> new IllegalArgumentException("채널 정보가 존재하지 않습니다."));
             ChannelGetResponseDTO channelGetResponseDTO = ChannelGetResponseDTO.builder()
-                .id(channel.getId())
+                .id(channelId)
                 .name(channel.getName())
                 .privateYn(channel.isPrivateYn())
                 .channelCode(channel.getChannelCode())
