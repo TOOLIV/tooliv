@@ -32,6 +32,7 @@ const SideHeader = () => {
   const [memberListOpen, setMemberListOpen] = useState(false);
   const [addMemberModalOpen, setAddMemberModalOpen] = useState(false);
   const [workspaceName, setWorkspaceName] = useState('홈');
+  const [thumbnailImage, setThumbnailImage] = useState('');
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleClickOutside = ({ target }: any) => {
@@ -51,6 +52,7 @@ const SideHeader = () => {
     const { data } = await getWorkspaceInfo(currentWorkspaceId);
     console.log(data);
     setWorkspaceName(data.name);
+    setThumbnailImage(data.thumbnailImage);
   }, [currentWorkspaceId]);
 
   useEffect(() => {
@@ -126,7 +128,7 @@ const SideHeader = () => {
             isOpen={modifyModalOpen}
             onClose={closeModifyModal}
             workspaceName={workspaceName}
-            thumbnailImage={'data'}
+            thumbnailImage={thumbnailImage}
           />
         </>
       ) : null}

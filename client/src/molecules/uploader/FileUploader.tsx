@@ -65,7 +65,7 @@ const FileUploader = ({ file, onChange, thumbnailImage }: workspaceImgType) => {
     } else if (thumbnailImage) {
       setImgFile(thumbnailImage);
     } else setImgFile('');
-  }, [file]);
+  }, [file, thumbnailImage]);
 
   return (
     <Container onClick={handleUploadBtnClick}>

@@ -1,5 +1,9 @@
 import styled from '@emotion/styled';
-import { getChannelInfo, searchChannelMemberList } from 'api/channelApi';
+import {
+  getChannelInfo,
+  getChannelUserCode,
+  searchChannelMemberList,
+} from 'api/channelApi';
 import Icons from 'atoms/common/Icons';
 import Text from 'atoms/text/Text';
 import ChannelAddMemberModal from 'organisms/modal/channel/header/ChannelAddMemberModal';
@@ -51,6 +55,7 @@ const ChannelHeader = () => {
   const [modifyModalOpen, setModifyModalOpen] = useState(false);
   const [memeberListOpen, setMemberListOpen] = useState(false);
   const [addMemeberOpen, setAddMemberOpen] = useState(false);
+  const [userCode, setUserCode] = useState('');
 
   const [currentChannelMemberNum, setCurrentChannelMemberNum] =
     useRecoilState(currentChannelNum);
@@ -73,8 +78,10 @@ const ChannelHeader = () => {
   useEffect(() => {
     if (channelId) {
       handleChannelInfo();
+      getUserCode();
     } else {
       setChannelName('홈');
+      setUserCode('');
     }
   }, [channelId, modChannelName]);
 
@@ -89,6 +96,11 @@ const ChannelHeader = () => {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const getUserCode = async () => {
+    const { data } = await getChannelUserCode(channelId!);
+    setUserCode(data.channelMemberCode);
   };
 
   const handleAddMemberModalOpen = () => {
@@ -115,9 +127,15 @@ const ChannelHeader = () => {
 
   return (
     <Container>
-      <Title onClick={() => setDropdownOpen(!dropdownOpen)}>
+      <Title
+        onClick={
+          userCode === 'CADMIN'
+            ? () => setDropdownOpen(!dropdownOpen)
+            : undefined
+        }
+      >
         <Text size={18}>{channelName}</Text>
-        <Icons icon="dropdown" />
+        {userCode === 'CADMIN' ? <Icons icon="dropdown" /> : null}
       </Title>
       {currentWorkspaceId !== 'main' ? (
         <Members
