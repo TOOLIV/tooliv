@@ -17,7 +17,6 @@ import {
 import { contentTypes } from '../types/channel/contentType';
 import Messages from '../organisms/chat/Messages';
 import { enterChannel, subChannel } from 'api/chatApi';
-import DragDrop from 'organisms/chat/DragDrop';
 import Files from 'organisms/chat/Files';
 import { FileTypes } from 'types/common/fileTypes';
 import { user } from 'recoil/auth';
@@ -36,7 +35,7 @@ const Channel = () => {
   const [contents, setContents] =
     useRecoilState<contentTypes[]>(channelContents);
   const [fileUrl, setFileUrl] = useRecoilState<string[]>(chatFileUrl);
-  const { accessToken } = useRecoilValue(user);
+  const { accessToken, nickname } = useRecoilValue(user);
   const baseURL = localStorage.getItem('baseURL');
   let sockJS = baseURL
     ? new SockJS(`${JSON.parse(baseURL).url}/chatting`)
@@ -52,12 +51,13 @@ const Channel = () => {
       },
       (frame) => {
         console.log('STOMP Connection');
-        enterChannel(channelId!).then((res) => {
-          console.log(res);
-          subChannel(channelId!);
-          client.subscribe(`/sub/chat/room/${channelId}`, (response) => {
-            console.log(response);
-            setContents((prev) => [...prev, JSON.parse(response.body)]);
+        enterChannel(channelId!).then(() => {
+          subChannel(channelId!).then((res) => {
+            setContents(res.data.chatMessageDTOList);
+            client.subscribe(`/sub/chat/room/${channelId}`, (response) => {
+              console.log(response);
+              setContents((prev) => [...prev, JSON.parse(response.body)]);
+            });
           });
         });
       }
@@ -77,7 +77,7 @@ const Channel = () => {
       },
       JSON.stringify({
         channelId: channelId,
-        sender: '인주비',
+        sender: nickname,
         contents: getMarkdownText(),
         type: 'TALK',
         files: fileUrl ? fileUrl : null,
