@@ -43,9 +43,7 @@ const Editor = ({ onClick, sendMessage }: editorProps) => {
 
   const onKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.code === 'Enter') {
-      if (event.shiftKey) {
-        // setMessage((prev) => prev + '<br />');
-      } else {
+      if (!event.shiftKey) {
         event.preventDefault();
         if (sendMessage) {
           sendMessage();
@@ -60,7 +58,6 @@ const Editor = ({ onClick, sendMessage }: editorProps) => {
   return (
     <>
       <Container>
-        {/* <DragDrop /> */}
         <Input
           value={message}
           onChange={onChange}

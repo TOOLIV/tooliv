@@ -6,6 +6,12 @@ import Text from 'atoms/text/Text';
 import InputBox from 'molecules/inputBox/InputBox';
 import { useNavigate } from 'react-router-dom';
 import Logo from '../common/Logo';
+import { useEffect } from 'react';
+import { user } from 'recoil/auth';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { channelContents } from 'recoil/atom';
+import { contentTypes } from 'types/channel/contentType';
+import { connect } from 'services/wsconnect';
 
 const NavContainer = styled.div`
   padding: 0px 20px;
@@ -31,7 +37,12 @@ const InputContainer = styled.div`
 `;
 const Nav = () => {
   const navigate = useNavigate();
-
+  const { accessToken, email } = useRecoilValue(user);
+  const [contents, setContents] =
+    useRecoilState<contentTypes[]>(channelContents);
+  useEffect(() => {
+    connect(accessToken, email, setContents);
+  }, []);
   return (
     <NavContainer>
       <LogoContainer>

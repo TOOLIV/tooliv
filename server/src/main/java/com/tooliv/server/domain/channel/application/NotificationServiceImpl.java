@@ -1,13 +1,20 @@
 package com.tooliv.server.domain.channel.application;
 
+import com.tooliv.server.domain.channel.application.dto.response.NotificationListResponseDTO;
 import com.tooliv.server.domain.channel.domain.Channel;
 import com.tooliv.server.domain.channel.domain.ChannelChatNotification;
+import com.tooliv.server.domain.channel.domain.ChannelMembers;
 import com.tooliv.server.domain.channel.domain.DirectChatNotification;
 import com.tooliv.server.domain.channel.domain.DirectChatRoom;
 import com.tooliv.server.domain.channel.domain.repository.ChannelChatNotificationRepository;
+import com.tooliv.server.domain.channel.domain.repository.ChannelMembersRepository;
 import com.tooliv.server.domain.channel.domain.repository.DirectChatNotificationRepository;
 import com.tooliv.server.domain.user.domain.User;
+import com.tooliv.server.domain.user.domain.repository.UserRepository;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,6 +24,23 @@ public class NotificationServiceImpl implements NotificationService {
     private final ChannelChatNotificationRepository channelChatNotificationRepository;
 
     private final DirectChatNotificationRepository directChatNotificationRepository;
+
+    private final UserRepository userRepository;
+
+    private final ChannelMembersRepository channelMembersRepository;
+
+    @Override
+    public NotificationListResponseDTO getNotificationList(String email) {
+        User user = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
+            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+
+        List<ChannelMembers> channelMembers = channelMembersRepository.findByUser(user).orElseThrow(() -> new IllegalArgumentException("채널 정보가 존재하지 않습니다."));
+        List<String> members = new ArrayList<>();
+        for (int i = 0; i < channelMembers.size(); i++) {
+            members.add(channelMembers.get(i).getChannel().getId());
+        }
+        return new NotificationListResponseDTO(members);
+    }
 
     @Override
     public void createChannelNotification(User user, Channel channel) {// 채팅방 알람 생성
@@ -33,8 +57,9 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void readChannelNotification(User user, Channel channel) {
         ChannelChatNotification channelChatNotification = channelChatNotificationRepository.findByChannelAndUserAndNotificationYn(channel, user, false).orElse(null);
-        if(channelChatNotification ==null)
+        if (channelChatNotification == null) {
             return;
+        }
         channelChatNotification.updateRead(true);
         channelChatNotificationRepository.save(channelChatNotification);
     }
