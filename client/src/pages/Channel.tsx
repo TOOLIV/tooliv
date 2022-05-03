@@ -1,11 +1,9 @@
 import styled from '@emotion/styled';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
-import axios from 'axios';
 import Editor from '../molecules/chat/Editor';
-import Message from '../molecules/chat/Message';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
   channelContents,
@@ -13,7 +11,6 @@ import {
   chatFileNames,
   chatFiles,
   chatFileUrl,
-  isDragging,
 } from '../recoil/atom';
 import { contentTypes } from '../types/channel/contentType';
 import Messages from '../organisms/chat/Messages';
@@ -39,7 +36,6 @@ const LoadContainer = styled.div`
 `;
 
 const Channel = () => {
-  const navigate = useNavigate();
   const [message, setMessage] = useRecoilState<string>(channelMessage);
   const [files, setFiles] = useRecoilState<FileTypes[]>(chatFiles);
   const [contents, setContents] =
@@ -51,15 +47,15 @@ const Channel = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const baseURL = localStorage.getItem('baseURL');
-  let sockJS = baseURL
-    ? new SockJS(`${JSON.parse(baseURL).url}/chatting`)
-    : // 로컬에서 테스트시 REACT_APP_BASE_URL, server 주소는 REACT_APP_BASE_SERVER_URL
-      new SockJS(`${process.env.REACT_APP_BASE_SERVER_URL}/chatting`);
-  // let client = Stomp.over(sockJS);
-  const [client, setClient] = useState<Stomp.Client>(Stomp.over(sockJS));
+  const [client, setClient] = useState<Stomp.Client>();
 
   useEffect(() => {
     setIsLoading(true);
+    let sockJS = baseURL
+      ? new SockJS(`${JSON.parse(baseURL).url}/chatting`)
+      : // 로컬에서 테스트시 REACT_APP_BASE_URL, server 주소는 REACT_APP_BASE_SERVER_URL
+        new SockJS(`${process.env.REACT_APP_BASE_SERVER_URL}/chatting`);
+    let client: Stomp.Client = Stomp.over(sockJS);
     client.connect(
       {
         Authorization: `Bearer ${accessToken}`,
@@ -79,9 +75,11 @@ const Channel = () => {
         });
       }
     );
+    setClient(client);
     return () =>
       client.disconnect(() => {
         console.log('disconnect');
+        // setClient(Stomp.over(sockJS));
       });
   }, [channelId]);
 
@@ -91,22 +89,26 @@ const Channel = () => {
   };
 
   const sendMessage = () => {
-    client.send(
-      '/pub/chat/message',
-      {
-        Authorization: `Bearer ${accessToken}`,
-      },
-      JSON.stringify({
-        channelId: channelId,
-        sender: nickname,
-        email: email,
-        sendTime: new Date(),
-        contents: getMarkdownText(),
-        type: 'TALK',
-        files: fileUrl ? fileUrl : null,
-        originalFiles: fileNames ? fileNames : null,
-      })
-    );
+    {
+      client &&
+        client.send(
+          '/pub/chat/message',
+          {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          JSON.stringify({
+            channelId: channelId,
+            sender: nickname,
+            email: email,
+            sendTime: new Date(),
+            contents: getMarkdownText(),
+            type: 'TALK',
+            files: fileUrl ? fileUrl : null,
+            originalFiles: fileNames ? fileNames : null,
+          })
+        );
+    }
+
     setMessage('');
     setFiles([]);
     setFileUrl([]);
