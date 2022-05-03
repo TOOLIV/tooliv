@@ -182,6 +182,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
         WorkspaceNameGetResponseDTO workspaceNameGetResponseDTO = WorkspaceNameGetResponseDTO.builder()
             .name(workspace.getName())
+            .thumbnailImage(getImageURL(workspace.getThumbnailImage()))
             .build();
 
         return workspaceNameGetResponseDTO;
