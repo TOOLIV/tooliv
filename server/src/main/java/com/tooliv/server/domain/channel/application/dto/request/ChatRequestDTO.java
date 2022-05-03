@@ -21,11 +21,17 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ChatRequestDTO implements Serializable {
 
+    @ApiModelProperty(name = "메시지 ID")
+    private long chatId;
+
     @ApiModelProperty(name = "채팅방 ID")
     private String channelId;
 
     @ApiModelProperty(name = "보낸사람 name")
     private String sender;
+
+    @ApiModelProperty(name = "보낸사람 email")
+    private String email;
 
     @ApiModelProperty(name = "내용")
     private String contents;
