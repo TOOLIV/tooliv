@@ -13,6 +13,7 @@ import {
   currentChannel,
   currentWorkspace,
   isOpenSide,
+  modifyChannelName,
   userLog,
 } from 'recoil/atom';
 
@@ -40,6 +41,7 @@ const ChannelSection = () => {
 
   const [channelList, setChannelList] = useState([]);
   const currentWorkspaceId = useRecoilValue(currentWorkspace);
+  const modChannelName = useRecoilValue(modifyChannelName);
   const [currentChannelId, setCurrentChannelId] =
     useRecoilState(currentChannel);
   const [userLogList, setUserLogList] = useRecoilState(userLog);
@@ -55,7 +57,7 @@ const ChannelSection = () => {
 
   useEffect(() => {
     if (currentChannelId) handleChannel();
-  }, [currentChannelId]);
+  }, [currentChannelId, modChannelName]);
 
   const openDropdownModal = () => {
     setIsDropdownModalOpen(true);

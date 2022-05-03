@@ -4,6 +4,7 @@ export type buttonTypes = {
   width?: string;
   height?: string;
   text: string;
+  disabled?: boolean;
   bgColor?: colorsTypes['color'];
   textColor?: colorsTypes['color'];
   onClick?: (event: React.MouseEvent<HTMLElement>) => void;
