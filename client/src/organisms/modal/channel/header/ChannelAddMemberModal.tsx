@@ -60,7 +60,7 @@ const UserBox = styled.div`
   margin-bottom: 10px;
 `;
 
-const ButtonBox = styled.div`
+export const ButtonBox = styled.div`
   width: 50%;
   display: flex;
   justify-content: space-between;

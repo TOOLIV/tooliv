@@ -69,6 +69,14 @@ export type exitChannelModalType = {
 
 export type channelHeaderDropdownType = {
   isOpen: boolean;
+  onClose: () => void;
+  onClick: () => void;
+};
+
+export type channelModifyModalType = {
+  isOpen: boolean;
+  onClose: () => void;
+  channelName: string;
 };
 
 export type publicChannelType = {

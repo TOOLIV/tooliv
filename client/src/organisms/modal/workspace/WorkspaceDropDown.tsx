@@ -43,7 +43,10 @@ const ListItem = styled.div`
 `;
 
 const WorkspaceDropDown = forwardRef<HTMLDivElement, workspaceDropdownType>(
-  ({ isOpen, onClose, openMemberList, openAddMemberModal }, ref) => {
+  (
+    { isOpen, onClose, openMemberList, openAddMemberModal, openModifyModal },
+    ref
+  ) => {
     const { workspaceId } = useParams();
     const setCurrentWorkspaceId = useSetRecoilState(currentWorkspace);
     const { email } = useRecoilValue(user);
@@ -54,6 +57,11 @@ const WorkspaceDropDown = forwardRef<HTMLDivElement, workspaceDropdownType>(
     };
     const handleAddMemberModal = () => {
       openAddMemberModal();
+      onClose();
+    };
+
+    const handleModifyModal = () => {
+      openModifyModal();
       onClose();
     };
 
@@ -77,6 +85,11 @@ const WorkspaceDropDown = forwardRef<HTMLDivElement, workspaceDropdownType>(
           <ListItem onClick={handleAddMemberModal}>
             <Text size={16} pointer>
               멤버 초대
+            </Text>
+          </ListItem>
+          <ListItem onClick={handleModifyModal}>
+            <Text size={16} pointer>
+              워크스페이스 수정
             </Text>
           </ListItem>
           <ListItem onClick={() => exitWorkspace()}>

@@ -5,10 +5,15 @@ import Text from 'atoms/text/Text';
 import ChannelAddMemberModal from 'organisms/modal/channel/header/ChannelAddMemberModal';
 import ChannelHeaderDropdown from 'organisms/modal/channel/header/ChannelHeaderDropdown';
 import ChannelMemberListModal from 'organisms/modal/channel/header/ChannelMemberListModal';
+import ChannelModifyModal from 'organisms/modal/channel/header/ChannelModifyModal';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { currentChannelNum, currentWorkspace } from 'recoil/atom';
+import {
+  currentChannelNum,
+  currentWorkspace,
+  modifyChannelName,
+} from 'recoil/atom';
 import { colors } from '../../shared/color';
 
 const Container = styled.div`
@@ -43,11 +48,13 @@ const ChannelHeader = () => {
   const [channelName, setChannelName] = useState('');
   const [channelMemberNum, setChannelMemberNum] = useState(0);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [modifyModalOpen, setModifyModalOpen] = useState(false);
   const [memeberListOpen, setMemberListOpen] = useState(false);
   const [addMemeberOpen, setAddMemberOpen] = useState(false);
 
   const [currentChannelMemberNum, setCurrentChannelMemberNum] =
     useRecoilState(currentChannelNum);
+  const modChannelName = useRecoilValue(modifyChannelName);
 
   // 새로고침시 채널별 인원수가 초기화 되므로 다시 저장하기 위한 useEffect
   useEffect(() => {
@@ -69,7 +76,7 @@ const ChannelHeader = () => {
     } else {
       setChannelName('홈');
     }
-  }, [channelId]);
+  }, [channelId, modChannelName]);
 
   const handleChannelInfo = async () => {
     try {
@@ -87,12 +94,23 @@ const ChannelHeader = () => {
   const handleAddMemberModalOpen = () => {
     setAddMemberOpen(true);
   };
+  const handleModifyModalOpen = () => {
+    setModifyModalOpen(true);
+  };
+
   const closeMemberList = () => {
     setMemberListOpen(false);
   };
 
   const closeAddMemberModal = () => {
     setAddMemberOpen(false);
+  };
+
+  const closeDropdown = () => {
+    setDropdownOpen(false);
+  };
+  const closeModifyModal = () => {
+    setModifyModalOpen(false);
   };
 
   return (
@@ -135,7 +153,16 @@ const ChannelHeader = () => {
         channelId={channelId!}
       />
 
-      <ChannelHeaderDropdown isOpen={dropdownOpen} />
+      <ChannelHeaderDropdown
+        isOpen={dropdownOpen}
+        onClick={handleModifyModalOpen}
+        onClose={closeDropdown}
+      />
+      <ChannelModifyModal
+        isOpen={modifyModalOpen}
+        onClose={closeModifyModal}
+        channelName={channelName}
+      />
     </Container>
   );
 };

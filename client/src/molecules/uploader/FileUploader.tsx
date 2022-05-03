@@ -42,7 +42,7 @@ const UploadWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
 `;
-const FileUploader = ({ file, onChange }: workspaceImgType) => {
+const FileUploader = ({ file, onChange, thumbnailImage }: workspaceImgType) => {
   const [imgFile, setImgFile] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -60,8 +60,11 @@ const FileUploader = ({ file, onChange }: workspaceImgType) => {
   };
 
   useEffect(() => {
-    if (file) setImgFile(URL.createObjectURL(file));
-    else setImgFile('');
+    if (file) {
+      setImgFile(URL.createObjectURL(file));
+    } else if (thumbnailImage) {
+      setImgFile(thumbnailImage);
+    } else setImgFile('');
   }, [file]);
 
   return (

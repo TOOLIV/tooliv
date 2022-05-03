@@ -5,6 +5,7 @@ import Text from 'atoms/text/Text';
 import WorkspaceAddMemberModal from 'organisms/modal/workspace/WorkspaceAddMemberModal';
 import WorkspaceDropDown from 'organisms/modal/workspace/WorkspaceDropDown';
 import WorkspaceMemberListModal from 'organisms/modal/workspace/WorkspaceMemberListModal';
+import WorkspaceModifyModal from 'organisms/modal/workspace/WorkspaceModifyModal';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
@@ -25,6 +26,7 @@ const Title = styled.div`
 
 const SideHeader = () => {
   const [isOpen, setIsOpen] = useRecoilState<boolean>(isOpenSide);
+  const [modifyModalOpen, setModifyModalOpen] = useState(false);
   const currentWorkspaceId = useRecoilValue(currentWorkspace);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [memberListOpen, setMemberListOpen] = useState(false);
@@ -47,6 +49,7 @@ const SideHeader = () => {
 
   const handleWorkspaceInfo = useCallback(async () => {
     const { data } = await getWorkspaceInfo(currentWorkspaceId);
+    console.log(data);
     setWorkspaceName(data.name);
   }, [currentWorkspaceId]);
 
@@ -76,9 +79,12 @@ const SideHeader = () => {
     setAddMemberModalOpen(false);
   };
 
-  useEffect(() => {
-    console.log(dropdownOpen);
-  }, [dropdownOpen]);
+  const openModifyModal = () => {
+    setModifyModalOpen(true);
+  };
+  const closeModifyModal = () => {
+    setModifyModalOpen(false);
+  };
 
   return (
     <Container isOpen={isOpen}>
@@ -105,6 +111,7 @@ const SideHeader = () => {
             onClose={closeDropdown}
             openMemberList={openWorkspaceMemberList}
             openAddMemberModal={openAddMemberModal}
+            openModifyModal={openModifyModal}
             ref={dropdownRef}
           />
           <WorkspaceMemberListModal
@@ -114,6 +121,12 @@ const SideHeader = () => {
           <WorkspaceAddMemberModal
             isOpen={addMemberModalOpen}
             onClose={closeAddMemberModal}
+          />
+          <WorkspaceModifyModal
+            isOpen={modifyModalOpen}
+            onClose={closeModifyModal}
+            workspaceName={workspaceName}
+            thumbnailImage={'data'}
           />
         </>
       ) : null}

@@ -44,11 +44,15 @@ const ListItem = styled.div`
 const ChannelHeaderDropdown = forwardRef<
   HTMLDivElement,
   channelHeaderDropdownType
->(({ isOpen }, ref) => {
+>(({ isOpen, onClick, onClose }, ref) => {
+  const handleOpenModifyModal = () => {
+    onClick();
+    onClose();
+  };
   return (
     <Modal isOpen={isOpen} ref={ref}>
       <Container>
-        <ListItem>
+        <ListItem onClick={handleOpenModifyModal}>
           <Text size={14} pointer>
             채널 수정하기
           </Text>
