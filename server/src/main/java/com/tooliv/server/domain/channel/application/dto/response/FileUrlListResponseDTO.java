@@ -12,11 +12,15 @@ public class FileUrlListResponseDTO extends BaseResponseDTO {
     @ApiModelProperty("Aws S3 List 목록")
     private List<String> fileUrlList;
 
+    @ApiModelProperty("Aws S3 List 목록")
+    private List<String> fileList;
+
     public FileUrlListResponseDTO() {
     }
 
-    public FileUrlListResponseDTO(List<String> fileUrlList) {
+    public FileUrlListResponseDTO(List<String> fileUrlList,List<String> fileList) {
         this.fileUrlList = fileUrlList;
+        this.fileList = fileList;
     }
 
     public static FileUrlListResponseDTO of(String message, FileUrlListResponseDTO fileUrlListResponseDTO) {

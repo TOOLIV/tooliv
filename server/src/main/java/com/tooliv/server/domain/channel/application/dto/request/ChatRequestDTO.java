@@ -47,7 +47,11 @@ public class ChatRequestDTO implements Serializable {
     @ApiModelProperty(name = "파일")
     private List<String> files;
 
-    public void updateFiles(List<String> files) {
+    @ApiModelProperty(name = "파일 이름")
+    private List<String> originFiles;
+
+    public void updateFiles(List<String> files,List<String> originFiles) {
         this.files = files;
+        this.originFiles = originFiles;
     }
 }
