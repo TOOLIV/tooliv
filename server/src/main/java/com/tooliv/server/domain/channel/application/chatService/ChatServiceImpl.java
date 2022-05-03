@@ -110,6 +110,8 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public void setChatInfoValue(String key, ChatRequestDTO value) {
+        long idx = redisChannelTemplate.opsForList().size(key);
+        value.updateChatId(idx + 1);
         System.out.println(redisChannelTemplate.opsForList().rightPush(key, value));
     }
 
@@ -123,7 +125,7 @@ public class ChatServiceImpl implements ChatService {
                 .fileName(fileName)
                 .build();
             files.add(getImageURL(fileName));
-            originFiles.add(fileName);
+            originFiles.add(file.getOriginalFilename());
             chatFileRepository.save(chatFile);
         });
 
