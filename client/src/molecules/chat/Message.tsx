@@ -33,7 +33,14 @@ const File = styled.img`
   max-width: 300px;
 `;
 
-const Message = ({ roomId, sender, contents, type, files }: contentTypes) => {
+const Message = ({
+  roomId,
+  sender,
+  sendTime,
+  contents,
+  type,
+  files,
+}: contentTypes) => {
   return (
     <Container>
       <ProfileContainer>
@@ -41,6 +48,7 @@ const Message = ({ roomId, sender, contents, type, files }: contentTypes) => {
           <Avatar />
         </SideWrapper>
         <Label name={sender} size="16px" />
+        <Time />
       </ProfileContainer>
       <ContentContainer
         dangerouslySetInnerHTML={{ __html: contents }}
