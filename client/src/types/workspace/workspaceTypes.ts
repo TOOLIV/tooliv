@@ -53,6 +53,10 @@ export type inviteMembersType = {
   emailList: string[];
 };
 
+export type deleteMembersType = {
+  email: string;
+};
+
 export type inviteMembersBadgeType = {
   name: string;
   email: string;

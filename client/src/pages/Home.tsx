@@ -13,7 +13,7 @@ const Wrapper = styled.div<{ leftMargin: number; rightMargin: number }>`
   width: calc(
     100vw - ${(props) => props.leftMargin + props.rightMargin + 'px'}
   );
-  height: calc(100vh - 40px);
+  height: calc(100vh - 64px);
   margin-left: ${(props) => props.leftMargin + 'px'};
   margin-right: ${(props) => props.rightMargin + 'px'};
 `;
@@ -21,13 +21,12 @@ const Wrapper = styled.div<{ leftMargin: number; rightMargin: number }>`
 const Container = styled.div`
   display: flex;
   flex-direction: row;
-  /* height: calc(100vh - 40px); */
   justify-content: space-between;
 `;
 const InnerContainer = styled.div<{ leftMargin: number; rightMargin: number }>`
   padding: 30px 40px;
   width: inherit;
-  height: calc(100vh - 116px);
+  height: calc(100vh - 140px);
   background-color: ${(props) => props.theme.bgColor};
 `;
 

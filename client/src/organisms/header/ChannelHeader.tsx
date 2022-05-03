@@ -2,8 +2,8 @@ import styled from '@emotion/styled';
 import { getChannelInfo, searchChannelMemberList } from 'api/channelApi';
 import Icons from 'atoms/common/Icons';
 import Text from 'atoms/text/Text';
-import ChannelAddMemberModal from 'organisms/modal/channel/ChannelAddMemberModal';
-import ChannelMemberListModal from 'organisms/modal/channel/ChannelMemberListModal';
+import ChannelAddMemberModal from 'organisms/modal/channel/header/ChannelAddMemberModal';
+import ChannelMemberListModal from 'organisms/modal/channel/header/ChannelMemberListModal';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
@@ -32,6 +32,10 @@ const Members = styled.div`
     background-color: ${colors.gray100};
   }
 `;
+const Title = styled.div`
+  display: flex;
+  align-items: center;
+`;
 const ChannelHeader = () => {
   const { channelId } = useParams();
   const [channelName, setChannelName] = useState('');
@@ -57,7 +61,6 @@ const ChannelHeader = () => {
 
   useEffect(() => {
     if (channelId) {
-      console.log(channelId);
       handleChannelInfo();
     }
   }, [channelId]);
@@ -88,7 +91,10 @@ const ChannelHeader = () => {
 
   return (
     <Container>
-      <Text size={18}>{channelName}</Text>
+      <Title onClick={() => {}}>
+        <Text size={18}>{channelName}</Text>
+        <Icons icon="dropdown" />
+      </Title>
       <Members
         onClick={() => {
           setMemberListOpen(!memeberListOpen);
@@ -104,6 +110,7 @@ const ChannelHeader = () => {
           {String(channelMemberNum)}
         </Text>
       </Members>
+
       <ChannelMemberListModal
         isOpen={memeberListOpen}
         onClick={handleAddMemberModalOpen}

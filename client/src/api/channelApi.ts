@@ -1,4 +1,4 @@
-import { channelTypes } from 'types/channel/contentType';
+import { channelTypes, modifyChannelType } from 'types/channel/contentType';
 import { inviteMembersType } from 'types/workspace/workspaceTypes';
 import instance from '../services/axios';
 
@@ -48,5 +48,19 @@ export const inviteChannelMember = async (
 
 export const getChannelInfo = async (channelId: string) => {
   const response = await instance.get(`channel/${channelId}/member/info`);
+  return response;
+};
+
+export const modifyChannel = async (body: modifyChannelType) => {
+  const response = await instance.patch(`channel`, body);
+  return response;
+};
+
+export const deleteChannelMember = async (
+  workspaceId: string
+  // body: deleteMembersType
+) => {
+  const response = await instance.delete(`workspace/${workspaceId}/member`);
+
   return response;
 };

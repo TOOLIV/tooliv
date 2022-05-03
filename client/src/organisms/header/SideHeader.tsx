@@ -76,9 +76,18 @@ const SideHeader = () => {
     setAddMemberModalOpen(false);
   };
 
+  useEffect(() => {
+    console.log(dropdownOpen);
+  }, [dropdownOpen]);
+
   return (
     <Container isOpen={isOpen}>
-      <Title onClick={() => setDropdownOpen(!dropdownOpen)}>
+      <Title
+        onClick={() => {
+          console.log('hello');
+          setDropdownOpen(!dropdownOpen);
+        }}
+      >
         <Text size={24} weight="700" pointer={currentWorkspaceId !== 'main'}>
           {/* 워크스페이스 id로 워크스페이명 불러오는 api 연동. */}
           {workspaceName}

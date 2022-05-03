@@ -1,4 +1,7 @@
-import { inviteMembersType } from 'types/workspace/workspaceTypes';
+import {
+  deleteMembersType,
+  inviteMembersType,
+} from 'types/workspace/workspaceTypes';
 import instance from '../services/axios';
 
 export const getWorkspaceList = async () => {
@@ -45,5 +48,14 @@ export const getWorkspaceInfo = async (workspaceId: string) => {
   const response = await instance.get(
     `workspace/info?workspaceId=${workspaceId}`
   );
+  return response;
+};
+
+export const deleteWorkspaceMember = async (
+  workspaceId: string
+  // body: deleteMembersType
+) => {
+  const response = await instance.delete(`workspace/${workspaceId}/member`);
+
   return response;
 };

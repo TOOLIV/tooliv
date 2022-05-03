@@ -1,5 +1,7 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
+import ChannelExitModal from 'organisms/modal/channel/sidemenu/ChannelExitModal';
+import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { colors } from 'shared/color';
 import { channelsType } from 'types/channel/contentType';
@@ -21,28 +23,46 @@ const ChannelsContainer = styled.div`
   padding-bottom: 18px;
 `;
 
+const InnerContainer = styled.div`
+  display: flex;
+  align-items: center;
+  /* padding-left: 14px; */
+  /* padding-bottom: 18px; */
+`;
+
 const ChannelContainer = styled.div<{ isSelected: boolean }>`
   display: flex;
   align-items: center;
+  justify-content: space-between;
   height: 30px;
-  padding-left: 8px;
+  padding: 0 16px 0 8px;
   transition: 0.3s;
   cursor: pointer;
-  /* 선택된 채널만 */
-  background-color: ${(props) => props.isSelected && props.theme.pointColor};
+
+  background-color: ${(props) =>
+    props.isSelected && props.theme.lightPointColor};
   border-radius: ${(props) => props.isSelected && `10px 0 0 10px`};
   border-right: ${(props) =>
-    props.isSelected && `4px solid ${props.theme.pointColor}`};
+    props.isSelected && `4px solid ${props.theme.secondPointColor}`};
   ${(props) =>
-    !props.isSelected &&
+    // !props.isSelected &&
     css`
       &:hover {
         background-color: ${colors.lightPrimary};
 
         border-radius: 10px 0 0 10px;
-        border-right: none;
+        /* border-right: none; */
+      }
+
+      &:hover > div:last-child {
+        display: block;
       }
     `}
+`;
+
+const HoverIcon = styled.div`
+  display: none;
+  position: relative;
 `;
 
 export const SideWrapper = styled.div`
@@ -50,7 +70,9 @@ export const SideWrapper = styled.div`
 `;
 
 const Channels = ({ channelList, onClick }: channelsType) => {
+  const [exitModalOpen, setExitModalOpen] = useState(false);
   const { channelId } = useParams();
+
   return (
     <ChannelsContainer>
       {channelList.map((channel) => (
@@ -59,14 +81,20 @@ const Channels = ({ channelList, onClick }: channelsType) => {
           onClick={() => onClick(channel.id)}
           isSelected={channel.id === channelId}
         >
-          <SideWrapper>
-            {channel.privateYn ? (
-              <Icons icon="lock" />
-            ) : (
-              <Icons icon="public" />
-            )}
-          </SideWrapper>
-          <Label {...channel} />
+          <InnerContainer>
+            <SideWrapper>
+              {channel.privateYn ? (
+                <Icons icon="lock" />
+              ) : (
+                <Icons icon="public" />
+              )}
+            </SideWrapper>
+            <Label {...channel} />
+          </InnerContainer>
+          <HoverIcon onClick={() => setExitModalOpen(!exitModalOpen)}>
+            <Icons icon="menu" />
+            <ChannelExitModal isOpen={exitModalOpen} />
+          </HoverIcon>
         </ChannelContainer>
       ))}
     </ChannelsContainer>

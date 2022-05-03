@@ -3,7 +3,7 @@ import { getChannelList } from 'api/channelApi';
 import Icons from 'atoms/common/Icons';
 import Text from 'atoms/text/Text';
 import Channels from 'molecules/sidemenu/Channels';
-import ChannelDropDown from 'organisms/modal/channel/ChannelDropDown';
+import ChannelDropDown from 'organisms/modal/channel/sidemenu/ChannelDropDown';
 import ChannelModal from 'organisms/modal/sidemenu/ChannelModal';
 import PublicChannelListModal from 'organisms/modal/sidemenu/PublicChannelListModal';
 import React, { useEffect, useRef, useState } from 'react';

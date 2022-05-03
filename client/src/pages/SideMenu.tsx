@@ -12,7 +12,6 @@ import { useParams } from 'react-router-dom';
 
 const Container = styled(motion.div)`
   width: 280px;
-  margin-top: 24px;
   background-color: ${(props) => props.theme.sideBgColor};
   border-radius: 0 50px 0 0;
   position: absolute;
