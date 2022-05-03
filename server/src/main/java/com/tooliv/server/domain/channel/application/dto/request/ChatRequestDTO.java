@@ -54,4 +54,8 @@ public class ChatRequestDTO implements Serializable {
         this.files = files;
         this.originFiles = originFiles;
     }
+
+    public void updateChatId(long chatId) {
+        this.chatId = chatId;
+    }
 }
