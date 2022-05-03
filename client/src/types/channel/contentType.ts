@@ -1,9 +1,9 @@
 export type contentTypes = {
-  roomId: string;
+  channelId: string;
   sender: string;
   contents: string;
   type: string;
-  sendTime?: string;
+  sendTime: string;
   files?: string[];
 };
 

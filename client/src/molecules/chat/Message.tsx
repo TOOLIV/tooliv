@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import Time from 'atoms/chat/Time';
 import React from 'react';
 import Label from '../../atoms/common/Label';
 import Avatar from '../../atoms/profile/Avatar';
@@ -34,7 +35,7 @@ const File = styled.img`
 `;
 
 const Message = ({
-  roomId,
+  channelId,
   sender,
   sendTime,
   contents,
@@ -48,7 +49,7 @@ const Message = ({
           <Avatar />
         </SideWrapper>
         <Label name={sender} size="16px" />
-        <Time />
+        <Time time={sendTime} />
       </ProfileContainer>
       <ContentContainer
         dangerouslySetInnerHTML={{ __html: contents }}
