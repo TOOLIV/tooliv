@@ -116,16 +116,18 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public FileUrlListResponseDTO getFileURL(List<MultipartFile> multipartFiles) {
         List<String> files = new ArrayList<>();
+        List<String> originFiles = new ArrayList<>();
         multipartFiles.forEach(file -> {
             String fileName = awsS3Service.uploadFile(file);
             ChatFile chatFile = ChatFile.builder()
                 .fileName(fileName)
                 .build();
             files.add(getImageURL(fileName));
+            originFiles.add(fileName);
             chatFileRepository.save(chatFile);
         });
 
-        return new FileUrlListResponseDTO(files);
+        return new FileUrlListResponseDTO(files,originFiles);
     }
 
     // 유저가 입장한 채팅방ID와 유저 세션ID 맵핑 정보 저장
