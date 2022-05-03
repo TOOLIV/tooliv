@@ -62,7 +62,7 @@ const Channel = () => {
         });
       }
     );
-  }, []);
+  }, [channelId]);
 
   const onSendClick = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
