@@ -1,7 +1,6 @@
 package com.tooliv.server.domain.workspace.api;
 
 import com.tooliv.server.domain.workspace.application.WorkspaceMemberService;
-import com.tooliv.server.domain.workspace.application.dto.request.DeleteWorkspaceMemberRequestDTO;
 import com.tooliv.server.domain.workspace.application.dto.request.RegisterWorkspaceMemberRequestDTO;
 import com.tooliv.server.domain.workspace.application.dto.response.WorkspaceMemberListGetResponseDTO;
 import com.tooliv.server.global.common.BaseResponseDTO;
@@ -57,9 +56,9 @@ public class WorkspaceMemberController {
     })
     public ResponseEntity<? extends BaseResponseDTO> deleteWorkspaceMember(
         @PathVariable("workspaceId") @Valid @ApiParam(value="워크스페이스 ID", required=true) String workspaceId,
-        @RequestBody @ApiParam(value = "워크스페이스 멤버 등록 삭제", required = true) DeleteWorkspaceMemberRequestDTO deleteWorkspaceMemberRequestDTO) {
+        @RequestParam @ApiParam(value = "이메일", required = true) String email) {
         try {
-            workspaceMemberService.deleteWorkspaceMember(workspaceId, deleteWorkspaceMemberRequestDTO);
+            workspaceMemberService.deleteWorkspaceMember(workspaceId, email);
         } catch (Exception e) {
             return ResponseEntity.status(409).body(BaseResponseDTO.of("워크스페이스 멤버 삭제 실패"));
         }
