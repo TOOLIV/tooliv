@@ -18,7 +18,7 @@ if (isElectron() && baseURL) {
   });
 } else {
   instance = axios.create({
-    baseURL: process.env.REACT_APP_API_URL,
+    baseURL: 'http://localhost:8080/api',
     // TODO timeout 설정
     timeout: 30000,
     headers: {
