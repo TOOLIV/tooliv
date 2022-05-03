@@ -17,10 +17,10 @@ import {
 import { contentTypes } from '../types/channel/contentType';
 import Messages from '../organisms/chat/Messages';
 import { enterChannel, subChannel } from 'api/chatApi';
-import { token } from 'recoil/auth';
 import DragDrop from 'organisms/chat/DragDrop';
 import Files from 'organisms/chat/Files';
 import { FileTypes } from 'types/common/fileTypes';
+import { user } from 'recoil/auth';
 import { marked } from 'marked';
 
 const Container = styled.div`
@@ -36,7 +36,7 @@ const Channel = () => {
   const [contents, setContents] =
     useRecoilState<contentTypes[]>(channelContents);
   const [fileUrl, setFileUrl] = useRecoilState<string[]>(chatFileUrl);
-  const { accessToken } = useRecoilValue(token);
+  const { accessToken } = useRecoilValue(user);
   const baseURL = localStorage.getItem('baseURL');
   let sockJS = baseURL
     ? new SockJS(`${JSON.parse(baseURL).url}/chatting`)
@@ -52,9 +52,9 @@ const Channel = () => {
       },
       (frame) => {
         console.log('STOMP Connection');
-        enterChannel(channelId).then((res) => {
+        enterChannel(channelId!).then((res) => {
           console.log(res);
-          subChannel(channelId);
+          subChannel(channelId!);
           client.subscribe(`/sub/chat/room/${channelId}`, (response) => {
             console.log(response);
             setContents((prev) => [...prev, JSON.parse(response.body)]);

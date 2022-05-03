@@ -11,30 +11,34 @@ const FucntionButtonsContainer = styled.div`
 
 const FunctionButtons = ({
   publisher,
-  setIsScreenShareModal,
-}: funcButtonPropsTypes) => {
-  const [audio, setAudio] = useState(true);
-  const [video, setVideo] = useState(true);
+  isAudioOn,
+  setIsAudioOn,
+  isVideoOn,
+  setIsVideoOn,
+}: // setIsScreenShareModal,
+funcButtonPropsTypes) => {
   const [shareMoniter, setShareMoniter] = useState(false);
 
   const onhandleAudio = () => {
     if (!publisher) return;
-    if (audio) {
+    if (isAudioOn) {
       publisher.publishAudio(false);
-      setAudio(false);
+      setIsAudioOn(false);
     } else {
       publisher.publishAudio(true);
-      setAudio(true);
+      setIsAudioOn(true);
     }
   };
   const onhandleVideo = () => {
     if (!publisher) return;
-    if (video) {
+    if (isVideoOn) {
       publisher.publishVideo(false);
-      setVideo(false);
+      console.log(publisher);
+      setIsVideoOn(false);
     } else {
       publisher.publishVideo(true);
-      setVideo(true);
+      console.log(publisher);
+      setIsVideoOn(true);
     }
   };
 
@@ -47,17 +51,14 @@ const FunctionButtons = ({
   return (
     <FucntionButtonsContainer>
       <FunctionButton
-        icon={audio ? 'audioOn' : 'audioOff'}
+        icon={isAudioOn ? 'audioOn' : 'audioOff'}
         onClick={onhandleAudio}
       />
       <FunctionButton
-        icon={video ? 'videoOn' : 'videoOff'}
+        icon={isVideoOn ? 'videoOn' : 'videoOff'}
         onClick={onhandleVideo}
       />
-      <FunctionButton
-        icon="shareMonitor"
-        onClick={() => setIsScreenShareModal(true)}
-      />
+      <FunctionButton icon="shareMonitor" onClick={() => {}} />
       <FunctionButton icon="exit" exit onClick={() => {}} />
     </FucntionButtonsContainer>
   );

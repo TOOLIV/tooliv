@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import axios from 'axios';
+import VideoCopy from 'molecules/meeting/VideoCopy';
 import { OpenVidu, Session, StreamManager } from 'openvidu-browser';
 import React, { useEffect, useRef, useState } from 'react';
 import { useRecoilValue } from 'recoil';
@@ -15,7 +16,7 @@ const VideoContainer = styled.div<{ isChatOpen: boolean }>`
   align-items: center;
   gap: 10px;
   width: inherit;
-  height: calc(100vh - 210px);
+
   /* background-color: #121212; */
   overflow-y: scroll;
 
@@ -24,22 +25,23 @@ const VideoContainer = styled.div<{ isChatOpen: boolean }>`
   }
 `;
 
-const Videos = ({ publisher, subscribers }: videosTypes) => {
+const VideosCopy = ({ publisher, subscribers }: videosTypes) => {
   const isChatOpen = useRecoilValue(isOpenChat);
-  if (!subscribers) return <></>;
-  const totalUser = subscribers?.length + 1;
+
+  if (!publisher && (!subscribers || subscribers.length === 0)) return <></>;
+  const totalUser = subscribers ? subscribers.length + 1 : 1;
 
   return (
     <div>
       <VideoContainer isChatOpen={isChatOpen}>
-        <Video publisher={publisher} totalUser={totalUser} />
+        {publisher && <VideoCopy publisher={publisher} />}
         {subscribers &&
           subscribers.map((sub: StreamManager, i: number) => (
-            <Video subscribers={sub} key={i} totalUser={totalUser} />
+            <VideoCopy subscribe={sub} key={i} />
           ))}
       </VideoContainer>
     </div>
   );
 };
 
-export default Videos;
+export default VideosCopy;

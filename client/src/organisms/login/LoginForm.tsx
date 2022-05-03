@@ -3,7 +3,7 @@ import isElectron from 'is-electron';
 import { useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
-import { token } from 'recoil/auth';
+import { user } from 'recoil/auth';
 import { login } from '../../api/userApi';
 import Button from '../../atoms/common/Button';
 import Text from '../../atoms/text/Text';
@@ -46,10 +46,11 @@ const LoginForm = () => {
   const inputEmailRef = useRef<HTMLInputElement>(null);
   const inputPasswordRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
-  const setToken = useSetRecoilState(token);
+  const setUser = useSetRecoilState(user);
   const isEnterprise = localStorage.getItem('baseURL') ? true : false;
   const server = localStorage.getItem('baseURL');
   const serverName: string = server && JSON.parse(server).name;
+
   const handleLogin = async () => {
     const email = inputEmailRef.current?.value!;
     const password = inputPasswordRef.current?.value!;
@@ -59,9 +60,13 @@ const LoginForm = () => {
       password,
     };
     try {
-      const response = await login(body);
-      setToken({
-        accessToken: response.data.accessToken,
+      const { data } = await login(body);
+      setUser({
+        accessToken: data.accessToken,
+        name: data.name,
+        email: data.email,
+        nickname: data.nickname,
+        userId: data.userId,
       });
       navigate('/');
       // 워크스페이스 목록 불러옴
