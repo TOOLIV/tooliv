@@ -54,7 +54,7 @@ const Channel = () => {
   let sockJS = baseURL
     ? new SockJS(`${JSON.parse(baseURL).url}/chatting`)
     : // 로컬에서 테스트시 REACT_APP_BASE_URL, server 주소는 REACT_APP_BASE_SERVER_URL
-      new SockJS(`${process.env.REACT_APP_BASE_URL}/chatting`);
+      new SockJS(`${process.env.REACT_APP_BASE_SERVER_URL}/chatting`);
   // let client = Stomp.over(sockJS);
   const [client, setClient] = useState<Stomp.Client>(Stomp.over(sockJS));
 
