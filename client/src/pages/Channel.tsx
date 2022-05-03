@@ -10,6 +10,7 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import {
   channelContents,
   channelMessage,
+  chatFileNames,
   chatFiles,
   chatFileUrl,
   isDragging,
@@ -44,15 +45,18 @@ const Channel = () => {
   const [contents, setContents] =
     useRecoilState<contentTypes[]>(channelContents);
   const [fileUrl, setFileUrl] = useRecoilState<string[]>(chatFileUrl);
-  const { accessToken, nickname } = useRecoilValue(user);
+  const [fileNames, setFileNames] = useRecoilState<string[]>(chatFileNames);
+  const { accessToken, nickname, email } = useRecoilValue(user);
+  const { channelId } = useParams<string>();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
   const baseURL = localStorage.getItem('baseURL');
   let sockJS = baseURL
     ? new SockJS(`${JSON.parse(baseURL).url}/chatting`)
     : // 로컬에서 테스트시 REACT_APP_BASE_URL, server 주소는 REACT_APP_BASE_SERVER_URL
-      new SockJS(`${process.env.REACT_APP_BASE_SERVER_URL}/chatting`);
-  let client = Stomp.over(sockJS);
-  const { channelId } = useParams<string>();
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+      new SockJS(`${process.env.REACT_APP_BASE_URL}/chatting`);
+  // let client = Stomp.over(sockJS);
+  const [client, setClient] = useState<Stomp.Client>(Stomp.over(sockJS));
 
   useEffect(() => {
     setIsLoading(true);
@@ -66,6 +70,7 @@ const Channel = () => {
           subChannel(channelId!).then((res) => {
             setContents(res.data.chatMessageDTOList);
             setIsLoading(false);
+            console.log(client);
             client.subscribe(`/sub/chat/room/${channelId}`, (response) => {
               console.log(response);
               setContents((prev) => [...prev, JSON.parse(response.body)]);
@@ -94,9 +99,12 @@ const Channel = () => {
       JSON.stringify({
         channelId: channelId,
         sender: nickname,
+        email: email,
+        sendTime: new Date(),
         contents: getMarkdownText(),
         type: 'TALK',
         files: fileUrl ? fileUrl : null,
+        originalFiles: fileNames ? fileNames : null,
       })
     );
     setMessage('');
@@ -105,16 +113,12 @@ const Channel = () => {
   };
 
   const getMarkdownText = () => {
-    const rawMarkup = marked(
-      message,
-      // .replace(/\n/g, '<br />')
-      {
-        gfm: true,
-        breaks: true,
-        xhtml: true,
-        // sanitize: true,
-      }
-    );
+    const rawMarkup = marked(message, {
+      gfm: true,
+      breaks: true,
+      xhtml: true,
+      // sanitize: true,
+    });
     return rawMarkup;
   };
 

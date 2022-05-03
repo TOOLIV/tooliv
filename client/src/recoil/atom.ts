@@ -39,6 +39,11 @@ export const chatFileUrl = atom<string[]>({
   default: [],
 });
 
+export const chatFileNames = atom<string[]>({
+  key: 'chatFilesName',
+  default: [],
+});
+
 export const currentWorkspace = atom<string>({
   key: 'currentWorkspace',
   default: 'main',

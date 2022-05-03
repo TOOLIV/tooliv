@@ -8,7 +8,7 @@ import React, {
   useRef,
 } from 'react';
 import { useRecoilState } from 'recoil';
-import { chatFiles, chatFileUrl, isDragging } from 'recoil/atom';
+import { chatFileNames, chatFiles, chatFileUrl, isDragging } from 'recoil/atom';
 import { FileTypes } from 'types/common/fileTypes';
 
 const Container = styled.div`
@@ -25,6 +25,7 @@ const Wrapper = styled.div`
 const DragDrop = () => {
   const [files, setFiles] = useRecoilState<FileTypes[]>(chatFiles);
   const [fileUrl, setFileUrl] = useRecoilState<string[]>(chatFileUrl);
+  const [fileNames, setFileNames] = useRecoilState<string[]>(chatFileNames);
   const [isDrag, setIsDragging] = useRecoilState<boolean>(isDragging);
   const dragRef = useRef<HTMLLabelElement | null>(null);
   const fileId = useRef<number>(0);
@@ -56,8 +57,8 @@ const DragDrop = () => {
         formData.append('multipartFiles', file.object);
       });
       fileUpload(formData).then((res) => {
-        console.log(res.data.fileUrlList);
         setFileUrl(res.data.fileUrlList);
+        setFileNames(res.data.fileList);
       });
     },
     [files]
