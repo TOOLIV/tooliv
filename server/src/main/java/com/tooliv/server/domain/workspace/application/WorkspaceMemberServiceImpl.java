@@ -7,7 +7,6 @@ import com.tooliv.server.domain.channel.domain.repository.ChannelMembersReposito
 import com.tooliv.server.domain.channel.domain.repository.ChannelRepository;
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
-import com.tooliv.server.domain.workspace.application.dto.request.DeleteWorkspaceMemberRequestDTO;
 import com.tooliv.server.domain.workspace.application.dto.request.RegisterWorkspaceMemberRequestDTO;
 import com.tooliv.server.domain.workspace.application.dto.response.WorkspaceMemberGetResponseDTO;
 import com.tooliv.server.domain.workspace.application.dto.response.WorkspaceMemberListGetResponseDTO;
@@ -76,8 +75,8 @@ public class WorkspaceMemberServiceImpl implements WorkspaceMemberService {
 
     @Transactional
     @Override
-    public void deleteWorkspaceMember(String workspaceId, DeleteWorkspaceMemberRequestDTO deleteWorkspaceMemberRequestDTO) {
-        User user = userRepository.findByEmailAndDeletedAt(deleteWorkspaceMemberRequestDTO.getEmail(), null)
+    public void deleteWorkspaceMember(String workspaceId, String email) {
+        User user = userRepository.findByEmailAndDeletedAt(email, null)
             .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
 
         Workspace workspace = workspaceRepository.findByIdAndDeletedAt(workspaceId, null)
