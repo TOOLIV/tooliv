@@ -128,10 +128,6 @@ const DragDrop = () => {
     }
   }, [handleDragIn, handleDragOut, handleDragOver, handleDrop]);
 
-  const preventClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-  };
-
   useEffect(() => {
     initDragEvents();
 
@@ -148,7 +144,7 @@ const DragDrop = () => {
         onChange={onChangeFiles}
       />
 
-      <label htmlFor="fileUpload" ref={dragRef} onClick={preventClick}>
+      <label htmlFor="fileUpload" ref={dragRef}>
         <Wrapper />
       </label>
 
