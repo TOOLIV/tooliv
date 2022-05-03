@@ -2,12 +2,13 @@ import styled from '@emotion/styled';
 import { getChannelInfo, searchChannelMemberList } from 'api/channelApi';
 import Icons from 'atoms/common/Icons';
 import Text from 'atoms/text/Text';
-import ChannelAddMemberModal from 'organisms/modal/channel/ChannelAddMemberModal';
-import ChannelMemberListModal from 'organisms/modal/channel/ChannelMemberListModal';
+import ChannelAddMemberModal from 'organisms/modal/channel/header/ChannelAddMemberModal';
+import ChannelHeaderDropdown from 'organisms/modal/channel/header/ChannelHeaderDropdown';
+import ChannelMemberListModal from 'organisms/modal/channel/header/ChannelMemberListModal';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
-import { currentChannelNum } from 'recoil/atom';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { currentChannelNum, currentWorkspace } from 'recoil/atom';
 import { colors } from '../../shared/color';
 
 const Container = styled.div`
@@ -32,33 +33,41 @@ const Members = styled.div`
     background-color: ${colors.gray100};
   }
 `;
+const Title = styled.div`
+  display: flex;
+  align-items: center;
+`;
 const ChannelHeader = () => {
   const { channelId } = useParams();
+  const currentWorkspaceId = useRecoilValue(currentWorkspace);
   const [channelName, setChannelName] = useState('');
   const [channelMemberNum, setChannelMemberNum] = useState(0);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [memeberListOpen, setMemberListOpen] = useState(false);
   const [addMemeberOpen, setAddMemberOpen] = useState(false);
 
   const [currentChannelMemberNum, setCurrentChannelMemberNum] =
     useRecoilState(currentChannelNum);
 
+  // 새로고침시 채널별 인원수가 초기화 되므로 다시 저장하기 위한 useEffect
   useEffect(() => {
-    console.log(currentChannelMemberNum);
     if (currentChannelMemberNum === 0) {
       handleChannelInfo();
     }
   }, []);
 
-  useEffect(() => {
-    if (currentChannelMemberNum !== 0) {
-      setChannelMemberNum(currentChannelMemberNum);
-    }
-  }, [currentChannelMemberNum]);
+  // 왜 필요했는지 모르겠움.. 필요시 주석 해제
+  // useEffect(() => {
+  //   if (currentChannelMemberNum !== 0) {
+  //     setChannelMemberNum(currentChannelMemberNum);
+  //   }
+  // }, [currentChannelMemberNum]);
 
   useEffect(() => {
     if (channelId) {
-      console.log(channelId);
       handleChannelInfo();
+    } else {
+      setChannelName('홈');
     }
   }, [channelId]);
 
@@ -88,22 +97,32 @@ const ChannelHeader = () => {
 
   return (
     <Container>
-      <Text size={18}>{channelName}</Text>
-      <Members
-        onClick={() => {
-          setMemberListOpen(!memeberListOpen);
-        }}
-      >
-        <Icons
-          icon="solidPerson"
-          width="28"
-          height="28"
-          color={memeberListOpen ? 'blue100' : 'gray500'}
-        />
-        <Text size={16} color={memeberListOpen ? 'blue100' : 'gray500'} pointer>
-          {String(channelMemberNum)}
-        </Text>
-      </Members>
+      <Title onClick={() => setDropdownOpen(!dropdownOpen)}>
+        <Text size={18}>{channelName}</Text>
+        <Icons icon="dropdown" />
+      </Title>
+      {currentWorkspaceId !== 'main' ? (
+        <Members
+          onClick={() => {
+            setMemberListOpen(!memeberListOpen);
+          }}
+        >
+          <Icons
+            icon="solidPerson"
+            width="28"
+            height="28"
+            color={memeberListOpen ? 'blue100' : 'gray500'}
+          />
+          <Text
+            size={16}
+            color={memeberListOpen ? 'blue100' : 'gray500'}
+            pointer
+          >
+            {String(channelMemberNum)}
+          </Text>
+        </Members>
+      ) : null}
+
       <ChannelMemberListModal
         isOpen={memeberListOpen}
         onClick={handleAddMemberModalOpen}
@@ -115,6 +134,8 @@ const ChannelHeader = () => {
         onClose={closeAddMemberModal}
         channelId={channelId!}
       />
+
+      <ChannelHeaderDropdown isOpen={dropdownOpen} />
     </Container>
   );
 };

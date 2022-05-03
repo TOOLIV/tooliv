@@ -1,7 +1,12 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
+import { deleteWorkspaceMember } from 'api/workspaceApi';
 import Text from 'atoms/text/Text';
-import { forwardRef } from 'react';
+import { forwardRef, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { currentWorkspace } from 'recoil/atom';
+import { user } from 'recoil/auth';
 import { colors } from 'shared/color';
 import { workspaceDropdownType } from 'types/workspace/workspaceTypes';
 
@@ -39,6 +44,10 @@ const ListItem = styled.div`
 
 const WorkspaceDropDown = forwardRef<HTMLDivElement, workspaceDropdownType>(
   ({ isOpen, onClose, openMemberList, openAddMemberModal }, ref) => {
+    const { workspaceId } = useParams();
+    const setCurrentWorkspaceId = useSetRecoilState(currentWorkspace);
+    const { email } = useRecoilValue(user);
+    const navigate = useNavigate();
     const handleMemberList = () => {
       openMemberList();
       onClose();
@@ -47,6 +56,16 @@ const WorkspaceDropDown = forwardRef<HTMLDivElement, workspaceDropdownType>(
       openAddMemberModal();
       onClose();
     };
+
+    const exitWorkspace = async () => {
+      await deleteWorkspaceMember(workspaceId!, email);
+      setCurrentWorkspaceId('main');
+      navigate('/main');
+      onClose();
+    };
+
+    useEffect(() => {}, [workspaceId]);
+
     return (
       <Modal isOpen={isOpen} ref={ref}>
         <Container>
@@ -60,8 +79,8 @@ const WorkspaceDropDown = forwardRef<HTMLDivElement, workspaceDropdownType>(
               멤버 초대
             </Text>
           </ListItem>
-          <ListItem>
-            <Text size={16} pointer>
+          <ListItem onClick={() => exitWorkspace()}>
+            <Text color="secondary" size={16} pointer>
               워크스페이스 떠나기
             </Text>
           </ListItem>

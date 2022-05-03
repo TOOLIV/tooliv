@@ -4,7 +4,6 @@ import Text from 'atoms/text/Text';
 import { forwardRef } from 'react';
 import { colors } from 'shared/color';
 import { channelDropdownType } from 'types/channel/contentType';
-import { workspaceDropdownType } from 'types/workspace/workspaceTypes';
 
 const Modal = styled.div<{ isOpen: boolean }>`
   display: none;
