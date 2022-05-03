@@ -51,36 +51,12 @@ const Channel = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    // let sockJS = baseURL
-    //   ? new SockJS(`${JSON.parse(baseURL).url}/chatting`)
-    //   : // 로컬에서 테스트시 REACT_APP_BASE_URL, server 주소는 REACT_APP_BASE_SERVER_URL
-    //     new SockJS(`${process.env.REACT_APP_BASE_URL}/chatting`);
-    // let client: Stomp.Client = Stomp.over(sockJS);
-    // client.connect(
-    //   {
-    //     Authorization: `Bearer ${accessToken}`,
-    //   },
-    //   (frame) => {
-    //     console.log('STOMP Connection');
-    let sub: Stomp.Subscription;
     enterChannel(channelId!).then(() => {
       subChannel(channelId!).then((res) => {
         setContents(res.data.chatMessageDTOList);
         setIsLoading(false);
       });
     });
-    //   }
-    // );
-    // client.subscribe(`/sub/chat/room/${channelId}`, (response) => {
-    //   console.log(response);
-    //   setContents((prev) => [...prev, JSON.parse(response.body)]);
-    // });
-    // return () =>
-    //   client.disconnect(() => {
-    //     console.log('disconnect');
-    //     // setClient(Stomp.over(sockJS));
-    //   });
-    // return () => sub && sub.unsubscribe();
   }, [channelId, client]);
 
   const onSendClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -110,16 +86,6 @@ const Channel = () => {
     setMessage('');
     setFiles([]);
     setFileUrl([]);
-  };
-
-  const getMarkdownText = () => {
-    const rawMarkup = marked(message, {
-      gfm: true,
-      breaks: true,
-      xhtml: true,
-      // sanitize: true,
-    });
-    return rawMarkup;
   };
 
   return (
