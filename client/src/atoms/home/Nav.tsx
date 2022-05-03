@@ -4,15 +4,12 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import Text from 'atoms/text/Text';
 import InputBox from 'molecules/inputBox/InputBox';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Logo from '../common/Logo';
-import SockJS from 'sockjs-client';
-import Stomp from 'stompjs';
 import { useEffect } from 'react';
 import { user } from 'recoil/auth';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { channelContents, stompClient } from 'recoil/atom';
-import { getChannels } from 'api/chatApi';
+import { channelContents } from 'recoil/atom';
 import { contentTypes } from 'types/channel/contentType';
 import { connect } from 'services/wsconnect';
 
@@ -40,16 +37,11 @@ const InputContainer = styled.div`
 `;
 const Nav = () => {
   const navigate = useNavigate();
-  const baseURL = localStorage.getItem('baseURL');
   const { accessToken, email } = useRecoilValue(user);
   const [contents, setContents] =
     useRecoilState<contentTypes[]>(channelContents);
-  const [client, setClient] = useRecoilState<any>(stompClient);
-  const { channelId } = useParams<string>();
   useEffect(() => {
-    {
-      channelId && connect(accessToken, email, channelId, setContents);
-    }
+    connect(accessToken, email, setContents);
   }, []);
   return (
     <NavContainer>

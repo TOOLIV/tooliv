@@ -13,7 +13,6 @@ let client: Stomp.Client = Stomp.over(sockJS);
 export const connect = (
   accessToken: string,
   email: string,
-  channelId: string,
   setContents: SetterOrUpdater<contentTypes[]>
 ) => {
   client.connect(
