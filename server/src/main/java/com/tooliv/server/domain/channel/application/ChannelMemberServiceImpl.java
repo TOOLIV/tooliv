@@ -34,6 +34,8 @@ public class ChannelMemberServiceImpl implements ChannelMemberService {
 
     private final UserRepository userRepository;
 
+//    private final NotificationService notificationService;
+
     @Transactional
     @Override
     public void addChannelMember(String channelId, RegisterChannelMemberRequestDTO registerChannelMemberRequestDTO) {
@@ -61,6 +63,7 @@ public class ChannelMemberServiceImpl implements ChannelMemberService {
 
             channelMembersRepository.save(channelMembers);
 
+//            notificationService.createChannelNotification(user,channel); // 멤버들 알람 생성
         }
     }
 
