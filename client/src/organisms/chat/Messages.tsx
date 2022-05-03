@@ -11,23 +11,6 @@ const Container = styled.div<{ isFile: boolean }>`
   height: ${(props) => (props.isFile ? 'calc(100% - 70px)' : '100%')};
   overflow-y: auto;
   padding-right: 32px;
-  /* 스크롤바 설정*/
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  /* 스크롤바 막대 설정*/
-  &::-webkit-scrollbar-thumb {
-    height: 17%;
-    background-color: ${colors.gray300};
-    /* 스크롤바 둥글게 설정    */
-    border-radius: 10px;
-  }
-
-  /* 스크롤바 뒷 배경 설정*/
-  &::-webkit-scrollbar-track {
-    background-color: rgba(0, 0, 0, 0);
-  }
 `;
 
 const Messages = () => {

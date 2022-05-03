@@ -1,10 +1,8 @@
 import styled from '@emotion/styled';
 import Icons from 'atoms/common/Icons';
-import DragDrop from 'organisms/chat/DragDrop';
 import FileModal from 'organisms/modal/FileModal';
 import React, { useState } from 'react';
 import { useRecoilState } from 'recoil';
-
 import Button from '../../atoms/common/Button';
 import { channelMessage } from '../../recoil/atom';
 import { colors } from '../../shared/color';
@@ -14,13 +12,13 @@ const Container = styled.div`
   width: 100%;
   border-radius: 10px;
   border: 1px solid ${colors.gray200};
-  height: 64px;
+  min-height: 64px;
   position: relative;
 `;
-const Input = styled.input`
+const Input = styled.textarea`
   width: 85%;
   margin: 12px;
-  height: 50%;
+  min-height: 50%;
   border: 0;
 `;
 const Wrapper = styled.div`
@@ -32,24 +30,33 @@ const Wrapper = styled.div`
   align-items: center;
 `;
 
-const Editor = ({ onClick }: editorProps) => {
+const Editor = ({ onClick, sendMessage }: editorProps) => {
   const [message, setMessage] = useRecoilState<string>(channelMessage);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const onChange = (event: React.FormEvent<HTMLInputElement>) => {
+
+  const onChange = (event: React.FormEvent<HTMLTextAreaElement>) => {
     const {
       currentTarget: { value },
     } = event;
     setMessage(value);
   };
 
-  const preventClick = (e: React.MouseEvent) => {
-    // e.stopPropagation();
+  const onKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.code === 'Enter') {
+      if (event.shiftKey) {
+        // setMessage((prev) => prev + '<br />');
+      } else {
+        event.preventDefault();
+        if (sendMessage) {
+          sendMessage();
+        }
+      }
+    }
   };
 
   const handleFileModal = () => {
     setIsModalOpen((prev) => !prev);
   };
-
   return (
     <>
       <Container>
@@ -57,7 +64,7 @@ const Editor = ({ onClick }: editorProps) => {
         <Input
           value={message}
           onChange={onChange}
-          onClick={preventClick}
+          onKeyPress={onKeyPress}
         ></Input>
         <Wrapper>
           <Icons icon="file" color="gray500" onClick={handleFileModal} />

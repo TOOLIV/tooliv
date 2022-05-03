@@ -17,10 +17,10 @@ import {
 import { contentTypes } from '../types/channel/contentType';
 import Messages from '../organisms/chat/Messages';
 import { enterChannel, subChannel } from 'api/chatApi';
-import { token } from 'recoil/auth';
-import DragDrop from 'organisms/chat/DragDrop';
 import Files from 'organisms/chat/Files';
 import { FileTypes } from 'types/common/fileTypes';
+import { user } from 'recoil/auth';
+import { marked } from 'marked';
 
 const Container = styled.div`
   width: 100%;
@@ -34,14 +34,16 @@ const Channel = () => {
   const [files, setFiles] = useRecoilState<FileTypes[]>(chatFiles);
   const [contents, setContents] =
     useRecoilState<contentTypes[]>(channelContents);
-  const fileUrl = useRecoilValue<string[]>(chatFileUrl);
-  const { accessToken } = useRecoilValue(token);
+  const [fileUrl, setFileUrl] = useRecoilState<string[]>(chatFileUrl);
+  const { accessToken, nickname } = useRecoilValue(user);
   const baseURL = localStorage.getItem('baseURL');
   let sockJS = baseURL
     ? new SockJS(`${JSON.parse(baseURL).url}/chatting`)
-    : new SockJS(`${process.env.REACT_APP_BASE_SERVER_URL}/chatting`);
+    : // 로컬에서 테스트시 REACT_APP_BASE_URL, server 주소는 REACT_APP_BASE_SERVER_URL
+      new SockJS(`${process.env.REACT_APP_BASE_SERVER_URL}/chatting`);
   let client = Stomp.over(sockJS);
   const { channelId } = useParams<string>();
+
   useEffect(() => {
     client.connect(
       {
@@ -49,20 +51,25 @@ const Channel = () => {
       },
       (frame) => {
         console.log('STOMP Connection');
-        enterChannel(channelId).then((res) => {
-          console.log(res);
-          subChannel(channelId);
-          client.subscribe(`/sub/chat/room/${channelId}`, (response) => {
-            console.log(response);
-            setContents((prev) => [...prev, JSON.parse(response.body)]);
+        enterChannel(channelId!).then(() => {
+          subChannel(channelId!).then((res) => {
+            setContents(res.data.chatMessageDTOList);
+            client.subscribe(`/sub/chat/room/${channelId}`, (response) => {
+              console.log(response);
+              setContents((prev) => [...prev, JSON.parse(response.body)]);
+            });
           });
         });
       }
     );
-  }, []);
+  }, [channelId]);
 
-  const sendMessage = (event: React.MouseEvent<HTMLElement>) => {
+  const onSendClick = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
+    sendMessage();
+  };
+
+  const sendMessage = () => {
     client.send(
       '/pub/chat/message',
       {
@@ -70,14 +77,29 @@ const Channel = () => {
       },
       JSON.stringify({
         channelId: channelId,
-        sender: '인주비',
-        contents: message,
+        sender: nickname,
+        contents: getMarkdownText(),
         type: 'TALK',
         files: fileUrl ? fileUrl : null,
       })
     );
     setMessage('');
     setFiles([]);
+    setFileUrl([]);
+  };
+
+  const getMarkdownText = () => {
+    const rawMarkup = marked(
+      message,
+      // .replace(/\n/g, '<br />')
+      {
+        gfm: true,
+        breaks: true,
+        xhtml: true,
+        // sanitize: true,
+      }
+    );
+    return rawMarkup;
   };
 
   return (
@@ -85,7 +107,7 @@ const Channel = () => {
       <Container>
         <Messages />
         <Files />
-        <Editor onClick={sendMessage} />
+        <Editor onClick={onSendClick} sendMessage={sendMessage} />
       </Container>
     </>
   );

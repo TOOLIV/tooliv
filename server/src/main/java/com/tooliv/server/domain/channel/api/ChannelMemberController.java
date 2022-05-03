@@ -1,8 +1,8 @@
 package com.tooliv.server.domain.channel.api;
 
 import com.tooliv.server.domain.channel.application.ChannelMemberService;
-import com.tooliv.server.domain.channel.application.dto.request.DeleteChannelMemberRequestDTO;
 import com.tooliv.server.domain.channel.application.dto.request.RegisterChannelMemberRequestDTO;
+import com.tooliv.server.domain.channel.application.dto.response.ChannelInfoGetResponseDTO;
 import com.tooliv.server.domain.channel.application.dto.response.ChannelMemberCodeGetResponseDTO;
 import com.tooliv.server.domain.channel.application.dto.response.ChannelMemberListGetResponseDTO;
 import com.tooliv.server.global.common.BaseResponseDTO;
@@ -58,35 +58,14 @@ public class ChannelMemberController {
     })
     public ResponseEntity<? extends BaseResponseDTO> deleteChannelMember(
         @PathVariable("channelId") @Valid @ApiParam(value="채널 ID", required=true) String channelId,
-        @RequestBody @ApiParam(value = "채널멤버 등록 삭제", required = true) DeleteChannelMemberRequestDTO deleteChannelMemberRequestDTO) {
+        @RequestParam @ApiParam(value = "이메일", required = true) String email) {
         try {
-            channelMemberService.deleteChannelMember(channelId, deleteChannelMemberRequestDTO);
+            channelMemberService.deleteChannelMember(channelId, email);
         } catch (Exception e) {
             return ResponseEntity.status(409).body(BaseResponseDTO.of("채널멤버 삭제 실패"));
         }
         return ResponseEntity.status(201).body(BaseResponseDTO.of("채널멤버 삭제 완료"));
     }
-
-//    @GetMapping("/list")
-//    @ApiOperation(value = "채널멤버 목록 조회")
-//    @ApiResponses({
-//        @ApiResponse(code = 200, message = "채널멤버 목록 조회 완료"),
-//        @ApiResponse(code = 404, message = "조회 가능한 채널멤버 정보가 없음"),
-//        @ApiResponse(code = 409, message = "채널멤버 목록 조회 실패"),
-//    })
-//    public ResponseEntity<? extends BaseResponseDTO> getChannelMemberList(
-//        @PathVariable("channelId") @ApiParam(value="채널 ID", required=true) String channelId) {
-//        ChannelMemberListGetResponseDTO channelMemberListGetResponseDTO = null;
-//
-//        try {
-//            channelMemberListGetResponseDTO = channelMemberService.getChannelMemberList(channelId);
-//        } catch (IllegalArgumentException e) {
-//            return ResponseEntity.status(409).body(BaseResponseDTO.of("채널멤버 목록 조회 실패"));
-//        } catch (Exception e) {
-//            return ResponseEntity.status(404).body(BaseResponseDTO.of("조회 가능한 채널멤버 정보가 없음"));
-//        }
-//        return ResponseEntity.status(200).body(ChannelMemberListGetResponseDTO.of("채널멤버 목록 조회 완료", channelMemberListGetResponseDTO));
-//    }
 
     @GetMapping("/search")
     @ApiOperation(value = "채널멤버 검색")
@@ -150,6 +129,26 @@ public class ChannelMemberController {
             return ResponseEntity.status(404).body(BaseResponseDTO.of("검색 가능한 채널멤버 정보가 없음"));
         }
         return ResponseEntity.status(200).body(ChannelMemberCodeGetResponseDTO.of("채널멤버 코드 조회 완료", channelMemberCodeGetResponseDTO));
+    }
+
+    @GetMapping("/info")
+    @ApiOperation(value = "채널명 및 채널인원수 정보 조회")
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "채널명 및 채널인원수 정보 조회 완료"),
+        @ApiResponse(code = 404, message = "조회 가능한 채널 정보가 없음"),
+        @ApiResponse(code = 409, message = "채널명 및 채널인원수 정보 조회 실패"),
+    })
+    public ResponseEntity<? extends BaseResponseDTO> getChannelInfo(
+        @PathVariable("channelId") @Valid @ApiParam(value="채널 ID", required=true) String channelId) {
+        ChannelInfoGetResponseDTO channelInfoGetResponseDTO = null;
+        try {
+            channelInfoGetResponseDTO = channelMemberService.getChannelInfo(channelId);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(409).body(BaseResponseDTO.of("조회된 채널정보가 없음"));
+        } catch (Exception e) {
+            return ResponseEntity.status(404).body(BaseResponseDTO.of("검색 가능한 채널정보가 없음"));
+        }
+        return ResponseEntity.status(200).body(ChannelInfoGetResponseDTO.of("채널명 및 채널인원수 정보 조회 완료", channelInfoGetResponseDTO));
     }
 
 }

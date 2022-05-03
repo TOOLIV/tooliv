@@ -1,7 +1,7 @@
 package com.tooliv.server.domain.channel.application;
 
-import com.tooliv.server.domain.channel.application.dto.request.DeleteChannelMemberRequestDTO;
 import com.tooliv.server.domain.channel.application.dto.request.RegisterChannelMemberRequestDTO;
+import com.tooliv.server.domain.channel.application.dto.response.ChannelInfoGetResponseDTO;
 import com.tooliv.server.domain.channel.application.dto.response.ChannelMemberCodeGetResponseDTO;
 import com.tooliv.server.domain.channel.application.dto.response.ChannelMemberGetResponseDTO;
 import com.tooliv.server.domain.channel.application.dto.response.ChannelMemberListGetResponseDTO;
@@ -69,8 +69,8 @@ public class ChannelMemberServiceImpl implements ChannelMemberService {
 
     @Transactional
     @Override
-    public void deleteChannelMember(String channelId, DeleteChannelMemberRequestDTO deleteChannelMemberRequestDTO) {
-        User user = userRepository.findByEmailAndDeletedAt(deleteChannelMemberRequestDTO.getEmail(), null)
+    public void deleteChannelMember(String channelId, String email) {
+        User user = userRepository.findByEmailAndDeletedAt(email, null)
             .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
 
         Channel channel = channelRepository.findByIdAndDeletedAt(channelId, null)
@@ -164,5 +164,17 @@ public class ChannelMemberServiceImpl implements ChannelMemberService {
             .orElseThrow(() -> new IllegalArgumentException("채널 멤버 정보가 존재하지 않습니다."));
 
         return new ChannelMemberCodeGetResponseDTO(channelMember.getChannelMemberCode());
+    }
+
+    @Override
+    public ChannelInfoGetResponseDTO getChannelInfo(String channelId) {
+        Channel channel = channelRepository.findByIdAndDeletedAt(channelId, null)
+            .orElseThrow(() -> new IllegalArgumentException("채널 정보가 존재하지 않습니다."));
+
+        ChannelInfoGetResponseDTO channelInfoGetResponseDTO = ChannelInfoGetResponseDTO.builder()
+            .name(channel.getName())
+            .numOfPeople(channelMembersRepository.countByChannel(channel))
+            .build();
+        return channelInfoGetResponseDTO;
     }
 }

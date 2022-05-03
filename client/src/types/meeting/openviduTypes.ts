@@ -7,18 +7,32 @@ export type openviduTypes = {
   session: undefined | Session;
 };
 
+export type openviduTypesCopy = {
+  mySessionId: string;
+  myUserName: string;
+  session: undefined | Session;
+  mainStreamManager: undefined | StreamManager;
+  publisher: undefined | Publisher;
+  subscribers: Array<StreamManager>;
+};
+
 export type videosTypes = {
   publisher?: Publisher;
-  subscribers?: Array<StreamManager> | any;
+  subscribers?: Array<StreamManager>;
 };
 export type videoTypes = {
   publisher?: Publisher;
-  subscribers?: Array<StreamManager> | any;
+  subscribers?: StreamManager;
+  totalUser: number;
 };
 
 export type funcButtonPropsTypes = {
   publisher?: Publisher;
-  setIsScreenShareModal: Dispatch<SetStateAction<boolean>>;
+  isAudioOn: boolean;
+  isVideoOn: boolean;
+  setIsAudioOn: Dispatch<SetStateAction<boolean>>;
+  setIsVideoOn: Dispatch<SetStateAction<boolean>>;
+  // setIsScreenShareModal: Dispatch<SetStateAction<boolean>>;
 };
 
 export type screenShareMadalPropsTypes = {

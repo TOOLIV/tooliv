@@ -62,3 +62,10 @@ export type channelDropdownType = {
   openPublicChannelListModal: () => void;
   onClose: () => void;
 };
+
+export type publicChannelType = {
+  channelCode: string;
+  id: string;
+  name: string;
+  privateYn: boolean;
+};
