@@ -56,11 +56,16 @@ export const modifyChannel = async (body: modifyChannelType) => {
   return response;
 };
 
-export const deleteChannelMember = async (
-  workspaceId: string
-  // body: deleteMembersType
-) => {
-  const response = await instance.delete(`workspace/${workspaceId}/member`);
+export const deleteChannelMember = async (channelId: string, email: string) => {
+  const response = await instance.delete(
+    `channel/${channelId}/member?email=${email}`
+  );
+
+  return response;
+};
+
+export const getChannelUserCode = async (channelId: string) => {
+  const response = await instance.get(`channel/${channelId}/member/code`);
 
   return response;
 };

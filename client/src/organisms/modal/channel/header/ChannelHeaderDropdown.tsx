@@ -3,13 +3,16 @@ import styled from '@emotion/styled';
 import Text from 'atoms/text/Text';
 import { forwardRef } from 'react';
 import { colors } from 'shared/color';
-import { channelDropdownType } from 'types/channel/contentType';
+import {
+  channelDropdownType,
+  channelHeaderDropdownType,
+} from 'types/channel/contentType';
 
 const Modal = styled.div<{ isOpen: boolean }>`
   display: none;
   position: absolute;
-  top: 20px;
-  left: 250px;
+  top: 30px;
+  left: 100px;
 
   ${(props) =>
     props.isOpen &&
@@ -19,7 +22,7 @@ const Modal = styled.div<{ isOpen: boolean }>`
 `;
 
 const Container = styled.div`
-  width: 200px;
+  width: 180px;
   padding: 15px 0;
   background-color: ${colors.white};
   border-radius: 8px;
@@ -30,7 +33,7 @@ const Container = styled.div`
 `;
 
 const ListItem = styled.div`
-  padding: 10px 20px;
+  padding: 10px 15px;
   cursor: pointer;
 
   &:hover {
@@ -38,36 +41,21 @@ const ListItem = styled.div`
   }
 `;
 
-const ChannelHeaderDropdown = forwardRef<HTMLDivElement, channelDropdownType>(
-  (
-    { isOpen, onClose, openCreateChannelModal, openPublicChannelListModal },
-    ref
-  ) => {
-    const handleChannelCreateModal = () => {
-      openCreateChannelModal();
-      onClose();
-    };
-    const handlePublicChannelListModal = () => {
-      openPublicChannelListModal();
-      onClose();
-    };
-    return (
-      <Modal isOpen={isOpen} ref={ref}>
-        <Container>
-          <ListItem onClick={handleChannelCreateModal}>
-            <Text size={16} pointer>
-              채널 생성하기
-            </Text>
-          </ListItem>
-          <ListItem onClick={handlePublicChannelListModal}>
-            <Text size={16} pointer>
-              참여 가능한 채널 보기
-            </Text>
-          </ListItem>
-        </Container>
-      </Modal>
-    );
-  }
-);
+const ChannelHeaderDropdown = forwardRef<
+  HTMLDivElement,
+  channelHeaderDropdownType
+>(({ isOpen }, ref) => {
+  return (
+    <Modal isOpen={isOpen} ref={ref}>
+      <Container>
+        <ListItem>
+          <Text size={14} pointer>
+            채널 수정하기
+          </Text>
+        </ListItem>
+      </Container>
+    </Modal>
+  );
+});
 
 export default ChannelHeaderDropdown;

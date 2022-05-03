@@ -52,10 +52,12 @@ export const getWorkspaceInfo = async (workspaceId: string) => {
 };
 
 export const deleteWorkspaceMember = async (
-  workspaceId: string
-  // body: deleteMembersType
+  workspaceId: string,
+  email: string
 ) => {
-  const response = await instance.delete(`workspace/${workspaceId}/member`);
+  const response = await instance.delete(
+    `workspace/${workspaceId}/member?email=${email}`
+  );
 
   return response;
 };

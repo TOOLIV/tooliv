@@ -30,20 +30,22 @@ const Header = styled.div`
 
 const ChannelSection = () => {
   const isSideOpen = useRecoilValue<boolean>(isOpenSide);
+  const [isDropdownModalOpen, setIsDropdownModalOpen] = useState(false);
+
   const [isCreateChannelModalOpen, setIsCreateChannelModalOpen] =
     useState(false);
-  const [isDropdownModalOpen, setIsDropdownModalOpen] = useState(false);
+
   const [isPublicChannelModalOpen, setIsPublicChannelModalOpen] =
     useState(false);
+
   const [channelList, setChannelList] = useState([]);
-
-  const navigate = useNavigate();
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
   const currentWorkspaceId = useRecoilValue(currentWorkspace);
   const [currentChannelId, setCurrentChannelId] =
     useRecoilState(currentChannel);
   const [userLogList, setUserLogList] = useRecoilState(userLog);
+
+  const navigate = useNavigate();
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleChannel = async () => {
     const response = await getChannelList(currentWorkspaceId);
