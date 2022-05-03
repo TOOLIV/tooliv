@@ -3,6 +3,9 @@ import { FileTypes } from 'types/common/fileTypes';
 import { contentTypes } from '../types/channel/contentType';
 import { ThemeMode } from '../types/common/themeTypes';
 import { userCreationTypes, userLogTypes } from '../types/common/userTypes';
+// import Stomp, { client, Client } from 'stompjs';
+import SockJS from 'sockjs-client';
+import { Client } from '@stomp/stompjs';
 
 export const appThemeMode = atom<ThemeMode>({
   key: 'AppThemeMode',
@@ -72,4 +75,9 @@ export const isDragging = atom<boolean>({
 export const chatFiles = atom<FileTypes[]>({
   key: 'chatFiles',
   default: [],
+});
+
+export const stompClient = atom<any>({
+  key: 'stompClient',
+  default: null,
 });
