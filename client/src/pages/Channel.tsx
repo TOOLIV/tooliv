@@ -21,11 +21,20 @@ import Files from 'organisms/chat/Files';
 import { FileTypes } from 'types/common/fileTypes';
 import { user } from 'recoil/auth';
 import { marked } from 'marked';
+import LoadSpinner from 'atoms/common/LoadSpinner';
 
 const Container = styled.div`
   width: 100%;
   height: 100%;
   padding-bottom: 70px;
+`;
+
+const LoadContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const Channel = () => {
@@ -43,8 +52,10 @@ const Channel = () => {
       new SockJS(`${process.env.REACT_APP_BASE_SERVER_URL}/chatting`);
   let client = Stomp.over(sockJS);
   const { channelId } = useParams<string>();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    setIsLoading(true);
     client.connect(
       {
         Authorization: `Bearer ${accessToken}`,
@@ -54,6 +65,7 @@ const Channel = () => {
         enterChannel(channelId!).then(() => {
           subChannel(channelId!).then((res) => {
             setContents(res.data.chatMessageDTOList);
+            setIsLoading(false);
             client.subscribe(`/sub/chat/room/${channelId}`, (response) => {
               console.log(response);
               setContents((prev) => [...prev, JSON.parse(response.body)]);
@@ -62,6 +74,10 @@ const Channel = () => {
         });
       }
     );
+    return () =>
+      client.disconnect(() => {
+        console.log('disconnect');
+      });
   }, [channelId]);
 
   const onSendClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -105,7 +121,13 @@ const Channel = () => {
   return (
     <>
       <Container>
-        <Messages />
+        {isLoading ? (
+          <LoadContainer>
+            <LoadSpinner />
+          </LoadContainer>
+        ) : (
+          <Messages />
+        )}
         <Files />
         <Editor onClick={onSendClick} sendMessage={sendMessage} />
       </Container>
