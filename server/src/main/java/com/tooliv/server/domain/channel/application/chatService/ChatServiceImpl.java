@@ -123,7 +123,7 @@ public class ChatServiceImpl implements ChatService {
                 .fileName(fileName)
                 .build();
             files.add(getImageURL(fileName));
-            originFiles.add(fileName);
+            originFiles.add(file.getOriginalFilename());
             chatFileRepository.save(chatFile);
         });
 
