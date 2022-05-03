@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Stomp from 'stompjs';
 import Editor from '../molecules/chat/Editor';
 import { useRecoilState, useRecoilValue } from 'recoil';
@@ -10,7 +10,6 @@ import {
   chatFileNames,
   chatFiles,
   chatFileUrl,
-  stompClient,
 } from '../recoil/atom';
 import { contentTypes } from '../types/channel/contentType';
 import Messages from '../organisms/chat/Messages';
@@ -18,7 +17,6 @@ import { enterChannel, subChannel } from 'api/chatApi';
 import Files from 'organisms/chat/Files';
 import { FileTypes } from 'types/common/fileTypes';
 import { user } from 'recoil/auth';
-import { marked } from 'marked';
 import LoadSpinner from 'atoms/common/LoadSpinner';
 import { send } from 'services/wsconnect';
 
@@ -47,7 +45,6 @@ const Channel = () => {
   const { channelId } = useParams<string>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const baseURL = localStorage.getItem('baseURL');
-  const [client, setClient] = useRecoilState<Stomp.Client>(stompClient);
 
   useEffect(() => {
     setIsLoading(true);
@@ -57,7 +54,7 @@ const Channel = () => {
         setIsLoading(false);
       });
     });
-  }, [channelId, client]);
+  }, [channelId]);
 
   const onSendClick = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
