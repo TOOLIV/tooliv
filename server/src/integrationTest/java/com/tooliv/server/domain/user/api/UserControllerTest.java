@@ -16,25 +16,38 @@ import com.tooliv.server.global.security.service.UserDetailsServiceImpl;
 import com.tooliv.server.global.security.util.JwtAccessDeniedHandler;
 import com.tooliv.server.global.security.util.JwtAuthenticationEntryPoint;
 import com.tooliv.server.global.security.util.JwtAuthenticationProvider;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MockMvcBuilder;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.containers.output.Slf4jLogConsumer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
+@Testcontainers
 public class UserControllerTest {
+
+    static Logger LOGGER = LoggerFactory.getLogger(UserControllerTest.class);
 
     @Autowired
     private MockMvc mockMvc;
@@ -58,6 +71,26 @@ public class UserControllerTest {
 
     @MockBean
     NotificationManager notificationManager;
+
+    @Container
+    private static MySQLContainer<?> mySQLContainer = new MySQLContainer<>(DockerImageName.parse("mysql:5.7"))
+        .withDatabaseName("usertest");
+
+//    @BeforeAll
+//    static void beforeAll() {
+//        mySQLContainer.start();
+//    }
+//
+//    @AfterAll
+//    static void afterAll() {
+//        mySQLContainer.stop();
+//    }
+
+    @BeforeAll
+    static void beforeAll() {
+        Slf4jLogConsumer logConsumer = new Slf4jLogConsumer(LOGGER);
+        mySQLContainer.followOutput(logConsumer);
+    }
 
     @BeforeEach
     void prepareSignUp() {
