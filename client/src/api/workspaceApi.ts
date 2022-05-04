@@ -62,7 +62,13 @@ export const deleteWorkspaceMember = async (
   return response;
 };
 
-// export const modifyWorkspace = async (body: modifyChannelType) => {
-//   const response = await instance.patch(`workspace`, body);
-//   return response;
-// };
+export const getWorkspaceUserCode = async (workspaceId: string) => {
+  const response = await instance.get(`workspace/${workspaceId}/member/code`);
+
+  return response;
+};
+
+export const modifyWorkspace = async (body: any) => {
+  const response = await instance.patch(`workspace`, body);
+  return response;
+};

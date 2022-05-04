@@ -8,8 +8,8 @@ import { channelHeaderDropdownType } from 'types/channel/contentType';
 const Modal = styled.div<{ isOpen: boolean }>`
   display: none;
   position: absolute;
-  top: 30px;
-  left: 100px;
+  top: 100px;
+  left: 320px;
 
   ${(props) =>
     props.isOpen &&

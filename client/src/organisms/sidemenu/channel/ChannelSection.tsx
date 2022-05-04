@@ -7,7 +7,7 @@ import ChannelDropDown from 'organisms/modal/channel/sidemenu/ChannelDropDown';
 import ChannelModal from 'organisms/modal/sidemenu/ChannelModal';
 import PublicChannelListModal from 'organisms/modal/sidemenu/PublicChannelListModal';
 import React, { useEffect, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
   currentChannel,
@@ -19,7 +19,6 @@ import {
 
 const Container = styled.div<{ isOpen: boolean }>`
   position: relative;
-  border-bottom: ${(props) => props.isOpen && '1px solid #ffffff'};
 `;
 
 const Header = styled.div`
