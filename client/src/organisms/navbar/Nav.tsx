@@ -49,18 +49,9 @@ const Nav = () => {
       const {
         data: { notificationChannelList },
       } = res;
-      const newList = notificationChannelList.map((channel: string) => {
-        return { id: channel, readYn: true };
-      });
-      setNotiList(newList);
-      connect(
-        accessToken,
-        email,
-        setContents,
-        newList,
-        setNotiList,
-        notificationChannelList
-      );
+      console.log(notificationChannelList);
+      setNotiList(notificationChannelList);
+      connect(accessToken, setContents, notificationChannelList, setNotiList);
     });
   }, []);
 

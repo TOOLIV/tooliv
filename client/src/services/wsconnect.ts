@@ -12,11 +12,9 @@ let sockJS = baseURL
 let client: Stomp.Client = Stomp.over(sockJS);
 export const connect = (
   accessToken: string,
-  email: string,
   setContents: SetterOrUpdater<contentTypes[]>,
   notiList: channelNotiType[],
-  setNotiList: SetterOrUpdater<channelNotiType[]>,
-  list: any
+  setNotiList: SetterOrUpdater<channelNotiType[]>
 ) => {
   client.connect(
     {
@@ -24,22 +22,24 @@ export const connect = (
     },
     (frame) => {
       console.log('STOMP Connection');
-      list.map((id: string) => {
-        client.subscribe(`/sub/chat/room/${id}`, (response) => {
+      notiList.map((channel: channelNotiType) => {
+        client.subscribe(`/sub/chat/room/${channel.channelId}`, (response) => {
           const link = window.location.href.split('/');
-          // 현재 채널 아이디
+          // 현재 채널, 워크스페이스 아이디
           const channelId = link[link.length - 1];
+          const workspaceId = link[link.length - 2];
           const recChannelId = JSON.parse(response.body).channelId;
           if (channelId === recChannelId) {
             // 현재 채널 아이디와 도착한 메시지의 채널 아이디가 같으면
             setContents((prev) => [...prev, JSON.parse(response.body)]);
           } else {
             const newList: channelNotiType[] = notiList.map((noti) => {
-              if (noti.id === recChannelId)
-                return { id: noti.id, readYn: false };
-              else return noti;
+              if (noti.channelId === recChannelId) {
+                return { ...noti, notificationRead: false };
+              } else {
+                return noti;
+              }
             });
-
             setNotiList(newList);
           }
         });

@@ -72,6 +72,11 @@ const HoverIcon = styled.div`
   position: relative;
 `;
 
+const Noti = styled.div`
+  font-size: 10px;
+  color: ${colors.gray700};
+`;
+
 export const SideWrapper = styled.div`
   margin-right: 10px;
 `;
@@ -81,7 +86,7 @@ const Channels = ({ channelList, onClick }: channelsType) => {
   const [notiList, setNotiList] =
     useRecoilState<channelNotiType[]>(channelNotiList);
   const { channelId } = useParams();
-  const map = new Map(notiList.map((el) => [el.id, el]));
+  const map = new Map(notiList.map((el) => [el.channelId, el]));
   return (
     <ChannelsContainer>
       {channelList.map((channel) => (
@@ -99,9 +104,12 @@ const Channels = ({ channelList, onClick }: channelsType) => {
                   <Icons icon="public" />
                 )}
               </SideWrapper>
-              <Label {...channel} />
+              <Label
+                {...channel}
+                noti={map.get(channel.id)?.notificationRead}
+              />
             </InnerContainer>
-            {!map.get(channel.id)?.readYn && <div>O</div>}
+            {!map.get(channel.id)?.notificationRead && <Noti>●</Noti>}
           </NotiWrapper>
           <HoverIcon onClick={() => setExitModalOpen(!exitModalOpen)}>
             <Icons icon="menu" />
