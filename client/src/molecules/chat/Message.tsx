@@ -10,12 +10,13 @@ import { SideWrapper } from '../sidemenu/Channels';
 const Container = styled.div`
   width: 100%;
   border-radius: 10px;
-  border: 1px solid ${colors.gray200};
+  /* border: 1px solid ${colors.gray200}; */
+  border: 1px solid ${(props) => props.theme.borderColor};
   padding: 16px;
   margin: 16px 0;
   transition: 0.3s;
   &:hover {
-    background-color: ${colors.gray25};
+    background-color: ${colors.lightGray};
   }
 `;
 
@@ -28,6 +29,7 @@ const ContentContainer = styled.div`
   padding: 16px;
   padding-left: 30px;
   line-height: 1.2;
+  color: ${(props) => props.theme.textColor};
 `;
 
 const File = styled.img`

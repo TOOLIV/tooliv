@@ -3,19 +3,22 @@ import LoginForm from '../organisms/login/LoginForm';
 import LoginLogo from '../organisms/login/LoginLogo';
 import { ReactComponent as LoginImg } from '../assets/img/loginImg.svg';
 import bgImage from '../assets/img/wavy.svg';
+import bgImageDark from '../assets/img/wavy_dark.svg';
 
-import { colors } from '../shared/color';
+import { appThemeMode } from 'recoil/atom';
+import { useRecoilValue } from 'recoil';
 
-const Container = styled.div`
+const Container = styled.div<{ mode: string }>`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-image: url(${bgImage});
+  background-image: ${(props) =>
+    props.mode === 'light' ? `url(${bgImage})` : `url(${bgImageDark})`};
   background-repeat: no-repeat;
   background-size: cover;
   background-position: 0 70px;
 
-  background-color: ${colors.lightPrimary};
+  background-color: ${(props) => props.theme.loginBgColor};
   height: 100vh;
 `;
 const LogoContainer = styled.div`
@@ -25,8 +28,9 @@ const LogoContainer = styled.div`
 `;
 
 const Login = () => {
+  const mode = useRecoilValue(appThemeMode);
   return (
-    <Container>
+    <Container mode={mode}>
       <LogoContainer>
         <LoginLogo />
         <LoginImg />

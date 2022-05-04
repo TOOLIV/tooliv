@@ -5,17 +5,18 @@ import styled from '@emotion/styled';
 import Text from 'atoms/text/Text';
 import InputBox from 'molecules/inputBox/InputBox';
 import { useNavigate } from 'react-router-dom';
-import Logo from '../common/Logo';
+import Logo from '../../atoms/common/Logo';
 import { useEffect } from 'react';
 import { user } from 'recoil/auth';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { channelContents } from 'recoil/atom';
+import { appThemeMode, channelContents } from 'recoil/atom';
 import { contentTypes } from 'types/channel/contentType';
 import { connect } from 'services/wsconnect';
+import Icons from 'atoms/common/Icons';
 
 const NavContainer = styled.div`
   padding: 0px 20px;
-  /* background-color: #ff9e89; */
+  background-color: ${(props) => props.theme.bgColor};
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -24,7 +25,6 @@ const NavContainer = styled.div`
     margin-left: 40px;
     font-weight: 600;
     font-size: 16px;
-    color: white;
   }
 `;
 const LogoContainer = styled.div`
@@ -40,9 +40,12 @@ const Nav = () => {
   const { accessToken, email } = useRecoilValue(user);
   const [contents, setContents] =
     useRecoilState<contentTypes[]>(channelContents);
+  const [mode, setMode] = useRecoilState(appThemeMode);
+
   useEffect(() => {
     connect(accessToken, email, setContents);
   }, []);
+
   return (
     <NavContainer>
       <LogoContainer>
@@ -52,9 +55,14 @@ const Nav = () => {
       <InputContainer>
         <InputBox label="" placeholder="검색" />
       </InputContainer>
-      <div onClick={() => navigate('admin/auth')}>관리</div>
-      {/* <div onClick={() => navigate('login')}>로그인</div> */}
-      {/* <div onClick={() => navigate('join')}>회원가입</div> */}
+      {mode === 'light' ? (
+        <Icons icon="sun" onClick={() => setMode('dark')} />
+      ) : (
+        <Icons icon="night" onClick={() => setMode('light')} />
+      )}
+      {/* <div onClick={() => navigate('admin/auth')}>관리</div>
+      <div onClick={() => navigate('login')}>로그인</div>
+      <div onClick={() => navigate('join')}>회원가입</div> */}
     </NavContainer>
   );
 };

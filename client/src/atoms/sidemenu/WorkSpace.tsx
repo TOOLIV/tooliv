@@ -13,7 +13,7 @@ const Container = styled.div<{
   height: 40px;
   flex: 0 0 auto;
   border-radius: 10px;
-  background-color: #ffffff;
+  background-color: ${(props) => props.theme.bgColor};
   margin-right: 12px;
   margin-bottom: 12px;
   display: flex;
@@ -64,7 +64,6 @@ const Container = styled.div<{
 const WorkspaceName = styled.div`
   font-size: 12px;
   word-break: keep-all;
-  overflow: hidden;
   cursor: pointer;
 `;
 

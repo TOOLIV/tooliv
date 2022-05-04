@@ -66,7 +66,7 @@ const FileUploader = ({ file, onChange, thumbnailImage }: workspaceImgType) => {
       setImgFile(thumbnailImage);
     } else setImgFile('');
   }, [file, thumbnailImage]);
-
+  const strokeColor = colors.gray200;
   return (
     <Container onClick={handleUploadBtnClick}>
       <UploadInput
@@ -81,7 +81,7 @@ const FileUploader = ({ file, onChange, thumbnailImage }: workspaceImgType) => {
       ) : (
         <UploadWrapper>
           {/* <Icons icon="image" width="42" height="42" color="blue100" /> */}
-          <ImageIcon width={42} height={42} />
+          <ImageIcon width={42} height={42} stroke={strokeColor} />
           <Text color="gray300" size={14}>
             5MB이내 PNG, JPG, GIF 파일
           </Text>

@@ -32,7 +32,6 @@ const ChannelLabel = styled.label`
   justify-content: center;
   align-items: center;
   border-radius: 20px;
-  background-color: ${colors.gray50};
   cursor: pointer;
 `;
 

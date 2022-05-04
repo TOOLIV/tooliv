@@ -11,7 +11,8 @@ import { editorProps } from '../../types/common/buttonTypes';
 const Container = styled.div`
   width: 100%;
   border-radius: 10px;
-  border: 1px solid ${colors.gray200};
+  border: 1px solid ${(props) => props.theme.borderColor};
+  /* border: 1px solid ${colors.gray200}; */
   min-height: 64px;
   position: relative;
 `;
@@ -20,6 +21,8 @@ const Input = styled.textarea`
   margin: 12px;
   min-height: 50%;
   border: 0;
+  resize: none;
+  background-color: ${(props) => props.theme.bgColor};
 `;
 const Wrapper = styled.div`
   display: flex;

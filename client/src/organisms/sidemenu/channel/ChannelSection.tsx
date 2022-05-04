@@ -107,9 +107,7 @@ const ChannelSection = () => {
   return (
     <Container isOpen={isSideOpen}>
       <Header>
-        <Text size={14} color="gray600">
-          채널
-        </Text>
+        <Text size={14}>채널</Text>
         <Icons icon="plus" onClick={openDropdownModal} />
       </Header>
       <Channels channelList={channelList} onClick={handleClickChannel} />
