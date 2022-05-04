@@ -38,7 +38,7 @@ public class ChatController {
     public void directMessage(ChatRequestDTO chatRequestDTO) {
         try {
             // 로그인 회원 정보로 대화명 설정
-            chatService.setChatInfoValue(chatRequestDTO.getChannelId(), chatRequestDTO);
+            chatService.setDirectChatInfoValue(chatRequestDTO.getChannelId(), chatRequestDTO);
         } catch (Exception e) {
             e.printStackTrace();
         }
