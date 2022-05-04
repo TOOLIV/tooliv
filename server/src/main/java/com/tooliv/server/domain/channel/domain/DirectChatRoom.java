@@ -18,8 +18,6 @@ import lombok.ToString;
 @AllArgsConstructor
 public class DirectChatRoom extends BaseEntity {
 
-    @Column(name = "name")
-    private String name;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -29,4 +27,11 @@ public class DirectChatRoom extends BaseEntity {
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
+
+    @Column(name = "wrote_at")
+    private LocalDateTime wroteAt;
+
+    public void updateWroteAt(){
+        this.wroteAt = LocalDateTime.now();
+    }
 }

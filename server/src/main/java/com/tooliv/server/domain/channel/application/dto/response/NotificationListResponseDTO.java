@@ -10,12 +10,12 @@ import lombok.Getter;
 @Getter
 public class NotificationListResponseDTO extends BaseResponseDTO {
     @ApiModelProperty("알람 List 목록")
-    private List<String> notificationChannelList;
+    private List<NotificationInfoDTO> notificationChannelList;
 
     public NotificationListResponseDTO() {
     }
 
-    public NotificationListResponseDTO(List<String> notificationChannelList) {
+    public NotificationListResponseDTO(List<NotificationInfoDTO> notificationChannelList) {
         this.notificationChannelList = notificationChannelList;
     }
 

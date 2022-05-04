@@ -41,7 +41,7 @@ const Friends = () => {
             <SideWrapper>
               <Avatar />
             </SideWrapper>
-            <Label {...friend} />
+            <Label {...friend} noti={true} />
           </FriendContainer>
         ))}
       </FriendsContainer>

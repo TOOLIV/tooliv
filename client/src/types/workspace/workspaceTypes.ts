@@ -2,6 +2,7 @@ export type workspaceListType = {
   id: string;
   name: string;
   thumbnailImage: string;
+  noti?: boolean;
   onClick: (id: string) => void;
 };
 

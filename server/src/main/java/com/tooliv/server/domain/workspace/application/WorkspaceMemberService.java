@@ -1,6 +1,7 @@
 package com.tooliv.server.domain.workspace.application;
 
 import com.tooliv.server.domain.workspace.application.dto.request.RegisterWorkspaceMemberRequestDTO;
+import com.tooliv.server.domain.workspace.application.dto.response.WorkspaceMemberCodeGetResponseDTO;
 import com.tooliv.server.domain.workspace.application.dto.response.WorkspaceMemberListGetResponseDTO;
 
 public interface WorkspaceMemberService {
@@ -14,5 +15,7 @@ public interface WorkspaceMemberService {
     WorkspaceMemberListGetResponseDTO getWorkspaceMemberListForRegister(String workspaceId, String keyword);
 
     WorkspaceMemberListGetResponseDTO searchWorkspaceMember(String workspaceId, String keyword);
+
+    WorkspaceMemberCodeGetResponseDTO getWorkspaceMemberCode(String workspaceId);
 
 }
