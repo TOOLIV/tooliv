@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByEmailAndDeletedAt(logInRequestDTO.getEmail(), null)
             .orElseThrow(() -> new UserNotFoundException("회원 정보를 찾을 수 없음"));
 
-        return LogInResponseDTO.builder()
+        LogInResponseDTO logInResponseDTO = LogInResponseDTO.builder()
             .userId(user.getId())
             .name(user.getName())
             .email(user.getEmail())
@@ -74,6 +74,12 @@ public class UserServiceImpl implements UserService {
             .userCode(user.getUserCode())
             .profileImage(getImageURL(user.getProfileImage()))
             .accessToken(jwt).build();
+
+        if(user.getProfileImage() == null) {
+            logInResponseDTO.updateProfileImage("");
+        }
+
+        return logInResponseDTO;
     }
 
     @Override

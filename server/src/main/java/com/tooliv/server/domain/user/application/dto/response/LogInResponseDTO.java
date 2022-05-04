@@ -7,7 +7,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Getter;
 
-@ApiModel("LogInResponseDto")
+@ApiModel("LogInResponseDTO")
 @Getter
 @Builder
 public class LogInResponseDTO extends BaseResponseDTO {
@@ -39,5 +39,8 @@ public class LogInResponseDTO extends BaseResponseDTO {
         return logInResponseDTO;
     }
 
+    public void updateProfileImage(String url) {
+        this.profileImage = url;
+    }
 
 }

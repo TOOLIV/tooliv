@@ -13,16 +13,21 @@ public interface ChatService {
     // 채팅방 생성 : 서버간 채팅방 공유를 위해 redis hash에 저장한다.
     void createChatRoom(Channel channel);
 
-    void createDirectChatRoom(String receiverName);
+    void createDirectChatRoom(String receiverEmail);
 
     // 채팅방 입장 : redis에 topic을 만들고 pub/sub 통신을 하기 위해 리스너를 설정한다.
     void enterChatRoom(String channelId);
+
+    // 채팅방 입장 : redis에 topic을 만들고 pub/sub 통신을 하기 위해 리스너를 설정한다.
+    void enterDirectChatRoom(String channelId);
 
     ChannelTopic getTopic(String channelId);
 
     List<ChatRequestDTO> getChatInfoValue(String key);
 
     void setChatInfoValue(String key, ChatRequestDTO value);
+
+    void setDirectChatInfoValue(String key, ChatRequestDTO value);
 
     FileUrlListResponseDTO getFileURL(List<MultipartFile> multipartFiles);
 

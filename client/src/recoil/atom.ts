@@ -1,6 +1,10 @@
 import { atom } from 'recoil';
 import { FileTypes } from 'types/common/fileTypes';
-import { contentTypes } from '../types/channel/contentType';
+import {
+  channelListTypes,
+  channelNotiType,
+  contentTypes,
+} from '../types/channel/contentType';
 import { ThemeMode } from '../types/common/themeTypes';
 import { userCreationTypes, userLogTypes } from '../types/common/userTypes';
 
@@ -78,5 +82,10 @@ export const isDragging = atom<boolean>({
 
 export const chatFiles = atom<FileTypes[]>({
   key: 'chatFiles',
+  default: [],
+});
+
+export const channelNotiList = atom<channelNotiType[]>({
+  key: 'channelNotiList',
   default: [],
 });

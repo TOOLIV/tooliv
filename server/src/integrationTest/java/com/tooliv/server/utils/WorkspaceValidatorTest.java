@@ -24,6 +24,6 @@ public class WorkspaceValidatorTest {
         boolean isValid = underTest.test(workspaceName);
 
         // Then
-        assertThat(isValid).isTrue();
+        assertThat(isValid).isFalse();
     }
 }
