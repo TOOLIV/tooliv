@@ -3,10 +3,15 @@ package com.tooliv.server.domain.channel.application.chatService;
 import com.tooliv.server.domain.channel.application.dto.request.ChatRequestDTO;
 import com.tooliv.server.domain.channel.application.dto.response.FileUrlListResponseDTO;
 import com.tooliv.server.domain.channel.domain.Channel;
+import com.tooliv.server.domain.channel.domain.ChannelMembers;
 import com.tooliv.server.domain.channel.domain.ChatFile;
 import com.tooliv.server.domain.channel.domain.DirectChatRoom;
+import com.tooliv.server.domain.channel.domain.repository.ChannelMembersRepository;
+import com.tooliv.server.domain.channel.domain.repository.ChannelRepository;
 import com.tooliv.server.domain.channel.domain.repository.ChatFileRepository;
 import com.tooliv.server.domain.channel.domain.repository.DirectChatRoomRepository;
+import com.tooliv.server.domain.user.domain.User;
+import com.tooliv.server.domain.user.domain.repository.UserRepository;
 import com.tooliv.server.global.common.AwsS3Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -19,6 +24,7 @@ import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -51,7 +57,10 @@ public class ChatServiceImpl implements ChatService {
     }
 
     private final ChatFileRepository chatFileRepository;
+    private final ChannelRepository channelRepository;
+    private final UserRepository userRepository;
     private final DirectChatRoomRepository directChatRoomRepository;
+    private final ChannelMembersRepository channelMembersRepository;
     private final AwsS3Service awsS3Service;
 
     @Override
@@ -84,6 +93,13 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public void enterChatRoom(String channelId) {
+        User user = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
+            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+        Channel channel = channelRepository.findById(channelId).orElseThrow(() -> new IllegalArgumentException("해당 채널이 존재하지 않습니다."));
+        ChannelMembers channelMembers = channelMembersRepository.findByChannelAndUser(channel, user).orElseThrow(() -> new IllegalArgumentException("해당 멤버가 존재하지 않습니다."));
+
+        channelMembers.updateLoggedAt();
+        channelMembersRepository.save(channelMembers);
         ChannelTopic topic = topics.get(channelId);
         if (topic == null) {
             topic = new ChannelTopic(channelId);
@@ -110,22 +126,28 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public void setChatInfoValue(String key, ChatRequestDTO value) {
+        Channel channel = channelRepository.findById(value.getChannelId()).orElseThrow(() -> new IllegalArgumentException("해당 채널이 존재하지 않습니다."));
+        channel.updateWroteAt();
+        long idx = redisChannelTemplate.opsForList().size(key);
+        value.updateChatId(idx);
         System.out.println(redisChannelTemplate.opsForList().rightPush(key, value));
     }
 
     @Override
     public FileUrlListResponseDTO getFileURL(List<MultipartFile> multipartFiles) {
         List<String> files = new ArrayList<>();
+        List<String> originFiles = new ArrayList<>();
         multipartFiles.forEach(file -> {
             String fileName = awsS3Service.uploadFile(file);
             ChatFile chatFile = ChatFile.builder()
                 .fileName(fileName)
                 .build();
             files.add(getImageURL(fileName));
+            originFiles.add(file.getOriginalFilename());
             chatFileRepository.save(chatFile);
         });
 
-        return new FileUrlListResponseDTO(files);
+        return new FileUrlListResponseDTO(files, originFiles);
     }
 
     // 유저가 입장한 채팅방ID와 유저 세션ID 맵핑 정보 저장

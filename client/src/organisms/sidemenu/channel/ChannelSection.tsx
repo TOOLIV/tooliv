@@ -3,7 +3,7 @@ import { getChannelList } from 'api/channelApi';
 import Icons from 'atoms/common/Icons';
 import Text from 'atoms/text/Text';
 import Channels from 'molecules/sidemenu/Channels';
-import ChannelDropDown from 'organisms/modal/channel/ChannelDropDown';
+import ChannelDropDown from 'organisms/modal/channel/sidemenu/ChannelDropDown';
 import ChannelModal from 'organisms/modal/sidemenu/ChannelModal';
 import PublicChannelListModal from 'organisms/modal/sidemenu/PublicChannelListModal';
 import React, { useEffect, useRef, useState } from 'react';
@@ -13,6 +13,7 @@ import {
   currentChannel,
   currentWorkspace,
   isOpenSide,
+  modifyChannelName,
   userLog,
 } from 'recoil/atom';
 
@@ -30,20 +31,23 @@ const Header = styled.div`
 
 const ChannelSection = () => {
   const isSideOpen = useRecoilValue<boolean>(isOpenSide);
+  const [isDropdownModalOpen, setIsDropdownModalOpen] = useState(false);
+
   const [isCreateChannelModalOpen, setIsCreateChannelModalOpen] =
     useState(false);
-  const [isDropdownModalOpen, setIsDropdownModalOpen] = useState(false);
+
   const [isPublicChannelModalOpen, setIsPublicChannelModalOpen] =
     useState(false);
+
   const [channelList, setChannelList] = useState([]);
-
-  const navigate = useNavigate();
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
   const currentWorkspaceId = useRecoilValue(currentWorkspace);
+  const modChannelName = useRecoilValue(modifyChannelName);
   const [currentChannelId, setCurrentChannelId] =
     useRecoilState(currentChannel);
   const [userLogList, setUserLogList] = useRecoilState(userLog);
+
+  const navigate = useNavigate();
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleChannel = async () => {
     const response = await getChannelList(currentWorkspaceId);
@@ -53,7 +57,7 @@ const ChannelSection = () => {
 
   useEffect(() => {
     if (currentChannelId) handleChannel();
-  }, [currentChannelId]);
+  }, [currentChannelId, modChannelName]);
 
   const openDropdownModal = () => {
     setIsDropdownModalOpen(true);
@@ -103,9 +107,7 @@ const ChannelSection = () => {
   return (
     <Container isOpen={isSideOpen}>
       <Header>
-        <Text size={14} color="gray600">
-          채널
-        </Text>
+        <Text size={14}>채널</Text>
         <Icons icon="plus" onClick={openDropdownModal} />
       </Header>
       <Channels channelList={channelList} onClick={handleClickChannel} />

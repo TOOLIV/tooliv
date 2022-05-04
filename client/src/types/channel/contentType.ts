@@ -1,9 +1,9 @@
 export type contentTypes = {
-  roomId: string;
+  channelId: string;
   sender: string;
   contents: string;
   type: string;
-  sendTime?: string;
+  sendTime: string;
   files?: string[];
 };
 
@@ -63,9 +63,30 @@ export type channelDropdownType = {
   onClose: () => void;
 };
 
+export type exitChannelModalType = {
+  isOpen: boolean;
+};
+
+export type channelHeaderDropdownType = {
+  isOpen: boolean;
+  onClose: () => void;
+  onClick: () => void;
+};
+
+export type channelModifyModalType = {
+  isOpen: boolean;
+  onClose: () => void;
+  channelName: string;
+};
+
 export type publicChannelType = {
   channelCode: string;
   id: string;
   name: string;
   privateYn: boolean;
+};
+
+export type modifyChannelType = {
+  id: string;
+  name: string;
 };

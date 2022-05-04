@@ -1,4 +1,7 @@
-import { inviteMembersType } from 'types/workspace/workspaceTypes';
+import {
+  deleteMembersType,
+  inviteMembersType,
+} from 'types/workspace/workspaceTypes';
 import instance from '../services/axios';
 
 export const getWorkspaceList = async () => {
@@ -47,3 +50,19 @@ export const getWorkspaceInfo = async (workspaceId: string) => {
   );
   return response;
 };
+
+export const deleteWorkspaceMember = async (
+  workspaceId: string,
+  email: string
+) => {
+  const response = await instance.delete(
+    `workspace/${workspaceId}/member?email=${email}`
+  );
+
+  return response;
+};
+
+// export const modifyWorkspace = async (body: modifyChannelType) => {
+//   const response = await instance.patch(`workspace`, body);
+//   return response;
+// };

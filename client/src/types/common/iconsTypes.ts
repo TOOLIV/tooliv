@@ -32,7 +32,11 @@ export type iconsTypes = {
     | 'message'
     | 'image'
     | 'file'
-    | 'search';
+    | 'search'
+    | 'menu'
+    | 'night'
+    | 'sun'
+    | 'modify';
 
   onClick?: () => void;
   width?: string;

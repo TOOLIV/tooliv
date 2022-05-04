@@ -3,7 +3,7 @@ import ChannelHeader from 'organisms/header/ChannelHeader';
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
-import Nav from '../atoms/home/Nav';
+import Nav from '../organisms/navbar/Nav';
 import Chat from '../organisms/meeting/chat/Chat';
 import { isOpenChat, isOpenSide } from '../recoil/atom';
 import SideMenu from './SideMenu';
@@ -13,7 +13,7 @@ const Wrapper = styled.div<{ leftMargin: number; rightMargin: number }>`
   width: calc(
     100vw - ${(props) => props.leftMargin + props.rightMargin + 'px'}
   );
-  height: calc(100vh - 40px);
+  height: calc(100vh - 64px);
   margin-left: ${(props) => props.leftMargin + 'px'};
   margin-right: ${(props) => props.rightMargin + 'px'};
 `;
@@ -21,14 +21,15 @@ const Wrapper = styled.div<{ leftMargin: number; rightMargin: number }>`
 const Container = styled.div`
   display: flex;
   flex-direction: row;
-  /* height: calc(100vh - 40px); */
   justify-content: space-between;
+  background-color: ${(props) => props.theme.bgColor};
 `;
+
 const InnerContainer = styled.div<{ leftMargin: number; rightMargin: number }>`
   padding: 30px 40px;
   width: inherit;
-  height: calc(100vh - 116px);
-  background-color: ${(props) => props.theme.bgColor};
+  height: calc(100vh - 140px);
+  /* background-color: ${(props) => props.theme.bgColor}; */
 `;
 
 const Home = () => {

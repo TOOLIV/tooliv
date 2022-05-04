@@ -11,7 +11,8 @@ import { editorProps } from '../../types/common/buttonTypes';
 const Container = styled.div`
   width: 100%;
   border-radius: 10px;
-  border: 1px solid ${colors.gray200};
+  border: 1px solid ${(props) => props.theme.borderColor};
+  /* border: 1px solid ${colors.gray200}; */
   min-height: 64px;
   position: relative;
 `;
@@ -20,6 +21,8 @@ const Input = styled.textarea`
   margin: 12px;
   min-height: 50%;
   border: 0;
+  resize: none;
+  background-color: ${(props) => props.theme.bgColor};
 `;
 const Wrapper = styled.div`
   display: flex;
@@ -43,9 +46,7 @@ const Editor = ({ onClick, sendMessage }: editorProps) => {
 
   const onKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.code === 'Enter') {
-      if (event.shiftKey) {
-        // setMessage((prev) => prev + '<br />');
-      } else {
+      if (!event.shiftKey) {
         event.preventDefault();
         if (sendMessage) {
           sendMessage();
@@ -60,7 +61,6 @@ const Editor = ({ onClick, sendMessage }: editorProps) => {
   return (
     <>
       <Container>
-        {/* <DragDrop /> */}
         <Input
           value={message}
           onChange={onChange}

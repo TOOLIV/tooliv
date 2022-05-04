@@ -7,6 +7,12 @@ declare module '@emotion/react' {
     pointColor: string;
     secondPointColor: string;
     lightPointColor: string;
+    darkPointColor: string;
     textColor: string;
+    borderColor: string;
+    hoverColor: string;
+    loginBgColor: string;
+    loginFormBgColor: string;
+    dropdownHoverColor: string;
   }
 }

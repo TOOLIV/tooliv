@@ -7,8 +7,8 @@ import com.tooliv.server.domain.channel.domain.repository.ChannelMembersReposito
 import com.tooliv.server.domain.channel.domain.repository.ChannelRepository;
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
-import com.tooliv.server.domain.workspace.application.dto.request.DeleteWorkspaceMemberRequestDTO;
 import com.tooliv.server.domain.workspace.application.dto.request.RegisterWorkspaceMemberRequestDTO;
+import com.tooliv.server.domain.workspace.application.dto.response.WorkspaceMemberCodeGetResponseDTO;
 import com.tooliv.server.domain.workspace.application.dto.response.WorkspaceMemberGetResponseDTO;
 import com.tooliv.server.domain.workspace.application.dto.response.WorkspaceMemberListGetResponseDTO;
 import com.tooliv.server.domain.workspace.domain.Workspace;
@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -76,8 +77,8 @@ public class WorkspaceMemberServiceImpl implements WorkspaceMemberService {
 
     @Transactional
     @Override
-    public void deleteWorkspaceMember(String workspaceId, DeleteWorkspaceMemberRequestDTO deleteWorkspaceMemberRequestDTO) {
-        User user = userRepository.findByEmailAndDeletedAt(deleteWorkspaceMemberRequestDTO.getEmail(), null)
+    public void deleteWorkspaceMember(String workspaceId, String email) {
+        User user = userRepository.findByEmailAndDeletedAt(email, null)
             .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
 
         Workspace workspace = workspaceRepository.findByIdAndDeletedAt(workspaceId, null)
@@ -145,6 +146,21 @@ public class WorkspaceMemberServiceImpl implements WorkspaceMemberService {
             workspaceMemberGetResponseDTOList.add(workspaceMemberGetResponseDTO);
         });
         return new WorkspaceMemberListGetResponseDTO(workspaceMemberGetResponseDTOList);
+    }
+
+    @Override
+    public WorkspaceMemberCodeGetResponseDTO getWorkspaceMemberCode(String workspaceId) {
+
+        User user = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
+            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+
+        Workspace workspace = workspaceRepository.findByIdAndDeletedAt(workspaceId, null)
+            .orElseThrow(() -> new IllegalArgumentException("워크스페이스 정보가 존재하지 않습니다."));
+
+        WorkspaceMembers workspaceMembers = workspaceMemberRepository.findByWorkspaceAndUser(workspace, user)
+            .orElseThrow(() -> new IllegalArgumentException("워크스페이스 멤버 정보가 존재하지 않습니다."));
+
+        return  new WorkspaceMemberCodeGetResponseDTO(workspaceMembers.getWorkspaceMemberCode());
     }
 
 }

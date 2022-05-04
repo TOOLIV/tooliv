@@ -4,6 +4,7 @@ export type inputBoxTypes = {
   status?: string;
   type?: string;
   onChange?: () => void;
+  onKeyPress?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
   message?: string;
 };
 
@@ -12,6 +13,7 @@ export type inputTypes = {
   status: string;
   type: string;
   onChange?: () => void;
+  onKeyPress?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
 };
 
 export type inputMessageTypes = {

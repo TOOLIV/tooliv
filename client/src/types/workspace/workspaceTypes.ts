@@ -7,6 +7,7 @@ export type workspaceListType = {
 
 export type workspaceImgType = {
   file: File;
+  thumbnailImage?: string;
   onChange: (file: FileList) => void;
 };
 
@@ -29,9 +30,15 @@ export type workspaceDropdownType = {
   isOpen: boolean;
   openMemberList: () => void;
   openAddMemberModal: () => void;
+  openModifyModal: () => void;
   onClose: () => void;
 };
-
+export type workspaceModifyModalType = {
+  isOpen: boolean;
+  onClose: () => void;
+  workspaceName: string;
+  thumbnailImage: string;
+};
 export type workspaceMemberListType = {
   isOpen: boolean;
   onClose: () => void;
@@ -51,6 +58,10 @@ export type addWorkspaceMemberType = {
 
 export type inviteMembersType = {
   emailList: string[];
+};
+
+export type deleteMembersType = {
+  email: string;
 };
 
 export type inviteMembersBadgeType = {

@@ -42,7 +42,7 @@ const Container = styled.div`
 const Wrapper = styled.div`
   width: 430px;
   padding: 25px;
-  background-color: ${colors.white};
+  background-color: ${(props) => props.theme.bgColor};
   border-radius: 30px;
   box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.06);
   display: flex;

@@ -9,7 +9,6 @@ import com.tooliv.server.domain.channel.domain.repository.ChannelMembersReposito
 import com.tooliv.server.domain.channel.domain.repository.ChannelRepository;
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
-import com.tooliv.server.domain.workspace.application.dto.request.DeleteWorkspaceMemberRequestDTO;
 import com.tooliv.server.domain.workspace.application.dto.request.ModifyWorkspaceRequestDTO;
 import com.tooliv.server.domain.workspace.application.dto.request.RegisterWorkspaceRequestDTO;
 import com.tooliv.server.domain.workspace.application.dto.response.RegisterWorkspaceResponseDTO;
@@ -135,7 +134,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
         List<WorkspaceMembers> workspaceMembersList = workspaceMemberRepository.findByWorkspace(workspace);
         for (WorkspaceMembers workspaceMember : workspaceMembersList) {
-            workspaceMemberService.deleteWorkspaceMember(workspaceId, new DeleteWorkspaceMemberRequestDTO(workspaceMember.getUser().getEmail()));
+            workspaceMemberService.deleteWorkspaceMember(workspaceId, workspaceMember.getUser().getEmail());
         }
 
         List<Channel> channelList = channelRepository.findByDeletedAtAndWorkspace(null, workspace);
@@ -183,6 +182,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
         WorkspaceNameGetResponseDTO workspaceNameGetResponseDTO = WorkspaceNameGetResponseDTO.builder()
             .name(workspace.getName())
+            .thumbnailImage(getImageURL(workspace.getThumbnailImage()))
             .build();
 
         return workspaceNameGetResponseDTO;

@@ -5,6 +5,7 @@ import Text from 'atoms/text/Text';
 import WorkspaceAddMemberModal from 'organisms/modal/workspace/WorkspaceAddMemberModal';
 import WorkspaceDropDown from 'organisms/modal/workspace/WorkspaceDropDown';
 import WorkspaceMemberListModal from 'organisms/modal/workspace/WorkspaceMemberListModal';
+import WorkspaceModifyModal from 'organisms/modal/workspace/WorkspaceModifyModal';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
@@ -25,11 +26,13 @@ const Title = styled.div`
 
 const SideHeader = () => {
   const [isOpen, setIsOpen] = useRecoilState<boolean>(isOpenSide);
+  const [modifyModalOpen, setModifyModalOpen] = useState(false);
   const currentWorkspaceId = useRecoilValue(currentWorkspace);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [memberListOpen, setMemberListOpen] = useState(false);
   const [addMemberModalOpen, setAddMemberModalOpen] = useState(false);
   const [workspaceName, setWorkspaceName] = useState('홈');
+  const [thumbnailImage, setThumbnailImage] = useState('');
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleClickOutside = ({ target }: any) => {
@@ -47,7 +50,9 @@ const SideHeader = () => {
 
   const handleWorkspaceInfo = useCallback(async () => {
     const { data } = await getWorkspaceInfo(currentWorkspaceId);
+    console.log(data);
     setWorkspaceName(data.name);
+    setThumbnailImage(data.thumbnailImage);
   }, [currentWorkspaceId]);
 
   useEffect(() => {
@@ -76,14 +81,28 @@ const SideHeader = () => {
     setAddMemberModalOpen(false);
   };
 
+  const openModifyModal = () => {
+    setModifyModalOpen(true);
+  };
+  const closeModifyModal = () => {
+    setModifyModalOpen(false);
+  };
+
   return (
     <Container isOpen={isOpen}>
-      <Title onClick={() => setDropdownOpen(!dropdownOpen)}>
+      <Title
+        onClick={() => {
+          console.log('hello');
+          setDropdownOpen(!dropdownOpen);
+        }}
+      >
         <Text size={24} weight="700" pointer={currentWorkspaceId !== 'main'}>
           {/* 워크스페이스 id로 워크스페이명 불러오는 api 연동. */}
           {workspaceName}
         </Text>
-        {currentWorkspaceId !== 'main' ? <Icons icon="dropdown" /> : null}
+        {currentWorkspaceId !== 'main' ? (
+          <Icons width="30" height="30" icon="dropdown" />
+        ) : null}
       </Title>
       <Icons
         icon={isOpen ? 'anglesLeft' : 'anglesRight'}
@@ -96,6 +115,7 @@ const SideHeader = () => {
             onClose={closeDropdown}
             openMemberList={openWorkspaceMemberList}
             openAddMemberModal={openAddMemberModal}
+            openModifyModal={openModifyModal}
             ref={dropdownRef}
           />
           <WorkspaceMemberListModal
@@ -105,6 +125,12 @@ const SideHeader = () => {
           <WorkspaceAddMemberModal
             isOpen={addMemberModalOpen}
             onClose={closeAddMemberModal}
+          />
+          <WorkspaceModifyModal
+            isOpen={modifyModalOpen}
+            onClose={closeModifyModal}
+            workspaceName={workspaceName}
+            thumbnailImage={thumbnailImage}
           />
         </>
       ) : null}

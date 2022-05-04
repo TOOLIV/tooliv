@@ -31,7 +31,6 @@ const VisibleLabel = styled.label`
   align-items: center;
   border-radius: 20px;
   cursor: pointer;
-  background-color: ${colors.gray50};
 `;
 
 const RadioBtn = styled.input<{ checked?: boolean }>`

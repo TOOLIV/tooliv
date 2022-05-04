@@ -75,7 +75,7 @@ dependencies {
 
 
     // Openvidu 의존성
-    implementation group: 'io.openvidu', name: 'openvidu-java-client', version: '2.20.0'
+//    implementation group: 'io.openvidu', name: 'openvidu-java-client', version: '2.20.0'
 }
 
 test {

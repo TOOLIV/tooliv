@@ -1,7 +1,6 @@
 package com.tooliv.server.domain.channel.application;
 
 import com.tooliv.server.domain.channel.application.chatService.ChatService;
-import com.tooliv.server.domain.channel.application.dto.request.DeleteChannelMemberRequestDTO;
 import com.tooliv.server.domain.channel.application.dto.request.ModifyChannelRequestDTO;
 import com.tooliv.server.domain.channel.application.dto.request.RegisterChannelRequestDTO;
 import com.tooliv.server.domain.channel.application.dto.response.ChannelGetResponseDTO;
@@ -115,7 +114,7 @@ public class ChannelServiceImpl implements ChannelService {
         try {
             List<ChannelMembers> memberList = channelMembersRepository.findByChannel(channel);
             for (ChannelMembers channelMember : memberList) {
-                channelMemberService.deleteChannelMember(channelId, new DeleteChannelMemberRequestDTO(channelMember.getUser().getEmail()));
+                channelMemberService.deleteChannelMember(channelId, channelMember.getUser().getEmail());
             }
             channel.deleteChannel();
         } catch (Exception e) {
