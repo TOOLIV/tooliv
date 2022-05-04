@@ -13,7 +13,7 @@ import { colors } from '../../shared/color';
 const Container = styled.div`
   width: 480px;
   padding: 65px;
-  background-color: ${colors.white};
+  background-color: ${(props) => props.theme.loginFormBgColor};
   border-radius: 30px;
   box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.06);
 
@@ -60,21 +60,32 @@ const LoginForm = () => {
       password,
     };
     try {
-      const { data } = await login(body);
-      setUser({
-        accessToken: data.accessToken,
-        name: data.name,
-        email: data.email,
-        nickname: data.nickname,
-        userId: data.userId,
-      });
-      navigate('/');
-      // 워크스페이스 목록 불러옴
-      // 첫번째 워크스페이스 id를 가지고
-      // 채널 목록을 검색
-      // navigate
+      if (!email) {
+        alert('이메일을 입력해주세요.');
+        inputEmailRef.current?.focus();
+      } else if (!password) {
+        alert('비밀번호를 입력해주세요.');
+        inputPasswordRef.current?.focus();
+      } else {
+        const { data } = await login(body);
+        setUser({
+          accessToken: data.accessToken,
+          name: data.name,
+          email: data.email,
+          nickname: data.nickname,
+          userId: data.userId,
+        });
+        navigate('/');
+      }
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const onKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    console.log('hello');
+    if (event.code === 'Enter') {
+      handleLogin();
     }
   };
 
@@ -99,6 +110,7 @@ const LoginForm = () => {
           label="비밀번호"
           placeholder="비밀번호를 입력해주세요."
           type="password"
+          onKeyPress={onKeyPress}
           ref={inputPasswordRef}
         />
       </InputArea>

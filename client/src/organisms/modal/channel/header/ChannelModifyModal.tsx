@@ -9,7 +9,6 @@ import { useCallback, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 import { modifyChannelName } from 'recoil/atom';
-import { colors } from 'shared/color';
 import { channelModifyModalType } from 'types/channel/contentType';
 
 const Modal = styled.div<{ isOpen: boolean }>`
@@ -28,7 +27,7 @@ const Modal = styled.div<{ isOpen: boolean }>`
 const Container = styled.div`
   width: 350px;
   padding: 25px;
-  background-color: ${colors.white};
+  background-color: ${(props) => props.theme.bgColor};
   border-radius: 30px;
   box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.06);
   display: flex;

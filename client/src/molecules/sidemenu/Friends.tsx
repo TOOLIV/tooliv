@@ -32,9 +32,7 @@ const Friends = () => {
   return (
     <>
       <TopContainer>
-        <Text size={14} color="gray600">
-          친구
-        </Text>
+        <Text size={14}>친구</Text>
         <Icons icon="plus" />
       </TopContainer>
       <FriendsContainer>

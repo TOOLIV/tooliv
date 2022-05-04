@@ -27,7 +27,7 @@ const Container = styled.div`
   height: 76px;
   padding: 12px 40px;
   position: relative;
-  border-bottom: 1px solid ${colors.gray100};
+  border-bottom: 1px solid ${(props) => props.theme.borderColor};
 `;
 
 const Members = styled.div`
@@ -39,7 +39,7 @@ const Members = styled.div`
   cursor: pointer;
 
   &:hover {
-    background-color: ${colors.gray100};
+    background-color: ${(props) => props.theme.dropdownHoverColor};
   }
 `;
 const Title = styled.div`

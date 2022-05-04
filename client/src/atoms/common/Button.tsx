@@ -20,9 +20,9 @@ const Container = styled.button<{
   padding: 10px 13px;
   background-color: ${(props) =>
     props.disabled
-      ? colors.gray300
+      ? props.theme.borderColor
       : props.bgColor
-      ? colors[props.bgColor]
+      ? props.theme.borderColor
       : props.theme.pointColor};
   color: ${(props) =>
     props.textColor ? colors[props.textColor] : props.theme.textColor};

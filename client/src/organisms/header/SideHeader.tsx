@@ -100,7 +100,9 @@ const SideHeader = () => {
           {/* 워크스페이스 id로 워크스페이명 불러오는 api 연동. */}
           {workspaceName}
         </Text>
-        {currentWorkspaceId !== 'main' ? <Icons icon="dropdown" /> : null}
+        {currentWorkspaceId !== 'main' ? (
+          <Icons width="30" height="30" icon="dropdown" />
+        ) : null}
       </Title>
       <Icons
         icon={isOpen ? 'anglesLeft' : 'anglesRight'}
