@@ -30,6 +30,9 @@ public class ChannelMembers extends BaseEntity {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Column(name = "logged_at")
+    private LocalDateTime loggedAt;
+
     @Column(name = "channel_member_code")
     private ChannelMemberCode channelMemberCode;
 
@@ -40,4 +43,8 @@ public class ChannelMembers extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    public void updateLoggedAt(){
+        this.loggedAt = LocalDateTime.now();
+    }
 }
