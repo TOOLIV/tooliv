@@ -23,17 +23,25 @@ public class ChatController {
     @MessageMapping("/chat/message")
     @ApiOperation(value = "채팅방 메시지", notes = "메시지")
     public void message(ChatRequestDTO chatRequestDTO) {
-        // 로그인 회원 정보로 대화명 설정
-        chatService.setChatInfoValue(chatRequestDTO.getChannelId(), chatRequestDTO);
+        try {
+            // 로그인 회원 정보로 대화명 설정
+            chatService.setChatInfoValue(chatRequestDTO.getChannelId(), chatRequestDTO);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         // Websocket에 발행된 메시지를 redis로 발행(publish)
         redisPublisher.publish(chatService.getTopic(chatRequestDTO.getChannelId()), chatRequestDTO);
     }
 
     @MessageMapping("/chat/directMessage")
-    @ApiOperation(value = "채팅방 메시지", notes = "메시지")
+    @ApiOperation(value = "개인 메시지", notes = "메시지")
     public void directMessage(ChatRequestDTO chatRequestDTO) {
-        // 로그인 회원 정보로 대화명 설정
-        chatService.setChatInfoValue(chatRequestDTO.getChannelId(), chatRequestDTO);
+        try {
+            // 로그인 회원 정보로 대화명 설정
+            chatService.setChatInfoValue(chatRequestDTO.getChannelId(), chatRequestDTO);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         // Websocket에 발행된 메시지를 redis로 발행(publish)
         redisPublisher.publish(chatService.getTopic(chatRequestDTO.getChannelId()), chatRequestDTO);
     }
@@ -43,6 +51,10 @@ public class ChatController {
     @ApiOperation(value = "채팅방 참여")
     public void enterChat(String channelId) {
         // 채팅방 참여
-        chatService.enterChatRoom(channelId);
+        try {
+            chatService.enterChatRoom(channelId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

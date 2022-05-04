@@ -9,11 +9,7 @@ public interface NotificationService {
 
     NotificationListResponseDTO getNotificationList(String email);
 
-    void createChannelNotification(User user, Channel channel);
-
     void createDirectChatNotification(User user, DirectChatRoom directChatRoom);
-
-    void readChannelNotification(User user, Channel channel);
 
     void readDirectChatNotification(User user, DirectChatRoom directChatRoom);
 }
