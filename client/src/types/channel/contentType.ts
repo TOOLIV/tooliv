@@ -23,6 +23,7 @@ export type channelListTypes = {
   id: string;
   name: string;
   privateYn: boolean;
+  readYn: boolean;
 };
 export type channelTypes = {
   channelCode: string;
@@ -89,4 +90,10 @@ export type publicChannelType = {
 export type modifyChannelType = {
   id: string;
   name: string;
+};
+
+export type channelNotiType = {
+  channelId: string;
+  workspaceId: string;
+  notificationRead: boolean;
 };
