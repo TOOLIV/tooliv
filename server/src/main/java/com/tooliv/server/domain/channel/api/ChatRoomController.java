@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@Api(value = "Chat API", tags = {"ChatRoom"})
+@Api(value = "ChatRoom API", tags = {"ChatRoom"})
 @RequiredArgsConstructor
 @RequestMapping("/api/chat")
 public class ChatRoomController {

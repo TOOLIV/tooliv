@@ -41,8 +41,6 @@ public class ChannelServiceImpl implements ChannelService {
 
     private final ChatService chatService;
 
-//    private final NotificationService notificationService;
-
     @Transactional
     @Override
     public RegisterChannelResponseDTO registerChannel(RegisterChannelRequestDTO registerChannelRequestDTO) {
@@ -66,7 +64,6 @@ public class ChannelServiceImpl implements ChannelService {
 
         channelRepository.save(channel);
 
-//        notificationService.createChannelNotification(owner,channel); // 채널 알림 생성
 //        if(registerChannelRequestDTO.getChannelCode() == ChannelCode.VIDEO){
 //            ChannelVideo channelVideo = ChannelVideo.builder()
 //                .isActive(false)

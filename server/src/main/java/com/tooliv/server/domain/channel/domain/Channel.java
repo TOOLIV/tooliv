@@ -38,6 +38,9 @@ public class Channel extends BaseEntity {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
+    @Column(name = "wrote_at")
+    private LocalDateTime wroteAt;
+
     @Column(name = "channel_code", nullable = false)
     private ChannelCode channelCode;
 
@@ -52,6 +55,10 @@ public class Channel extends BaseEntity {
 
     public void deleteChannel() {
         this.deletedAt = LocalDateTime.now();
+    }
+
+    public void updateWroteAt(){
+        this.wroteAt = LocalDateTime.now();
     }
 
 }
