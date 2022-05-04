@@ -6,6 +6,7 @@ import MainStage from 'molecules/meeting/MainStage';
 import VideoCopy from 'molecules/meeting/VideoCopy';
 import { OpenVidu, Publisher, Session, StreamManager } from 'openvidu-browser';
 import FunctionButtons from 'organisms/meeting/FunctionButtons';
+import ScreenShareModal from 'organisms/meeting/video/ScreenShareModal';
 import VideosCopy from 'organisms/meeting/video/VideosCopy';
 import React, { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
@@ -65,6 +66,8 @@ const Meeting = () => {
   const [isVideoOn, setIsVideoOn] = useState<boolean>(true);
   const [isScreen, setIsScreen] = useState<boolean>(false);
   const [pauseScreenSharing, setPauseScreenSharing] = useState<boolean>(false);
+  const [choiceScreen, setChoiceScreen] = useState<string>('');
+  const [openScreenModal, setOpenScreenModal] = useState<boolean>(false);
 
   useEffect(() => {
     console.log('join>>>>>>>>>>>>>>>>');
@@ -227,10 +230,17 @@ const Meeting = () => {
   useEffect(() => {
     if (!isScreenSharing) {
       stopScreenShare();
+      setChoiceScreen('');
     } else {
-      startScreenShare();
+      if (isElectron() && choiceScreen) {
+        startScreenShare();
+      } else if (isElectron() && !choiceScreen) {
+        setOpenScreenModal(true);
+      } else {
+        startScreenShare();
+      }
     }
-  }, [isScreenSharing]);
+  }, [isScreenSharing, choiceScreen]);
 
   const deleteSubscriber = (streamManager: StreamManager) => {
     let prevSubscribers = subscribers;
@@ -291,7 +301,6 @@ const Meeting = () => {
 
   const startScreenShare = async () => {
     const OVForScreenShare = OVForScreen;
-
     const mySession = sessionForScreen;
 
     await getTokenForScreenShare().then((token: any) => {
@@ -312,7 +321,7 @@ const Meeting = () => {
           OVForScreenShare.initPublisherAsync(initUserData.myUserName, {
             audioSource: false, // The source of audio. If undefined default microphone
             // videoSource: videoDevices[0].deviceId, // The source of video. If undefined default webcam
-            videoSource: 'screen', // The source of video. If undefined default webcam
+            videoSource: isElectron() ? 'screen: ' + choiceScreen : 'screen', // The source of video. If undefined default webcam
             publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
             publishVideo: true, // Whether you want to start publishing with your video enabled or not
             resolution: '1920x1280', // The resolution of your video
@@ -487,6 +496,12 @@ const Meeting = () => {
         />
         {isScreen && mainStreamManager && (
           <MainStage streamManager={mainStreamManager}></MainStage>
+        )}
+        {openScreenModal && (
+          <ScreenShareModal
+            setIsScreenShareModal={setOpenScreenModal}
+            setChoiceScreen={setChoiceScreen}
+          />
         )}
       </MeetingInnerContainer>
       <FunctionButtons
