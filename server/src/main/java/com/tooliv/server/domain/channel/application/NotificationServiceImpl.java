@@ -10,6 +10,8 @@ import com.tooliv.server.domain.channel.domain.repository.ChannelMembersReposito
 import com.tooliv.server.domain.channel.domain.repository.DirectChatNotificationRepository;
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
+import com.tooliv.server.domain.workspace.domain.Workspace;
+import com.tooliv.server.domain.workspace.domain.repository.WorkspaceRepository;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,8 @@ public class NotificationServiceImpl implements NotificationService {
 
     private final ChannelMembersRepository channelMembersRepository;
 
+    private final WorkspaceRepository workspaceRepository;
+
     @Override
     public NotificationListResponseDTO getNotificationList(String email) {
         User user = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
@@ -35,7 +39,8 @@ public class NotificationServiceImpl implements NotificationService {
         List<NotificationInfoDTO> notificationInfoDTOList = new ArrayList<>();
         for (int i = 0; i < channelMembers.size(); i++) {
             notificationInfoDTOList.add(
-                new NotificationInfoDTO(channelMembers.get(i).getChannel().getId(), user.getId(), checkNotification(channelMembers.get(i), channelMembers.get(i).getChannel())));
+                new NotificationInfoDTO(channelMembers.get(i).getChannel().getId(), channelMembers.get(i).getChannel().getWorkspace().getId(),
+                    checkNotification(channelMembers.get(i), channelMembers.get(i).getChannel())));
         }
         return new NotificationListResponseDTO(notificationInfoDTOList);
     }
