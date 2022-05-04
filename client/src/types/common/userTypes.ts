@@ -60,3 +60,7 @@ export type userConfigType = {
   isOpen: boolean;
   onClose: () => void;
 };
+
+export type userNicknameType = {
+  nickname: string;
+};

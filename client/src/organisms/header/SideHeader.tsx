@@ -22,6 +22,7 @@ const Title = styled.div`
   display: flex;
   align-items: center;
 `;
+const DropdownWrapper = styled.div``;
 
 const SideHeader = () => {
   const [isOpen, setIsOpen] = useRecoilState<boolean>(isOpenSide);
@@ -92,34 +93,35 @@ const SideHeader = () => {
 
   return (
     <Container isOpen={isOpen}>
-      <Title
-        onClick={() => {
-          console.log('hello');
-          setDropdownOpen(!dropdownOpen);
-        }}
-      >
-        <Text size={24} weight="700" pointer={currentWorkspaceId !== 'main'}>
-          {/* 워크스페이스 id로 워크스페이명 불러오는 api 연동. */}
-          {workspaceName}
-        </Text>
-        {currentWorkspaceId !== 'main' ? (
-          <Icons width="30" height="30" icon="dropdown" />
-        ) : null}
-      </Title>
+      <DropdownWrapper ref={dropdownRef}>
+        <Title
+          onClick={() => {
+            console.log('hello');
+            setDropdownOpen(!dropdownOpen);
+          }}
+        >
+          <Text size={24} weight="700" pointer={currentWorkspaceId !== 'main'}>
+            {/* 워크스페이스 id로 워크스페이명 불러오는 api 연동. */}
+            {workspaceName}
+          </Text>
+          {currentWorkspaceId !== 'main' ? (
+            <Icons width="30" height="30" icon="dropdown" />
+          ) : null}
+        </Title>
+        <WorkspaceDropDown
+          isOpen={dropdownOpen}
+          onClose={closeDropdown}
+          openMemberList={openWorkspaceMemberList}
+          openAddMemberModal={openAddMemberModal}
+          openModifyModal={openModifyModal}
+        />
+      </DropdownWrapper>
       <Icons
         icon={isOpen ? 'anglesLeft' : 'anglesRight'}
         onClick={onClickSide}
       />
       {currentWorkspaceId !== 'main' ? (
         <>
-          <WorkspaceDropDown
-            isOpen={dropdownOpen}
-            onClose={closeDropdown}
-            openMemberList={openWorkspaceMemberList}
-            openAddMemberModal={openAddMemberModal}
-            openModifyModal={openModifyModal}
-            ref={dropdownRef}
-          />
           <WorkspaceMemberListModal
             isOpen={memberListOpen}
             onClose={closeWorkspaceMemberList}

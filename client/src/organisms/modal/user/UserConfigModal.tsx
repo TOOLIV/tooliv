@@ -1,17 +1,15 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { modifyChannel } from 'api/channelApi';
+import { updateNickname, updateProfileImage } from 'api/userApi';
 import Button from 'atoms/common/Button';
 import Icons from 'atoms/common/Icons';
 import Avatar from 'atoms/profile/Avatar';
 import Text from 'atoms/text/Text';
 import InputBox from 'molecules/inputBox/InputBox';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { useSetRecoilState } from 'recoil';
-import { modifyChannelName } from 'recoil/atom';
+import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
 import { user } from 'recoil/auth';
-import { channelModifyModalType } from 'types/channel/contentType';
 import { userConfigType } from 'types/common/userTypes';
 
 const Modal = styled.div<{ isOpen: boolean }>`
@@ -59,19 +57,35 @@ const ButtonBox = styled.div`
   margin-left: auto;
 `;
 
+const AvatarBox = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  cursor: pointer;
+`;
+
+const InputContainer = styled.div`
+  height: 20vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+`;
 const UserConfigModal = ({ isOpen, onClose }: userConfigType) => {
   const [nickName, setNickName] = useState('');
   const [imgSrc, setImgSrc] = useState('');
+  const [imgFile, setImgFile] = useState('');
   const inputNameRef = useRef<HTMLInputElement>(null);
   const inputEmailRef = useRef<HTMLInputElement>(null);
   const inputNickNameRef = useRef<HTMLInputElement>(null);
-  const setUser = useSetRecoilState(user);
-  const userInfo = localStorage.getItem('user');
-  const Juser = JSON.parse(userInfo!);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [userInfo, setUserInfo] = useRecoilState(user);
+  const localUserInfo = localStorage.getItem('user');
+  const Juser = JSON.parse(localUserInfo!);
 
   const onChange = () => {
     setNickName(inputNickNameRef.current?.value!);
   };
+
   // const modChannelName = useCallback(async () => {
   //   try {
   //     const body = {
@@ -96,8 +110,44 @@ const UserConfigModal = ({ isOpen, onClose }: userConfigType) => {
     inputNameRef.current!.value = Juser.name;
     inputEmailRef.current!.value = Juser.email;
     inputNickNameRef.current!.value = Juser.nickname;
+    setNickName(inputNickNameRef.current!.value);
     setImgSrc(Juser.profileImage);
-  });
+  }, []);
+
+  const uploadImg = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleUploadFile = async (event: any) => {
+    const file = event.target.files;
+    console.log(file);
+    setImgFile(file[0]);
+    setImgSrc(URL.createObjectURL(file[0]));
+  };
+
+  const updateprofile = async () => {
+    if (!nickName) {
+      alert('닉네임을 확인해주세요.');
+    } else {
+      const formData = new FormData();
+      formData.append('multipartFile', imgFile);
+      const body = {
+        nickname: nickName,
+      };
+      if (imgFile !== '') {
+        const response = await updateProfileImage(formData);
+        const response2 = await updateNickname(body);
+        setUserInfo({ ...userInfo, profileImage: imgSrc, nickname: nickName });
+        console.log(response);
+        console.log(response2);
+        exitModal();
+      } else {
+        const response2 = await updateNickname(body);
+        console.log(response2);
+        exitModal();
+      }
+    }
+  };
 
   return (
     <Modal isOpen={isOpen}>
@@ -106,28 +156,39 @@ const UserConfigModal = ({ isOpen, onClose }: userConfigType) => {
           <Text size={18}>회원 정보 수정</Text>
           <Icons icon="xMark" width="32" height="32" onClick={exitModal} />
         </Header>
+        <AvatarBox onClick={uploadImg}>
+          <Avatar src={imgSrc} size="130" />
+          <input
+            style={{ display: 'none' }}
+            type="file"
+            accept="image/jpg,image/png,image/jpeg"
+            name="userProfilePhoto"
+            onChange={handleUploadFile}
+            ref={fileInputRef}
+          />
+        </AvatarBox>
+        <InputContainer>
+          <InputBox
+            label="이름"
+            placeholder="이름을 입력해주세요."
+            ref={inputNameRef}
+            disabled
+          />
+          <InputBox
+            label="이메일"
+            placeholder="이메일을 입력해주세요."
+            ref={inputEmailRef}
+            onChange={onChange}
+            disabled
+          />
 
-        <Avatar src={imgSrc} size="100" />
-        <InputBox
-          label="이름"
-          placeholder="이름을 입력해주세요."
-          ref={inputNameRef}
-          disabled
-        />
-        <InputBox
-          label="이메일"
-          placeholder="이메일을 입력해주세요."
-          ref={inputEmailRef}
-          onChange={onChange}
-          disabled
-        />
-
-        <InputBox
-          label="닉네임"
-          placeholder="닉네임을 입력해주세요."
-          ref={inputNickNameRef}
-          onChange={onChange}
-        />
+          <InputBox
+            label="닉네임"
+            placeholder="닉네임을 입력해주세요."
+            ref={inputNickNameRef}
+            onChange={onChange}
+          />
+        </InputContainer>
         <ButtonBox>
           <Button
             width="85"
@@ -141,7 +202,7 @@ const UserConfigModal = ({ isOpen, onClose }: userConfigType) => {
             height="35"
             text="수정"
             // disabled={inputRef.current?.value === ''}
-            // onClick={modChannelName}
+            onClick={updateprofile}
           />
         </ButtonBox>
       </Container>

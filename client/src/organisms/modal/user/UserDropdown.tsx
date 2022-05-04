@@ -4,7 +4,7 @@ import Icons from 'atoms/common/Icons';
 import Avatar from 'atoms/profile/Avatar';
 import Text from 'atoms/text/Text';
 import { forwardRef, useEffect } from 'react';
-import { useSetRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { user } from 'recoil/auth';
 import { userDropdownType } from 'types/common/userTypes';
 
@@ -60,13 +60,14 @@ const IconItem = styled.div`
 
 const UserDropdown = forwardRef<HTMLDivElement, userDropdownType>(
   ({ isOpen, onClose, openProfileConfig }, ref) => {
-    const setUser = useSetRecoilState(user);
-    const userInfo = localStorage.getItem('user');
-    const Juser = JSON.parse(userInfo!);
+    const [userInfo, setUserInfo] = useRecoilState(user);
+    const localUserInfo = localStorage.getItem('user');
+
+    const Juser = JSON.parse(localUserInfo!);
 
     const logout = () => {
       localStorage.removeItem('user');
-      setUser({
+      setUserInfo({
         accessToken: undefined,
         email: '',
         name: '',
@@ -84,7 +85,7 @@ const UserDropdown = forwardRef<HTMLDivElement, userDropdownType>(
       <Modal isOpen={isOpen} ref={ref}>
         <Container>
           <UserItem>
-            <Avatar size="36" />
+            <Avatar size="36" src={userInfo.profileImage} />
             <User>
               <Text size={16}>{Juser.name}</Text>
               <Text size={14}>{Juser.email}</Text>

@@ -74,6 +74,7 @@ const LoginForm = () => {
           email: data.email,
           nickname: data.nickname,
           userId: data.userId,
+          profileImage: data.profileImage,
         });
         navigate('/');
       }

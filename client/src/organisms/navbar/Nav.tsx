@@ -4,7 +4,6 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import Text from 'atoms/text/Text';
 import InputBox from 'molecules/inputBox/InputBox';
-import { useNavigate } from 'react-router-dom';
 import Logo from '../../atoms/common/Logo';
 import { useEffect, useRef, useState } from 'react';
 import { user } from 'recoil/auth';
@@ -12,9 +11,7 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { appThemeMode, channelContents, channelNotiList } from 'recoil/atom';
 import { channelNotiType, contentTypes } from 'types/channel/contentType';
 import { connect } from 'services/wsconnect';
-import Icons from 'atoms/common/Icons';
 import Avatar from 'atoms/profile/Avatar';
-import DarkModeToggle from 'react-dark-mode-toggle';
 import { DarkModeSwitch } from 'react-toggle-dark-mode';
 import UserDropdown from 'organisms/modal/user/UserDropdown';
 import UserConfigModal from 'organisms/modal/user/UserConfigModal';
@@ -45,10 +42,16 @@ const MidContainer = styled.div`
 const RightContainer = styled.div`
   display: flex;
   align-items: center;
+  width: 8vw;
+  justify-content: space-between;
 `;
 
 const AvatarWrapper = styled.div`
   cursor: pointer;
+`;
+
+const DropdownWrapper = styled.div`
+  /* cursor: pointer; */
 `;
 const Nav = () => {
   const { accessToken, email } = useRecoilValue(user);
@@ -57,9 +60,11 @@ const Nav = () => {
   const [mode, setMode] = useRecoilState(appThemeMode);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [profileConfigOpen, setProfileConfigOpen] = useState(false);
-
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const userInfo = useRecoilValue(user);
   const [notiList, setNotiList] =
     useRecoilState<channelNotiType[]>(channelNotiList);
+
   useEffect(() => {
     getChannels(email).then((res) => {
       const {
@@ -71,6 +76,7 @@ const Nav = () => {
     });
   }, []);
 
+  // 다크모드/일반모드 설정
   const handleDarkMode = () => {
     if (mode === 'dark') {
       setMode('light');
@@ -79,6 +85,7 @@ const Nav = () => {
     }
   };
 
+  // 모달 state 변경
   const closeDropdown = () => {
     setDropdownOpen(false);
   };
@@ -90,15 +97,16 @@ const Nav = () => {
     setProfileConfigOpen(false);
   };
 
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  const handleClickOutside = ({ target }: any) => {
-    if (dropdownOpen && !dropdownRef.current?.contains(target)) {
-      setDropdownOpen(false);
-    }
-  };
-
+  // 모달창 밖 클릭시 close
   useEffect(() => {
+    // 클릭 요소 체크
+    const handleClickOutside = ({ target }: any) => {
+      if (dropdownOpen && !dropdownRef.current?.contains(target)) {
+        setDropdownOpen(false);
+      }
+    };
+
+    // 클릭이벤트 등록
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
@@ -123,18 +131,19 @@ const Nav = () => {
         <DarkModeSwitch
           checked={mode === 'dark'}
           onChange={handleDarkMode}
-          size={30}
+          size={25}
         />
-        <AvatarWrapper onClick={() => setDropdownOpen(!dropdownOpen)}>
-          <Avatar size="32" />
-        </AvatarWrapper>
+        <DropdownWrapper ref={dropdownRef}>
+          <AvatarWrapper onClick={() => setDropdownOpen(!dropdownOpen)}>
+            <Avatar size="42" src={userInfo.profileImage} />
+          </AvatarWrapper>
+          <UserDropdown
+            isOpen={dropdownOpen}
+            onClose={closeDropdown}
+            openProfileConfig={openProfileConfig}
+          />
+        </DropdownWrapper>
       </RightContainer>
-      <UserDropdown
-        isOpen={dropdownOpen}
-        onClose={closeDropdown}
-        openProfileConfig={openProfileConfig}
-        ref={dropdownRef}
-      />
       <UserConfigModal
         isOpen={profileConfigOpen}
         onClose={closeProfileConfig}
