@@ -19,6 +19,7 @@ export type openviduTypesCopy = {
 export type videosTypes = {
   publisher?: Publisher;
   subscribers?: Array<StreamManager>;
+  isScreen: boolean;
 };
 export type videoTypes = {
   publisher?: Publisher;
@@ -30,8 +31,11 @@ export type funcButtonPropsTypes = {
   publisher?: Publisher;
   isAudioOn: boolean;
   isVideoOn: boolean;
+  isScreenSharing: boolean;
   setIsAudioOn: Dispatch<SetStateAction<boolean>>;
   setIsVideoOn: Dispatch<SetStateAction<boolean>>;
+  setIsScreenSharing: Dispatch<SetStateAction<boolean>>;
+  leaveSession: () => void;
   // setIsScreenShareModal: Dispatch<SetStateAction<boolean>>;
 };
 

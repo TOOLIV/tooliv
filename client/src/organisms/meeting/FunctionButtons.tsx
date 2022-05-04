@@ -15,6 +15,9 @@ const FunctionButtons = ({
   setIsAudioOn,
   isVideoOn,
   setIsVideoOn,
+  isScreenSharing,
+  setIsScreenSharing,
+  leaveSession,
 }: // setIsScreenShareModal,
 funcButtonPropsTypes) => {
   const [shareMoniter, setShareMoniter] = useState(false);
@@ -42,11 +45,13 @@ funcButtonPropsTypes) => {
     }
   };
 
-  // const onhandleMoniter = () => {
-  //   if (shareMoniter) {
-  //     publisher.vi
-  //   }
-  // }
+  const onhandleScreenShare = () => {
+    setIsScreenSharing(!isScreenSharing);
+  };
+
+  const onleaveSession = () => {
+    leaveSession();
+  };
 
   return (
     <FucntionButtonsContainer>
@@ -58,8 +63,8 @@ funcButtonPropsTypes) => {
         icon={isVideoOn ? 'videoOn' : 'videoOff'}
         onClick={onhandleVideo}
       />
-      <FunctionButton icon="shareMonitor" onClick={() => {}} />
-      <FunctionButton icon="exit" exit onClick={() => {}} />
+      <FunctionButton icon="shareMonitor" onClick={onhandleScreenShare} />
+      <FunctionButton icon="exit" exit onClick={onleaveSession} />
     </FucntionButtonsContainer>
   );
 };
