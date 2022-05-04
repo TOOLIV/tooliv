@@ -13,11 +13,11 @@ import { isOpenChat } from 'recoil/atom';
 
 const MeetingContainer = styled.div`
   /* background-color: #787878; */
-  height: calc(100vh - 256px);
+  height: calc(100vh - 216px);
 `;
 
 const MeetingInnerContainer = styled.div`
-  height: calc(100vh - 216px);
+  height: calc(100vh - 240px);
 `;
 
 const Meeting = () => {
@@ -64,6 +64,7 @@ const Meeting = () => {
   const [isAudioOn, setIsAudioOn] = useState<boolean>(true);
   const [isVideoOn, setIsVideoOn] = useState<boolean>(true);
   const [isScreen, setIsScreen] = useState<boolean>(false);
+  const [pauseScreenSharing, setPauseScreenSharing] = useState<boolean>(false);
 
   useEffect(() => {
     console.log('join>>>>>>>>>>>>>>>>');
@@ -200,7 +201,7 @@ const Meeting = () => {
         )
         .then((subscriber) => {
           console.log('>>>>>>>>>>>>>>>>>>>>>>>>sub :', subscriber);
-          stopScreenShare();
+          setPauseScreenSharing(true);
           setMainStreamManager(subscriber);
           setIsScreen(true);
         })
@@ -216,11 +217,11 @@ const Meeting = () => {
       setIsScreen(false);
     });
 
-    // await getTokenForScreenShare().then((token: any) => {
-    //   mySession.connect(token.data.token, {
-    //     clientData: initUserData.myUserName,
-    //   });
-    // });
+    await getTokenForScreenShare().then((token: any) => {
+      mySession.connect(token.data.token, {
+        clientData: initUserData.myUserName,
+      });
+    });
   };
 
   useEffect(() => {
