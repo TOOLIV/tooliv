@@ -26,7 +26,7 @@ const Container = styled.div`
   justify-content: space-between;
   height: 76px;
   padding: 12px 40px;
-  position: relative;
+  /* position: relative; */
   border-bottom: 1px solid ${(props) => props.theme.borderColor};
 `;
 

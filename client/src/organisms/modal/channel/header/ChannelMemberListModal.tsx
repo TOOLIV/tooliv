@@ -16,7 +16,7 @@ import {
 const Modal = styled.div<{ isOpen: boolean }>`
   display: none;
   position: absolute;
-  top: 80px;
+  top: 140px;
 
   ${(props) =>
     props.isOpen &&

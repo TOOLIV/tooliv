@@ -1,15 +1,20 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { getChannelList } from 'api/channelApi';
-import { createWorkspace } from 'api/workspaceApi';
+import { createWorkspace, modifyWorkspace } from 'api/workspaceApi';
 import Button from 'atoms/common/Button';
 import Text from 'atoms/text/Text';
 import InputBox from 'molecules/inputBox/InputBox';
 import FileUploader from 'molecules/uploader/FileUploader';
 import React, { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useRecoilState, useSetRecoilState } from 'recoil';
-import { currentChannel, currentWorkspace, userLog } from 'recoil/atom';
+import {
+  currentChannel,
+  currentWorkspace,
+  modifyWorkspaceName,
+  userLog,
+} from 'recoil/atom';
 import { colors } from 'shared/color';
 import {
   workspaceModalType,
@@ -72,26 +77,29 @@ const WorkspaceModifyModal = ({
   workspaceName,
   thumbnailImage,
 }: workspaceModifyModalType) => {
+  const [name, setName] = useState('');
   const [file, setFile] = useState<File>();
   const inputWorkspaceRef = useRef<HTMLInputElement>(null);
-  const setCurrentWorkspace = useSetRecoilState(currentWorkspace);
-  const setCurrentChannel = useSetRecoilState(currentChannel);
-  const [userLogList, setUserLogList] = useRecoilState(userLog);
+  const setModifyWorkspaceName = useSetRecoilState(modifyWorkspaceName);
+
+  const onChange = () => {
+    setName(inputWorkspaceRef.current?.value!);
+  };
 
   const handleSetImg = (file: FileList) => {
     setFile(file[0]);
   };
-  const navigate = useNavigate();
-
-  const registWorkspace = async () => {
+  const { workspaceId } = useParams();
+  const modWorkspace = async () => {
     const formData = new FormData();
-    const name = inputWorkspaceRef.current?.value!;
+    const id = workspaceId;
     formData.append('multipartFile', file!);
     formData.append(
-      'registerWorkspaceRequestDTO',
+      'modifyWorkspaceRequestDTO',
       new Blob(
         [
           JSON.stringify({
+            id,
             name,
           }),
         ],
@@ -107,18 +115,19 @@ const WorkspaceModifyModal = ({
       }
 
       if (name) {
-        const response = await createWorkspace(formData);
+        const response = await modifyWorkspace(formData);
         console.log(response);
-        const workspaceId = response.data.id;
-        const channelList = await getChannelList(workspaceId);
-        const channelId = channelList.data.channelGetResponseDTOList[0].id;
-        setCurrentWorkspace(workspaceId);
-        setCurrentChannel(channelId);
-        setUserLogList({
-          ...userLogList,
-          [workspaceId]: channelId,
-        });
-        navigate(`${workspaceId}/${channelId}`);
+        setModifyWorkspaceName(name);
+        // const workspaceId = response.data.id;
+        // const channelList = await getChannelList(workspaceId);
+        // const channelId = channelList.data.channelGetResponseDTOList[0].id;
+        // setCurrentWorkspace(workspaceId);
+        // setCurrentChannel(channelId);
+        // setUserLogList({
+        //   ...userLogList,
+        //   [workspaceId]: channelId,
+        // });
+        // navigate(`${workspaceId}/${channelId}`);
         inputWorkspaceRef.current!.value = '';
         setFile(undefined);
         onClose();
@@ -137,6 +146,7 @@ const WorkspaceModifyModal = ({
           label="워크스페이스명"
           placeholder={workspaceName}
           ref={inputWorkspaceRef}
+          onChange={onChange}
         />
         <FileUploader
           file={file!}
@@ -154,8 +164,9 @@ const WorkspaceModifyModal = ({
           <Button
             width="125"
             height="35"
-            text="생성"
-            onClick={registWorkspace}
+            text="수정"
+            onClick={modWorkspace}
+            disabled={inputWorkspaceRef.current?.value === ''}
           />
         </ButtonBox>
       </Container>

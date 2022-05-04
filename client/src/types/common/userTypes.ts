@@ -49,3 +49,14 @@ export type userLoginTypes = {
 export type userLogTypes = {
   [key: string]: string;
 };
+
+export type userDropdownType = {
+  isOpen: boolean;
+  onClose: () => void;
+  openProfileConfig: () => void;
+};
+
+export type userConfigType = {
+  isOpen: boolean;
+  onClose: () => void;
+};

@@ -36,7 +36,11 @@ export type iconsTypes = {
     | 'menu'
     | 'night'
     | 'sun'
-    | 'modify';
+    | 'modify'
+    | 'online'
+    | 'later'
+    | 'remove'
+    | 'offline';
 
   onClick?: () => void;
   width?: string;

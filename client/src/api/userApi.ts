@@ -8,6 +8,7 @@ export const login = async (body: userLoginTypes) => {
     accessToken: response.data.accessToken,
     nickname: response.data.nickname,
     email: response.data.email,
+    profileImage: response.data.profileImage,
   };
 
   localStorage.setItem('user', JSON.stringify(user));
