@@ -1,4 +1,4 @@
-import Recoil, { atom, selector } from 'recoil';
+import { atom, selector } from 'recoil';
 import { recoilPersist } from 'recoil-persist';
 
 const { persistAtom } = recoilPersist();
@@ -11,6 +11,7 @@ export const user = atom({
     name: '',
     nickname: '',
     userId: '',
+    profileImage: '',
   },
   effects_UNSTABLE: [persistAtom],
 });
