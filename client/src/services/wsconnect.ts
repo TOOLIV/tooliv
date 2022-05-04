@@ -3,17 +3,20 @@ import { marked } from 'marked';
 import { SetterOrUpdater } from 'recoil';
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
-import { contentTypes } from 'types/channel/contentType';
+import { channelNotiType, contentTypes } from 'types/channel/contentType';
 const baseURL = localStorage.getItem('baseURL');
 let sockJS = baseURL
   ? new SockJS(`${JSON.parse(baseURL).url}/chatting`)
-  : // 로컬에서 테스트시 REACT_APP_BASE_URL, server 주소는 REACT_APP_BASE_SERVER_URL
-    new SockJS(`${process.env.REACT_APP_BASE_SERVER_URL}/chatting`);
+  : // 로컬에서 테스트시 REACT_APP_TEST_URL, server 주소는 REACT_APP_BASE_SERVER_URL
+    new SockJS(`${process.env.REACT_APP_TEST_URL}/chatting`);
 let client: Stomp.Client = Stomp.over(sockJS);
 export const connect = (
   accessToken: string,
   email: string,
-  setContents: SetterOrUpdater<contentTypes[]>
+  setContents: SetterOrUpdater<contentTypes[]>,
+  notiList: channelNotiType[],
+  setNotiList: SetterOrUpdater<channelNotiType[]>,
+  list: any
 ) => {
   client.connect(
     {
@@ -21,19 +24,24 @@ export const connect = (
     },
     (frame) => {
       console.log('STOMP Connection');
-      getChannels(email).then((res) => {
-        console.log(res.data.notificationChannelList);
-        res.data.notificationChannelList.map((id: string) => {
-          client.subscribe(`/sub/chat/room/${id}`, (response) => {
-            const channelId = window.location.href.split('/');
-            if (
-              channelId[channelId.length - 1] ===
-              JSON.parse(response.body).channelId
-            ) {
-              console.log(id, JSON.parse(response.body).channelId);
-              setContents((prev) => [...prev, JSON.parse(response.body)]);
-            }
-          });
+      list.map((id: string) => {
+        client.subscribe(`/sub/chat/room/${id}`, (response) => {
+          const link = window.location.href.split('/');
+          // 현재 채널 아이디
+          const channelId = link[link.length - 1];
+          const recChannelId = JSON.parse(response.body).channelId;
+          if (channelId === recChannelId) {
+            // 현재 채널 아이디와 도착한 메시지의 채널 아이디가 같으면
+            setContents((prev) => [...prev, JSON.parse(response.body)]);
+          } else {
+            const newList: channelNotiType[] = notiList.map((noti) => {
+              if (noti.id === recChannelId)
+                return { id: noti.id, readYn: false };
+              else return noti;
+            });
+
+            setNotiList(newList);
+          }
         });
       });
     }

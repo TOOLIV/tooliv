@@ -7,11 +7,12 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import {
   channelContents,
   channelMessage,
+  channelNotiList,
   chatFileNames,
   chatFiles,
   chatFileUrl,
 } from '../recoil/atom';
-import { contentTypes } from '../types/channel/contentType';
+import { channelNotiType, contentTypes } from '../types/channel/contentType';
 import Messages from '../organisms/chat/Messages';
 import { enterChannel, subChannel } from 'api/chatApi';
 import Files from 'organisms/chat/Files';
@@ -42,11 +43,18 @@ const Channel = () => {
   const [fileUrl, setFileUrl] = useRecoilState<string[]>(chatFileUrl);
   const [fileNames, setFileNames] = useRecoilState<string[]>(chatFileNames);
   const { accessToken, nickname, email } = useRecoilValue(user);
+  const [notiList, setNotiList] =
+    useRecoilState<channelNotiType[]>(channelNotiList);
   const { channelId } = useParams<string>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const baseURL = localStorage.getItem('baseURL');
 
   useEffect(() => {
+    const newList: channelNotiType[] = notiList.map((noti) => {
+      if (noti.id === channelId) return { id: noti.id, readYn: true };
+      else return noti;
+    });
+
+    setNotiList(newList);
     setIsLoading(true);
     enterChannel(channelId!).then(() => {
       subChannel(channelId!).then((res) => {

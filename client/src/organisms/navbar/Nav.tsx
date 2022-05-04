@@ -9,10 +9,11 @@ import Logo from '../../atoms/common/Logo';
 import { useEffect } from 'react';
 import { user } from 'recoil/auth';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { appThemeMode, channelContents } from 'recoil/atom';
-import { contentTypes } from 'types/channel/contentType';
+import { appThemeMode, channelContents, channelNotiList } from 'recoil/atom';
+import { channelNotiType, contentTypes } from 'types/channel/contentType';
 import { connect } from 'services/wsconnect';
 import Icons from 'atoms/common/Icons';
+import { getChannels } from 'api/chatApi';
 
 const NavContainer = styled.div`
   padding: 0px 20px;
@@ -41,9 +42,26 @@ const Nav = () => {
   const [contents, setContents] =
     useRecoilState<contentTypes[]>(channelContents);
   const [mode, setMode] = useRecoilState(appThemeMode);
-
+  const [notiList, setNotiList] =
+    useRecoilState<channelNotiType[]>(channelNotiList);
   useEffect(() => {
-    connect(accessToken, email, setContents);
+    getChannels(email).then((res) => {
+      const {
+        data: { notificationChannelList },
+      } = res;
+      const newList = notificationChannelList.map((channel: string) => {
+        return { id: channel, readYn: true };
+      });
+      setNotiList(newList);
+      connect(
+        accessToken,
+        email,
+        setContents,
+        newList,
+        setNotiList,
+        notificationChannelList
+      );
+    });
   }, []);
 
   return (
