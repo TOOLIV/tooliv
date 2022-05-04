@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.google.gson.Gson;
+import com.tooliv.server.BaseIntegrationTest;
 import com.tooliv.server.domain.user.application.dto.request.LogInRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.SignUpRequestDTO;
 import com.tooliv.server.domain.user.application.dto.response.LogInResponseDTO;
@@ -45,12 +46,7 @@ import org.testcontainers.utility.DockerImageName;
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @Testcontainers
-public class UserControllerTest {
-
-    static Logger LOGGER = LoggerFactory.getLogger(UserControllerTest.class);
-
-    @Autowired
-    private MockMvc mockMvc;
+public class UserControllerTest extends BaseIntegrationTest {
 
     private SignUpRequestDTO signUpRequestDTO;
 
@@ -72,9 +68,9 @@ public class UserControllerTest {
     @MockBean
     NotificationManager notificationManager;
 
-    @Container
-    private static MySQLContainer<?> mySQLContainer = new MySQLContainer<>(DockerImageName.parse("mysql:5.7"))
-        .withDatabaseName("usertest");
+//    @Container
+//    private static MySQLContainer<?> mySQLContainer = new MySQLContainer<>(DockerImageName.parse("mysql:5.7"))
+//        .withDatabaseName("usertest");
 
 //    @BeforeAll
 //    static void beforeAll() {
@@ -86,11 +82,11 @@ public class UserControllerTest {
 //        mySQLContainer.stop();
 //    }
 
-    @BeforeAll
-    static void beforeAll() {
-        Slf4jLogConsumer logConsumer = new Slf4jLogConsumer(LOGGER);
-        mySQLContainer.followOutput(logConsumer);
-    }
+//    @BeforeAll
+//    static void beforeAll() {
+//        Slf4jLogConsumer logConsumer = new Slf4jLogConsumer(LOGGER);
+//        mySQLContainer.followOutput(logConsumer);
+//    }
 
     @BeforeEach
     void prepareSignUp() {
