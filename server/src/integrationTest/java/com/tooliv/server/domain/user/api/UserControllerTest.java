@@ -1,130 +1,153 @@
 package com.tooliv.server.domain.user.api;
 
-import static org.mockito.BDDMockito.given;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.google.gson.Gson;
+import com.tooliv.server.BaseIntegrationTest;
 import com.tooliv.server.domain.user.application.dto.request.LogInRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.SignUpRequestDTO;
-import com.tooliv.server.domain.user.application.dto.response.LogInResponseDTO;
 import com.tooliv.server.domain.user.application.service.UserService;
-import com.tooliv.server.domain.user.domain.enums.UserCode;
-import com.tooliv.server.global.common.NotificationManager;
-import com.tooliv.server.global.security.service.UserDetailsImpl;
-import com.tooliv.server.global.security.service.UserDetailsServiceImpl;
-import com.tooliv.server.global.security.util.JwtAccessDeniedHandler;
-import com.tooliv.server.global.security.util.JwtAuthenticationEntryPoint;
-import com.tooliv.server.global.security.util.JwtAuthenticationProvider;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
+import com.tooliv.server.domain.user.domain.User;
+import com.tooliv.server.domain.user.domain.repository.UserRepository;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MockMvcBuilder;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.testcontainers.containers.MySQLContainer;
-import org.testcontainers.containers.output.Slf4jLogConsumer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
+import org.springframework.test.web.servlet.ResultActions;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles("test")
-@Testcontainers
-public class UserControllerTest {
-
-    static Logger LOGGER = LoggerFactory.getLogger(UserControllerTest.class);
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class UserControllerTest extends BaseIntegrationTest {
 
     @Autowired
-    private MockMvc mockMvc;
+    UserRepository userRepository;
 
-    private SignUpRequestDTO signUpRequestDTO;
-
-    @MockBean
+    @Autowired
     UserService userService;
 
-    @MockBean
-    UserDetailsServiceImpl userDetailsService;
+    @Order(1)
+    @Test
+    @DisplayName("SignUp Test - Perfect Case")
+    void shouldSaveNewUser() throws Exception {
 
-    @MockBean
-    JwtAuthenticationProvider jwtAuthenticationProvider;
+        // Given
+        SignUpRequestDTO signUpRequestDTO = new SignUpRequestDTO("test@test.com", "test", "password");
 
-    @MockBean
-    JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+        // When
+        ResultActions resultActions = mockMvc.perform(post("/api/user")
+            .content(new Gson().toJson(signUpRequestDTO))
+            .contentType(MediaType.APPLICATION_JSON));
 
-    @MockBean
-    JwtAccessDeniedHandler jwtAccessDeniedHandler;
+        resultActions.andExpect(status().isCreated());
 
-    @MockBean
-    NotificationManager notificationManager;
+        Optional<User> user = userRepository.findByEmailAndDeletedAt("test@test.com", null);
 
-    @Container
-    private static MySQLContainer<?> mySQLContainer = new MySQLContainer<>(DockerImageName.parse("mysql:5.7"))
-        .withDatabaseName("usertest");
+        // Then
+        assertTrue(user.isPresent());
+        assertEquals(user.get().getEmail(), "test@test.com");
 
-//    @BeforeAll
-//    static void beforeAll() {
-//        mySQLContainer.start();
+    }
+
+    @Order(2)
+    @Test
+    @DisplayName("SignUp Test - Wrong Email Type Case")
+    void shouldNotSaveUserWithWrongEmailType() throws Exception {
+
+        // Given
+        SignUpRequestDTO signUpRequestDTO = new SignUpRequestDTO("test", "test", "password");
+
+        // When
+        ResultActions resultActions = mockMvc.perform(post("/api/user")
+            .content(new Gson().toJson(signUpRequestDTO))
+            .contentType(MediaType.APPLICATION_JSON));
+
+        // Then
+        resultActions.andExpect(status().isInternalServerError());
+
+    }
+
+    @Order(3)
+    @Test
+    @DisplayName("SignUp Test - Duplicated Email Case")
+    void shouldNotSaveUserWithDuplicatedEmail() throws Exception {
+
+        // Given
+        SignUpRequestDTO signUpRequestDTO = new SignUpRequestDTO("test@test.com", "test2", "password2");
+
+        // When
+        ResultActions resultActions = mockMvc.perform(post("/api/user")
+            .content(new Gson().toJson(signUpRequestDTO))
+            .contentType(MediaType.APPLICATION_JSON));
+
+        // Then
+        resultActions.andExpect(status().isConflict());
+
+    }
+
+    @Order(4)
+    @Test
+    @DisplayName("LogIn Test - Existing User Case")
+    void shouldAbleToLogIn() throws Exception {
+
+        // Given
+        LogInRequestDTO logInRequestDTO = new LogInRequestDTO("test@test.com", "password");
+
+        assertNotNull(userRepository.findByEmailAndDeletedAt(logInRequestDTO.getEmail(), null).orElse(null));
+
+        // When
+        ResultActions resultActions = mockMvc.perform(post("/api/user/login")
+            .content(new Gson().toJson(logInRequestDTO))
+            .contentType(MediaType.APPLICATION_JSON));
+
+        // Then
+        resultActions.andExpect(status().isCreated());
+
+    }
+
+    @Order(5)
+    @Test
+    @DisplayName("LogIn Test - Not Existing User Case")
+    void shouldNotAbleToLogIn() throws Exception {
+
+        // Given
+        LogInRequestDTO logInRequestDTO = new LogInRequestDTO("test2@test.com", "password2");
+        assertNull(userRepository.findByEmailAndDeletedAt(logInRequestDTO.getEmail(), null).orElse(null));
+
+        // When
+        ResultActions resultActions = mockMvc.perform(post("/api/user/login")
+            .content(new Gson().toJson(logInRequestDTO))
+            .contentType(MediaType.APPLICATION_JSON));
+
+        // Then
+        resultActions.andExpect(status().isInternalServerError());
+
+    }
+
+//    @Test
+//    @DisplayName("이메일 중복 테스트")
+//    void test_signUpWithDuplicatedEmail_returnsOk() throws Exception {
+//        mockMvc.perform(post("/api/user")
+//                .content(new Gson().toJson(signUpRequestDTO))
+//                .contentType(MediaType.APPLICATION_JSON))
+//            .andExpect(status().isCreated());
 //    }
 //
-//    @AfterAll
-//    static void afterAll() {
-//        mySQLContainer.stop();
+//    @Test
+//    @DisplayName("null 값을 가진 회원 정보로 회원가입")
+//    void test_signUpWithNullParameter_returnsConflict() throws Exception {
+//        mockMvc.perform(post("/api/user")
+//                .content(new Gson().toJson(new SignUpRequestDTO("test@test.com", null, "password")))
+//                .contentType(MediaType.APPLICATION_JSON))
+//            .andExpect(status().isInternalServerError());
 //    }
-
-    @BeforeAll
-    static void beforeAll() {
-        Slf4jLogConsumer logConsumer = new Slf4jLogConsumer(LOGGER);
-        mySQLContainer.followOutput(logConsumer);
-    }
-
-    @BeforeEach
-    void prepareSignUp() {
-        System.out.println("## BeforeEach ##");
-        System.out.println();
-        signUpRequestDTO = new SignUpRequestDTO("test@test.com", "test", "password");
-    }
-
-    @Test
-    @DisplayName("회원가입 테스트")
-    void test_signUp_returnsOk() throws Exception {
-        mockMvc.perform(post("/api/user")
-                .content(new Gson().toJson(signUpRequestDTO))
-                .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isCreated());
-    }
-
-    @Test
-    @DisplayName("이메일 중복 테스트")
-    void test_signUpWithDuplicatedEmail_returnsOk() throws Exception {
-        mockMvc.perform(post("/api/user")
-                .content(new Gson().toJson(signUpRequestDTO))
-                .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isCreated());
-    }
-
-    @Test
-    @DisplayName("null 값을 가진 회원 정보로 회원가입")
-    void test_signUpWithNullParameter_returnsConflict() throws Exception {
-        mockMvc.perform(post("/api/user")
-                .content(new Gson().toJson(new SignUpRequestDTO("test@test.com", null, "password")))
-                .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isInternalServerError());
-    }
 
 //    @Test
 //    @DisplayName("null 값을 가진 회원 정보로 회원가입2")
@@ -134,7 +157,6 @@ public class UserControllerTest {
 //                .contentType(MediaType.APPLICATION_JSON))
 //            .andExpect(status().isInternalServerError());
 //    }
-
 
 //    @Test
 //    @DisplayName("로그인 테스트")
