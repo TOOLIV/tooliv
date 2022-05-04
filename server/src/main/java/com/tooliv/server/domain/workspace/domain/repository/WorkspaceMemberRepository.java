@@ -4,6 +4,7 @@ import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.workspace.domain.Workspace;
 import com.tooliv.server.domain.workspace.domain.WorkspaceMembers;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -39,4 +40,7 @@ public interface WorkspaceMemberRepository extends JpaRepository<WorkspaceMember
     List<WorkspaceMembers> findByWorkspaceIdAndKeyword(@Param("workspace_id")String workspaceId, @Param("keyword") String keyword);
 
     List<WorkspaceMembers> findByWorkspace(Workspace workspace);
+
+    Optional<WorkspaceMembers> findByWorkspaceAndUser(Workspace workspace, User user);
+
 }
