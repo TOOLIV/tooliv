@@ -6,9 +6,11 @@ import com.tooliv.server.domain.channel.domain.Channel;
 import com.tooliv.server.domain.channel.domain.ChannelMembers;
 import com.tooliv.server.domain.channel.domain.ChatFile;
 import com.tooliv.server.domain.channel.domain.DirectChatRoom;
+import com.tooliv.server.domain.channel.domain.DirectChatRoomMembers;
 import com.tooliv.server.domain.channel.domain.repository.ChannelMembersRepository;
 import com.tooliv.server.domain.channel.domain.repository.ChannelRepository;
 import com.tooliv.server.domain.channel.domain.repository.ChatFileRepository;
+import com.tooliv.server.domain.channel.domain.repository.DirectChatRoomMembersRepository;
 import com.tooliv.server.domain.channel.domain.repository.DirectChatRoomRepository;
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
@@ -26,6 +28,7 @@ import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
@@ -61,6 +64,7 @@ public class ChatServiceImpl implements ChatService {
     private final UserRepository userRepository;
     private final DirectChatRoomRepository directChatRoomRepository;
     private final ChannelMembersRepository channelMembersRepository;
+    private final DirectChatRoomMembersRepository directChatRoomMembersRepository;
     private final AwsS3Service awsS3Service;
 
     @Override
@@ -73,17 +77,32 @@ public class ChatServiceImpl implements ChatService {
         }
     }
 
+    @Transactional
     @Override
-    public void createDirectChatRoom(String receiverName) {
+    public void createDirectChatRoom(String receiverEmail) {
         LocalDateTime now = LocalDateTime.now();
 
-        DirectChatRoom directChatRoom = DirectChatRoom.builder().name(receiverName)
+        DirectChatRoom directChatRoom = DirectChatRoom.builder()
             .createdAt(now)
             .build();
         String id = directChatRoom.getId();
 
         directChatRoomRepository.save(directChatRoom);
 
+        List<User> userList = new ArrayList<>();
+        userList.add(userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
+            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다.")));
+        userList.add(userRepository.findByEmailAndDeletedAt(receiverEmail, null)
+            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다.")));
+
+        for (User user : userList) {
+            DirectChatRoomMembers directChatRoomMembers = DirectChatRoomMembers.builder()
+                .createdAt(now)
+                .directChatRoom(directChatRoom)
+                .user(user)
+                .build();
+            directChatRoomMembersRepository.save(directChatRoomMembers);
+        }
         try {
             opsHashDirectChatRoom.put(CHAT_ROOMS, id, directChatRoom);
         } catch (Exception e) {
@@ -100,6 +119,23 @@ public class ChatServiceImpl implements ChatService {
 
         channelMembers.updateLoggedAt();
         channelMembersRepository.save(channelMembers);
+        ChannelTopic topic = topics.get(channelId);
+        if (topic == null) {
+            topic = new ChannelTopic(channelId);
+        }
+        redisMessageListener.addMessageListener(redisSubscriber, topic);
+        topics.put(channelId, topic);
+    }
+
+    @Override
+    public void enterDirectChatRoom(String channelId) {
+        User user = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
+            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+        DirectChatRoom directChatRoom = directChatRoomRepository.findById(channelId).orElseThrow(() -> new IllegalArgumentException("해당 Direct 채팅 방이 존재하지 않습니다."));
+        DirectChatRoomMembers directChatRoomMembers = directChatRoomMembersRepository.findByDirectChatRoomAndUser(directChatRoom, user).orElseThrow(() -> new IllegalArgumentException("해당 멤버가 존재하지 않습니다."));
+
+        directChatRoomMembers.updateLoggedAt();
+        directChatRoomMembersRepository.save(directChatRoomMembers);
         ChannelTopic topic = topics.get(channelId);
         if (topic == null) {
             topic = new ChannelTopic(channelId);
@@ -128,6 +164,17 @@ public class ChatServiceImpl implements ChatService {
     public void setChatInfoValue(String key, ChatRequestDTO value) {
         Channel channel = channelRepository.findById(value.getChannelId()).orElseThrow(() -> new IllegalArgumentException("해당 채널이 존재하지 않습니다."));
         channel.updateWroteAt();
+        channelRepository.save(channel);
+        long idx = redisChannelTemplate.opsForList().size(key);
+        value.updateChatId(idx);
+        System.out.println(redisChannelTemplate.opsForList().rightPush(key, value));
+    }
+
+    @Override
+    public void setDirectChatInfoValue(String key, ChatRequestDTO value) {
+        DirectChatRoom directChatRoom = directChatRoomRepository.findById(value.getChannelId()).orElseThrow(() -> new IllegalArgumentException("해당 채널이 존재하지 않습니다."));
+        directChatRoom.updateWroteAt();
+        directChatRoomRepository.save(directChatRoom);
         long idx = redisChannelTemplate.opsForList().size(key);
         value.updateChatId(idx);
         System.out.println(redisChannelTemplate.opsForList().rightPush(key, value));

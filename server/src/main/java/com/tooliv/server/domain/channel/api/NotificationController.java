@@ -1,13 +1,11 @@
 package com.tooliv.server.domain.channel.api;
 
 import com.tooliv.server.domain.channel.application.NotificationService;
-import com.tooliv.server.domain.channel.application.dto.response.ChannelListGetResponseDTO;
-import com.tooliv.server.domain.channel.application.dto.response.ChatRoomChatListResponseDTO;
+import com.tooliv.server.domain.channel.application.dto.response.DirectListResponseDTO;
 import com.tooliv.server.domain.channel.application.dto.response.NotificationListResponseDTO;
 import com.tooliv.server.global.common.BaseResponseDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
@@ -43,4 +41,5 @@ public class NotificationController {
 
         return ResponseEntity.status(200).body(NotificationListResponseDTO.of("알람 목록 조회 실패", notificationListResponseDTO));
     }
+
 }
