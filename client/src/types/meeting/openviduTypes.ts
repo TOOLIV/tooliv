@@ -41,4 +41,5 @@ export type funcButtonPropsTypes = {
 
 export type screenShareMadalPropsTypes = {
   setIsScreenShareModal: Dispatch<SetStateAction<boolean>>;
+  setChoiceScreen: Dispatch<SetStateAction<string>>;
 };
