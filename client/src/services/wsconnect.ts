@@ -8,7 +8,7 @@ const baseURL = localStorage.getItem('baseURL');
 let sockJS = baseURL
   ? new SockJS(`${JSON.parse(baseURL).url}/chatting`)
   : // 로컬에서 테스트시 REACT_APP_TEST_URL, server 주소는 REACT_APP_BASE_SERVER_URL
-    new SockJS(`${process.env.REACT_APP_TEST_URL}/chatting`);
+    new SockJS(`${process.env.REACT_APP_BASE_SERVER_URL}/chatting`);
 let client: Stomp.Client = Stomp.over(sockJS);
 export const connect = (
   accessToken: string,
@@ -92,4 +92,14 @@ const getMarkdownText = (message: string) => {
     xhtml: true,
   });
   return rawMarkup;
+};
+
+// 채널 새로 생성했을 때 구독 추가하기
+export const sub = (
+  id: string,
+  setContents: SetterOrUpdater<contentTypes[]>
+) => {
+  client.subscribe(`/sub/chat/room/${id}`, (response) => {
+    setContents((prev) => [...prev, JSON.parse(response.body)]);
+  });
 };
