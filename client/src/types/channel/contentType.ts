@@ -1,10 +1,13 @@
 export type contentTypes = {
+  chatId: string;
   channelId: string;
   sender: string;
+  email: string;
   contents: string;
   type: string;
   sendTime: string;
   files?: string[];
+  originFiles?: string[];
 };
 
 export type channelRadioTypes = {

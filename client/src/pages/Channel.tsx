@@ -59,6 +59,7 @@ const Channel = () => {
     setIsLoading(true);
     enterChannel(channelId!).then(() => {
       subChannel(channelId!).then((res) => {
+        console.log(res.data);
         setContents(res.data.chatMessageDTOList);
         setIsLoading(false);
       });
@@ -76,6 +77,10 @@ const Channel = () => {
       fileUrl,
       fileNames,
     });
+
+    setMessage('');
+    setFiles([]);
+    setFileUrl([]);
   };
 
   const sendMessage = () => {
