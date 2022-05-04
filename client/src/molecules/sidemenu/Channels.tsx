@@ -39,16 +39,15 @@ const ChannelContainer = styled.div<{ isSelected: boolean }>`
   transition: 0.3s;
   cursor: pointer;
 
-  background-color: ${(props) =>
-    props.isSelected && props.theme.lightPointColor};
+  background-color: ${(props) => props.isSelected && props.theme.hoverColor};
   border-radius: ${(props) => props.isSelected && `10px 0 0 10px`};
   border-right: ${(props) =>
-    props.isSelected && `4px solid ${props.theme.secondPointColor}`};
+    props.isSelected && `4px solid ${props.theme.darkPointColor}`};
   ${(props) =>
     // !props.isSelected &&
     css`
       &:hover {
-        background-color: ${colors.lightPrimary};
+        background-color: ${props.theme.hoverColor};
 
         border-radius: 10px 0 0 10px;
         /* border-right: none; */

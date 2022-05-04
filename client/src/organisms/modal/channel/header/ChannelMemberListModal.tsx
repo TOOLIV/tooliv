@@ -28,7 +28,8 @@ const Modal = styled.div<{ isOpen: boolean }>`
 const Container = styled.div`
   width: 350px;
   padding: 25px;
-  background-color: ${colors.white};
+  border: 1px solid ${(props) => props.theme.borderColor};
+  background-color: ${(props) => props.theme.bgColor};
   border-radius: 30px;
   box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.06);
   display: flex;
@@ -53,7 +54,7 @@ export const UserInfoWrapper = styled.div`
   border-radius: 8px;
   cursor: pointer;
   &:hover {
-    background-color: ${colors.gray50};
+    background-color: ${(props) => props.theme.dropdownHoverColor};
   }
 `;
 

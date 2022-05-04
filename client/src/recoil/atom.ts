@@ -53,6 +53,10 @@ export const currentChannel = atom<string>({
   key: 'currentChannel',
   default: '',
 });
+export const modifyChannelName = atom<string>({
+  key: 'modifyChannelName',
+  default: '',
+});
 
 export const currentChannelNum = atom<number>({
   key: 'currentChannelNum',

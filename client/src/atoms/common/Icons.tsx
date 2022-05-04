@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import React from 'react';
 import { colors } from '../../shared/color';
 import { icons } from '../../shared/icons';
 import { iconsTypes } from '../../types/common/iconsTypes';

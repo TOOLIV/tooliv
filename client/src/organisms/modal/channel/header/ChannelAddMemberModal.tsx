@@ -37,7 +37,7 @@ const Modal = styled.div<{ isOpen: boolean }>`
 const Container = styled.div`
   width: 600px;
   padding: 25px;
-  background-color: ${colors.white};
+  background-color: ${(props) => props.theme.bgColor};
   border-radius: 30px;
   box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.06);
   display: flex;
@@ -60,7 +60,7 @@ const UserBox = styled.div`
   margin-bottom: 10px;
 `;
 
-const ButtonBox = styled.div`
+export const ButtonBox = styled.div`
   width: 50%;
   display: flex;
   justify-content: space-between;
@@ -87,7 +87,7 @@ const UserInfoWrapper = styled.div`
 
   cursor: pointer;
   &:hover {
-    background-color: ${colors.gray50};
+    background-color: ${(props) => props.theme.dropdownHoverColor};
   }
 `;
 

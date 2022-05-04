@@ -1,14 +1,23 @@
 import styled from '@emotion/styled';
-import { getChannelInfo, searchChannelMemberList } from 'api/channelApi';
+import {
+  getChannelInfo,
+  getChannelUserCode,
+  searchChannelMemberList,
+} from 'api/channelApi';
 import Icons from 'atoms/common/Icons';
 import Text from 'atoms/text/Text';
 import ChannelAddMemberModal from 'organisms/modal/channel/header/ChannelAddMemberModal';
 import ChannelHeaderDropdown from 'organisms/modal/channel/header/ChannelHeaderDropdown';
 import ChannelMemberListModal from 'organisms/modal/channel/header/ChannelMemberListModal';
+import ChannelModifyModal from 'organisms/modal/channel/header/ChannelModifyModal';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { currentChannelNum, currentWorkspace } from 'recoil/atom';
+import {
+  currentChannelNum,
+  currentWorkspace,
+  modifyChannelName,
+} from 'recoil/atom';
 import { colors } from '../../shared/color';
 
 const Container = styled.div`
@@ -18,7 +27,7 @@ const Container = styled.div`
   height: 76px;
   padding: 12px 40px;
   position: relative;
-  border-bottom: 1px solid ${colors.gray100};
+  border-bottom: 1px solid ${(props) => props.theme.borderColor};
 `;
 
 const Members = styled.div`
@@ -30,7 +39,7 @@ const Members = styled.div`
   cursor: pointer;
 
   &:hover {
-    background-color: ${colors.gray100};
+    background-color: ${(props) => props.theme.dropdownHoverColor};
   }
 `;
 const Title = styled.div`
@@ -43,11 +52,14 @@ const ChannelHeader = () => {
   const [channelName, setChannelName] = useState('');
   const [channelMemberNum, setChannelMemberNum] = useState(0);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [modifyModalOpen, setModifyModalOpen] = useState(false);
   const [memeberListOpen, setMemberListOpen] = useState(false);
   const [addMemeberOpen, setAddMemberOpen] = useState(false);
+  const [userCode, setUserCode] = useState('');
 
   const [currentChannelMemberNum, setCurrentChannelMemberNum] =
     useRecoilState(currentChannelNum);
+  const modChannelName = useRecoilValue(modifyChannelName);
 
   // 새로고침시 채널별 인원수가 초기화 되므로 다시 저장하기 위한 useEffect
   useEffect(() => {
@@ -66,10 +78,12 @@ const ChannelHeader = () => {
   useEffect(() => {
     if (channelId) {
       handleChannelInfo();
+      getUserCode();
     } else {
       setChannelName('홈');
+      setUserCode('');
     }
-  }, [channelId]);
+  }, [channelId, modChannelName]);
 
   const handleChannelInfo = async () => {
     try {
@@ -84,9 +98,18 @@ const ChannelHeader = () => {
     }
   };
 
+  const getUserCode = async () => {
+    const { data } = await getChannelUserCode(channelId!);
+    setUserCode(data.channelMemberCode);
+  };
+
   const handleAddMemberModalOpen = () => {
     setAddMemberOpen(true);
   };
+  const handleModifyModalOpen = () => {
+    setModifyModalOpen(true);
+  };
+
   const closeMemberList = () => {
     setMemberListOpen(false);
   };
@@ -95,11 +118,24 @@ const ChannelHeader = () => {
     setAddMemberOpen(false);
   };
 
+  const closeDropdown = () => {
+    setDropdownOpen(false);
+  };
+  const closeModifyModal = () => {
+    setModifyModalOpen(false);
+  };
+
   return (
     <Container>
-      <Title onClick={() => setDropdownOpen(!dropdownOpen)}>
+      <Title
+        onClick={
+          userCode === 'CADMIN'
+            ? () => setDropdownOpen(!dropdownOpen)
+            : undefined
+        }
+      >
         <Text size={18}>{channelName}</Text>
-        <Icons icon="dropdown" />
+        {userCode === 'CADMIN' ? <Icons icon="dropdown" /> : null}
       </Title>
       {currentWorkspaceId !== 'main' ? (
         <Members
@@ -135,7 +171,16 @@ const ChannelHeader = () => {
         channelId={channelId!}
       />
 
-      <ChannelHeaderDropdown isOpen={dropdownOpen} />
+      <ChannelHeaderDropdown
+        isOpen={dropdownOpen}
+        onClick={handleModifyModalOpen}
+        onClose={closeDropdown}
+      />
+      <ChannelModifyModal
+        isOpen={modifyModalOpen}
+        onClose={closeModifyModal}
+        channelName={channelName}
+      />
     </Container>
   );
 };

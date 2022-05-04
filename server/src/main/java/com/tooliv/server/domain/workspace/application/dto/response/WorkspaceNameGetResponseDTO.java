@@ -18,6 +18,9 @@ public class WorkspaceNameGetResponseDTO extends BaseResponseDTO {
     @ApiModelProperty("워크스페이스 이름")
     private String name;
 
+    @ApiModelProperty("워크스페이스 썸네일")
+    private String thumbnailImage;
+
     public static WorkspaceNameGetResponseDTO of(String message, WorkspaceNameGetResponseDTO workspaceNameGetResponseDTO) {
         workspaceNameGetResponseDTO.setMessage(message);
         return workspaceNameGetResponseDTO;

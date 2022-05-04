@@ -9,15 +9,7 @@ const WorkSpaceContainer = styled.div`
   /* justify-content: ; */
   align-items: flex-start;
   overflow: scroll;
-  height: 80px;
-`;
-
-const WorkSpaceWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  width: 90%;
-  /* flex-wrap: wrap; */
-  /* overflow: auto; */
+  height: 100px;
 `;
 
 const WorkSpaces = ({ workspaceList, onClick }: workspacesType) => {

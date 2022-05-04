@@ -6,12 +6,15 @@ import Button from 'atoms/common/Button';
 import Text from 'atoms/text/Text';
 import InputBox from 'molecules/inputBox/InputBox';
 import FileUploader from 'molecules/uploader/FileUploader';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { currentChannel, currentWorkspace, userLog } from 'recoil/atom';
 import { colors } from 'shared/color';
-import { workspaceModalType } from 'types/workspace/workspaceTypes';
+import {
+  workspaceModalType,
+  workspaceModifyModalType,
+} from 'types/workspace/workspaceTypes';
 
 const Modal = styled.div<{ isOpen: boolean }>`
   display: none;
@@ -63,7 +66,12 @@ export const ButtonBox = styled.div`
   margin: 0 auto;
 `;
 
-const WorkspaceModal = ({ isOpen, onClose }: workspaceModalType) => {
+const WorkspaceModifyModal = ({
+  isOpen,
+  onClose,
+  workspaceName,
+  thumbnailImage,
+}: workspaceModifyModalType) => {
   const [file, setFile] = useState<File>();
   const inputWorkspaceRef = useRef<HTMLInputElement>(null);
   const setCurrentWorkspace = useSetRecoilState(currentWorkspace);
@@ -73,7 +81,6 @@ const WorkspaceModal = ({ isOpen, onClose }: workspaceModalType) => {
   const handleSetImg = (file: FileList) => {
     setFile(file[0]);
   };
-
   const navigate = useNavigate();
 
   const registWorkspace = async () => {
@@ -124,14 +131,18 @@ const WorkspaceModal = ({ isOpen, onClose }: workspaceModalType) => {
     <Modal isOpen={isOpen}>
       <Container>
         <Title>
-          <Text size={18}>워크스페이스 생성</Text>
+          <Text size={18}>워크스페이스 수정</Text>
         </Title>
         <InputBox
           label="워크스페이스명"
-          placeholder="워크스페이스명을 입력해주세요."
+          placeholder={workspaceName}
           ref={inputWorkspaceRef}
         />
-        <FileUploader file={file!} onChange={handleSetImg} />
+        <FileUploader
+          file={file!}
+          onChange={handleSetImg}
+          thumbnailImage={thumbnailImage}
+        />
         <ButtonBox>
           <Button
             width="125"
@@ -152,4 +163,4 @@ const WorkspaceModal = ({ isOpen, onClose }: workspaceModalType) => {
   );
 };
 
-export default WorkspaceModal;
+export default WorkspaceModifyModal;

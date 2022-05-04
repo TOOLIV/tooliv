@@ -42,7 +42,7 @@ const UploadWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
 `;
-const FileUploader = ({ file, onChange }: workspaceImgType) => {
+const FileUploader = ({ file, onChange, thumbnailImage }: workspaceImgType) => {
   const [imgFile, setImgFile] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -60,10 +60,13 @@ const FileUploader = ({ file, onChange }: workspaceImgType) => {
   };
 
   useEffect(() => {
-    if (file) setImgFile(URL.createObjectURL(file));
-    else setImgFile('');
-  }, [file]);
-
+    if (file) {
+      setImgFile(URL.createObjectURL(file));
+    } else if (thumbnailImage) {
+      setImgFile(thumbnailImage);
+    } else setImgFile('');
+  }, [file, thumbnailImage]);
+  const strokeColor = colors.gray200;
   return (
     <Container onClick={handleUploadBtnClick}>
       <UploadInput
@@ -78,7 +81,7 @@ const FileUploader = ({ file, onChange }: workspaceImgType) => {
       ) : (
         <UploadWrapper>
           {/* <Icons icon="image" width="42" height="42" color="blue100" /> */}
-          <ImageIcon width={42} height={42} />
+          <ImageIcon width={42} height={42} stroke={strokeColor} />
           <Text color="gray300" size={14}>
             5MB이내 PNG, JPG, GIF 파일
           </Text>

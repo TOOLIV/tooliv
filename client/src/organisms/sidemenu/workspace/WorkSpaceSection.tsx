@@ -82,9 +82,7 @@ const WorkSpaceSection = () => {
   return (
     <Container isOpen={isOpen}>
       <Header>
-        <Text size={14} color="gray600">
-          워크스페이스
-        </Text>
+        <Text size={14}>워크스페이스</Text>
         <Icons icon="plus" onClick={handleOpenModal} />
       </Header>
       <WorkSpaces

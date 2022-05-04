@@ -24,6 +24,7 @@ const InputBox = forwardRef<HTMLInputElement, inputBoxTypes>(
       status = 'default',
       type = 'text',
       onChange,
+      onKeyPress,
     },
     ref
   ) => {
@@ -35,6 +36,7 @@ const InputBox = forwardRef<HTMLInputElement, inputBoxTypes>(
           status={status}
           type={type}
           onChange={onChange}
+          onKeyPress={onKeyPress}
           ref={ref}
         />
         {status !== 'default' ? (

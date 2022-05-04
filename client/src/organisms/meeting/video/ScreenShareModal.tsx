@@ -42,7 +42,7 @@ const ScreenItem = styled.div`
   }
 
   :hover {
-    background-color: ${colors.gray100};
+    background-color: ${(props) => props.theme.dropdownHoverColor};
   }
 `;
 
