@@ -99,7 +99,7 @@ public class ChatServiceImpl implements ChatService {
         ChannelMembers channelMembers = channelMembersRepository.findByChannelAndUser(channel, user).orElseThrow(() -> new IllegalArgumentException("해당 멤버가 존재하지 않습니다."));
 
         channelMembers.updateLoggedAt();
-
+        channelMembersRepository.save(channelMembers);
         ChannelTopic topic = topics.get(channelId);
         if (topic == null) {
             topic = new ChannelTopic(channelId);
