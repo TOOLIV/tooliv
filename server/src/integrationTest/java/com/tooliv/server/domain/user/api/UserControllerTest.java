@@ -6,41 +6,22 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.google.gson.Gson;
 import com.tooliv.server.BaseIntegrationTest;
-import com.tooliv.server.domain.user.application.dto.request.LogInRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.SignUpRequestDTO;
-import com.tooliv.server.domain.user.application.dto.response.LogInResponseDTO;
 import com.tooliv.server.domain.user.application.service.UserService;
-import com.tooliv.server.domain.user.domain.enums.UserCode;
 import com.tooliv.server.global.common.NotificationManager;
-import com.tooliv.server.global.security.service.UserDetailsImpl;
 import com.tooliv.server.global.security.service.UserDetailsServiceImpl;
 import com.tooliv.server.global.security.util.JwtAccessDeniedHandler;
 import com.tooliv.server.global.security.util.JwtAuthenticationEntryPoint;
 import com.tooliv.server.global.security.util.JwtAuthenticationProvider;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MockMvcBuilder;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.testcontainers.containers.MySQLContainer;
-import org.testcontainers.containers.output.Slf4jLogConsumer;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -67,26 +48,6 @@ public class UserControllerTest extends BaseIntegrationTest {
 
     @MockBean
     NotificationManager notificationManager;
-
-//    @Container
-//    private static MySQLContainer<?> mySQLContainer = new MySQLContainer<>(DockerImageName.parse("mysql:5.7"))
-//        .withDatabaseName("usertest");
-
-//    @BeforeAll
-//    static void beforeAll() {
-//        mySQLContainer.start();
-//    }
-//
-//    @AfterAll
-//    static void afterAll() {
-//        mySQLContainer.stop();
-//    }
-
-//    @BeforeAll
-//    static void beforeAll() {
-//        Slf4jLogConsumer logConsumer = new Slf4jLogConsumer(LOGGER);
-//        mySQLContainer.followOutput(logConsumer);
-//    }
 
     @BeforeEach
     void prepareSignUp() {
