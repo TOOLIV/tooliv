@@ -5,11 +5,13 @@ import io.swagger.annotations.ApiModelProperty;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @ApiModel("SignUpReqeustDTO")
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 public class SignUpRequestDTO {
 
