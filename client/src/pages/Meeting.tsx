@@ -6,6 +6,7 @@ import MainStage from 'molecules/meeting/MainStage';
 import VideoCopy from 'molecules/meeting/VideoCopy';
 import { OpenVidu, Publisher, Session, StreamManager } from 'openvidu-browser';
 import FunctionButtons from 'organisms/meeting/FunctionButtons';
+import ScreenShareModal from 'organisms/meeting/video/ScreenShareModal';
 import VideosCopy from 'organisms/meeting/video/VideosCopy';
 import React, { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
@@ -13,11 +14,11 @@ import { isOpenChat } from 'recoil/atom';
 
 const MeetingContainer = styled.div`
   /* background-color: #787878; */
-  height: calc(100vh - 256px);
+  height: calc(100vh - 216px);
 `;
 
 const MeetingInnerContainer = styled.div`
-  height: calc(100vh - 216px);
+  height: calc(100vh - 240px);
 `;
 
 const Meeting = () => {
@@ -64,6 +65,9 @@ const Meeting = () => {
   const [isAudioOn, setIsAudioOn] = useState<boolean>(true);
   const [isVideoOn, setIsVideoOn] = useState<boolean>(true);
   const [isScreen, setIsScreen] = useState<boolean>(false);
+  const [pauseScreenSharing, setPauseScreenSharing] = useState<boolean>(false);
+  const [choiceScreen, setChoiceScreen] = useState<string>('');
+  const [openScreenModal, setOpenScreenModal] = useState<boolean>(false);
 
   useEffect(() => {
     console.log('join>>>>>>>>>>>>>>>>');
@@ -169,8 +173,8 @@ const Meeting = () => {
             // videoSource: 'screen', // The source of video. If undefined default webcam
             publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
             publishVideo: true, // Whether you want to start publishing with your video enabled or not
-            resolution: '1920x1080', // The resolution of your video
-            frameRate: 10, // The frame rate of your video
+            resolution: '680x480', // The resolution of your video
+            frameRate: 30, // The frame rate of your video
             insertMode: 'APPEND', // How the video is inserted in the target element 'video-container'
             mirror: false, // Whether to mirror your local video or not
           }).then((publisher) => {
@@ -200,7 +204,7 @@ const Meeting = () => {
         )
         .then((subscriber) => {
           console.log('>>>>>>>>>>>>>>>>>>>>>>>>sub :', subscriber);
-          stopScreenShare();
+          setPauseScreenSharing(true);
           setMainStreamManager(subscriber);
           setIsScreen(true);
         })
@@ -216,20 +220,27 @@ const Meeting = () => {
       setIsScreen(false);
     });
 
-    // await getTokenForScreenShare().then((token: any) => {
-    //   mySession.connect(token.data.token, {
-    //     clientData: initUserData.myUserName,
-    //   });
-    // });
+    await getTokenForScreenShare().then((token: any) => {
+      mySession.connect(token.data.token, {
+        clientData: initUserData.myUserName,
+      });
+    });
   };
 
   useEffect(() => {
     if (!isScreenSharing) {
       stopScreenShare();
+      setChoiceScreen('');
     } else {
-      startScreenShare();
+      if (isElectron() && choiceScreen) {
+        startScreenShare();
+      } else if (isElectron() && !choiceScreen) {
+        setOpenScreenModal(true);
+      } else {
+        startScreenShare();
+      }
     }
-  }, [isScreenSharing]);
+  }, [isScreenSharing, choiceScreen]);
 
   const deleteSubscriber = (streamManager: StreamManager) => {
     let prevSubscribers = subscribers;
@@ -290,7 +301,6 @@ const Meeting = () => {
 
   const startScreenShare = async () => {
     const OVForScreenShare = OVForScreen;
-
     const mySession = sessionForScreen;
 
     await getTokenForScreenShare().then((token: any) => {
@@ -308,33 +318,17 @@ const Meeting = () => {
 
           // Init a publisher passing undefined as targetElement (we don't want OpenVidu to insert a video
           // element: we will manage it on our own) and with the desired properties
-          OVForScreenShare.initPublisherAsync(initUserData.myUserName, {
+          OVForScreenShare.initPublisherAsync(initScreenData.myScreenName, {
             audioSource: false, // The source of audio. If undefined default microphone
             // videoSource: videoDevices[0].deviceId, // The source of video. If undefined default webcam
-            videoSource: 'screen', // The source of video. If undefined default webcam
-            publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
-            publishVideo: true, // Whether you want to start publishing with your video enabled or not
-            resolution: '1920x1280', // The resolution of your video
-            frameRate: 10, // The frame rate of your video
-            insertMode: 'APPEND', // How the video is inserted in the target element 'video-container'
-            mirror: true, // Whether to mirror your local video or not
+            videoSource: isElectron() ? 'screen: ' + choiceScreen : 'screen', // The source of video. If undefined default webcam
+            resolution: '680x480', // The resolution of your video
+            frameRate: 30, // The frame rate of your video
+            // insertMode: 'APPEND', // How the video is inserted in the target element 'video-container'
+            mirror: false, // Whether to mirror your local video or not
           }).then((publisher) => {
             mySession.publish(publisher);
             setPublisherForScreenSharing(publisher);
-            publisher.once('accessAllowed', () => {
-              try {
-                console.log('startScreenSharing');
-                session?.signal({
-                  type: 'startScreenSharing',
-                });
-              } catch (e) {
-                console.log('Error applying constraints: ', e);
-              }
-            });
-
-            publisher.once('accessDenied', () => {
-              console.warn('ScreenShare: Access Denied');
-            });
           });
         })
         .catch((error) => {
@@ -486,6 +480,12 @@ const Meeting = () => {
         />
         {isScreen && mainStreamManager && (
           <MainStage streamManager={mainStreamManager}></MainStage>
+        )}
+        {openScreenModal && (
+          <ScreenShareModal
+            setIsScreenShareModal={setOpenScreenModal}
+            setChoiceScreen={setChoiceScreen}
+          />
         )}
       </MeetingInnerContainer>
       <FunctionButtons
