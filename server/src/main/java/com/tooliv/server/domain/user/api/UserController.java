@@ -16,6 +16,7 @@ import io.swagger.annotations.ApiParam;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -58,7 +59,7 @@ public class UserController {
 
         try {
             logInResponseDTO = userService.logIn(logInRequestDTO);
-        } catch (UserNotFoundException e) {
+        } catch (UserNotFoundException | BadCredentialsException e) {
             return ResponseEntity.status(409).body(BaseResponseDTO.of(e.getMessage()));
         }
         return ResponseEntity.status(201).body(LogInResponseDTO.of("로그인 성공", logInResponseDTO));
