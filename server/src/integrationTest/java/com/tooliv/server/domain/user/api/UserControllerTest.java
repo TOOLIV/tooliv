@@ -43,11 +43,10 @@ public class UserControllerTest extends BaseIntegrationTest {
         SignUpRequestDTO signUpRequestDTO = new SignUpRequestDTO("test@test.com", "test", "password");
 
         // When
-        ResultActions resultActions = mockMvc.perform(post("/api/user")
-            .content(new Gson().toJson(signUpRequestDTO))
-            .contentType(MediaType.APPLICATION_JSON));
-
-        resultActions.andExpect(status().isCreated());
+        mockMvc.perform(post("/api/user")
+                .content(new Gson().toJson(signUpRequestDTO))
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isCreated());
 
         Optional<User> user = userRepository.findByEmailAndDeletedAt("test@test.com", null);
 
@@ -66,12 +65,13 @@ public class UserControllerTest extends BaseIntegrationTest {
         SignUpRequestDTO signUpRequestDTO = new SignUpRequestDTO("test", "test", "password");
 
         // When
-        ResultActions resultActions = mockMvc.perform(post("/api/user")
-            .content(new Gson().toJson(signUpRequestDTO))
-            .contentType(MediaType.APPLICATION_JSON));
+        mockMvc.perform(post("/api/user")
+                .content(new Gson().toJson(signUpRequestDTO))
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isBadRequest());
 
         // Then
-        resultActions.andExpect(status().isInternalServerError());
+        assertFalse(userRepository.findByEmailAndDeletedAt(signUpRequestDTO.getEmail(), null).isPresent());
 
     }
 
@@ -84,9 +84,9 @@ public class UserControllerTest extends BaseIntegrationTest {
         SignUpRequestDTO signUpRequestDTO = new SignUpRequestDTO("test@test.com", "test2", "password2");
 
         // When
-        ResultActions resultActions = mockMvc.perform(post("/api/user")
-            .content(new Gson().toJson(signUpRequestDTO))
-            .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(post("/api/user")
+                .content(new Gson().toJson(signUpRequestDTO))
+                .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isConflict());
 
         // Then
@@ -107,20 +107,20 @@ public class UserControllerTest extends BaseIntegrationTest {
         SignUpRequestDTO signUpRequestDTO3 = new SignUpRequestDTO("null-test3@test.com", "null-test3", null);
 
         // When
-        ResultActions resultActions1 = mockMvc.perform(post("/api/user")
+        mockMvc.perform(post("/api/user")
                 .content(new Gson().toJson(signUpRequestDTO1))
                 .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isInternalServerError());
+            .andExpect(status().isBadRequest());
 
-        ResultActions resultActions2 = mockMvc.perform(post("/api/user")
+        mockMvc.perform(post("/api/user")
                 .content(new Gson().toJson(signUpRequestDTO2))
                 .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isInternalServerError());
+            .andExpect(status().isBadRequest());
 
-        ResultActions resultActions3 = mockMvc.perform(post("/api/user")
+        mockMvc.perform(post("/api/user")
                 .content(new Gson().toJson(signUpRequestDTO3))
                 .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isInternalServerError());
+            .andExpect(status().isBadRequest());
 
         // Then
         assertNull(userRepository.findByEmailAndDeletedAt(signUpRequestDTO1.getEmail(), null).orElse(null));
@@ -165,6 +165,25 @@ public class UserControllerTest extends BaseIntegrationTest {
 
         // Then
         resultActions.andExpect(status().isInternalServerError());
+
+    }
+
+    @Order(7)
+    @Test
+    @DisplayName("LogIn Test - Existing User But Password Wrong")
+    void shouldNotAbleToLogInWithWrongPassword() throws Exception {
+
+        // Given
+        LogInRequestDTO logInRequestDTO = new LogInRequestDTO("test@test.com", "wrong-password");
+        assertTrue(userRepository.findByEmailAndDeletedAt(logInRequestDTO.getEmail(), null).isPresent());
+
+        // When
+        ResultActions resultActions = mockMvc.perform(post("/api/user/login")
+            .content(new Gson().toJson(logInRequestDTO))
+            .contentType(MediaType.APPLICATION_JSON));
+
+        // Then
+        resultActions.andExpect(status().isConflict());
 
     }
 
