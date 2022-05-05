@@ -1,6 +1,8 @@
 package com.tooliv.server.global.config;
 
 import com.tooliv.server.global.common.NotificationManager;
+import com.tooliv.server.global.exception.DuplicateEmailException;
+import com.tooliv.server.global.exception.UserNotFoundException;
 import java.util.Enumeration;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +17,24 @@ public class GlobalControllerAdvice {
     @Autowired
     private NotificationManager notificationManager;
 
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity handleUserNotFoundException(Exception e, HttpServletRequest req) {
+        e.printStackTrace();
+        notificationManager.sendNotification(e, req.getMethod(), req.getRequestURI(), getParams(req));
+
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(DuplicateEmailException.class)
+    public ResponseEntity handleDuplicateEmailException(Exception e, HttpServletRequest req) {
+        e.printStackTrace();
+        notificationManager.sendNotification(e, req.getMethod(), req.getRequestURI(), getParams(req));
+
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+    }
+
     @ExceptionHandler(Exception.class)
-    public ResponseEntity exceptionTest(Exception e, HttpServletRequest req) {
+    public ResponseEntity handleAllException(Exception e, HttpServletRequest req) {
         e.printStackTrace();
         notificationManager.sendNotification(e, req.getMethod(), req.getRequestURI(), getParams(req));
 
