@@ -20,7 +20,7 @@ const MeetingInnerContainer = styled.div`
   height: calc(100vh - 216px);
 `;
 
-const Meeting = () => {
+const MeetingTest = () => {
   const [isChatOpen, setIsChatOpen] = useRecoilState<boolean>(isOpenChat);
 
   const onOpenChat = () => {
@@ -503,4 +503,4 @@ const Meeting = () => {
   );
 };
 
-export default Meeting;
+export default MeetingTest;

@@ -13,7 +13,7 @@ const Modal = styled.div<{ isOpen: boolean }>`
   position: absolute;
   top: 55px;
   right: 15px;
-
+  z-index: 10;
   ${(props) =>
     props.isOpen &&
     css`

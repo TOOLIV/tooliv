@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import { searchChannelMemberList } from 'api/channelApi';
 import Icons from 'atoms/common/Icons';
 import Text from 'atoms/text/Text';
+import { useDebounce } from 'hooks/useHooks';
 import InputBox from 'molecules/inputBox/InputBox';
 import UserInfo from 'molecules/userInfo/UserInfo';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -64,6 +65,8 @@ const ChannelMemberListModal = ({
   onClose,
 }: channelMemberListType) => {
   const [channelMemberList, setChannelMemberList] = useState([]);
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const debouncedValue = useDebounce<string>(searchKeyword, 500);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const { channelId } = useParams();
@@ -84,10 +87,16 @@ const ChannelMemberListModal = ({
     [channelId]
   );
 
+  // const searchUserList = useCallback(() => {
+  //   const keyword = inputRef.current?.value!;
+  //   searchChannelMember(keyword);
+  // }, [searchChannelMember]);
+
   const searchUserList = useCallback(() => {
     const keyword = inputRef.current?.value!;
-    searchChannelMember(keyword);
-  }, [searchChannelMember]);
+    setSearchKeyword(keyword);
+    // searchChannelMember(keyword);
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
@@ -100,6 +109,11 @@ const ChannelMemberListModal = ({
     onClose();
     onClick();
   };
+
+  useEffect(() => {
+    console.log(debouncedValue);
+    searchChannelMember(debouncedValue);
+  }, [debouncedValue]);
 
   return (
     <Modal isOpen={isOpen}>

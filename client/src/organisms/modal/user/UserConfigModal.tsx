@@ -65,7 +65,7 @@ const AvatarBox = styled.div`
 `;
 
 const InputContainer = styled.div`
-  height: 20vh;
+  height: 30vh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -85,20 +85,6 @@ const UserConfigModal = ({ isOpen, onClose }: userConfigType) => {
   const onChange = () => {
     setNickName(inputNickNameRef.current?.value!);
   };
-
-  // const modChannelName = useCallback(async () => {
-  //   try {
-  //     const body = {
-  //       id: channelId!,
-  //       name,
-  //     };
-  //     await modifyChannel(body);
-  //     setModifyChannelName(name);
-  //     exitModal();
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }, [channelId, name]);
 
   const exitModal = () => {
     inputNameRef.current!.value = '';
