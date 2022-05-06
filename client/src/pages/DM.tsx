@@ -72,7 +72,6 @@ const DM = () => {
     sendDM({
       accessToken,
       channelId,
-      nickname,
       senderEmail: email,
       receiverEmail: 'the@naver.com',
       message,
@@ -89,7 +88,6 @@ const DM = () => {
     sendDM({
       accessToken,
       channelId,
-      nickname,
       senderEmail: email,
       receiverEmail: 'the@naver.com',
       message,
