@@ -185,6 +185,17 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
+    public List<ChatDirectDTO> getChatDirectInfoValue(String key) {
+        try {
+            List<ChatDirectDTO> chatInfoList = redisDirectTemplate.opsForList().range(key, 0, -1);
+            return chatInfoList;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
     public void setChatInfoValue(String key, ChatRequestDTO value) {
         Channel channel = channelRepository.findById(value.getChannelId()).orElseThrow(() -> new IllegalArgumentException("해당 채널이 존재하지 않습니다."));
         channel.updateWroteAt();

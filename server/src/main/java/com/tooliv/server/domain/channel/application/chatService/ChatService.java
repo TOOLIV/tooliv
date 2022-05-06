@@ -28,6 +28,8 @@ public interface ChatService {
 
     List<ChatRequestDTO> getChatInfoValue(String key);
 
+    List<ChatDirectDTO> getChatDirectInfoValue(String key);
+
     void setChatInfoValue(String key, ChatRequestDTO value);
 
     void setDirectChatInfoValue(String key, ChatDirectDTO value);
