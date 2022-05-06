@@ -195,8 +195,8 @@ const WorkspaceAddMemberModal = forwardRef<
     async (body: inviteMembersType) => {
       try {
         await inviteWorkspaceMember(workspaceId!, body);
-        const newMember = body.emailList.length;
-        setCurrentChannelMemberNum((prev) => prev + newMember);
+        // const newMember = body.emailList.length;
+        // setCurrentChannelMemberNum((prev) => prev + newMember);
         exitModal();
       } catch (error) {
         console.log(error);
@@ -224,7 +224,12 @@ const WorkspaceAddMemberModal = forwardRef<
               key={user.email}
               onClick={() => createUserBadge(user.name, user.email)}
             >
-              <UserInfo name={user.name} email={user.email} />
+              <UserInfo
+                name={user.name}
+                email={user.email}
+                nickname={user.nickname}
+                profileImage={user.profileImage}
+              />
             </UserInfoWrapper>
           ))}
         </UserBox>

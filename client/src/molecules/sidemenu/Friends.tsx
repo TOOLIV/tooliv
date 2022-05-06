@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Icons from '../../atoms/common/Icons';
 import Avatar from '../../atoms/profile/Avatar';
 import Label from '../../atoms/common/Label';
@@ -7,6 +7,7 @@ import MenuTemplate from '../../atoms/sidemenu/MenuTemplate';
 import { labelType } from '../../types/common/labelType';
 import { SideWrapper, TopContainer } from './Channels';
 import Text from 'atoms/text/Text';
+import DirectMessageModal from 'organisms/modal/sidemenu/DirectMessageModal';
 
 const FriendsContainer = styled.div`
   padding: 16px 0;
@@ -29,6 +30,7 @@ const Friends = () => {
       name: '이다예',
     },
   ];
+
   return (
     <>
       <TopContainer>

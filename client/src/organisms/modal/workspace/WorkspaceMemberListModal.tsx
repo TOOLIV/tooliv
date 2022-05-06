@@ -128,7 +128,12 @@ const WorkspaceMemberListModal = ({
               key={member.email}
               onClick={() => handleDirectMessage(member.email)}
             >
-              <UserInfo name={member.name} email={member.email} />
+              <UserInfo
+                name={member.name}
+                email={member.email}
+                nickname={member.nickname}
+                profileImage={member.profileImage}
+              />
             </UserInfoWrapper>
           ))}
         </UserBox>

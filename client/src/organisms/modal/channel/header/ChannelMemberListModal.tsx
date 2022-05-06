@@ -27,7 +27,7 @@ const Modal = styled.div<{ isOpen: boolean }>`
 `;
 
 const Container = styled.div`
-  width: 350px;
+  width: 450px;
   padding: 25px;
   border: 1px solid ${(props) => props.theme.borderColor};
   background-color: ${(props) => props.theme.bgColor};
@@ -46,7 +46,7 @@ const Header = styled.div`
 `;
 
 const UserBox = styled.div`
-  height: 30vh;
+  height: 50vh;
   overflow: scroll;
 `;
 
@@ -80,6 +80,7 @@ const ChannelMemberListModal = ({
       try {
         const { data } = await searchChannelMemberList(channelId!, keyword);
         setChannelMemberList(data.channelMemberGetResponseDTOList);
+        console.log(data);
       } catch (error) {
         console.log(error);
       }
@@ -139,7 +140,12 @@ const ChannelMemberListModal = ({
               key={member.email}
               onClick={() => handleDirectMessage(member.email)}
             >
-              <UserInfo name={member.name} email={member.email} />
+              <UserInfo
+                name={member.name}
+                email={member.email}
+                nickname={member.nickname}
+                profileImage={member.profileImage}
+              />
             </UserInfoWrapper>
           ))}
         </UserBox>

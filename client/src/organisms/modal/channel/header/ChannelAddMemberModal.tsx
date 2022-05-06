@@ -210,7 +210,12 @@ const ChannelAddMemberModal = ({
               key={user.email}
               onClick={() => createUserBadge(user.name, user.email)}
             >
-              <UserInfo name={user.name} email={user.email} />
+              <UserInfo
+                name={user.name}
+                email={user.email}
+                nickname={user.nickname}
+                profileImage={user.profileImage}
+              />
             </UserInfoWrapper>
           ))}
         </UserBox>
