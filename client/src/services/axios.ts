@@ -55,7 +55,7 @@ instance.interceptors.response.use(
   },
   function (error) {
     if (error.response) {
-      // const history = createBrowserHistory();
+      const history = createBrowserHistory();
       console.log(error.response);
       switch (error.response.status) {
         /* 'JWT expired' exeption */
@@ -64,10 +64,10 @@ instance.interceptors.response.use(
           break;
         case 401:
           console.log('401 ERROR, not authorized.');
-          // history.push('/signup');
+          history.push('/login');
           // // 강제로 새로고침 (임시)
-          // window.location.reload();
-          // sessionStorage.removeItem('user');
+          window.location.reload();
+          localStorage.removeItem('user');
           break;
         case 404:
           console.log('404error!');

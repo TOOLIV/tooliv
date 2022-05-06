@@ -8,6 +8,7 @@ import Button from 'atoms/common/Button';
 import Icons from 'atoms/common/Icons';
 import Label from 'atoms/label/Label';
 import Text from 'atoms/text/Text';
+import { useDebounce } from 'hooks/useHooks';
 import InputBox from 'molecules/inputBox/InputBox';
 import UserBadge from 'molecules/userBadge/UserBadge';
 import UserInfo from 'molecules/userInfo/UserInfo';
@@ -103,6 +104,7 @@ const ChannelAddMemberModal = ({
   const [inviteUserList, setInviteUserList] = useState<string[]>([]);
 
   const [keyword, setKeyword] = useState('');
+  const debouncedValue = useDebounce<string>(keyword, 500);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const setCurrentChannelMemberNum = useSetRecoilState(currentChannelNum);
@@ -164,13 +166,14 @@ const ChannelAddMemberModal = ({
     [userBadgeList, inviteUserList]
   );
 
+  // useEffect(() => {
+  //   setUserList([]);
+  // }, [channelId, userListApi]);
+
   useEffect(() => {
-    if (keyword) {
-      userListApi(keyword);
-    } else {
-      setUserList([]);
-    }
-  }, [keyword, channelId, userListApi]);
+    console.log(debouncedValue);
+    userListApi(debouncedValue);
+  }, [debouncedValue]);
 
   const registMember = () => {
     const body = {
@@ -180,7 +183,7 @@ const ChannelAddMemberModal = ({
   };
 
   const exitModal = useCallback(() => {
-    setKeyword('');
+    // setKeyword('');
     inputRef.current!.value = '';
     setUserBadgeList([]);
     setInviteUserList([]);
@@ -207,7 +210,12 @@ const ChannelAddMemberModal = ({
               key={user.email}
               onClick={() => createUserBadge(user.name, user.email)}
             >
-              <UserInfo name={user.name} email={user.email} />
+              <UserInfo
+                name={user.name}
+                email={user.email}
+                nickname={user.nickname}
+                profileImage={user.profileImage}
+              />
             </UserInfoWrapper>
           ))}
         </UserBox>

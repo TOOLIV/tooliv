@@ -70,6 +70,8 @@ const FindUserSection = () => {
           <UserItem
             key={user.id}
             name={user.name}
+            nickname={user.nickname}
+            profileImage={user.profileImage}
             email={user.email}
             userCode={user.userCode}
             onDelete={onDelete}
