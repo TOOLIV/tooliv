@@ -12,9 +12,9 @@ public interface WorkspaceMemberService {
 
     WorkspaceMemberListGetResponseDTO getWorkspaceMemberList(String workspaceId);
 
-    WorkspaceMemberListGetResponseDTO getWorkspaceMemberListForRegister(String workspaceId, String keyword);
+    WorkspaceMemberListGetResponseDTO getWorkspaceMemberListForRegister(String workspaceId, String keyword, int sequence);
 
-    WorkspaceMemberListGetResponseDTO searchWorkspaceMember(String workspaceId, String keyword);
+    WorkspaceMemberListGetResponseDTO searchWorkspaceMember(String workspaceId, String keyword, int sequence);
 
     WorkspaceMemberCodeGetResponseDTO getWorkspaceMemberCode(String workspaceId);
 

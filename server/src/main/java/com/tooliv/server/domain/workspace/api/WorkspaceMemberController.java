@@ -67,7 +67,7 @@ public class WorkspaceMemberController {
     }
 
     @GetMapping("/list")
-    @ApiOperation(value = "워크스페이스멤버 목록 조회")
+    @ApiOperation(value = "워크스페이스멤버 등록을 위한 회원목록 조회")
     @ApiResponses({
         @ApiResponse(code = 200, message = "워크스페이스멤버 목록 조회 완료"),
         @ApiResponse(code = 404, message = "조회 가능한 워크스페이스멤버 정보가 없음"),
@@ -75,11 +75,12 @@ public class WorkspaceMemberController {
     })
     public ResponseEntity<? extends BaseResponseDTO> getWorkspaceMemberList(
         @PathVariable("workspaceId") @Valid @ApiParam(value="워크스페이스 ID", required=true) String workspaceId,
-        @RequestParam @ApiParam(value="검색 단어", required = false) String keyword) {
+        @RequestParam @ApiParam(value="검색 단어", required = false) String keyword,
+        @RequestParam @ApiParam(value="검색결과 시퀀스", required = true) int seq) {
         WorkspaceMemberListGetResponseDTO workspacememberListGetResponseDTO = null;
 
         try {
-            workspacememberListGetResponseDTO = workspaceMemberService.getWorkspaceMemberListForRegister(workspaceId, keyword);
+            workspacememberListGetResponseDTO = workspaceMemberService.getWorkspaceMemberListForRegister(workspaceId, keyword, seq);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(409).body(BaseResponseDTO.of("워크스페이스멤버 목록 조회 실패"));
         } catch (Exception e) {
@@ -97,11 +98,12 @@ public class WorkspaceMemberController {
     })
     public ResponseEntity<? extends BaseResponseDTO> searchWorkspaceMember(
         @PathVariable("workspaceId") @Valid @ApiParam(value="워크스페이스 ID", required=true) String workspaceId,
-        @RequestParam @ApiParam(value="검색 단어", required = false) String keyword) {
+        @RequestParam @ApiParam(value="검색 단어", required = false) String keyword,
+        @RequestParam @ApiParam(value="검색결과 시퀀스", required = true) int seq) {
         WorkspaceMemberListGetResponseDTO workspacememberListGetResponseDTO = null;
 
         try {
-            workspacememberListGetResponseDTO = workspaceMemberService.searchWorkspaceMember(workspaceId, keyword);
+            workspacememberListGetResponseDTO = workspaceMemberService.searchWorkspaceMember(workspaceId, keyword, seq);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(409).body(BaseResponseDTO.of("워크스페이스멤버 검색 실패"));
         } catch (Exception e) {

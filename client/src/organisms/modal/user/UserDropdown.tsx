@@ -61,9 +61,6 @@ const IconItem = styled.div`
 const UserDropdown = forwardRef<HTMLDivElement, userDropdownType>(
   ({ isOpen, onClose, openProfileConfig }, ref) => {
     const [userInfo, setUserInfo] = useRecoilState(user);
-    const localUserInfo = localStorage.getItem('user');
-
-    const Juser = JSON.parse(localUserInfo!);
 
     const logout = () => {
       localStorage.removeItem('user');
@@ -87,8 +84,8 @@ const UserDropdown = forwardRef<HTMLDivElement, userDropdownType>(
           <UserItem>
             <Avatar size="36" src={userInfo.profileImage} />
             <User>
-              <Text size={16}>{Juser.name}</Text>
-              <Text size={14}>{Juser.email}</Text>
+              <Text size={16}>{userInfo.name}</Text>
+              <Text size={14}>{userInfo.email}</Text>
             </User>
           </UserItem>
           <ListItem>

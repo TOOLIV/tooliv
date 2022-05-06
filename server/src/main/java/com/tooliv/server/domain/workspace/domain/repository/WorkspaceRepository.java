@@ -23,4 +23,6 @@ public interface WorkspaceRepository extends JpaRepository<Workspace, String> {
         + "ORDER BY w.created_at ASC", nativeQuery = true)
     List<Workspace> findByUser(@Param("user_id") String userId);
 
+    Optional<Workspace> findByNameAndDeletedAt(String name, LocalDateTime deletedAt);
+
 }
