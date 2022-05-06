@@ -38,6 +38,8 @@ public class ChatServiceImpl implements ChatService {
 
     // 채팅방(topic)에 발행되는 메시지를 처리할 Listner
     private final RedisMessageListenerContainer redisMessageListener;
+    // 채팅방(topic)에 발행되는 메시지를 처리할 Listner
+    private final RedisMessageListenerContainer redisDirectMessageListener;
     // 구독 처리 서비스
     private final RedisSubscriber redisSubscriber;
     // 구독 처리 서비스
@@ -162,7 +164,7 @@ public class ChatServiceImpl implements ChatService {
         if (topic == null) {
             topic = new ChannelTopic(channelId);
         }
-        redisMessageListener.addMessageListener(redisUserSubscriber, topic);
+        redisDirectMessageListener.addMessageListener(redisUserSubscriber, topic);
         topics.put(channelId, topic);
     }
 
