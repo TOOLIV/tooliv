@@ -10,6 +10,7 @@ import Join from './Join';
 import PrivateRoute from 'router/PrivateRoute';
 import Main from './Main';
 import EnterPriseTest from './EnterPriseTest';
+import DM from './DM';
 // import Test from './Test';
 
 const AppRouter = () => {
@@ -27,6 +28,7 @@ const AppRouter = () => {
             <Route path="" element={<Navigate replace to="/main" />} />
             <Route path="/main" element={<Main />} />
             <Route path="/:workspaceId/:channelId" element={<Channel />} />
+            <Route path="/:userId" element={<DM />} />
             <Route
               path="/meeting/:workspaceId/:channelId"
               element={<Meeting />}

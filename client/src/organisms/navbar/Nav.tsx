@@ -75,7 +75,13 @@ const Nav = () => {
       } = res;
       console.log(notificationChannelList);
       setNotiList(notificationChannelList);
-      connect(accessToken, setContents, notificationChannelList, setNotiList);
+      connect(
+        accessToken,
+        setContents,
+        notificationChannelList,
+        setNotiList,
+        userInfo.userId
+      );
     });
   }, []);
 
