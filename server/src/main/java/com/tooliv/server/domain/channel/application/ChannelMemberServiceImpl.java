@@ -1,5 +1,6 @@
 package com.tooliv.server.domain.channel.application;
 
+import com.amazonaws.services.dynamodbv2.xspec.L;
 import com.tooliv.server.domain.channel.application.dto.request.RegisterChannelMemberRequestDTO;
 import com.tooliv.server.domain.channel.application.dto.response.ChannelInfoGetResponseDTO;
 import com.tooliv.server.domain.channel.application.dto.response.ChannelMemberCodeGetResponseDTO;
@@ -177,5 +178,18 @@ public class ChannelMemberServiceImpl implements ChannelMemberService {
             .numOfPeople(channelMembersRepository.countByChannel(channel))
             .build();
         return channelInfoGetResponseDTO;
+    }
+
+    @Override
+    @Transactional
+    public List<String> getChannelMemberEmails(String channelId) {
+        List<String> channelMemberEmails = new ArrayList<>();
+        Channel channel = channelRepository.findByIdAndDeletedAt(channelId, null)
+            .orElseThrow(() -> new IllegalArgumentException("채널 정보가 존재하지 않습니다."));
+        List<ChannelMembers> channelMembersList = channelMembersRepository.findByChannel(channel);
+        for(ChannelMembers channelMembers: channelMembersList){
+            channelMemberEmails.add(channelMembers.getUser().getEmail());
+        }
+        return channelMemberEmails;
     }
 }

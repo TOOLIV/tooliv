@@ -14,12 +14,12 @@ import {
 } from '../recoil/atom';
 import { channelNotiType, contentTypes } from '../types/channel/contentType';
 import Messages from '../organisms/chat/Messages';
-import { enterChannel, subChannel } from 'api/chatApi';
+import { enterChannel, enterDM, subChannel, subDM } from 'api/chatApi';
 import Files from 'organisms/chat/Files';
 import { FileTypes } from 'types/common/fileTypes';
 import { user } from 'recoil/auth';
 import LoadSpinner from 'atoms/common/LoadSpinner';
-import { send } from 'services/wsconnect';
+import { send, sendDM } from 'services/wsconnect';
 
 const Container = styled.div`
   width: 100%;
@@ -35,7 +35,7 @@ const LoadContainer = styled.div`
   align-items: center;
 `;
 
-const Channel = () => {
+const DM = () => {
   const [message, setMessage] = useRecoilState<string>(channelMessage);
   const [files, setFiles] = useRecoilState<FileTypes[]>(chatFiles);
   const [contents, setContents] =
@@ -45,22 +45,23 @@ const Channel = () => {
   const { accessToken, nickname, email } = useRecoilValue(user);
   const [notiList, setNotiList] =
     useRecoilState<channelNotiType[]>(channelNotiList);
-  const { channelId } = useParams<string>();
+  // const { channelId } = useParams<string>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  const channelId = 'ffdfd08b-2969-4037-b313-e5a88d94dd95';
   useEffect(() => {
-    const newList: channelNotiType[] = notiList.map((noti) => {
-      if (noti.channelId === channelId)
-        return { ...noti, notificationRead: true };
-      else return noti;
-    });
-    console.log(newList);
-    setNotiList(newList);
+    // const newList: channelNotiType[] = notiList.map((noti) => {
+    //   if (noti.channelId === channelId)
+    //     return { ...noti, notificationRead: true };
+    //   else return noti;
+    // });
+    // console.log(newList);
+    // setNotiList(newList);
     setIsLoading(true);
-    enterChannel(channelId!).then(() => {
-      subChannel(channelId!).then((res) => {
+    enterDM(channelId!).then(() => {
+      subDM(channelId!).then((res) => {
         console.log(res.data);
-        setContents(res.data.chatMessageDTOList);
+        setContents(res.data.directInfoDTOList);
         setIsLoading(false);
       });
     });
@@ -68,10 +69,11 @@ const Channel = () => {
 
   const onSendClick = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
-    send({
+    sendDM({
       accessToken,
       channelId,
-      email,
+      senderEmail: email,
+      receiverEmail: 'the@naver.com',
       message,
       fileUrl,
       fileNames,
@@ -83,10 +85,11 @@ const Channel = () => {
   };
 
   const sendMessage = () => {
-    send({
+    sendDM({
       accessToken,
       channelId,
-      email,
+      senderEmail: email,
+      receiverEmail: 'the@naver.com',
       message,
       fileUrl,
       fileNames,
@@ -108,10 +111,10 @@ const Channel = () => {
           <Messages />
         )}
         <Files />
-        <Editor onClick={onSendClick} sendMessage={sendMessage} />
+        <Editor type="DM" onClick={onSendClick} sendMessage={sendMessage} />
       </Container>
     </>
   );
 };
 
-export default Channel;
+export default DM;

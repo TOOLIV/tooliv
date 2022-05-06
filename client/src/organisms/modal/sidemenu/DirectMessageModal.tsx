@@ -1,6 +1,7 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { searchChannelMemberList } from 'api/channelApi';
+import { createDMRoom } from 'api/chatApi';
 import { getUserList } from 'api/userApi';
 import Icons from 'atoms/common/Icons';
 import Text from 'atoms/text/Text';
@@ -77,7 +78,8 @@ const DirectMessageModal = ({ isOpen, onClose }: userDirectMessageType) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleDirectMessage = (email: string) => {
-    console.log(`${email}로 개인메시지 보내는 링크`);
+    // console.log(`${email}로 개인메시지 보내는 링크`);
+    createDMRoom(email).then((res) => {});
   };
 
   const searchChannelMember = useCallback(async (keyword: string) => {

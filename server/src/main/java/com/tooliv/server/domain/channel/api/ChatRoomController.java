@@ -2,6 +2,8 @@ package com.tooliv.server.domain.channel.api;
 
 import com.tooliv.server.domain.channel.application.chatService.ChatService;
 import com.tooliv.server.domain.channel.application.dto.response.ChatRoomChatListResponseDTO;
+import com.tooliv.server.domain.channel.application.dto.response.DirectChatListResponseDTO;
+import com.tooliv.server.domain.channel.application.dto.response.DirectRoomInfoResponseDTO;
 import com.tooliv.server.global.common.BaseResponseDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -31,12 +33,13 @@ public class ChatRoomController {
         @ApiResponse(code = 409, message = "채팅방 입장 실패"),
     })
     public ResponseEntity<? extends BaseResponseDTO> createDirectRoom(@PathVariable @ApiParam(value = "유저 이름", required = true) String receiverEmail) {
+        DirectRoomInfoResponseDTO directRoomInfoResponseDTO;
         try {
-            chatService.createDirectChatRoom(receiverEmail);
+            directRoomInfoResponseDTO = chatService.createDirectChatRoom(receiverEmail);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(409).body(BaseResponseDTO.of("채팅방 입장 실패"));
         }
-        return ResponseEntity.status(200).body(BaseResponseDTO.of("채팅방 입장 완료"));
+        return ResponseEntity.status(200).body(DirectRoomInfoResponseDTO.of("채팅방 입장 완료",directRoomInfoResponseDTO));
     }
 
     @ApiOperation(value = "채팅방 입장", notes = "채팅방을 입장한다.")
@@ -93,13 +96,13 @@ public class ChatRoomController {
         @ApiResponse(code = 409, message = "채팅방 데이터 복구 실패"),
     })
     public ResponseEntity<? extends BaseResponseDTO> getChatListInDirectRoom(@PathVariable @ApiParam(value = "방 정보", required = true) String channelId) {
-        ChatRoomChatListResponseDTO chatRoomChatListResponseDTO;
+        DirectChatListResponseDTO directChatListResponseDTO;
         try {
-            chatRoomChatListResponseDTO = new ChatRoomChatListResponseDTO(chatService.getChatInfoValue(channelId));
+            directChatListResponseDTO = new DirectChatListResponseDTO(chatService.getChatDirectInfoValue(channelId));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(409).body(BaseResponseDTO.of("채팅방 데이터 복구 실패"));
         }
-        return ResponseEntity.status(200).body(ChatRoomChatListResponseDTO.of("채팅방 기존 데이터", chatRoomChatListResponseDTO));
+        return ResponseEntity.status(200).body(DirectChatListResponseDTO.of("채팅방 기존 데이터", directChatListResponseDTO));
     }
 
 }

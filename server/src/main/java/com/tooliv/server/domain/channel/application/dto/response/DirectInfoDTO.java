@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@ApiModel("NotificationDirectInfoDTO")
+@ApiModel("DirectInfoDTO")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

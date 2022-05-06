@@ -24,9 +24,11 @@ public interface UserService {
 
     void checkEmail(String email);
 
-    UserListResponseDTO getUserList(String keyword);
+    UserListResponseDTO getUserList(String keyword, int sequence);
 
     User getCurrentUser();
 
     String getImageURL(String fileName);
+
+    String getUserId(String email);
 }
