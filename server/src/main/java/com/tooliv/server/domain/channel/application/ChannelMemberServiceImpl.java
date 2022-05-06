@@ -85,7 +85,7 @@ public class ChannelMemberServiceImpl implements ChannelMemberService {
             .orElseThrow(() -> new IllegalArgumentException("채널 정보가 존재하지 않습니다."));
 
         List<ChannelMemberGetResponseDTO> channelMemberGetResponseDTOList = new ArrayList<>();
-        List<ChannelMembers> channelMembersList = channelMembersRepository.findWorkspaceMemberByChannel(channel.getId());
+        List<ChannelMembers> channelMembersList = channelMembersRepository.findByChannel(channel);
         channelMembersList.forEach(channelMembers -> {
             User member = channelMembers.getUser();
             String profileImage = awsS3Service.getFilePath(member.getProfileImage());

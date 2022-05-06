@@ -31,7 +31,7 @@ public interface ChannelMembersRepository extends JpaRepository<ChannelMembers, 
         + "ORDER BY u.name LIMIT :offset, 10", nativeQuery = true)
     List<ChannelMembers> searchByChannelIdAndKeyword(@Param("channel_id")String channelId, @Param("keyword") String keyword, @Param("offset") int offset);
 
-    List<ChannelMembers> findWorkspaceMemberByChannel(Channel channel);
+    List<ChannelMembers> findByChannel(Channel channel);
 
     Optional<ChannelMembers> findByChannelAndUser(Channel channel, User user);
 
