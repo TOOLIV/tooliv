@@ -1,5 +1,6 @@
 package com.tooliv.server.global.config;
 
+import com.tooliv.server.domain.channel.application.dto.request.ChatDirectDTO;
 import com.tooliv.server.domain.channel.application.dto.request.ChatRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,6 +47,16 @@ public class RedisConfig {
         redisTemplate.setConnectionFactory(redisConnectionFactory());
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(ChatRequestDTO.class));
+        return redisTemplate;
+    }
+
+    // 어플리케이션에서 사용할 redisTemplate 설정 , Direct
+    @Bean
+    public RedisTemplate<String, ?> redisDirectTemplate() {
+        RedisTemplate<String, ?> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(redisConnectionFactory());
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(ChatDirectDTO.class));
         return redisTemplate;
     }
 
