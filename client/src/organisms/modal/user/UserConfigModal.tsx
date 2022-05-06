@@ -79,8 +79,8 @@ const UserConfigModal = ({ isOpen, onClose }: userConfigType) => {
   const inputNickNameRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [userInfo, setUserInfo] = useRecoilState(user);
-  const localUserInfo = localStorage.getItem('user');
-  const Juser = JSON.parse(localUserInfo!);
+  // const localUserInfo = localStorage.getItem('user');
+  // const Juser = JSON.parse(localUserInfo!);
 
   const onChange = () => {
     setNickName(inputNickNameRef.current?.value!);
@@ -93,12 +93,14 @@ const UserConfigModal = ({ isOpen, onClose }: userConfigType) => {
     onClose();
   };
   useEffect(() => {
+    console.log(userInfo);
+
     inputNameRef.current!.value = userInfo.name;
     inputEmailRef.current!.value = userInfo.email;
     inputNickNameRef.current!.value = userInfo.nickname;
     setNickName(inputNickNameRef.current!.value);
-    setImgSrc(Juser.profileImage);
-  }, [userInfo]);
+    setImgSrc(userInfo.profileImage);
+  }, [isOpen, userInfo]);
 
   const uploadImg = () => {
     fileInputRef.current?.click();
@@ -132,10 +134,6 @@ const UserConfigModal = ({ isOpen, onClose }: userConfigType) => {
       }
     }
   };
-
-  useEffect(() => {
-    console.log(userInfo);
-  }, [userInfo]);
 
   return (
     <Modal isOpen={isOpen}>
