@@ -1,6 +1,7 @@
 package com.tooliv.server.domain.user.api;
 
 import com.tooliv.server.domain.user.application.dto.request.SignUpRequestDTO;
+import com.tooliv.server.domain.user.application.dto.response.ProfileInfoResponseDTO;
 import com.tooliv.server.domain.user.application.dto.response.UserListResponseDTO;
 import com.tooliv.server.domain.user.application.service.UserService;
 import com.tooliv.server.domain.user.application.dto.request.LogInRequestDTO;
@@ -85,7 +86,7 @@ public class UserController {
         ProfileInfoResponseDTO profileInfoResponseDTO = null;
         try {
             profileInfoResponseDTO = userService.getProfileInfo(email);
-        } catch (Exception e) {
+        } catch (UserNotFoundException e) {
             return ResponseEntity.status(404).body(BaseResponseDTO.of(e.getMessage()));
         }
 
