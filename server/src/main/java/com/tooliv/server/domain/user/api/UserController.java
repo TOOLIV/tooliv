@@ -10,17 +10,17 @@ import com.tooliv.server.domain.user.application.dto.response.LogInResponseDTO;
 import com.tooliv.server.domain.user.application.dto.response.NicknameResponseDTO;
 import com.tooliv.server.global.exception.DuplicateEmailException;
 import com.tooliv.server.global.common.BaseResponseDTO;
+import com.tooliv.server.global.exception.NotImageFileException;
 import com.tooliv.server.global.exception.UserNotFoundException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.io.File;
+import java.io.InputStream;
 import java.util.Arrays;
 import javax.validation.Valid;
-import javax.xml.ws.Response;
 import lombok.RequiredArgsConstructor;
 import org.apache.tika.Tika;
-import org.apache.tomcat.util.http.fileupload.InvalidFileNameException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -79,16 +79,16 @@ public class UserController {
         @ApiParam(value = "이미지", required = true) @RequestPart MultipartFile multipartFile) {
 
         try {
-            File file = new File(multipartFile.getOriginalFilename());
-            multipartFile.transferTo(file);
-            String mimeType = new Tika().detect(file);
+            InputStream is = multipartFile.getInputStream();
+            String mimeType = new Tika().detect(is);
 
             if(!Arrays.asList(MIME_TYPE).contains(mimeType)) {
-                throws new InvalidFileNameException("파일")
+                throw new NotImageFileException("사진 파일이 아님");
             }
 
             userService.uploadProfileImage(multipartFile);
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(409).body(BaseResponseDTO.of("프로필 이미지 등록 실패"));
         }
 
