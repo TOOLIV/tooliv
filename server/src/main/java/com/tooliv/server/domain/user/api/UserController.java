@@ -78,6 +78,21 @@ public class UserController {
         return ResponseEntity.status(201).body(BaseResponseDTO.of("프로필 이미지 등록 성공"));
     }
 
+    @GetMapping("/info/{email}")
+    @ApiOperation(value = "회원 프로필 정보 조회 - 프로필 사진, 닉네임")
+    public ResponseEntity<? extends BaseResponseDTO> getProfileInfo(
+        @PathVariable("email") @ApiParam(value = "이메일", required = true) String email) {
+        ProfileInfoResponseDTO profileInfoResponseDTO = null;
+        try {
+            profileInfoResponseDTO = userService.getProfileInfo(email);
+        } catch (Exception e) {
+            return ResponseEntity.status(404).body(BaseResponseDTO.of(e.getMessage()));
+        }
+
+        return ResponseEntity.status(200).body(ProfileInfoResponseDTO.of("프로필 정보 조회 완료", profileInfoResponseDTO));
+    }
+
+
     @GetMapping("/check/{email}")
     @ApiOperation(value = "이메일 중복 체크")
     public ResponseEntity<? extends BaseResponseDTO> checkEmail(
