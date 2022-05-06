@@ -1,6 +1,8 @@
+import { useRecoilValue, useRecoilState } from 'recoil';
 import { createBrowserHistory } from 'history';
 import axios, { AxiosInstance } from 'axios';
 import isElectron from 'is-electron';
+import { user } from 'recoil/auth';
 
 let instance: AxiosInstance;
 const baseURL = localStorage.getItem('baseURL');
@@ -55,7 +57,9 @@ instance.interceptors.response.use(
   },
   function (error) {
     if (error.response) {
+      const [userInfo, setUserInfo] = useRecoilState(user);
       const history = createBrowserHistory();
+
       console.log(error.response);
       switch (error.response.status) {
         /* 'JWT expired' exeption */
@@ -64,10 +68,19 @@ instance.interceptors.response.use(
           break;
         case 401:
           console.log('401 ERROR, not authorized.');
-          history.push('/login');
-          // // 강제로 새로고침 (임시)
-          window.location.reload();
+          // history.push('/login');
+          // // // 강제로 새로고침 (임시)
+          setUserInfo({
+            accessToken: undefined,
+            email: '',
+            name: '',
+            nickname: '',
+            userId: '',
+            profileImage: '',
+          });
           localStorage.removeItem('user');
+          window.location.reload();
+
           break;
         case 404:
           console.log('404error!');
@@ -77,8 +90,6 @@ instance.interceptors.response.use(
           break;
         default:
       }
-    } else {
-      // ex. 서버 키지 않은 경우
     }
     return Promise.reject(error);
     // return false;

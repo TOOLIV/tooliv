@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
 
 import styled from '@emotion/styled';
 import Text from 'atoms/text/Text';
@@ -134,11 +133,6 @@ const Nav = () => {
         <InputBox label="" placeholder="검색" />
       </MidContainer>
       <RightContainer>
-        {/* <DarkModeToggle
-          onChange={handleDarkMode}
-          checked={mode === 'dark'}
-          size={80}
-        /> */}
         <DarkModeSwitch
           checked={mode === 'dark'}
           onChange={handleDarkMode}

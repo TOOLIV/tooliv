@@ -14,6 +14,7 @@ import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
 import com.tooliv.server.domain.workspace.domain.WorkspaceMembers;
 import com.tooliv.server.domain.workspace.domain.repository.WorkspaceMemberRepository;
+import com.tooliv.server.global.common.AwsS3Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +35,7 @@ public class ChannelMemberServiceImpl implements ChannelMemberService {
 
     private final UserRepository userRepository;
 
+    private final AwsS3Service awsS3Service;
 
     @Transactional
     @Override
@@ -83,14 +85,16 @@ public class ChannelMemberServiceImpl implements ChannelMemberService {
             .orElseThrow(() -> new IllegalArgumentException("채널 정보가 존재하지 않습니다."));
 
         List<ChannelMemberGetResponseDTO> channelMemberGetResponseDTOList = new ArrayList<>();
-        List<ChannelMembers> channelMembersList = channelMembersRepository.findByChannel(channel.getId());
+        List<ChannelMembers> channelMembersList = channelMembersRepository.findByChannel(channel);
         channelMembersList.forEach(channelMembers -> {
             User member = channelMembers.getUser();
+            String profileImage = awsS3Service.getFilePath(member.getProfileImage());
             ChannelMemberGetResponseDTO channelMemberGetResponseDTO = ChannelMemberGetResponseDTO.builder()
                 .email(member.getEmail())
                 .name(member.getName())
                 .nickname(member.getNickname())
                 .channelMemberCode(channelMembers.getChannelMemberCode())
+                .profileImage(profileImage)
                 .build();
 
             channelMemberGetResponseDTOList.add(channelMemberGetResponseDTO);
@@ -99,19 +103,23 @@ public class ChannelMemberServiceImpl implements ChannelMemberService {
     }
 
     @Override
-    public ChannelMemberListGetResponseDTO searchChannelMember(String channelId, String keyword) {
+    public ChannelMemberListGetResponseDTO searchChannelMember(String channelId, String keyword, int sequence) {
         List<ChannelMemberGetResponseDTO> channelMemberGetResponseDTOList = new ArrayList<>();
 
         Channel channel = channelRepository.findByIdAndDeletedAt(channelId, null)
             .orElseThrow(() -> new IllegalArgumentException("채널 정보가 존재하지 않습니다."));
 
-        channelMembersRepository.searchByChannelIdAndKeyword(channelId, keyword).forEach(channelMember -> {
+        int offset = sequence <= 0 ? 0 : (sequence - 1) * 10;
+        channelMembersRepository.searchByChannelIdAndKeyword(channelId, keyword, offset).forEach(channelMember -> {
             User member = channelMember.getUser();
+            String profileImage = awsS3Service.getFilePath(member.getProfileImage());
+
             ChannelMemberGetResponseDTO channelMemberGetResponseDTO = ChannelMemberGetResponseDTO.builder()
                 .channelMemberCode(channelMember.getChannelMemberCode())
                 .nickname(member.getNickname())
                 .name(member.getName())
                 .email(member.getEmail())
+                .profileImage(profileImage)
                 .build();
             channelMemberGetResponseDTOList.add(channelMemberGetResponseDTO);
         });
@@ -119,29 +127,24 @@ public class ChannelMemberServiceImpl implements ChannelMemberService {
     }
 
     @Override
-    public ChannelMemberListGetResponseDTO searchChannelMemberForRegister(String channelId, String keyword) {
+    public ChannelMemberListGetResponseDTO searchChannelMemberForRegister(String channelId, String keyword, int sequence) {
         List<ChannelMemberGetResponseDTO> channelMemberGetResponseDTOList = new ArrayList<>();
 
         Channel channel = channelRepository.findByIdAndDeletedAt(channelId, null)
             .orElseThrow(() -> new IllegalArgumentException("채널 정보가 존재하지 않습니다."));
 
-        List<ChannelMembers> channelMembersList = channelMembersRepository.findByChannel(channel);
+        int offset = sequence <= 0 ? 0 : (sequence - 1) * 10;
+        List<WorkspaceMembers> searchMemberList = workspaceMemberRepository.findAllToRegisterChannelMember(channel.getWorkspace().getId(), channelId, keyword, offset);
 
-        List<WorkspaceMembers> searchMemberList = workspaceMemberRepository.findByWorkspaceIdAndKeyword(channel.getWorkspace().getId(), keyword);
-        search:
         for (WorkspaceMembers searchMember : searchMemberList) {
-
             User member = searchMember.getUser();
-            for (ChannelMembers channelMember : channelMembersList) {
-                if (member.equals(channelMember.getUser())) {
-                    continue search;
-                }
-            }
+            String profileImage = awsS3Service.getFilePath(member.getProfileImage());
 
             ChannelMemberGetResponseDTO channelMemberGetResponseDTO = ChannelMemberGetResponseDTO.builder()
                 .nickname(member.getNickname())
                 .name(member.getName())
                 .email(member.getEmail())
+                .profileImage(profileImage)
                 .build();
             channelMemberGetResponseDTOList.add(channelMemberGetResponseDTO);
 
@@ -158,7 +161,7 @@ public class ChannelMemberServiceImpl implements ChannelMemberService {
         Channel channel = channelRepository.findByIdAndDeletedAt(channelId, null)
             .orElseThrow(() -> new IllegalArgumentException("채널 정보가 존재하지 않습니다."));
 
-        ChannelMembers channelMember = channelMembersRepository.findByChannelAndUser(channel,user)
+        ChannelMembers channelMember = channelMembersRepository.findByChannelAndUser(channel, user)
             .orElseThrow(() -> new IllegalArgumentException("채널 멤버 정보가 존재하지 않습니다."));
 
         return new ChannelMemberCodeGetResponseDTO(channelMember.getChannelMemberCode());
