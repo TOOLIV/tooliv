@@ -5,6 +5,7 @@ import com.tooliv.server.domain.user.application.dto.request.NicknameUpdateReque
 import com.tooliv.server.domain.user.application.dto.request.SignUpRequestDTO;
 import com.tooliv.server.domain.user.application.dto.response.LogInResponseDTO;
 import com.tooliv.server.domain.user.application.dto.response.NicknameResponseDTO;
+import com.tooliv.server.domain.user.application.dto.response.ProfileInfoResponseDTO;
 import com.tooliv.server.domain.user.application.dto.response.UserInfoResponseDTO;
 import com.tooliv.server.domain.user.application.dto.response.UserListResponseDTO;
 import com.tooliv.server.domain.user.domain.User;
@@ -80,6 +81,22 @@ public class UserServiceImpl implements UserService {
         }
 
         return logInResponseDTO;
+    }
+
+    @Override
+    public ProfileInfoResponseDTO getProfileInfo(String email) {
+        User user = userRepository.findByEmailAndDeletedAt(email, null)
+            .orElseThrow(() -> new UserNotFoundException("회원 정보 없음"));
+
+        ProfileInfoResponseDTO profileInfoResponseDTO = ProfileInfoResponseDTO.builder()
+            .nickname(user.getNickname())
+            .profileImage(user.getProfileImage()).build();
+
+        if(user.getProfileImage() == null) {
+            profileInfoResponseDTO.updateProfileImage("");
+        }
+
+        return profileInfoResponseDTO;
     }
 
     @Override

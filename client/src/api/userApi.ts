@@ -39,3 +39,8 @@ export const updateProfileImage = async (body: any) => {
   const response = await instance.post(`/user/image`, body);
   return response;
 };
+
+export const getUserList = async (keyword: string) => {
+  const response = await instance.get(`/user/search?keyword=${keyword}`);
+  return response;
+};

@@ -1,6 +1,7 @@
 package com.tooliv.server.domain.user.api;
 
 import com.tooliv.server.domain.user.application.dto.request.SignUpRequestDTO;
+import com.tooliv.server.domain.user.application.dto.response.ProfileInfoResponseDTO;
 import com.tooliv.server.domain.user.application.dto.response.UserListResponseDTO;
 import com.tooliv.server.domain.user.application.service.UserService;
 import com.tooliv.server.domain.user.application.dto.request.LogInRequestDTO;
@@ -16,6 +17,7 @@ import io.swagger.annotations.ApiParam;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -58,7 +60,7 @@ public class UserController {
 
         try {
             logInResponseDTO = userService.logIn(logInRequestDTO);
-        } catch (UserNotFoundException e) {
+        } catch (UserNotFoundException | BadCredentialsException e) {
             return ResponseEntity.status(409).body(BaseResponseDTO.of(e.getMessage()));
         }
         return ResponseEntity.status(201).body(LogInResponseDTO.of("로그인 성공", logInResponseDTO));
@@ -76,6 +78,21 @@ public class UserController {
 
         return ResponseEntity.status(201).body(BaseResponseDTO.of("프로필 이미지 등록 성공"));
     }
+
+    @GetMapping("/info/{email}")
+    @ApiOperation(value = "회원 프로필 정보 조회 - 프로필 사진, 닉네임")
+    public ResponseEntity<? extends BaseResponseDTO> getProfileInfo(
+        @PathVariable("email") @ApiParam(value = "이메일", required = true) String email) {
+        ProfileInfoResponseDTO profileInfoResponseDTO = null;
+        try {
+            profileInfoResponseDTO = userService.getProfileInfo(email);
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(404).body(BaseResponseDTO.of(e.getMessage()));
+        }
+
+        return ResponseEntity.status(200).body(ProfileInfoResponseDTO.of("프로필 정보 조회 완료", profileInfoResponseDTO));
+    }
+
 
     @GetMapping("/check/{email}")
     @ApiOperation(value = "이메일 중복 체크")
