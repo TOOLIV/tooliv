@@ -14,35 +14,54 @@ export const connect = (
   accessToken: string,
   setContents: SetterOrUpdater<contentTypes[]>,
   notiList: channelNotiType[],
-  setNotiList: SetterOrUpdater<channelNotiType[]>
+  setNotiList: SetterOrUpdater<channelNotiType[]>,
+  userId: string
 ) => {
   client.connect(
     {
       Authorization: `Bearer ${accessToken}`,
     },
     (frame) => {
-      console.log('STOMP Connection');
-      notiList.map((channel: channelNotiType) => {
-        client.subscribe(`/sub/chat/room/${channel.channelId}`, (response) => {
-          const link = window.location.href.split('/');
-          // 현재 채널, 워크스페이스 아이디
-          const channelId = link[link.length - 1];
-          const workspaceId = link[link.length - 2];
-          const recChannelId = JSON.parse(response.body).channelId;
-          if (channelId === recChannelId) {
-            // 현재 채널 아이디와 도착한 메시지의 채널 아이디가 같으면
-            setContents((prev) => [...prev, JSON.parse(response.body)]);
-          } else {
-            const newList: channelNotiType[] = notiList.map((noti) => {
-              if (noti.channelId === recChannelId) {
-                return { ...noti, notificationRead: false };
-              } else {
-                return noti;
-              }
-            });
-            setNotiList(newList);
-          }
-        });
+      // notiList.map((channel: channelNotiType) => {
+      //   client.subscribe(`/sub/chat/room/${channel.channelId}`, (response) => {
+      //   const link = window.location.href.split('/');
+      //   // 현재 채널, 워크스페이스 아이디
+      //   const channelId = link[link.length - 1];
+      //   const workspaceId = link[link.length - 2];
+      //   const recChannelId = JSON.parse(response.body).channelId;
+      //   if (channelId === recChannelId) {
+      //     // 현재 채널 아이디와 도착한 메시지의 채널 아이디가 같으면
+      //     setContents((prev) => [...prev, JSON.parse(response.body)]);
+      //   } else {
+      //     const newList: channelNotiType[] = notiList.map((noti) => {
+      //       if (noti.channelId === recChannelId) {
+      //         return { ...noti, notificationRead: false };
+      //       } else {
+      //         return noti;
+      //       }
+      //     });
+      //     setNotiList(newList);
+      //   }
+      // });
+      // });
+      client.subscribe(`/sub/chat/${userId}`, (response) => {
+        const link = window.location.href.split('/');
+        // 현재 채널, 워크스페이스 아이디
+        const channelId = link[link.length - 1];
+        const recChannelId = JSON.parse(response.body).channelId;
+        if (channelId === recChannelId) {
+          // 현재 채널 아이디와 도착한 메시지의 채널 아이디가 같으면
+          setContents((prev) => [...prev, JSON.parse(response.body)]);
+        } else {
+          const newList: channelNotiType[] = notiList.map((noti) => {
+            if (noti.channelId === recChannelId) {
+              return { ...noti, notificationRead: false };
+            } else {
+              return noti;
+            }
+          });
+          setNotiList(newList);
+        }
       });
     }
   );
@@ -51,7 +70,6 @@ export const connect = (
 type SendProps = {
   accessToken: string;
   channelId?: string;
-  nickname: string;
   email: string;
   message: string;
   fileUrl: string[];
@@ -61,7 +79,6 @@ type SendProps = {
 export const send = ({
   accessToken,
   channelId,
-  nickname,
   email,
   message,
   fileUrl,
@@ -74,13 +91,48 @@ export const send = ({
     },
     JSON.stringify({
       channelId: channelId,
-      sender: nickname,
       email: email,
       sendTime: new Date(),
       contents: getMarkdownText(message),
       type: 'TALK',
       files: fileUrl ? fileUrl : null,
-      originalFiles: fileNames ? fileNames : null,
+      originFiles: fileNames ? fileNames : null,
+    })
+  );
+};
+type SendDMProps = {
+  accessToken: string;
+  channelId?: string;
+  senderEmail: string;
+  receiverEmail: string;
+  message: string;
+  fileUrl: string[];
+  fileNames: string[];
+};
+
+export const sendDM = ({
+  accessToken,
+  channelId,
+  senderEmail,
+  receiverEmail,
+  message,
+  fileUrl,
+  fileNames,
+}: SendDMProps) => {
+  client.send(
+    '/pub/chat/directMessage',
+    {
+      Authorization: `Bearer ${accessToken}`,
+    },
+    JSON.stringify({
+      channelId: channelId,
+      senderEmail: senderEmail,
+      receiverEmail: receiverEmail,
+      sendTime: new Date(),
+      contents: getMarkdownText(message),
+      type: 'TALK',
+      files: fileUrl ? fileUrl : null,
+      originFiles: fileNames ? fileNames : null,
     })
   );
 };

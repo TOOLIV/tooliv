@@ -7,10 +7,14 @@ export type userBadgeTypes = {
 export type userInfoType = {
   name: string;
   email: string;
+  nickname: string;
+  profileImage: string;
 };
 export type userItemTypes = {
   name: string;
   email: string;
+  nickname: string;
+  profileImage: string;
   userCode: string;
   onDelete: (email: string) => void;
   onChange: (value: string, email: string) => void;
@@ -19,6 +23,8 @@ export type userItemTypes = {
 export type userListTypes = {
   id: string;
   name: string;
+  nickname: string;
+  profileImage: string;
   email: string;
   userCode: string;
 };
@@ -63,4 +69,9 @@ export type userConfigType = {
 
 export type userNicknameType = {
   nickname: string;
+};
+
+export type userDirectMessageType = {
+  isOpen: boolean;
+  onClose: () => void;
 };

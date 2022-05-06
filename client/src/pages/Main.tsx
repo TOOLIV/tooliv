@@ -10,11 +10,13 @@ const Main = () => {
   return (
     <div>
       <Message
+        chatId="0"
         sender="Tooliv"
         sendTime="0"
         contents="test"
         channelId="1"
         type="test"
+        email="aaa"
       />
       <button onClick={moveMeetingPage} />
     </div>

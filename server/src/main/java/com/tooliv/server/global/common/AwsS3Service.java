@@ -9,4 +9,7 @@ public interface AwsS3Service {
     String createFileName(String fileName);
 
     String getFileExtension(String fileName);
+
+    String getFilePath(String newFileName);
+
 }

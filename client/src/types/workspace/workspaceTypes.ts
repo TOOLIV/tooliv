@@ -49,6 +49,7 @@ export type workspaceMemberType = {
   email: string;
   name: string;
   nickname: string;
+  profileImage: string;
   workspaceMemberCode: string;
 };
 

@@ -13,4 +13,5 @@ export type buttonTypes = {
 export type editorProps = {
   onClick: (event: React.MouseEvent<HTMLElement>) => void;
   sendMessage?: () => void;
+  type?: string;
 };
