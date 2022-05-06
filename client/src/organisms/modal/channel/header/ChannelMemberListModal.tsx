@@ -67,7 +67,16 @@ const ChannelMemberListModal = ({
   const [channelMemberList, setChannelMemberList] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState('');
   const debouncedValue = useDebounce<string>(searchKeyword, 500);
+  const [sequence, setSequence] = useState(1);
+  const [target, setTarget] = useState<any>(null);
+  const [endCheck, setEndCheck] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
 
+  const sequenceRef = useRef(sequence);
+  sequenceRef.current = sequence;
+
+  const endCheckRef = useRef(endCheck);
+  endCheckRef.current = endCheck;
   const inputRef = useRef<HTMLInputElement>(null);
   const { channelId } = useParams();
 
@@ -78,7 +87,11 @@ const ChannelMemberListModal = ({
   const searchChannelMember = useCallback(
     async (keyword: string) => {
       try {
-        const { data } = await searchChannelMemberList(channelId!, keyword);
+        const { data } = await searchChannelMemberList(
+          channelId!,
+          keyword,
+          sequenceRef.current
+        );
         setChannelMemberList(data.channelMemberGetResponseDTOList);
         console.log(data);
       } catch (error) {
@@ -112,8 +125,7 @@ const ChannelMemberListModal = ({
   };
 
   useEffect(() => {
-    console.log(debouncedValue);
-    searchChannelMember(debouncedValue);
+    if (channelId) searchChannelMember(debouncedValue);
   }, [debouncedValue]);
 
   return (

@@ -71,7 +71,16 @@ const WorkspaceMemberListModal = ({
   const [workspaceMemberList, setWorkspaceMemberList] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState('');
   const debouncedValue = useDebounce<string>(searchKeyword, 500);
+  const [sequence, setSequence] = useState(1);
+  const [target, setTarget] = useState<any>(null);
+  const [endCheck, setEndCheck] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
 
+  const sequenceRef = useRef(sequence);
+  sequenceRef.current = sequence;
+
+  const endCheckRef = useRef(endCheck);
+  endCheckRef.current = endCheck;
   const inputRef = useRef<HTMLInputElement>(null);
   const { workspaceId } = useParams();
 
@@ -81,7 +90,11 @@ const WorkspaceMemberListModal = ({
 
   const handleSearchUser = useCallback(
     async (keyword: string) => {
-      const { data } = await searchWorkspaceMemberList(workspaceId!, keyword);
+      const { data } = await searchWorkspaceMemberList(
+        workspaceId!,
+        keyword,
+        sequenceRef.current
+      );
       setWorkspaceMemberList(data.workspaceMemberGetResponseDTOList);
       console.log(data);
     },
