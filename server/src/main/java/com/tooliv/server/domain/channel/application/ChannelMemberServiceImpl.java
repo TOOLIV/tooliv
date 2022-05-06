@@ -181,9 +181,11 @@ public class ChannelMemberServiceImpl implements ChannelMemberService {
     }
 
     @Override
+    @Transactional
     public List<String> getChannelMemberEmails(String channelId) {
         List<String> channelMemberEmails = new ArrayList<>();
-        Channel channel = channelRepository.getById(channelId);
+        Channel channel = channelRepository.findByIdAndDeletedAt(channelId, null)
+            .orElseThrow(() -> new IllegalArgumentException("채널 정보가 존재하지 않습니다."));
         List<ChannelMembers> channelMembersList = channelMembersRepository.findByChannel(channel);
         for(ChannelMembers channelMembers: channelMembersList){
             channelMemberEmails.add(channelMembers.getUser().getEmail());
