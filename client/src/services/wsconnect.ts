@@ -14,7 +14,8 @@ export const connect = (
   accessToken: string,
   setContents: SetterOrUpdater<contentTypes[]>,
   notiList: channelNotiType[],
-  setNotiList: SetterOrUpdater<channelNotiType[]>
+  setNotiList: SetterOrUpdater<channelNotiType[]>,
+  userId: string
 ) => {
   client.connect(
     {
@@ -43,6 +44,10 @@ export const connect = (
             setNotiList(newList);
           }
         });
+      });
+      client.subscribe(`/sub/chat/${userId}`, (response) => {
+        console.log(response);
+        setContents((prev) => [...prev, JSON.parse(response.body)]);
       });
     }
   );
@@ -76,6 +81,45 @@ export const send = ({
       channelId: channelId,
       sender: nickname,
       email: email,
+      sendTime: new Date(),
+      contents: getMarkdownText(message),
+      type: 'TALK',
+      files: fileUrl ? fileUrl : null,
+      originFiles: fileNames ? fileNames : null,
+    })
+  );
+};
+type SendDMProps = {
+  accessToken: string;
+  channelId?: string;
+  nickname: string;
+  senderEmail: string;
+  receiverEmail: string;
+  message: string;
+  fileUrl: string[];
+  fileNames: string[];
+};
+
+export const sendDM = ({
+  accessToken,
+  channelId,
+  nickname,
+  senderEmail,
+  receiverEmail,
+  message,
+  fileUrl,
+  fileNames,
+}: SendDMProps) => {
+  client.send(
+    '/pub/chat/directMessage',
+    {
+      Authorization: `Bearer ${accessToken}`,
+    },
+    JSON.stringify({
+      channelId: channelId,
+      sender: nickname,
+      senderEmail: senderEmail,
+      receiverEmail: receiverEmail,
       sendTime: new Date(),
       contents: getMarkdownText(message),
       type: 'TALK',
