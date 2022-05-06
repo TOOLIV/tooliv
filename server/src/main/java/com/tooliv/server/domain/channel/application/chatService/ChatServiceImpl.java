@@ -90,19 +90,30 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public DirectRoomInfoResponseDTO createDirectChatRoom(String receiverEmail) {
         LocalDateTime now = LocalDateTime.now();
+        User user1 =userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
+            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+        User user2 = userRepository.findByEmailAndDeletedAt(receiverEmail, null)
+            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+
+        // 개인방이 존재하는경우
+        if(directChatRoomRepository.findByUser1AndUser2(user1,user2).isPresent()){
+            return new DirectRoomInfoResponseDTO(directChatRoomRepository.findByUser1AndUser2(user1,user2).get().getId());
+        }else if(directChatRoomRepository.findByUser1AndUser2(user2,user1).isPresent()){
+            return new DirectRoomInfoResponseDTO(directChatRoomRepository.findByUser1AndUser2(user2,user1).get().getId());
+        }
 
         DirectChatRoom directChatRoom = DirectChatRoom.builder()
             .createdAt(now)
+            .user1(user1)
+            .user2(user2)
             .build();
         String id = directChatRoom.getId();
 
         directChatRoomRepository.save(directChatRoom);
 
         List<User> userList = new ArrayList<>();
-        userList.add(userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
-            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다.")));
-        userList.add(userRepository.findByEmailAndDeletedAt(receiverEmail, null)
-            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다.")));
+        userList.add(user1);
+        userList.add(user2);
 
         for (User user : userList) {
             DirectChatRoomMembers directChatRoomMembers = DirectChatRoomMembers.builder()
