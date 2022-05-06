@@ -65,7 +65,7 @@ const Header = styled.div`
 const UserBox = styled.div`
   display: flex;
   flex-wrap: wrap;
-  max-height: 15vh;
+  height: 30vh;
   overflow: scroll;
   margin-bottom: 10px;
 `;
@@ -116,6 +116,16 @@ const WorkspaceAddMemberModal = forwardRef<
   const [inviteUserList, setInviteUserList] = useState<string[]>([]);
   const [keyword, setKeyword] = useState('');
   const debouncedValue = useDebounce<string>(keyword, 500);
+  const [sequence, setSequence] = useState(1);
+  const [target, setTarget] = useState<any>(null);
+  const [endCheck, setEndCheck] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  const sequenceRef = useRef(sequence);
+  sequenceRef.current = sequence;
+
+  const endCheckRef = useRef(endCheck);
+  endCheckRef.current = endCheck;
 
   const inputRef = useRef<HTMLInputElement>(null);
   const { workspaceId } = useParams();
@@ -124,23 +134,41 @@ const WorkspaceAddMemberModal = forwardRef<
 
   const searchUserList = useCallback(() => {
     const keyword = inputRef.current?.value!;
+    console.log(keyword);
     setKeyword(keyword);
+    setSequence(1);
+    setEndCheck(false);
+    setUserList([]);
   }, []);
 
   const userListApi = useCallback(
     async (keyword: string) => {
-      const response = await searchNotWorkspaceMemberList(
-        workspaceId!,
-        keyword
-      );
-      const data = response.data.workspaceMemberGetResponseDTOList;
-      if (data) {
-        const list = data.filter((user: workspaceMemberType) => {
-          return userBadgeList.find((badge) => badge.email === user.email)
-            ? false
-            : true;
-        });
-        setUserList(list);
+      if (!endCheckRef.current) {
+        console.log('들어옴?');
+        console.log(keyword);
+        console.log(sequenceRef.current);
+        const response = await searchNotWorkspaceMemberList(
+          workspaceId!,
+          keyword,
+          sequenceRef.current
+        );
+        console.log(response);
+        const data = response.data.workspaceMemberGetResponseDTOList;
+        console.log(data);
+        if (data.length === 0) {
+          setIsLoaded(false);
+          setEndCheck(true);
+          return;
+        }
+        if (data) {
+          const list = data.filter((user: workspaceMemberType) => {
+            return userBadgeList.find((badge) => badge.email === user.email)
+              ? false
+              : true;
+          });
+          setUserList((prev) => [...prev, ...list]);
+          setSequence((prev) => prev + 1);
+        }
       }
     },
     [workspaceId, userBadgeList]
@@ -151,6 +179,7 @@ const WorkspaceAddMemberModal = forwardRef<
   }, [workspaceId, userListApi]);
 
   useEffect(() => {
+    console.log(debouncedValue);
     userListApi(debouncedValue);
   }, [debouncedValue]);
 
@@ -202,8 +231,27 @@ const WorkspaceAddMemberModal = forwardRef<
         console.log(error);
       }
     },
-    [workspaceId, setCurrentChannelMemberNum, exitModal]
+    [workspaceId]
   );
+
+  useEffect(() => {
+    let observer: any;
+    if (target) {
+      observer = new IntersectionObserver(onIntersect, {
+        threshold: 1,
+      });
+      observer.observe(target);
+    }
+    return () => observer && observer.disconnect();
+  }, [target]);
+
+  const onIntersect = async ([entry]: any, observer: any) => {
+    if (entry.isIntersecting && !isLoaded) {
+      observer.unobserve(entry.target);
+      await userListApi(debouncedValue);
+      observer.observe(entry.target);
+    }
+  };
 
   return (
     <Modal isOpen={isOpen}>
@@ -232,6 +280,13 @@ const WorkspaceAddMemberModal = forwardRef<
               />
             </UserInfoWrapper>
           ))}
+          <div
+            ref={setTarget}
+            style={{
+              width: '100vw',
+              height: '5px',
+            }}
+          ></div>
         </UserBox>
         <Label label="추가 멤버 목록" />
         <UserBadgeWrapper>

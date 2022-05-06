@@ -65,7 +65,7 @@ const UserDropdown = forwardRef<HTMLDivElement, userDropdownType>(
     const logout = () => {
       localStorage.removeItem('user');
       setUserInfo({
-        accessToken: undefined,
+        accessToken: '',
         email: '',
         name: '',
         nickname: '',

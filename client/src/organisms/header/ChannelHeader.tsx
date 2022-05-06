@@ -92,7 +92,7 @@ const ChannelHeader = () => {
 
   // 새로고침시 채널별 인원수가 초기화 되므로 다시 저장하기 위한 useEffect
   useEffect(() => {
-    if (currentChannelMemberNum === 0) {
+    if (currentChannelMemberNum === 0 && channelId) {
       handleChannelInfo();
     }
   }, []);

@@ -18,20 +18,22 @@ export const createWorkspace = async (body: any) => {
 
 export const searchNotWorkspaceMemberList = async (
   workspaceId: string,
-  keyword: string
+  keyword: string,
+  sequence: number
 ) => {
   const response = await instance.get(
-    `workspace/${workspaceId}/member/list?keyword=${keyword}`
+    `workspace/${workspaceId}/member/list?keyword=${keyword}&seq=${sequence}`
   );
   return response;
 };
 
 export const searchWorkspaceMemberList = async (
   workspaceId: string,
-  keyword: string
+  keyword: string,
+  sequence: number
 ) => {
   const response = await instance.get(
-    `workspace/${workspaceId}/member/search?keyword=${keyword}`
+    `workspace/${workspaceId}/member/search?keyword=${keyword}&seq=${sequence}`
   );
   return response;
 };
