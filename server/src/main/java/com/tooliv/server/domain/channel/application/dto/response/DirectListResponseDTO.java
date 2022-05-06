@@ -6,7 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import java.util.List;
 import lombok.Getter;
 
-@ApiModel("NotificationListResponseDTO")
+@ApiModel("DirectListResponseDTO")
 @Getter
 public class DirectListResponseDTO extends BaseResponseDTO {
 

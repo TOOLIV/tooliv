@@ -2,6 +2,7 @@ package com.tooliv.server.domain.channel.application.chatService;
 
 import com.tooliv.server.domain.channel.application.dto.request.ChatDirectDTO;
 import com.tooliv.server.domain.channel.application.dto.request.ChatRequestDTO;
+import com.tooliv.server.domain.channel.application.dto.response.DirectRoomInfoResponseDTO;
 import com.tooliv.server.domain.channel.application.dto.response.FileUrlListResponseDTO;
 import com.tooliv.server.domain.channel.domain.Channel;
 import com.tooliv.server.domain.channel.domain.ChannelMembers;
@@ -87,7 +88,7 @@ public class ChatServiceImpl implements ChatService {
 
     @Transactional
     @Override
-    public void createDirectChatRoom(String receiverEmail) {
+    public DirectRoomInfoResponseDTO createDirectChatRoom(String receiverEmail) {
         LocalDateTime now = LocalDateTime.now();
 
         DirectChatRoom directChatRoom = DirectChatRoom.builder()
@@ -116,6 +117,7 @@ public class ChatServiceImpl implements ChatService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return new DirectRoomInfoResponseDTO(directChatRoom.getId());
     }
 
     @Override

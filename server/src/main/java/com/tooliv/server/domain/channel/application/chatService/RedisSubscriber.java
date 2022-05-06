@@ -8,6 +8,7 @@ import com.tooliv.server.domain.channel.application.dto.response.ChannelMemberGe
 import com.tooliv.server.domain.channel.application.dto.response.ChannelMemberListGetResponseDTO;
 import com.tooliv.server.domain.channel.domain.ChannelMembers;
 import com.tooliv.server.domain.user.application.service.UserService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
@@ -37,10 +38,10 @@ public class RedisSubscriber implements MessageListener {
             // ChatMessage 객채로 맵핑
             objectMapper.registerModule(new JavaTimeModule());
             ChatRequestDTO chatRequestDTO = objectMapper.readValue(publishMessage, ChatRequestDTO.class);
-            ChannelMemberListGetResponseDTO channelMemberListGetResponseDTO = channelMemberService.getChannelMemberList(chatRequestDTO.getChannelId());
-            for(ChannelMemberGetResponseDTO channelMemberGetResponseDTO: channelMemberListGetResponseDTO.getChannelMemberGetResponseDTOList()){
+            List<String> channelMemberEmails = channelMemberService.getChannelMemberEmails(chatRequestDTO.getChannelId());
+            for(String email: channelMemberEmails){
                 // Websocket 구독자에게 채팅 메시지 Send
-                messagingTemplate.convertAndSend("/sub/chat/" + userService.getUserId(channelMemberGetResponseDTO.getEmail()),
+                messagingTemplate.convertAndSend("/sub/chat/" + userService.getUserId(email),
                     chatRequestDTO);
             }
 
