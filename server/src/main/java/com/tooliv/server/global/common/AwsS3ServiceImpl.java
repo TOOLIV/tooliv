@@ -58,4 +58,13 @@ public class AwsS3ServiceImpl implements AwsS3Service {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 형식의 파일(" + fileName + ") 입니다.");
         }
     }
+
+    @Override
+    public String getFilePath(String newFileName) {
+        if (newFileName == null) {
+            return "";
+        } else {
+            return amazonS3Client.getResourceUrl(bucket, newFileName);
+        }
+    }
 }
