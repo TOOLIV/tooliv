@@ -17,10 +17,6 @@ const WorkSpaceContainer = styled.div`
 
 const WorkSpaces = ({ workspaceList, onClick }: workspacesType) => {
   const navigate = useNavigate();
-  const [notiList, setNotiList] =
-    useRecoilState<channelNotiType[]>(channelNotiList);
-  const map = new Map(notiList.map((el) => [el.workspaceId, el]));
-
   const handleClickMain = (id: string) => {
     navigate(id);
   };
@@ -40,7 +36,7 @@ const WorkSpaces = ({ workspaceList, onClick }: workspacesType) => {
           key={workspace.id}
           {...workspace}
           onClick={onClick}
-          noti={map.get(workspace.id)?.notificationRead}
+          noti={workspace.noti}
         />
       ))}
       {/* </WorkSpaceWrapper> */}

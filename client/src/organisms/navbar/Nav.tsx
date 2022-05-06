@@ -12,6 +12,7 @@ import {
   channelContents,
   channelNotiList,
   DMList,
+  wsList,
 } from 'recoil/atom';
 import { channelNotiType, contentTypes } from 'types/channel/contentType';
 import { connect } from 'services/wsconnect';
@@ -22,6 +23,8 @@ import UserConfigModal from 'organisms/modal/user/UserConfigModal';
 import { getChannels, getDMList } from 'api/chatApi';
 import { useNavigate } from 'react-router-dom';
 import { DMInfoType } from 'types/channel/chatTypes';
+import { workspaceListType } from 'types/workspace/workspaceTypes';
+import { getWorkspaceList } from 'api/workspaceApi';
 
 const NavContainer = styled.div`
   padding: 0px 20px;
@@ -72,9 +75,13 @@ const Nav = () => {
   const [notiList, setNotiList] =
     useRecoilState<channelNotiType[]>(channelNotiList);
   const [dmList, setDmList] = useRecoilState<DMInfoType[]>(DMList);
-
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [workspaceList, setWorkspaceList] =
+    useRecoilState<workspaceListType[]>(wsList);
   const navigate = useNavigate();
   useEffect(() => {
+    setIsLoading(true);
+
     getChannels(email).then((res) => {
       const {
         data: { notificationChannelList },
@@ -86,13 +93,34 @@ const Nav = () => {
         setDmList(directInfoDTOList);
         const newList = [...notificationChannelList, ...directInfoDTOList];
         setNotiList(newList);
-        connect(
-          accessToken,
-          setContents,
-          newList,
-          setNotiList,
-          userInfo.userId
-        );
+        getWorkspaceList().then((res) => {
+          const notiWorkspace = notiList.filter((noti) => {
+            if (!noti.notificationRead) {
+              return noti;
+            }
+          });
+          const map = new Map(notiWorkspace.map((el) => [el.workspaceId, el]));
+          const newWSList = res.data.workspaceGetResponseDTOList.map(
+            (dto: any) => {
+              if (map.get(dto.id)) {
+                return { ...dto, noti: false };
+              } else {
+                return { ...dto, noti: true };
+              }
+            }
+          );
+          setWorkspaceList(newWSList);
+          connect(
+            accessToken,
+            setContents,
+            newList,
+            setNotiList,
+            userInfo.userId,
+            newWSList,
+            setWorkspaceList
+          );
+          setIsLoading(false);
+        });
       });
     });
   }, []);

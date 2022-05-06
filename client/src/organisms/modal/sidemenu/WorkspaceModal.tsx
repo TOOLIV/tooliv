@@ -15,12 +15,16 @@ import {
   currentChannel,
   currentWorkspace,
   userLog,
+  wsList,
 } from 'recoil/atom';
 import { user } from 'recoil/auth';
 import { sub, unsub } from 'services/wsconnect';
 import { colors } from 'shared/color';
 import { channelNotiType, contentTypes } from 'types/channel/contentType';
-import { workspaceModalType } from 'types/workspace/workspaceTypes';
+import {
+  workspaceListType,
+  workspaceModalType,
+} from 'types/workspace/workspaceTypes';
 
 const Modal = styled.div<{ isOpen: boolean }>`
   display: none;
@@ -78,6 +82,8 @@ const WorkspaceModal = ({ isOpen, onClose }: workspaceModalType) => {
     useRecoilState<contentTypes[]>(channelContents);
   const [notiList, setNotiList] =
     useRecoilState<channelNotiType[]>(channelNotiList);
+  const [workspaceList, setWorkspaceList] =
+    useRecoilState<workspaceListType[]>(wsList);
   const userInfo = useRecoilValue(user);
   const handleSetImg = (file: FileList) => {
     setFile(file[0]);
@@ -131,7 +137,14 @@ const WorkspaceModal = ({ isOpen, onClose }: workspaceModalType) => {
         // 구독 풀고
         unsub();
         // 다시 구독 (바로 메시지 전송할 수 있게)
-        sub(setContents, notiList, setNotiList, userInfo.userId);
+        sub(
+          setContents,
+          notiList,
+          setNotiList,
+          userInfo.userId,
+          workspaceList,
+          setWorkspaceList
+        );
         onClose();
       }
     } catch (error) {

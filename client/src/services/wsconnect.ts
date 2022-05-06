@@ -1,9 +1,11 @@
+import { url } from 'inspector';
 import { marked } from 'marked';
 import { SetterOrUpdater } from 'recoil';
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { SendDMProps, SendMessageProps } from 'types/channel/chatTypes';
 import { channelNotiType, contentTypes } from 'types/channel/contentType';
+import { workspaceListType } from 'types/workspace/workspaceTypes';
 const baseURL = localStorage.getItem('baseURL');
 let sockJS = baseURL
   ? new SockJS(`${JSON.parse(baseURL).url}/chatting`)
@@ -16,14 +18,23 @@ export const connect = (
   setContents: SetterOrUpdater<contentTypes[]>,
   notiList: channelNotiType[],
   setNotiList: SetterOrUpdater<channelNotiType[]>,
-  userId: string
+  userId: string,
+  workspaceList: workspaceListType[],
+  setWorkspaceList: SetterOrUpdater<workspaceListType[]>
 ) => {
   client.connect(
     {
       Authorization: `Bearer ${accessToken}`,
     },
     (frame) => {
-      sub(setContents, notiList, setNotiList, userId);
+      sub(
+        setContents,
+        notiList,
+        setNotiList,
+        userId,
+        workspaceList,
+        setWorkspaceList
+      );
     }
   );
 };
@@ -94,24 +105,49 @@ export const sub = (
   setContents: SetterOrUpdater<contentTypes[]>,
   notiList: channelNotiType[],
   setNotiList: SetterOrUpdater<channelNotiType[]>,
-  userId: string
+  userId: string,
+  workspaceList: workspaceListType[],
+  setWorkspaceList: SetterOrUpdater<workspaceListType[]>
 ) => {
   subscribe = client.subscribe(`/sub/chat/${userId}`, (response) => {
+    console.log(notiList);
     const link = window.location.href.split('/');
     // 현재 채널, 워크스페이스 아이디
     const channelId = link[link.length - 1];
+    const workspaceId = link[link.length - 2];
     const recChannelId = JSON.parse(response.body).channelId;
+    let updateWorkspaceId: string = '';
+    console.log(channelId, recChannelId, workspaceId);
     if (channelId === recChannelId) {
       // 현재 채널 아이디와 도착한 메시지의 채널 아이디가 같으면
       setContents((prev) => [...prev, JSON.parse(response.body)]);
     } else {
+      // 현재 채널 아이디와 도착한 메시지의 채널 아이디가 다르면
       const newList: channelNotiType[] = notiList.map((noti) => {
-        if (noti.channelId === recChannelId) {
+        if (noti.workspaceId !== channelId && noti.channelId === recChannelId) {
+          console.log(noti.channelId);
+          updateWorkspaceId = noti.workspaceId!;
           return { ...noti, notificationRead: false };
         } else {
           return noti;
         }
       });
+      if (workspaceId !== updateWorkspaceId) {
+        const newWSList: workspaceListType[] = workspaceList.map(
+          (workspace) => {
+            if (
+              workspace.id !== workspaceId &&
+              workspace.id === updateWorkspaceId
+            ) {
+              console.log(updateWorkspaceId);
+              return { ...workspace, noti: false };
+            } else {
+              return workspace;
+            }
+          }
+        );
+        setWorkspaceList(newWSList);
+      }
       setNotiList(newList);
     }
   });

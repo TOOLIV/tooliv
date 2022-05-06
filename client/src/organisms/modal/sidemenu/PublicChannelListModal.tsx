@@ -10,10 +10,19 @@ import UserInfo from 'molecules/userInfo/UserInfo';
 import { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { currentChannel, currentChannelNum, userLog } from 'recoil/atom';
+import {
+  channelNotiList,
+  currentChannel,
+  currentChannelNum,
+  userLog,
+} from 'recoil/atom';
 import { user } from 'recoil/auth';
 import { colors } from 'shared/color';
-import { channelListTypes, publicChannelType } from 'types/channel/contentType';
+import {
+  channelListTypes,
+  channelNotiType,
+  publicChannelType,
+} from 'types/channel/contentType';
 import {
   inviteMembersType,
   workspaceMemberListType,
@@ -85,6 +94,8 @@ const PublicChannelListModal = ({
   const setCurrentChannelMemberNum = useSetRecoilState(currentChannelNum);
   const setCurrentChannelId = useSetRecoilState(currentChannel);
   const [userLogList, setUserLogList] = useRecoilState(userLog);
+  const [notiList, setNotiList] =
+    useRecoilState<channelNotiType[]>(channelNotiList);
 
   const userInfo = useRecoilValue(user);
   const navigate = useNavigate();
@@ -109,6 +120,14 @@ const PublicChannelListModal = ({
         [workspaceId!]: publicChannelList[0].id,
       });
       setCurrentChannelId(publicChannelList[0].id);
+      setNotiList([
+        ...notiList,
+        {
+          channelId: publicChannelList[0].id,
+          workspaceId,
+          notificationRead: true,
+        },
+      ]);
       navigate(`${workspaceId}/${publicChannelList[0].id}`);
       exitModal();
     },

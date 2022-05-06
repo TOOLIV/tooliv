@@ -10,6 +10,9 @@ import InputBox from 'molecules/inputBox/InputBox';
 import UserInfo from 'molecules/userInfo/UserInfo';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
+import { DMList } from 'recoil/atom';
+import { DMInfoType } from 'types/channel/chatTypes';
 import {
   channelMemberListType,
   channelMemberType,
@@ -72,18 +75,23 @@ export const UserInfoWrapper = styled.div`
 
 const DirectMessageModal = ({ isOpen, onClose }: userDirectMessageType) => {
   const [channelMemberList, setChannelMemberList] = useState([]);
+  const [dmList, setDmList] = useRecoilState<DMInfoType[]>(DMList);
   const [searchKeyword, setSearchKeyword] = useState('');
   const debouncedValue = useDebounce<string>(searchKeyword, 500);
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const { workspaceId } = useParams();
 
-  const handleDirectMessage = (email: string) => {
+  const handleDirectMessage = (member: channelMemberType) => {
     // console.log(`${email}로 개인메시지 보내는 링크`);
-    createDMRoom(email).then((res) => {
+    createDMRoom(member.email).then((res) => {
       const {
         data: { roomId },
       } = res;
+      setDmList([
+        ...dmList,
+        { receiveName: member.name, channelId: roomId, notificationRead: true },
+      ]);
       navigate(`/direct/${workspaceId}/${roomId}`);
       onClose();
     });
@@ -133,7 +141,7 @@ const DirectMessageModal = ({ isOpen, onClose }: userDirectMessageType) => {
           {channelMemberList.map((member: channelMemberType) => (
             <UserInfoWrapper
               key={member.email}
-              onClick={() => handleDirectMessage(member.email)}
+              onClick={() => handleDirectMessage(member)}
             >
               <UserInfo
                 name={member.name}
