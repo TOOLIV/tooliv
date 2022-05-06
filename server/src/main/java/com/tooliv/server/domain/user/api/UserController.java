@@ -110,11 +110,12 @@ public class UserController {
     @GetMapping("/search")
     @ApiOperation(value = "회원 정보 목록 조회")
     public ResponseEntity<? extends BaseResponseDTO> getUserList(
-        @ApiParam(value="검색 단어", required = true) @RequestParam String keyword) {
+        @ApiParam(value="검색 단어", required = true) @RequestParam String keyword,
+        @ApiParam(value = "sequence", required = true) @RequestParam int sequence) {
         UserListResponseDTO userListResponseDTO = null;
 
         try {
-            userListResponseDTO = userService.getUserList(keyword);
+            userListResponseDTO = userService.getUserList(keyword, sequence);
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(404).body(BaseResponseDTO.of(e.getMessage()));
         }
