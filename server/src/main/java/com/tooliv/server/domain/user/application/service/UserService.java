@@ -26,4 +26,6 @@ public interface UserService {
     User getCurrentUser();
 
     String getImageURL(String fileName);
+
+    String getUserId(String email);
 }
