@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Builder
 @AllArgsConstructor
-public class ChatRequestDTO implements Serializable {
+public class ChatDirectDTO implements Serializable {
 
     @ApiModelProperty(name = "메시지 ID")
     private long chatId;
@@ -27,8 +27,11 @@ public class ChatRequestDTO implements Serializable {
     @ApiModelProperty(name = "채팅방 ID")
     private String channelId;
 
-    @ApiModelProperty(name = "보낸사람 Id")
-    private String userId;
+    @ApiModelProperty(name = "보내는사람 Id")
+    private String senderId;
+
+    @ApiModelProperty(name = "받는사람 Id")
+    private String receiverId;
 
     @ApiModelProperty(name = "보낸사람 name")
     private String sender;
@@ -40,7 +43,7 @@ public class ChatRequestDTO implements Serializable {
     private String contents;
 
     @ApiModelProperty(name = "메시지 타입")
-    private String type;
+    private String type; // chat,direct
 
     @ApiModelProperty(name = "보낸시간")
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)

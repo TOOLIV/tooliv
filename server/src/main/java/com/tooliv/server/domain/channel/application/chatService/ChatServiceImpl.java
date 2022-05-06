@@ -1,5 +1,6 @@
 package com.tooliv.server.domain.channel.application.chatService;
 
+import com.tooliv.server.domain.channel.application.dto.request.ChatDirectDTO;
 import com.tooliv.server.domain.channel.application.dto.request.ChatRequestDTO;
 import com.tooliv.server.domain.channel.application.dto.response.FileUrlListResponseDTO;
 import com.tooliv.server.domain.channel.domain.Channel;
@@ -39,11 +40,14 @@ public class ChatServiceImpl implements ChatService {
     private final RedisMessageListenerContainer redisMessageListener;
     // 구독 처리 서비스
     private final RedisSubscriber redisSubscriber;
+    // 구독 처리 서비스
+    private final RedisUserSubscriber redisUserSubscriber;
 
     // Redis
     private static final String CHAT_ROOMS = "CHAT_ROOM";
     public static final String ENTER_INFO = "ENTER_INFO"; // 채팅룸에 입장한 클라이언트의 sessionId와 채팅룸 id를 맵핑한 정보 저장
     private final RedisTemplate<String, ChatRequestDTO> redisChannelTemplate;
+    private final RedisTemplate<String, ChatDirectDTO> redisDirectTemplate;
     private HashOperations<String, String, Channel> opsHashChatRoom;
     private HashOperations<String, String, DirectChatRoom> opsHashDirectChatRoom;
     // 채팅방의 대화 메시지를 발행하기 위한 redis topic 정보. 서버별로 채팅방에 매치되는 topic정보를 Map에 넣어 roomId로 찾을수 있도록 한다.
@@ -53,7 +57,7 @@ public class ChatServiceImpl implements ChatService {
     @PostConstruct
     private void init() {
         opsHashChatRoom = redisChannelTemplate.opsForHash();
-        opsHashDirectChatRoom = redisChannelTemplate.opsForHash();
+        opsHashDirectChatRoom = redisDirectTemplate.opsForHash();
         hashOpsEnterInfo = redisChannelTemplate.opsForHash();
 
         topics = new HashMap<>();
@@ -111,6 +115,24 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
+    public void enterUser() {
+        User user = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
+            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+        List<ChannelMembers> channelMembersList = channelMembersRepository.findByUser(user).orElseThrow(() -> new IllegalArgumentException("채널이 존재하지 않습니다."));
+        List<String> channelIds = new ArrayList<>();
+        for(ChannelMembers channelMembers : channelMembersList){
+            String channelId =channelMembers.getChannel().getId();
+            channelIds.add(channelId);
+            ChannelTopic topic = topics.get(channelId);
+            if (topic == null) {
+                topic = new ChannelTopic(channelId);
+            }
+            redisMessageListener.addMessageListener(redisUserSubscriber, topic);
+            topics.put(channelId, topic);
+        }
+    }
+
+    @Override
     public void enterChatRoom(String channelId) {
         User user = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
             .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
@@ -140,7 +162,7 @@ public class ChatServiceImpl implements ChatService {
         if (topic == null) {
             topic = new ChannelTopic(channelId);
         }
-        redisMessageListener.addMessageListener(redisSubscriber, topic);
+        redisMessageListener.addMessageListener(redisUserSubscriber, topic);
         topics.put(channelId, topic);
     }
 
@@ -171,13 +193,13 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public void setDirectChatInfoValue(String key, ChatRequestDTO value) {
+    public void setDirectChatInfoValue(String key, ChatDirectDTO value) {
         DirectChatRoom directChatRoom = directChatRoomRepository.findById(value.getChannelId()).orElseThrow(() -> new IllegalArgumentException("해당 채널이 존재하지 않습니다."));
         directChatRoom.updateWroteAt();
         directChatRoomRepository.save(directChatRoom);
-        long idx = redisChannelTemplate.opsForList().size(key);
+        long idx = redisDirectTemplate.opsForList().size(key);
         value.updateChatId(idx);
-        System.out.println(redisChannelTemplate.opsForList().rightPush(key, value));
+        System.out.println(redisDirectTemplate.opsForList().rightPush(key, value));
     }
 
     @Override
