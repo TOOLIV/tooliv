@@ -15,7 +15,7 @@ export const login = async (body: userLoginTypes) => {
     profileImage: response.data.profileImage,
   };
 
-  localStorage.setItem('user', JSON.stringify(user));
+  localStorage.setItem('tooliv_info', JSON.stringify(user));
   if (response.data.userCode === 'ADMIN')
     localStorage.setItem('isAdmin', JSON.stringify(true));
   else localStorage.removeItem('isAdmin');

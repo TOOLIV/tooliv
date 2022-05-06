@@ -55,7 +55,10 @@ const ChannelSection = () => {
   };
 
   useEffect(() => {
-    if (currentChannelId) handleChannel();
+    if (currentChannelId) {
+      console.log(currentChannelId);
+      handleChannel();
+    }
   }, [currentChannelId, modChannelName]);
 
   const openDropdownModal = () => {

@@ -19,20 +19,22 @@ export const createChannel = async (body: channelTypes) => {
 
 export const searchNotChannelMemberList = async (
   channelId: string,
-  keyword: string
+  keyword: string,
+  sequence: number
 ) => {
   const response = await instance.get(
-    `channel/${channelId}/member/list?keyword=${keyword}`
+    `channel/${channelId}/member/list?keyword=${keyword}&seq=${sequence}`
   );
   return response;
 };
 
 export const searchChannelMemberList = async (
   channelId: string,
-  keyword: string
+  keyword: string,
+  sequence: number
 ) => {
   const response = await instance.get(
-    `channel/${channelId}/member/search?keyword=${keyword}`
+    `channel/${channelId}/member/search?keyword=${keyword}&seq=${sequence}`
   );
   return response;
 };
