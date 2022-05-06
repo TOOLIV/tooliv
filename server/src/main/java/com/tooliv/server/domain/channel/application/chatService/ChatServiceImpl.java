@@ -36,14 +36,16 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class ChatServiceImpl implements ChatService {
 
-    // 채팅방(topic)에 발행되는 메시지를 처리할 Listner
+    // 채팅방(topic)에 발행되는 메시지를 처리할 Listener
     private final RedisMessageListenerContainer redisMessageListener;
-    // 채팅방(topic)에 발행되는 메시지를 처리할 Listner
+    // DM(topic)에 발행되는 메시지를 처리할 Listener
     private final RedisMessageListenerContainer redisDirectMessageListener;
     // 구독 처리 서비스
     private final RedisSubscriber redisSubscriber;
     // 구독 처리 서비스
     private final RedisUserSubscriber redisUserSubscriber;
+    // 발행 서비스
+    private final RedisPublisher redisPublisher;
 
     // Redis
     private static final String CHAT_ROOMS = "CHAT_ROOM";
@@ -113,24 +115,6 @@ public class ChatServiceImpl implements ChatService {
             opsHashDirectChatRoom.put(CHAT_ROOMS, id, directChatRoom);
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void enterUser() {
-        User user = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
-            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
-        List<ChannelMembers> channelMembersList = channelMembersRepository.findByUser(user).orElseThrow(() -> new IllegalArgumentException("채널이 존재하지 않습니다."));
-        List<String> channelIds = new ArrayList<>();
-        for(ChannelMembers channelMembers : channelMembersList){
-            String channelId =channelMembers.getChannel().getId();
-            channelIds.add(channelId);
-            ChannelTopic topic = topics.get(channelId);
-            if (topic == null) {
-                topic = new ChannelTopic(channelId);
-            }
-            redisMessageListener.addMessageListener(redisUserSubscriber, topic);
-            topics.put(channelId, topic);
         }
     }
 

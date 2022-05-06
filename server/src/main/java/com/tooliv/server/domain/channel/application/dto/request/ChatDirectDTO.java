@@ -14,7 +14,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@ApiModel("ChatRequestDTO")
+@ApiModel("ChatDirectDTO")
 @NoArgsConstructor
 @Getter
 @Builder
@@ -33,14 +33,8 @@ public class ChatDirectDTO implements Serializable {
     @ApiModelProperty(name = "받는사람 Id")
     private String receiverEmail;
 
-    @ApiModelProperty(name = "보낸사람 name")
-    private String sender;
-
     @ApiModelProperty(name = "내용")
     private String contents;
-
-    @ApiModelProperty(name = "메시지 타입")
-    private String type; // chat,direct
 
     @ApiModelProperty(name = "보낸시간")
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)

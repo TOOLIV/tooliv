@@ -2,7 +2,6 @@ package com.tooliv.server.domain.channel.api;
 
 import com.tooliv.server.domain.channel.application.chatService.ChatService;
 import com.tooliv.server.domain.channel.application.chatService.RedisPublisher;
-import com.tooliv.server.domain.channel.application.chatService.RedisUserPublisher;
 import com.tooliv.server.domain.channel.application.dto.request.ChatDirectDTO;
 import com.tooliv.server.domain.channel.application.dto.request.ChatRequestDTO;
 import io.swagger.annotations.Api;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class ChatController {
 
     private final RedisPublisher redisPublisher;
-    private final RedisUserPublisher redisUserPublisher;
     private final ChatService chatService;
 
     // websocket "/pub/chat/message"로 들어오는 메시지
@@ -29,6 +27,7 @@ public class ChatController {
         try {
             // 로그인 회원 정보로 대화명 설정
             chatService.setChatInfoValue(chatRequestDTO.getChannelId(), chatRequestDTO);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -46,7 +45,7 @@ public class ChatController {
             e.printStackTrace();
         }
         // Websocket에 발행된 메시지를 redis로 발행(publish)
-        redisUserPublisher.userPublish(chatService.getTopic(chatDirectDTO.getChannelId()), chatDirectDTO);
+        redisPublisher.userPublish(chatService.getTopic(chatDirectDTO.getChannelId()), chatDirectDTO);
     }
 
     // websocket "/pub/chat/enter"로 들어오는 메시지

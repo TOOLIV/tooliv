@@ -2,7 +2,12 @@ package com.tooliv.server.domain.channel.application.chatService;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.tooliv.server.domain.channel.application.ChannelMemberService;
 import com.tooliv.server.domain.channel.application.dto.request.ChatRequestDTO;
+import com.tooliv.server.domain.channel.application.dto.response.ChannelMemberGetResponseDTO;
+import com.tooliv.server.domain.channel.application.dto.response.ChannelMemberListGetResponseDTO;
+import com.tooliv.server.domain.channel.domain.ChannelMembers;
+import com.tooliv.server.domain.user.application.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
@@ -19,6 +24,8 @@ public class RedisSubscriber implements MessageListener {
     private final ObjectMapper objectMapper;
     private final RedisTemplate redisChannelTemplate;
     private final SimpMessageSendingOperations messagingTemplate;
+    private final UserService userService;
+    private final ChannelMemberService channelMemberService;
 
     // Redis에서 메시지가 발행(publish)되면 대기하고 있던 onMessage가 해당 메시지를 받아 처리한다.
     @Override
@@ -29,10 +36,14 @@ public class RedisSubscriber implements MessageListener {
                 .deserialize(message.getBody());
             // ChatMessage 객채로 맵핑
             objectMapper.registerModule(new JavaTimeModule());
-            ChatRequestDTO roomMessage = objectMapper.readValue(publishMessage, ChatRequestDTO.class);
-            // Websocket 구독자에게 채팅 메시지 Send
-            messagingTemplate.convertAndSend("/sub/chat/room/" + roomMessage.getChannelId(),
-                roomMessage);
+            ChatRequestDTO chatRequestDTO = objectMapper.readValue(publishMessage, ChatRequestDTO.class);
+            ChannelMemberListGetResponseDTO channelMemberListGetResponseDTO = channelMemberService.getChannelMemberList(chatRequestDTO.getChannelId());
+            for(ChannelMemberGetResponseDTO channelMemberGetResponseDTO: channelMemberListGetResponseDTO.getChannelMemberGetResponseDTOList()){
+                // Websocket 구독자에게 채팅 메시지 Send
+                messagingTemplate.convertAndSend("/sub/chat/" + userService.getUserId(channelMemberGetResponseDTO.getEmail()),
+                    chatRequestDTO);
+            }
+
         } catch (Exception e) {
             log.error(e.getMessage());
         }

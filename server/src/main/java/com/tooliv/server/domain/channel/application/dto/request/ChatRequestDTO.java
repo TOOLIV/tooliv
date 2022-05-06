@@ -30,17 +30,11 @@ public class ChatRequestDTO implements Serializable {
     @ApiModelProperty(name = "보낸사람 Id")
     private String userId;
 
-    @ApiModelProperty(name = "보낸사람 name")
-    private String sender;
-
-    @ApiModelProperty(name = "보낸사람 email")
+    @ApiModelProperty(name = "받는사람 email")
     private String email;
 
     @ApiModelProperty(name = "내용")
     private String contents;
-
-    @ApiModelProperty(name = "메시지 타입")
-    private String type;
 
     @ApiModelProperty(name = "보낸시간")
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
