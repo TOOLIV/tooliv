@@ -50,9 +50,10 @@ const Channel = () => {
 
   useEffect(() => {
     const newList: channelNotiType[] = notiList.map((noti) => {
-      if (noti.channelId === channelId)
+      if (noti.channelId === channelId) {
+        console.log('hi');
         return { ...noti, notificationRead: true };
-      else return noti;
+      } else return noti;
     });
     console.log(newList);
     setNotiList(newList);

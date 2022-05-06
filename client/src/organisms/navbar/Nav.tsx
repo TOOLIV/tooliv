@@ -7,15 +7,21 @@ import Logo from '../../atoms/common/Logo';
 import { useEffect, useRef, useState } from 'react';
 import { user } from 'recoil/auth';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { appThemeMode, channelContents, channelNotiList } from 'recoil/atom';
+import {
+  appThemeMode,
+  channelContents,
+  channelNotiList,
+  DMList,
+} from 'recoil/atom';
 import { channelNotiType, contentTypes } from 'types/channel/contentType';
 import { connect } from 'services/wsconnect';
 import Avatar from 'atoms/profile/Avatar';
 import { DarkModeSwitch } from 'react-toggle-dark-mode';
 import UserDropdown from 'organisms/modal/user/UserDropdown';
 import UserConfigModal from 'organisms/modal/user/UserConfigModal';
-import { getChannels } from 'api/chatApi';
+import { getChannels, getDMList } from 'api/chatApi';
 import { useNavigate } from 'react-router-dom';
+import { DMInfoType } from 'types/channel/chatTypes';
 
 const NavContainer = styled.div`
   padding: 0px 20px;
@@ -65,6 +71,7 @@ const Nav = () => {
   const userInfo = useRecoilValue(user);
   const [notiList, setNotiList] =
     useRecoilState<channelNotiType[]>(channelNotiList);
+  const [dmList, setDmList] = useRecoilState<DMInfoType[]>(DMList);
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -72,15 +79,21 @@ const Nav = () => {
       const {
         data: { notificationChannelList },
       } = res;
-      console.log(notificationChannelList);
-      setNotiList(notificationChannelList);
-      connect(
-        accessToken,
-        setContents,
-        notificationChannelList,
-        setNotiList,
-        userInfo.userId
-      );
+      getDMList(userInfo.email).then((res) => {
+        const {
+          data: { directInfoDTOList },
+        } = res;
+        setDmList(directInfoDTOList);
+        const newList = [...notificationChannelList, ...directInfoDTOList];
+        setNotiList(newList);
+        connect(
+          accessToken,
+          setContents,
+          newList,
+          setNotiList,
+          userInfo.userId
+        );
+      });
     });
   }, []);
 

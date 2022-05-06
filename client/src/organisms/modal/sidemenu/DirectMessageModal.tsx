@@ -9,7 +9,7 @@ import { useDebounce } from 'hooks/useHooks';
 import InputBox from 'molecules/inputBox/InputBox';
 import UserInfo from 'molecules/userInfo/UserInfo';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   channelMemberListType,
   channelMemberType,
@@ -74,12 +74,19 @@ const DirectMessageModal = ({ isOpen, onClose }: userDirectMessageType) => {
   const [channelMemberList, setChannelMemberList] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState('');
   const debouncedValue = useDebounce<string>(searchKeyword, 500);
-
   const inputRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
+  const { workspaceId } = useParams();
 
   const handleDirectMessage = (email: string) => {
     // console.log(`${email}로 개인메시지 보내는 링크`);
-    createDMRoom(email).then((res) => {});
+    createDMRoom(email).then((res) => {
+      const {
+        data: { roomId },
+      } = res;
+      navigate(`/direct/${workspaceId}/${roomId}`);
+      onClose();
+    });
   };
 
   const searchChannelMember = useCallback(async (keyword: string) => {

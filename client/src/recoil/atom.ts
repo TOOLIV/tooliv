@@ -1,4 +1,5 @@
 import { atom } from 'recoil';
+import { DMInfoType } from 'types/channel/chatTypes';
 import { FileTypes } from 'types/common/fileTypes';
 import {
   channelListTypes,
@@ -87,5 +88,10 @@ export const chatFiles = atom<FileTypes[]>({
 
 export const channelNotiList = atom<channelNotiType[]>({
   key: 'channelNotiList',
+  default: [],
+});
+
+export const DMList = atom<DMInfoType[]>({
+  key: 'dmInfoList',
   default: [],
 });

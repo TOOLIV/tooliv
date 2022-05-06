@@ -8,9 +8,18 @@ import InputBox from 'molecules/inputBox/InputBox';
 import FileUploader from 'molecules/uploader/FileUploader';
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState, useSetRecoilState } from 'recoil';
-import { currentChannel, currentWorkspace, userLog } from 'recoil/atom';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import {
+  channelContents,
+  channelNotiList,
+  currentChannel,
+  currentWorkspace,
+  userLog,
+} from 'recoil/atom';
+import { user } from 'recoil/auth';
+import { sub, unsub } from 'services/wsconnect';
 import { colors } from 'shared/color';
+import { channelNotiType, contentTypes } from 'types/channel/contentType';
 import { workspaceModalType } from 'types/workspace/workspaceTypes';
 
 const Modal = styled.div<{ isOpen: boolean }>`
@@ -65,7 +74,11 @@ const WorkspaceModal = ({ isOpen, onClose }: workspaceModalType) => {
   const setCurrentWorkspace = useSetRecoilState(currentWorkspace);
   const setCurrentChannel = useSetRecoilState(currentChannel);
   const [userLogList, setUserLogList] = useRecoilState(userLog);
-
+  const [contents, setContents] =
+    useRecoilState<contentTypes[]>(channelContents);
+  const [notiList, setNotiList] =
+    useRecoilState<channelNotiType[]>(channelNotiList);
+  const userInfo = useRecoilValue(user);
   const handleSetImg = (file: FileList) => {
     setFile(file[0]);
   };
@@ -110,6 +123,15 @@ const WorkspaceModal = ({ isOpen, onClose }: workspaceModalType) => {
         navigate(`${workspaceId}/${channelId}`);
         inputWorkspaceRef.current!.value = '';
         setFile(undefined);
+        // 알림 state에 추가
+        setNotiList([
+          ...notiList,
+          { channelId, workspaceId, notificationRead: true },
+        ]);
+        // 구독 풀고
+        unsub();
+        // 다시 구독 (바로 메시지 전송할 수 있게)
+        sub(setContents, notiList, setNotiList, userInfo.userId);
         onClose();
       }
     } catch (error) {
