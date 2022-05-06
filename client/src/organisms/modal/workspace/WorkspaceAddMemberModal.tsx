@@ -9,6 +9,7 @@ import Button from 'atoms/common/Button';
 import Icons from 'atoms/common/Icons';
 import Label from 'atoms/label/Label';
 import Text from 'atoms/text/Text';
+import { useDebounce } from 'hooks/useHooks';
 import InputBox from 'molecules/inputBox/InputBox';
 import UserBadge from 'molecules/userBadge/UserBadge';
 import UserInfo from 'molecules/userInfo/UserInfo';
@@ -114,6 +115,7 @@ const WorkspaceAddMemberModal = forwardRef<
   );
   const [inviteUserList, setInviteUserList] = useState<string[]>([]);
   const [keyword, setKeyword] = useState('');
+  const debouncedValue = useDebounce<string>(keyword, 500);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const { workspaceId } = useParams();
@@ -145,10 +147,12 @@ const WorkspaceAddMemberModal = forwardRef<
   );
 
   useEffect(() => {
-    if (keyword) {
-      userListApi(keyword);
-    } else setUserList([]);
-  }, [keyword, workspaceId, userListApi]);
+    setUserList([]);
+  }, [workspaceId, userListApi]);
+
+  useEffect(() => {
+    userListApi(debouncedValue);
+  }, [debouncedValue]);
 
   const deleteUserBadge = useCallback(
     (email: string) => {
@@ -173,7 +177,6 @@ const WorkspaceAddMemberModal = forwardRef<
   );
 
   const exitModal = useCallback(() => {
-    setKeyword('');
     inputRef.current!.value = '';
     setUserBadgeList([]);
     setInviteUserList([]);
@@ -192,8 +195,8 @@ const WorkspaceAddMemberModal = forwardRef<
     async (body: inviteMembersType) => {
       try {
         await inviteWorkspaceMember(workspaceId!, body);
-        const newMember = body.emailList.length;
-        setCurrentChannelMemberNum((prev) => prev + newMember);
+        // const newMember = body.emailList.length;
+        // setCurrentChannelMemberNum((prev) => prev + newMember);
         exitModal();
       } catch (error) {
         console.log(error);
@@ -221,7 +224,12 @@ const WorkspaceAddMemberModal = forwardRef<
               key={user.email}
               onClick={() => createUserBadge(user.name, user.email)}
             >
-              <UserInfo name={user.name} email={user.email} />
+              <UserInfo
+                name={user.name}
+                email={user.email}
+                nickname={user.nickname}
+                profileImage={user.profileImage}
+              />
             </UserInfoWrapper>
           ))}
         </UserBox>
