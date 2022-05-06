@@ -112,7 +112,7 @@ public class ChannelServiceImpl implements ChannelService {
             .orElseThrow(() -> new IllegalArgumentException("채널 정보가 존재하지 않습니다."));
 
         try {
-            List<ChannelMembers> memberList = channelMembersRepository.findWorkspaceMemberByChannel(channel);
+            List<ChannelMembers> memberList = channelMembersRepository.findByChannel(channel);
             for (ChannelMembers channelMember : memberList) {
                 channelMemberService.deleteChannelMember(channelId, channelMember.getUser().getEmail());
             }
