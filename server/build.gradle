@@ -72,8 +72,9 @@ dependencies {
     implementation ("org.webjars:jquery:3.1.1-1")
     implementation ("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 
-    // mime-type
-    implementation ('org.apache.tika:tika-parsers:2.3.0')
+    // mime-type=
+    implementation ("org.apache.tika:tika-parsers:2.3.0")
+    implementation ("org.apache.tika:tika-core:2.3.0")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")

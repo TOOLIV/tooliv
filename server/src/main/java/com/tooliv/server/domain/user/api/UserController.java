@@ -14,8 +14,13 @@ import com.tooliv.server.global.exception.UserNotFoundException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import java.io.File;
+import java.util.Arrays;
 import javax.validation.Valid;
+import javax.xml.ws.Response;
 import lombok.RequiredArgsConstructor;
+import org.apache.tika.Tika;
+import org.apache.tomcat.util.http.fileupload.InvalidFileNameException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -38,6 +43,8 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserController {
 
     private final UserService userService;
+
+    private final String[] MIME_TYPE = {"image/gif", "image/jpeg", "image/jpg", "image/png", "image/bmp"};
 
     @PostMapping()
     @ApiOperation(value = "회원가입")
@@ -67,10 +74,19 @@ public class UserController {
     }
 
     @PostMapping("/image")
-    @ApiOperation(value="프로필 이미지 등록")
+    @ApiOperation(value = "프로필 이미지 등록")
     public ResponseEntity<? extends BaseResponseDTO> uploadProfileImage(
-        @ApiParam(value="이미지", required=true) @RequestPart MultipartFile multipartFile) {
+        @ApiParam(value = "이미지", required = true) @RequestPart MultipartFile multipartFile) {
+
         try {
+            File file = new File(multipartFile.getOriginalFilename());
+            multipartFile.transferTo(file);
+            String mimeType = new Tika().detect(file);
+
+            if(!Arrays.asList(MIME_TYPE).contains(mimeType)) {
+                throws new InvalidFileNameException("파일")
+            }
+
             userService.uploadProfileImage(multipartFile);
         } catch (Exception e) {
             return ResponseEntity.status(409).body(BaseResponseDTO.of("프로필 이미지 등록 실패"));
@@ -110,7 +126,7 @@ public class UserController {
     @GetMapping("/search")
     @ApiOperation(value = "회원 정보 목록 조회")
     public ResponseEntity<? extends BaseResponseDTO> getUserList(
-        @ApiParam(value="검색 단어", required = true) @RequestParam String keyword,
+        @ApiParam(value = "검색 단어", required = true) @RequestParam String keyword,
         @ApiParam(value = "sequence", required = true) @RequestParam int sequence) {
         UserListResponseDTO userListResponseDTO = null;
 
