@@ -48,6 +48,7 @@ export type channelMemberType = {
   email: string;
   name: string;
   nickname: string;
+  profileImage: string;
   channelMemberCode: string;
 };
 

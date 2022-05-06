@@ -65,7 +65,7 @@ const AvatarBox = styled.div`
 `;
 
 const InputContainer = styled.div`
-  height: 20vh;
+  height: 30vh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -86,20 +86,6 @@ const UserConfigModal = ({ isOpen, onClose }: userConfigType) => {
     setNickName(inputNickNameRef.current?.value!);
   };
 
-  // const modChannelName = useCallback(async () => {
-  //   try {
-  //     const body = {
-  //       id: channelId!,
-  //       name,
-  //     };
-  //     await modifyChannel(body);
-  //     setModifyChannelName(name);
-  //     exitModal();
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }, [channelId, name]);
-
   const exitModal = () => {
     inputNameRef.current!.value = '';
     inputEmailRef.current!.value = '';
@@ -107,12 +93,12 @@ const UserConfigModal = ({ isOpen, onClose }: userConfigType) => {
     onClose();
   };
   useEffect(() => {
-    inputNameRef.current!.value = Juser.name;
-    inputEmailRef.current!.value = Juser.email;
-    inputNickNameRef.current!.value = Juser.nickname;
+    inputNameRef.current!.value = userInfo.name;
+    inputEmailRef.current!.value = userInfo.email;
+    inputNickNameRef.current!.value = userInfo.nickname;
     setNickName(inputNickNameRef.current!.value);
     setImgSrc(Juser.profileImage);
-  }, []);
+  }, [userInfo]);
 
   const uploadImg = () => {
     fileInputRef.current?.click();
@@ -135,19 +121,21 @@ const UserConfigModal = ({ isOpen, onClose }: userConfigType) => {
         nickname: nickName,
       };
       if (imgFile !== '') {
-        const response = await updateProfileImage(formData);
-        const response2 = await updateNickname(body);
+        await updateProfileImage(formData);
+        await updateNickname(body);
         setUserInfo({ ...userInfo, profileImage: imgSrc, nickname: nickName });
-        console.log(response);
-        console.log(response2);
         exitModal();
       } else {
-        const response2 = await updateNickname(body);
-        console.log(response2);
+        await updateNickname(body);
+        setUserInfo({ ...userInfo, nickname: nickName });
         exitModal();
       }
     }
   };
+
+  useEffect(() => {
+    console.log(userInfo);
+  }, [userInfo]);
 
   return (
     <Modal isOpen={isOpen}>

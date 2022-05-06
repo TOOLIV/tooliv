@@ -30,10 +30,6 @@ const Modal = styled.div<{ isOpen: boolean }>`
   ${(props) =>
     props.isOpen &&
     css`
-      /* display: block;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, 0); */
       display: flex;
       justify-content: center;
       align-items: center;

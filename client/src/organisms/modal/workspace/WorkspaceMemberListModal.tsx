@@ -3,11 +3,11 @@ import styled from '@emotion/styled';
 import { searchWorkspaceMemberList } from 'api/workspaceApi';
 import Icons from 'atoms/common/Icons';
 import Text from 'atoms/text/Text';
+import { useDebounce } from 'hooks/useHooks';
 import InputBox from 'molecules/inputBox/InputBox';
 import UserInfo from 'molecules/userInfo/UserInfo';
-import { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { colors } from 'shared/color';
 import {
   workspaceMemberListType,
   workspaceMemberType,
@@ -69,6 +69,9 @@ const WorkspaceMemberListModal = ({
   onClose,
 }: workspaceMemberListType) => {
   const [workspaceMemberList, setWorkspaceMemberList] = useState([]);
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const debouncedValue = useDebounce<string>(searchKeyword, 500);
+
   const inputRef = useRef<HTMLInputElement>(null);
   const { workspaceId } = useParams();
 
@@ -87,14 +90,19 @@ const WorkspaceMemberListModal = ({
 
   const searchUserList = useCallback(() => {
     const keyword = inputRef.current?.value!;
-    handleSearchUser(keyword);
-  }, [handleSearchUser]);
+    setSearchKeyword(keyword);
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
       handleSearchUser('');
     }
   }, [isOpen, handleSearchUser]);
+
+  useEffect(() => {
+    console.log(debouncedValue);
+    handleSearchUser(debouncedValue);
+  }, [debouncedValue]);
 
   const exitModal = () => {
     inputRef.current!.value = '';
@@ -120,7 +128,12 @@ const WorkspaceMemberListModal = ({
               key={member.email}
               onClick={() => handleDirectMessage(member.email)}
             >
-              <UserInfo name={member.name} email={member.email} />
+              <UserInfo
+                name={member.name}
+                email={member.email}
+                nickname={member.nickname}
+                profileImage={member.profileImage}
+              />
             </UserInfoWrapper>
           ))}
         </UserBox>

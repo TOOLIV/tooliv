@@ -22,6 +22,7 @@ const Input = styled.textarea`
   min-height: 50%;
   border: 0;
   resize: none;
+  color: ${(props) => props.theme.textColor};
   background-color: ${(props) => props.theme.bgColor};
 `;
 const Wrapper = styled.div`
