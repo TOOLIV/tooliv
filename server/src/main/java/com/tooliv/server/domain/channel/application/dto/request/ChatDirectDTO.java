@@ -36,9 +36,6 @@ public class ChatDirectDTO implements Serializable {
     @ApiModelProperty(name = "보낸사람 name")
     private String sender;
 
-    @ApiModelProperty(name = "보낸사람 email")
-    private String email;
-
     @ApiModelProperty(name = "내용")
     private String contents;
 
