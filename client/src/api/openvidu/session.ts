@@ -29,7 +29,6 @@ export const getSession = (sessionId: string) => {
 
 export const createSession = (sessionId: string) => {
   const data = JSON.stringify({ customSessionId: sessionId });
-  console.log(data);
   return new Promise(async (resolve, reject) => {
     await openviduInstance
       .post(`/openvidu/api/sessions`, data)
@@ -63,5 +62,11 @@ export const createSession = (sessionId: string) => {
           }
         }
       });
+  });
+};
+
+export const deleteSession = (sessionId: string) => {
+  return new Promise(async () => {
+    await openviduInstance.delete(`/openvidu/api/sessions/${sessionId}`);
   });
 };

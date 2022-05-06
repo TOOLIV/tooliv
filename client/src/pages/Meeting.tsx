@@ -1,9 +1,8 @@
 import styled from '@emotion/styled';
-import axios from 'axios';
+import { createSession, createToken } from 'api/openvidu/session';
 import isElectron from 'is-electron';
 import ChatButton from 'molecules/meeting/ChatButton';
 import MainStage from 'molecules/meeting/MainStage';
-import VideoCopy from 'molecules/meeting/VideoCopy';
 import { OpenVidu, Publisher, Session, StreamManager } from 'openvidu-browser';
 import FunctionButtons from 'organisms/meeting/FunctionButtons';
 import ScreenShareModal from 'organisms/meeting/video/ScreenShareModal';
@@ -28,203 +27,134 @@ const Meeting = () => {
     setIsChatOpen(true);
   };
 
-  const [OV, setOV] = useState<OpenVidu>(new OpenVidu());
-  const [session, setSession] = useState<Session>(OV.initSession());
+  const [OV, setOV] = useState<OpenVidu>();
+  const [OVForScreenSharing, setOVForScreenSharing] = useState<OpenVidu>();
+  const [session, setSession] = useState<Session>();
+  const [sessionForScreenSharing, setSessionForScreenSharing] =
+    useState<Session>();
 
   const [initUserData, setInitUserData] = useState({
     mySessionId: 'test3',
     myUserName: 'Participant' + Math.floor(Math.random() * 100),
   });
-
-  const [mainStreamManager, setMainStreamManager] = useState<
-    StreamManager | undefined
-  >();
-
-  const [publisher, setPublisher] = useState<Publisher | undefined>();
-  const [subscribers, setSubscribers] = useState<Array<StreamManager>>([]);
-  const [connectionId, setConnectionId] = useState<string | undefined>();
-
-  //////////////////test/////////////////////
-  const [OVForScreen, setOVForScreen] = useState<OpenVidu>(new OpenVidu());
-  const [sessionForScreen, setSessionForScreen] = useState<Session>(
-    OVForScreen.initSession()
-  );
   const [initScreenData, setInitScreenData] = useState({
     mySessionId: initUserData.mySessionId + '_screen',
     myScreenName: initUserData.myUserName + '_screen',
   });
 
+  const [mainStreamManager, setMainStreamManager] =
+    useState<StreamManager | null>(null);
+
+  const [publisher, setPublisher] = useState<Publisher | null>(null);
+  const [subscribers, setSubscribers] = useState<Array<StreamManager>>([]);
   const [publisherForScreenSharing, setPublisherForScreenSharing] =
-    useState<Publisher | null>();
+    useState<Publisher | null>(null);
 
   const [isScreenSharing, setIsScreenSharing] = useState<boolean>(false);
-  const [subscribersForScreenShare, setSubscribersForScreenShare] = useState<
-    Array<StreamManager>
-  >([]);
-
   const [isAudioOn, setIsAudioOn] = useState<boolean>(true);
   const [isVideoOn, setIsVideoOn] = useState<boolean>(true);
+
   const [isScreen, setIsScreen] = useState<boolean>(false);
-  const [pauseScreenSharing, setPauseScreenSharing] = useState<boolean>(false);
+
   const [choiceScreen, setChoiceScreen] = useState<string>('');
   const [openScreenModal, setOpenScreenModal] = useState<boolean>(false);
 
   useEffect(() => {
-    console.log('join>>>>>>>>>>>>>>>>');
-    OV.enableProdMode();
-    OVForScreen.enableProdMode();
-    return () => {
-      leaveSession();
-      leaveScreenSharingSession();
-    };
+    joinSession();
   }, []);
 
-  const onbeforeunload = () => {
-    leaveSession();
-    leaveScreenSharingSession();
-  };
+  useEffect(() => {
+    window.addEventListener('beforeunload', leaveSession)
+    return () => {
+      leaveSession();
+      window.removeEventListener('beforeunload', leaveSession);
+    }
+  }, [session])
 
   useEffect(() => {
-    if (session) {
-      console.log('session>>>>>>>>>>>>>>>', session);
-      test();
+    window.addEventListener('beforeunload', leaveSessionForScreenSharing)
+    return () => {
+      leaveSessionForScreenSharing();
+      window.removeEventListener('beforeunload', leaveSessionForScreenSharing)
     }
-  }, [session]);
+  }, [sessionForScreenSharing]);
 
-  useEffect(() => {
-    if (sessionForScreen) {
-      console.log('sessionForScreenSharing', sessionForScreen);
-      test2();
-    }
-  }, [sessionForScreen]);
 
-  const test = async () => {
-    console.log('createConnection>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
-    const mySession = session;
-    // --- 3) Specify the actions when events take place in the session ---
+  const joinSession = () => {
+    const newOV = new OpenVidu();
+    const newSession = newOV.initSession();
 
-    // On every new Stream received...
-    mySession.on('streamCreated', (event) => {
-      // if (event.stream.typeOfVideo === 'CAMERA') {
-      // Subscribe to the Stream to receive it. Second parameter is undefined
-      // so OpenVidu doesn't create an HTML video by its own
-      mySession
-        .subscribeAsync(
+    setOV(newOV);
+    setSession(newSession);
+
+    const connection = () => {
+      newSession.on('streamCreated', (event) => {
+        const newSubscriber = newSession.subscribe(
           event.stream,
           JSON.parse(event.stream.connection.data).clientData
-        )
-        .then((subscriber) => {
+        );
+        if (newSubscriber.stream.typeOfVideo === 'CAMERA') {
           const newSubscribers = subscribers;
-          newSubscribers.push(subscriber);
+          newSubscribers.push(newSubscriber);
 
           setSubscribers([...newSubscribers]);
-        });
-      // Update the state with the new subscribers
-    });
-
-    // On every Stream destroyed...
-    mySession.on('streamDestroyed', (event) => {
-      // Remove the stream from 'subscribers' array
-      deleteSubscriber(event.stream.streamManager);
-    });
-
-    mySession.on('sessionDisconnected', (event) => {
-      console.log(event);
-    });
-
-    // On every asynchronous exception...
-    mySession.on('exception', (exception) => {
-      console.warn(exception);
-    });
-
-    mySession.on('signal:startScreenSharing', (event) => {
-      console.log(event);
-    });
-
-    mySession.on('signal:stopScreenSharing', (event) => {
-      console.log(event);
-    });
-
-    // --- 4) Connect to the session with a valid user token ---
-
-    // 'getToken' method is simulating what your server-side should do.
-    // 'token' parameter should be retrieved and returned by your own backend
-    await getToken().then((token: any) => {
-      // First param is the token got from OpenVidu Server. Second param can be retrieved by every user on event
-      // 'streamCreated' (property Stream.connection.data), and will be appended to DOM as the user's nickname
-      mySession
-        .connect(token.data.token, {
-          clientData: initUserData.myUserName,
-        })
-        .then(async () => {
-          if (!OV) return;
-          var devices = await OV.getDevices();
-          var videoDevices = devices.filter(
-            (device) => device.kind === 'videoinput'
-          );
-
-          // --- 5) Get your own camera stream ---
-
-          // Init a publisher passing undefined as targetElement (we don't want OpenVidu to insert a video
-          // element: we will manage it on our own) and with the desired properties
-          OV.initPublisherAsync(initUserData.myUserName, {
-            audioSource: undefined, // The source of audio. If undefined default microphone
-            videoSource: videoDevices[0].deviceId, // The source of video. If undefined default webcam
-            // videoSource: 'screen', // The source of video. If undefined default webcam
-            publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
-            publishVideo: true, // Whether you want to start publishing with your video enabled or not
-            resolution: '680x480', // The resolution of your video
-            frameRate: 30, // The frame rate of your video
-            insertMode: 'APPEND', // How the video is inserted in the target element 'video-container'
-            mirror: false, // Whether to mirror your local video or not
-          }).then((publisher) => {
-            mySession.publish(publisher);
-            setPublisher(publisher);
-          });
-        })
-        .catch((error) => {
-          console.log(
-            'There was an error connecting to the session:',
-            error.code,
-            error.message
-          );
-        });
-    });
-  };
-
-  const test2 = async () => {
-    const mySession = sessionForScreen;
-
-    mySession.on('streamCreated', (event) => {
-      console.log('>>>>>>>>>>>>>>>>>>> screenshareCreated');
-      mySession
-        .subscribeAsync(
-          event.stream,
-          JSON.parse(event.stream.connection.data).clientData
-        )
-        .then((subscriber) => {
-          console.log('>>>>>>>>>>>>>>>>>>>>>>>>sub :', subscriber);
-          setPauseScreenSharing(true);
-          setMainStreamManager(subscriber);
+        } else {
+          // 비디오인 경우 화면 공유 스트림
+          setMainStreamManager(newSubscriber);
           setIsScreen(true);
-        })
-        .catch((e) =>
-          console.log('streamCreatedError>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', e)
-        );
-      console.log(event);
-    });
-
-    mySession.on('streamDestroyed', (event) => {
-      console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>> screenShareStopped');
-      console.log(event);
-      setIsScreen(false);
-    });
-
-    await getTokenForScreenShare().then((token: any) => {
-      mySession.connect(token.data.token, {
-        clientData: initUserData.myUserName,
+        }
       });
-    });
+
+      newSession.on('streamDestroyed', (event) => {
+        if (event.stream.typeOfVideo === 'CAMERA') {
+          deleteSubscriber(event.stream.streamManager);
+        } else {
+          setMainStreamManager(null);
+          setIsScreen(false);
+        }
+      });
+
+      newSession.on('sessionDisconnected', (event) => {
+        console.log(event);
+      });
+
+      newSession.on('exception', (exception) => {
+        console.warn(exception);
+      });
+
+      getToken(initUserData.mySessionId).then((token: any) => {
+        newSession
+          .connect(token, { clientData: initUserData.myUserName })
+          .then(async () => {
+            const devices = await newOV.getDevices();
+            const videoDevices = devices.filter(
+              (device) => device.kind === 'videoinput'
+            );
+
+            const newPublisher = newOV.initPublisher(initUserData.myUserName, {
+              audioSource: true,
+              videoSource: videoDevices[0].deviceId,
+              publishAudio: true,
+              publishVideo: true,
+              resolution: '1080x720',
+              frameRate: 10,
+              insertMode: 'APPEND',
+              mirror: true,
+            });
+
+            newSession.publish(newPublisher);
+            setPublisher(newPublisher);
+          })
+          .catch((error) => {
+            console.warn(
+              'There was an error connecting to the session:',
+              error.code,
+              error.message
+            );
+          });
+      });
+    };
+    connection();
   };
 
   useEffect(() => {
@@ -251,85 +181,62 @@ const Meeting = () => {
     }
   };
 
-  const deleteSubscriberForScreenShare = (streamManager: StreamManager) => {
-    let prevSubscribersForScreenShare = subscribersForScreenShare;
-    let index = prevSubscribersForScreenShare.indexOf(streamManager, 0);
-    if (index > -1) {
-      prevSubscribersForScreenShare.splice(index, 1);
-      setSubscribersForScreenShare([...prevSubscribersForScreenShare]);
-    }
-  };
-
   const leaveSession = () => {
-    // --- 7) Leave the session by calling 'disconnect' method over the Session object ---
-    console.log(session);
     if (!session) return;
-    const mySession = session;
-
-    mySession.disconnect();
+    session?.disconnect();
 
     // Empty all properties...
-    // setOV(null);
-    // setSession(undefined);
-    setMainStreamManager(undefined);
-    setPublisher(undefined);
+    setPublisher(null);
     setSubscribers([]);
   };
 
-  const leaveScreenSharingSession = () => {
-    if (!sessionForScreen) return;
-    const mySession = sessionForScreen;
+  const leaveSessionForScreenSharing = () => {
 
-    mySession.disconnect();
-
-    // setOVForScreen(null);
-    // setSessionForScreen(undefined);
-    setSubscribersForScreenShare([]);
+    if (!sessionForScreenSharing) return;
+    sessionForScreenSharing?.disconnect();
+    setMainStreamManager(null);
   };
 
-  const getToken = async () => {
-    return await createSession(initUserData.mySessionId).then(
-      async (sessionId) => await createToken(sessionId)
-    );
-  };
-
-  const getTokenForScreenShare = async () => {
-    return await createSession(initScreenData.mySessionId).then(
-      async (sessionId) => await createToken(sessionId)
+  const getToken = async (sessionId: string) => {
+    return createSession(sessionId).then((sessionId: any) =>
+      createToken(sessionId)
     );
   };
 
   const startScreenShare = async () => {
-    const OVForScreenShare = OVForScreen;
-    const mySession = sessionForScreen;
+    const newOV = new OpenVidu();
+    const newSession = newOV.initSession();
+    setOVForScreenSharing(newOV);
+    setSessionForScreenSharing(newSession);
 
-    await getTokenForScreenShare().then((token: any) => {
-      setConnectionId(token.data.connectionId);
-      if (!mySession) return;
+    await getToken(initUserData.mySessionId).then((token: any) => {
       // First param is the token got from OpenVidu Server. Second param can be retrieved by every user on event
       // 'streamCreated' (property Stream.connection.data), and will be appended to DOM as the user's nickname
-      mySession
-        .connect(token.data.token, {
+      newSession
+        .connect(token, {
           clientData: initScreenData.myScreenName,
         })
-        .then(async () => {
-          if (!OVForScreenShare) return;
+        .then(() => {
           // --- 5) Get your own camera stream ---
 
           // Init a publisher passing undefined as targetElement (we don't want OpenVidu to insert a video
           // element: we will manage it on our own) and with the desired properties
-          OVForScreenShare.initPublisherAsync(initScreenData.myScreenName, {
-            audioSource: false, // The source of audio. If undefined default microphone
-            // videoSource: videoDevices[0].deviceId, // The source of video. If undefined default webcam
-            videoSource: isElectron() ? 'screen: ' + choiceScreen : 'screen', // The source of video. If undefined default webcam
-            resolution: '680x480', // The resolution of your video
-            frameRate: 30, // The frame rate of your video
-            // insertMode: 'APPEND', // How the video is inserted in the target element 'video-container'
-            mirror: false, // Whether to mirror your local video or not
-          }).then((publisher) => {
-            mySession.publish(publisher);
-            setPublisherForScreenSharing(publisher);
-          });
+          const newPublisher = newOV.initPublisher(
+            initScreenData.myScreenName,
+            {
+              audioSource: false, // The source of audio. If undefined default microphone
+              // videoSource: videoDevices[0].deviceId, // The source of video. If undefined default webcam
+              videoSource: isElectron() ? 'screen: ' + choiceScreen : 'screen', // The source of video. If undefined default webcam
+              publishAudio: false,
+              publishVideo: true,
+              resolution: '1080x720', // The resolution of your video
+              frameRate: 10, // The frame rate of your video
+              // insertMode: 'APPEND', // How the video is inserted in the target element 'video-container'
+            }
+          );
+          newSession.publish(newPublisher);
+          setPublisherForScreenSharing(newPublisher);
+          setSessionForScreenSharing(newSession);
         })
         .catch((error) => {
           console.log(
@@ -342,143 +249,22 @@ const Meeting = () => {
   };
 
   const stopScreenShare = () => {
-    if (publisherForScreenSharing)
-      sessionForScreen.unpublish(publisherForScreenSharing);
-  };
-
-  const createSession = async (sessionId: any) => {
-    return await new Promise((resolve, reject) => {
-      var data = JSON.stringify({ customSessionId: sessionId });
-      axios
-        .post(
-          process.env.REACT_APP_OPENVIDU_SERVER_URL + '/openvidu/api/sessions',
-          data,
-          {
-            headers: {
-              Authorization:
-                'Basic ' +
-                btoa(
-                  'OPENVIDUAPP:' + process.env.REACT_APP_OPENVIDU_SERVER_SECRET
-                ),
-              'Content-Type': 'application/json',
-            },
-          }
-        )
-        .then((response) => {
-          console.log('CREATE SESION', response);
-          resolve(response.data.id);
-        })
-        .catch((response) => {
-          var error = Object.assign({}, response);
-          if (error?.response?.status === 409) {
-            resolve(sessionId);
-          } else {
-            console.warn(
-              'No connection to OpenVidu Server. This may be a certificate error at ' +
-                process.env.REACT_APP_OPENVIDU_SERVER_URL
-            );
-            if (
-              window.confirm(
-                'No connection to OpenVidu Server. This may be a certificate error at "' +
-                  process.env.REACT_APP_OPENVIDU_SERVER_URL +
-                  '"\n\nClick OK to navigate and accept it. ' +
-                  'If no certificate warning is shown, then check that your OpenVidu Server is up and running at "' +
-                  process.env.REACT_APP_OPENVIDU_SERVER_URL +
-                  '"'
-              )
-            ) {
-              window.location.assign(
-                process.env.REACT_APP_OPENVIDU_SERVER_URL +
-                  '/accept-certificate'
-              );
-            }
-          }
-        });
-    });
-  };
-
-  const deleletAllSession = () => {
-    deleteSession();
-    deleteSessionForScreenShare();
-  };
-
-  const deleteSession = () => {
-    return new Promise((resolve, reject) => {
-      axios.delete(
-        process.env.REACT_APP_OPENVIDU_SERVER_URL +
-          `/openvidu/api/sessions/${initUserData.mySessionId}`,
-        {
-          headers: {
-            Authorization:
-              'Basic ' +
-              btoa(
-                'OPENVIDUAPP:' + process.env.REACT_APP_OPENVIDU_SERVER_SECRET
-              ),
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-    });
-  };
-
-  const deleteSessionForScreenShare = () => {
-    return new Promise((resolve, reject) => {
-      axios.delete(
-        process.env.REACT_APP_OPENVIDU_SERVER_URL +
-          `/openvidu/api/sessions/${initScreenData.mySessionId}`,
-        {
-          headers: {
-            Authorization:
-              'Basic ' +
-              btoa(
-                'OPENVIDUAPP:' + process.env.REACT_APP_OPENVIDU_SERVER_SECRET
-              ),
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-    });
-  };
-
-  const createToken = async (sessionId: any) => {
-    return await new Promise((resolve, reject) => {
-      var data = {};
-      axios
-        .post(
-          process.env.REACT_APP_OPENVIDU_SERVER_URL +
-            '/openvidu/api/sessions/' +
-            sessionId +
-            '/connection',
-          data,
-          {
-            headers: {
-              Authorization:
-                'Basic ' +
-                btoa(
-                  'OPENVIDUAPP:' + process.env.REACT_APP_OPENVIDU_SERVER_SECRET
-                ),
-              'Content-Type': 'application/json',
-            },
-          }
-        )
-        .then((response) => {
-          console.log('TOKEN', response);
-          resolve(response);
-          // setConnectionId(response.data.connectionId);
-        })
-        .catch((error) => reject(error));
-    });
+    if (!sessionForScreenSharing) return;
+    if (!publisherForScreenSharing) return;
+    sessionForScreenSharing.unpublish(publisherForScreenSharing);
   };
 
   return (
     <MeetingContainer>
       <MeetingInnerContainer>
-        <VideosCopy
-          publisher={publisher}
-          subscribers={subscribers}
-          isScreen={isScreen}
-        />
-        {isScreen && mainStreamManager && (
+        {publisher && (
+          <VideosCopy
+            publisher={publisher}
+            subscribers={subscribers}
+            isScreen={isScreen}
+          />
+        )}
+        {mainStreamManager && (
           <MainStage streamManager={mainStreamManager}></MainStage>
         )}
         {openScreenModal && (
@@ -488,16 +274,18 @@ const Meeting = () => {
           />
         )}
       </MeetingInnerContainer>
-      <FunctionButtons
-        isAudioOn={isAudioOn}
-        isVideoOn={isVideoOn}
-        setIsAudioOn={setIsAudioOn}
-        setIsVideoOn={setIsVideoOn}
-        publisher={publisher}
-        isScreenSharing={isScreenSharing}
-        setIsScreenSharing={setIsScreenSharing}
-        leaveSession={onbeforeunload}
-      />
+      {publisher && (
+        <FunctionButtons
+          isAudioOn={isAudioOn}
+          isVideoOn={isVideoOn}
+          setIsAudioOn={setIsAudioOn}
+          setIsVideoOn={setIsVideoOn}
+          publisher={publisher}
+          isScreenSharing={isScreenSharing}
+          setIsScreenSharing={setIsScreenSharing}
+          leaveSession={leaveSession}
+        />
+      )}
       {!isChatOpen && <ChatButton onClick={onOpenChat} />}
     </MeetingContainer>
   );
