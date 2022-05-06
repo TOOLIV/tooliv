@@ -19,3 +19,7 @@ export const enterDM = async (channelId?: string) => {
 export const subDM = async (channelId?: string) => {
   return instance.get(`/chat/direct/${channelId}`);
 };
+
+export const createDMRoom = async (receiverEmail?: string) => {
+  return instance.post(`/chat/directChat/${receiverEmail}`);
+};

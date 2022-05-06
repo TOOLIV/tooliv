@@ -71,7 +71,6 @@ const Channel = () => {
     send({
       accessToken,
       channelId,
-      nickname,
       email,
       message,
       fileUrl,
@@ -87,7 +86,6 @@ const Channel = () => {
     send({
       accessToken,
       channelId,
-      nickname,
       email,
       message,
       fileUrl,
