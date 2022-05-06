@@ -5,6 +5,7 @@ import com.tooliv.server.domain.user.application.dto.request.NicknameUpdateReque
 import com.tooliv.server.domain.user.application.dto.request.SignUpRequestDTO;
 import com.tooliv.server.domain.user.application.dto.response.LogInResponseDTO;
 import com.tooliv.server.domain.user.application.dto.response.NicknameResponseDTO;
+import com.tooliv.server.domain.user.application.dto.response.ProfileInfoResponseDTO;
 import com.tooliv.server.domain.user.application.dto.response.UserInfoResponseDTO;
 import com.tooliv.server.domain.user.application.dto.response.UserListResponseDTO;
 import com.tooliv.server.domain.user.domain.User;
@@ -18,6 +19,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -83,6 +86,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public ProfileInfoResponseDTO getProfileInfo(String email) {
+        User user = userRepository.findByEmailAndDeletedAt(email, null)
+            .orElseThrow(() -> new UserNotFoundException("회원 정보 없음"));
+
+        ProfileInfoResponseDTO profileInfoResponseDTO = ProfileInfoResponseDTO.builder()
+            .nickname(user.getNickname())
+            .profileImage(user.getProfileImage()).build();
+
+        if(user.getProfileImage() == null) {
+            profileInfoResponseDTO.updateProfileImage("");
+        }
+
+        return profileInfoResponseDTO;
+    }
+
+    @Override
     public NicknameResponseDTO updateNickname(
         NicknameUpdateRequestDTO nicknameUpdateRequestDTO) {
         String nickname = nicknameUpdateRequestDTO.getNickname();
@@ -118,10 +137,10 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public UserListResponseDTO getUserList(String keyword) {
+    public UserListResponseDTO getUserList(String keyword, int sequence) {
         List<UserInfoResponseDTO> userInfoResponseDTOList = new ArrayList<>();
 
-        for (User user : userRepository.findAllByDeletedAtAndNameContainingOrderByNameAsc(null, keyword)
+        for (User user : userRepository.findAllByDeletedAtAndNameContainingOrderByNameAsc(null, keyword, PageRequest.of(sequence - 1, 15, Sort.Direction.ASC, "name"))
             .orElseThrow(() -> new UserNotFoundException("조회 가능한 회원이 없음"))) {
             userInfoResponseDTOList.add(new UserInfoResponseDTO(user.getId(), user.getEmail(), user.getName(), user.getNickname(), user.getUserCode(), getImageURL(user.getProfileImage())));
         }
@@ -140,6 +159,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public String getImageURL(String fileName) {
         return "https://tooliva402.s3.ap-northeast-2.amazonaws.com/" + fileName;
+    }
+
+    @Override
+    public String getUserId(String email) {
+        User user = userRepository.findByEmailAndDeletedAt(email, null)
+            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+        return user.getId();
     }
 
 }

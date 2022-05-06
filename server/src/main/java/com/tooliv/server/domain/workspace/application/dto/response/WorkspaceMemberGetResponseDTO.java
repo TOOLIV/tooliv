@@ -26,4 +26,8 @@ public class WorkspaceMemberGetResponseDTO {
 
     @ApiModelProperty("워크스페이스멤버 코드")
     private WorkspaceMemberCode workspaceMemberCode;
+
+    @ApiModelProperty("프로필 이미지")
+    private String profileImage;
+
 }

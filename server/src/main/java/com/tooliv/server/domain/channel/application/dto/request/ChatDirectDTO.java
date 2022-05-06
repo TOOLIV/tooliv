@@ -14,12 +14,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@ApiModel("ChatRequestDTO")
+@ApiModel("ChatDirectDTO")
 @NoArgsConstructor
 @Getter
 @Builder
 @AllArgsConstructor
-public class ChatRequestDTO implements Serializable {
+public class ChatDirectDTO implements Serializable {
 
     @ApiModelProperty(name = "메시지 ID")
     private long chatId;
@@ -27,11 +27,11 @@ public class ChatRequestDTO implements Serializable {
     @ApiModelProperty(name = "채팅방 ID")
     private String channelId;
 
-    @ApiModelProperty(name = "보낸사람 Id")
-    private String userId;
+    @ApiModelProperty(name = "보내는사람 Id")
+    private String senderEmail;
 
-    @ApiModelProperty(name = "받는사람 email")
-    private String email;
+    @ApiModelProperty(name = "받는사람 Id")
+    private String receiverEmail;
 
     @ApiModelProperty(name = "내용")
     private String contents;

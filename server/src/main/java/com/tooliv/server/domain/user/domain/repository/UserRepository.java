@@ -5,6 +5,7 @@ import com.tooliv.server.domain.user.domain.enums.UserCode;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -21,7 +22,7 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     Optional<List<User>> findAllByUserCodeNotAndDeletedAtOrderByNameAsc(UserCode userCode, LocalDateTime localDateTime);
 
-    Optional<List<User>> findAllByDeletedAtAndNameContainingOrderByNameAsc(LocalDateTime localDateTime, String keyword);
+    Optional<List<User>> findAllByDeletedAtAndNameContainingOrderByNameAsc(LocalDateTime localDateTime, String keyword, Pageable pageable);
 
     Optional<List<User>> findAllByUserCodeNotAndDeletedAtAndNameContainingOrderByNameAsc(UserCode userCode, LocalDateTime localDateTime, String keyword);
 
@@ -33,7 +34,7 @@ public interface UserRepository extends JpaRepository<User, String> {
         + "JOIN workspace w ON m.workspace_id = w.id \n"
         + " WHERE w.id = :workspace_id  AND w.deleted_at IS NULL\n"
         + ")\n"
-        + "ORDER BY u.name;", nativeQuery = true)
-    List<User> findAllToRegisterWorkspaceMember(@Param("workspace_id") String workspaceId, @Param("keyword") String keyword);
+        + "ORDER BY u.name LIMIT :offset, 10", nativeQuery = true)
+    List<User> findAllToRegisterWorkspaceMember(@Param("workspace_id") String workspaceId, @Param("keyword") String keyword, @Param("offset") int offset);
 
 }

@@ -29,7 +29,9 @@ const Messages = () => {
   return (
     <Container isFile={files.length > 0 ? true : false} ref={messageBoxRef}>
       {contents &&
-        contents.map((content, index) => <Message key={index} {...content} />)}
+        contents.map((content) => (
+          <Message key={content.chatId} {...content} />
+        ))}
     </Container>
   );
 };

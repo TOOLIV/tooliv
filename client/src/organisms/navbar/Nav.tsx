@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
 
 import styled from '@emotion/styled';
 import Text from 'atoms/text/Text';
@@ -16,6 +15,7 @@ import { DarkModeSwitch } from 'react-toggle-dark-mode';
 import UserDropdown from 'organisms/modal/user/UserDropdown';
 import UserConfigModal from 'organisms/modal/user/UserConfigModal';
 import { getChannels } from 'api/chatApi';
+import { useNavigate } from 'react-router-dom';
 
 const NavContainer = styled.div`
   padding: 0px 20px;
@@ -34,6 +34,7 @@ const LeftContainer = styled.div`
   display: flex;
   align-items: center;
   margin-right: 50px;
+  cursor: pointer;
 `;
 const MidContainer = styled.div`
   width: 430px;
@@ -65,6 +66,7 @@ const Nav = () => {
   const [notiList, setNotiList] =
     useRecoilState<channelNotiType[]>(channelNotiList);
 
+  const navigate = useNavigate();
   useEffect(() => {
     getChannels(email).then((res) => {
       const {
@@ -72,7 +74,13 @@ const Nav = () => {
       } = res;
       console.log(notificationChannelList);
       setNotiList(notificationChannelList);
-      connect(accessToken, setContents, notificationChannelList, setNotiList);
+      connect(
+        accessToken,
+        setContents,
+        notificationChannelList,
+        setNotiList,
+        userInfo.userId
+      );
     });
   }, []);
 
@@ -115,19 +123,16 @@ const Nav = () => {
 
   return (
     <NavContainer>
-      <LeftContainer>
+      <LeftContainer onClick={() => navigate('/')}>
         <Logo />
-        <Text size={18}>TOOLIV</Text>
+        <Text size={18} pointer>
+          TOOLIV
+        </Text>
       </LeftContainer>
       <MidContainer>
         <InputBox label="" placeholder="검색" />
       </MidContainer>
       <RightContainer>
-        {/* <DarkModeToggle
-          onChange={handleDarkMode}
-          checked={mode === 'dark'}
-          size={80}
-        /> */}
         <DarkModeSwitch
           checked={mode === 'dark'}
           onChange={handleDarkMode}

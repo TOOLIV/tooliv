@@ -5,6 +5,7 @@ import com.tooliv.server.domain.user.application.dto.request.NicknameUpdateReque
 import com.tooliv.server.domain.user.application.dto.request.SignUpRequestDTO;
 import com.tooliv.server.domain.user.application.dto.response.LogInResponseDTO;
 import com.tooliv.server.domain.user.application.dto.response.NicknameResponseDTO;
+import com.tooliv.server.domain.user.application.dto.response.ProfileInfoResponseDTO;
 import com.tooliv.server.domain.user.application.dto.response.UserListResponseDTO;
 import com.tooliv.server.domain.user.domain.User;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,15 +16,19 @@ public interface UserService {
 
     LogInResponseDTO logIn(LogInRequestDTO logInRequestDTO);
 
+    ProfileInfoResponseDTO getProfileInfo(String email);
+
     NicknameResponseDTO updateNickname(NicknameUpdateRequestDTO nicknameUpdateRequestDTO);
 
     void uploadProfileImage(MultipartFile multipartFile);
 
     void checkEmail(String email);
 
-    UserListResponseDTO getUserList(String keyword);
+    UserListResponseDTO getUserList(String keyword, int sequence);
 
     User getCurrentUser();
 
     String getImageURL(String fileName);
+
+    String getUserId(String email);
 }

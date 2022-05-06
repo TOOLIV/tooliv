@@ -1,6 +1,8 @@
+import { useRecoilValue, useRecoilState } from 'recoil';
 import { createBrowserHistory } from 'history';
 import axios, { AxiosInstance } from 'axios';
 import isElectron from 'is-electron';
+import { user } from 'recoil/auth';
 
 let instance: AxiosInstance;
 const baseURL = localStorage.getItem('baseURL');
@@ -33,7 +35,7 @@ if (isElectron() && baseURL) {
 instance.interceptors.request.use(
   (config) => {
     // 추후 로그인 구현시 주석 해제
-    const user = localStorage.getItem('user');
+    const user = localStorage.getItem('tooliv_info');
     if (user) {
       const Juser = JSON.parse(user);
       if (Juser.accessToken) {
@@ -55,7 +57,8 @@ instance.interceptors.response.use(
   },
   function (error) {
     if (error.response) {
-      // const history = createBrowserHistory();
+      const history = createBrowserHistory();
+
       console.log(error.response);
       switch (error.response.status) {
         /* 'JWT expired' exeption */
@@ -64,10 +67,11 @@ instance.interceptors.response.use(
           break;
         case 401:
           console.log('401 ERROR, not authorized.');
-          // history.push('/signup');
-          // // 강제로 새로고침 (임시)
-          // window.location.reload();
-          // sessionStorage.removeItem('user');
+          // history.push('/login');
+          // // // 강제로 새로고침 (임시)
+          localStorage.removeItem('user');
+          window.location.reload();
+
           break;
         case 404:
           console.log('404error!');
@@ -77,8 +81,6 @@ instance.interceptors.response.use(
           break;
         default:
       }
-    } else {
-      // ex. 서버 키지 않은 경우
     }
     return Promise.reject(error);
     // return false;

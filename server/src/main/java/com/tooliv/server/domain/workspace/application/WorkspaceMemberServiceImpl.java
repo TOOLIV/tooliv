@@ -16,6 +16,7 @@ import com.tooliv.server.domain.workspace.domain.WorkspaceMembers;
 import com.tooliv.server.domain.workspace.domain.enums.WorkspaceMemberCode;
 import com.tooliv.server.domain.workspace.domain.repository.WorkspaceMemberRepository;
 import com.tooliv.server.domain.workspace.domain.repository.WorkspaceRepository;
+import com.tooliv.server.global.common.AwsS3Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +38,8 @@ public class WorkspaceMemberServiceImpl implements WorkspaceMemberService {
     private final ChannelMembersRepository channelMembersRepository;
 
     private final UserRepository userRepository;
+
+    private final AwsS3Service awsS3Service;
 
     @Transactional
     @Override
@@ -97,11 +100,14 @@ public class WorkspaceMemberServiceImpl implements WorkspaceMemberService {
 
         workspaceMembersList.forEach(workspaceMember -> {
             User member = workspaceMember.getUser();
+            String profileImage = awsS3Service.getFilePath(member.getProfileImage());
+
             WorkspaceMemberGetResponseDTO workspaceMemberGetResponseDTO = WorkspaceMemberGetResponseDTO.builder()
                 .email(member.getEmail())
                 .name(member.getName())
                 .nickname(member.getNickname())
                 .workspaceMemberCode(workspaceMember.getWorkspaceMemberCode())
+                .profileImage(profileImage)
                 .build();
 
             workspaceMemberGetResponseDTOList.add(workspaceMemberGetResponseDTO);
@@ -111,18 +117,21 @@ public class WorkspaceMemberServiceImpl implements WorkspaceMemberService {
     }
 
     @Override
-    public WorkspaceMemberListGetResponseDTO getWorkspaceMemberListForRegister(String workspaceId, String keyword) {
+    public WorkspaceMemberListGetResponseDTO getWorkspaceMemberListForRegister(String workspaceId, String keyword, int sequence) {
         Workspace workspace = workspaceRepository.findByIdAndDeletedAt(workspaceId, null)
             .orElseThrow(() -> new IllegalArgumentException("워크스페이스 정보가 존재하지 않습니다."));
 
+        int offset = sequence <= 0 ? 0 : (sequence - 1) * 10;
         List<WorkspaceMemberGetResponseDTO> workspaceMemberGetResponseDTOList = new ArrayList<>();
-        List<User> userList = userRepository.findAllToRegisterWorkspaceMember(workspaceId, keyword);
+        List<User> userList = userRepository.findAllToRegisterWorkspaceMember(workspaceId, keyword, offset);
 
         userList.forEach(user -> {
+            String profileImage = awsS3Service.getFilePath(user.getProfileImage());
             WorkspaceMemberGetResponseDTO workspaceMemberGetResponseDTO = WorkspaceMemberGetResponseDTO.builder()
                 .email(user.getEmail())
                 .name(user.getName())
                 .nickname(user.getNickname())
+                .profileImage(profileImage)
                 .build();
 
             workspaceMemberGetResponseDTOList.add(workspaceMemberGetResponseDTO);
@@ -133,15 +142,19 @@ public class WorkspaceMemberServiceImpl implements WorkspaceMemberService {
     }
 
     @Override
-    public WorkspaceMemberListGetResponseDTO searchWorkspaceMember(String workspaceId, String keyword) {
+    public WorkspaceMemberListGetResponseDTO searchWorkspaceMember(String workspaceId, String keyword, int sequence) {
         List<WorkspaceMemberGetResponseDTO> workspaceMemberGetResponseDTOList = new ArrayList<>();
-        workspaceMemberRepository.findByWorkspaceIdAndKeyword(workspaceId, keyword).forEach(workspaceMember -> {
+        int offset = sequence <= 0 ? 0 : (sequence - 1) * 10;
+        workspaceMemberRepository.findByWorkspaceIdAndKeyword(workspaceId, keyword, offset).forEach(workspaceMember -> {
             User member = workspaceMember.getUser();
+            String profileImage = awsS3Service.getFilePath(member.getProfileImage());
+
             WorkspaceMemberGetResponseDTO workspaceMemberGetResponseDTO = WorkspaceMemberGetResponseDTO.builder()
                 .workspaceMemberCode(workspaceMember.getWorkspaceMemberCode())
                 .nickname(member.getNickname())
                 .name(member.getName())
                 .email(member.getEmail())
+                .profileImage(profileImage)
                 .build();
             workspaceMemberGetResponseDTOList.add(workspaceMemberGetResponseDTO);
         });
@@ -160,7 +173,7 @@ public class WorkspaceMemberServiceImpl implements WorkspaceMemberService {
         WorkspaceMembers workspaceMembers = workspaceMemberRepository.findByWorkspaceAndUser(workspace, user)
             .orElseThrow(() -> new IllegalArgumentException("워크스페이스 멤버 정보가 존재하지 않습니다."));
 
-        return  new WorkspaceMemberCodeGetResponseDTO(workspaceMembers.getWorkspaceMemberCode());
+        return new WorkspaceMemberCodeGetResponseDTO(workspaceMembers.getWorkspaceMemberCode());
     }
 
 }

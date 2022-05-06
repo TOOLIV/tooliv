@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import { searchChannelMemberList } from 'api/channelApi';
 import Icons from 'atoms/common/Icons';
 import Text from 'atoms/text/Text';
+import { useDebounce } from 'hooks/useHooks';
 import InputBox from 'molecules/inputBox/InputBox';
 import UserInfo from 'molecules/userInfo/UserInfo';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -26,7 +27,7 @@ const Modal = styled.div<{ isOpen: boolean }>`
 `;
 
 const Container = styled.div`
-  width: 350px;
+  width: 450px;
   padding: 25px;
   border: 1px solid ${(props) => props.theme.borderColor};
   background-color: ${(props) => props.theme.bgColor};
@@ -45,7 +46,7 @@ const Header = styled.div`
 `;
 
 const UserBox = styled.div`
-  height: 30vh;
+  height: 50vh;
   overflow: scroll;
 `;
 
@@ -64,7 +65,18 @@ const ChannelMemberListModal = ({
   onClose,
 }: channelMemberListType) => {
   const [channelMemberList, setChannelMemberList] = useState([]);
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const debouncedValue = useDebounce<string>(searchKeyword, 500);
+  const [sequence, setSequence] = useState(1);
+  const [target, setTarget] = useState<any>(null);
+  const [endCheck, setEndCheck] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
 
+  const sequenceRef = useRef(sequence);
+  sequenceRef.current = sequence;
+
+  const endCheckRef = useRef(endCheck);
+  endCheckRef.current = endCheck;
   const inputRef = useRef<HTMLInputElement>(null);
   const { channelId } = useParams();
 
@@ -75,8 +87,13 @@ const ChannelMemberListModal = ({
   const searchChannelMember = useCallback(
     async (keyword: string) => {
       try {
-        const { data } = await searchChannelMemberList(channelId!, keyword);
+        const { data } = await searchChannelMemberList(
+          channelId!,
+          keyword,
+          sequenceRef.current
+        );
         setChannelMemberList(data.channelMemberGetResponseDTOList);
+        console.log(data);
       } catch (error) {
         console.log(error);
       }
@@ -84,10 +101,16 @@ const ChannelMemberListModal = ({
     [channelId]
   );
 
+  // const searchUserList = useCallback(() => {
+  //   const keyword = inputRef.current?.value!;
+  //   searchChannelMember(keyword);
+  // }, [searchChannelMember]);
+
   const searchUserList = useCallback(() => {
     const keyword = inputRef.current?.value!;
-    searchChannelMember(keyword);
-  }, [searchChannelMember]);
+    setSearchKeyword(keyword);
+    // searchChannelMember(keyword);
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
@@ -100,6 +123,10 @@ const ChannelMemberListModal = ({
     onClose();
     onClick();
   };
+
+  useEffect(() => {
+    if (channelId) searchChannelMember(debouncedValue);
+  }, [debouncedValue]);
 
   return (
     <Modal isOpen={isOpen}>
@@ -125,7 +152,12 @@ const ChannelMemberListModal = ({
               key={member.email}
               onClick={() => handleDirectMessage(member.email)}
             >
-              <UserInfo name={member.name} email={member.email} />
+              <UserInfo
+                name={member.name}
+                email={member.email}
+                nickname={member.nickname}
+                profileImage={member.profileImage}
+              />
             </UserInfoWrapper>
           ))}
         </UserBox>

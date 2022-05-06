@@ -27,4 +27,7 @@ public class ChannelMemberGetResponseDTO {
     @ApiModelProperty("채널멤버 코드")
     private ChannelMemberCode channelMemberCode;
 
+    @ApiModelProperty("프로필 이미지")
+    private String profileImage;
+
 }

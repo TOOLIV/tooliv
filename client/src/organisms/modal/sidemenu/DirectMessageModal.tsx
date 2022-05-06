@@ -1,6 +1,8 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { searchWorkspaceMemberList } from 'api/workspaceApi';
+import { searchChannelMemberList } from 'api/channelApi';
+import { createDMRoom } from 'api/chatApi';
+import { getUserList } from 'api/userApi';
 import Icons from 'atoms/common/Icons';
 import Text from 'atoms/text/Text';
 import { useDebounce } from 'hooks/useHooks';
@@ -9,17 +11,20 @@ import UserInfo from 'molecules/userInfo/UserInfo';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
-  workspaceMemberListType,
-  workspaceMemberType,
-} from 'types/workspace/workspaceTypes';
+  channelMemberListType,
+  channelMemberType,
+} from 'types/channel/contentType';
+import { userDirectMessageType } from 'types/common/userTypes';
 
 const Modal = styled.div<{ isOpen: boolean }>`
   display: none;
   position: fixed;
+  width: 100vw;
+  height: 100vh;
   top: 0;
-  left: 0;
   right: 0;
   bottom: 0;
+  left: 0;
   z-index: 99;
   background-color: rgba(255, 255, 255, 0.7);
 
@@ -33,8 +38,9 @@ const Modal = styled.div<{ isOpen: boolean }>`
 `;
 
 const Container = styled.div`
-  width: 350px;
+  width: 450px;
   padding: 25px;
+  border: 1px solid ${(props) => props.theme.borderColor};
   background-color: ${(props) => props.theme.bgColor};
   border-radius: 30px;
   box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.06);
@@ -51,7 +57,7 @@ const Header = styled.div`
 `;
 
 const UserBox = styled.div`
-  height: 30vh;
+  height: 50vh;
   overflow: scroll;
 `;
 
@@ -64,42 +70,27 @@ export const UserInfoWrapper = styled.div`
   }
 `;
 
-const WorkspaceMemberListModal = ({
-  isOpen,
-  onClose,
-}: workspaceMemberListType) => {
-  const [workspaceMemberList, setWorkspaceMemberList] = useState([]);
+const DirectMessageModal = ({ isOpen, onClose }: userDirectMessageType) => {
+  const [channelMemberList, setChannelMemberList] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState('');
   const debouncedValue = useDebounce<string>(searchKeyword, 500);
-  const [sequence, setSequence] = useState(1);
-  const [target, setTarget] = useState<any>(null);
-  const [endCheck, setEndCheck] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
 
-  const sequenceRef = useRef(sequence);
-  sequenceRef.current = sequence;
-
-  const endCheckRef = useRef(endCheck);
-  endCheckRef.current = endCheck;
   const inputRef = useRef<HTMLInputElement>(null);
-  const { workspaceId } = useParams();
 
   const handleDirectMessage = (email: string) => {
-    console.log(`${email}로 개인메시지 보내는 링크`);
+    // console.log(`${email}로 개인메시지 보내는 링크`);
+    createDMRoom(email).then((res) => {});
   };
 
-  const handleSearchUser = useCallback(
-    async (keyword: string) => {
-      const { data } = await searchWorkspaceMemberList(
-        workspaceId!,
-        keyword,
-        sequenceRef.current
-      );
-      setWorkspaceMemberList(data.workspaceMemberGetResponseDTOList);
+  const searchChannelMember = useCallback(async (keyword: string) => {
+    try {
+      const { data } = await getUserList(keyword);
       console.log(data);
-    },
-    [workspaceId]
-  );
+      setChannelMemberList(data.userInfoResponseDTOList);
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
 
   const searchUserList = useCallback(() => {
     const keyword = inputRef.current?.value!;
@@ -108,26 +99,22 @@ const WorkspaceMemberListModal = ({
 
   useEffect(() => {
     if (isOpen) {
-      handleSearchUser('');
+      inputRef.current!.value = '';
+      searchChannelMember('');
     }
-  }, [isOpen, handleSearchUser]);
+  }, [isOpen, searchChannelMember]);
 
   useEffect(() => {
     console.log(debouncedValue);
-    handleSearchUser(debouncedValue);
+    searchChannelMember(debouncedValue);
   }, [debouncedValue]);
 
-  const exitModal = () => {
-    inputRef.current!.value = '';
-    setWorkspaceMemberList([]);
-    onClose();
-  };
   return (
     <Modal isOpen={isOpen}>
       <Container>
         <Header>
-          <Text size={18}>워크스페이스 멤버</Text>
-          <Icons icon="xMark" width="32" height="32" onClick={exitModal} />
+          <Text size={18}>개인메시지</Text>
+          <Icons icon="xMark" width="32" height="32" onClick={onClose} />
         </Header>
         <InputBox
           label="검색"
@@ -136,7 +123,7 @@ const WorkspaceMemberListModal = ({
           onChange={searchUserList}
         />
         <UserBox>
-          {workspaceMemberList.map((member: workspaceMemberType) => (
+          {channelMemberList.map((member: channelMemberType) => (
             <UserInfoWrapper
               key={member.email}
               onClick={() => handleDirectMessage(member.email)}
@@ -155,4 +142,4 @@ const WorkspaceMemberListModal = ({
   );
 };
 
-export default WorkspaceMemberListModal;
+export default DirectMessageModal;

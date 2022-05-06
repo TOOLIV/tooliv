@@ -15,7 +15,7 @@ export const login = async (body: userLoginTypes) => {
     profileImage: response.data.profileImage,
   };
 
-  localStorage.setItem('user', JSON.stringify(user));
+  localStorage.setItem('tooliv_info', JSON.stringify(user));
   if (response.data.userCode === 'ADMIN')
     localStorage.setItem('isAdmin', JSON.stringify(true));
   else localStorage.removeItem('isAdmin');
@@ -37,5 +37,10 @@ export const updateNickname = async (body: userNicknameType) => {
 
 export const updateProfileImage = async (body: any) => {
   const response = await instance.post(`/user/image`, body);
+  return response;
+};
+
+export const getUserList = async (keyword: string) => {
+  const response = await instance.get(`/user/search?keyword=${keyword}`);
   return response;
 };

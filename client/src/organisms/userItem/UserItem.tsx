@@ -39,6 +39,8 @@ type selectType = {
 const UserItem = ({
   name,
   email,
+  nickname,
+  profileImage,
   userCode,
   onDelete,
   onChange,
@@ -71,7 +73,12 @@ userItemTypes) => {
         </AvatarBox>
         <Text size={14}>{userInfo}</Text>
       </UserBox> */}
-      <UserInfo name={name} email={email} />
+      <UserInfo
+        name={name}
+        email={email}
+        nickname={nickname}
+        profileImage={profileImage}
+      />
       <ControlBox>
         <DropdownBox>
           <Dropdown

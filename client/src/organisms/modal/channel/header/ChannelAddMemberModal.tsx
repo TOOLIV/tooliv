@@ -8,6 +8,7 @@ import Button from 'atoms/common/Button';
 import Icons from 'atoms/common/Icons';
 import Label from 'atoms/label/Label';
 import Text from 'atoms/text/Text';
+import { useDebounce } from 'hooks/useHooks';
 import InputBox from 'molecules/inputBox/InputBox';
 import UserBadge from 'molecules/userBadge/UserBadge';
 import UserInfo from 'molecules/userInfo/UserInfo';
@@ -100,9 +101,21 @@ const ChannelAddMemberModal = ({
   const [userBadgeList, setUserBadgeList] = useState<inviteMembersBadgeType[]>(
     []
   );
+  const [sequence, setSequence] = useState(1);
+  const [target, setTarget] = useState<any>(null);
+  const [endCheck, setEndCheck] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  const sequenceRef = useRef(sequence);
+  sequenceRef.current = sequence;
+
+  const endCheckRef = useRef(endCheck);
+  endCheckRef.current = endCheck;
+
   const [inviteUserList, setInviteUserList] = useState<string[]>([]);
 
   const [keyword, setKeyword] = useState('');
+  const debouncedValue = useDebounce<string>(keyword, 500);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const setCurrentChannelMemberNum = useSetRecoilState(currentChannelNum);
@@ -114,17 +127,29 @@ const ChannelAddMemberModal = ({
 
   const userListApi = useCallback(
     async (keyword: string) => {
-      const response = await searchNotChannelMemberList(channelId, keyword);
-      console.log(response);
-      const data = response.data.channelMemberGetResponseDTOList;
-      if (data) {
-        const list = data.filter((user: channelMemberType) => {
-          return userBadgeList.find((badge) => badge.email === user.email)
-            ? false
-            : true;
-        });
+      if (!endCheckRef.current) {
+        const response = await searchNotChannelMemberList(
+          channelId,
+          keyword,
+          sequenceRef.current
+        );
+        const data = response.data.channelMemberGetResponseDTOList;
+        console.log(data);
+        if (data.length === 0) {
+          setIsLoaded(false);
+          setEndCheck(true);
+          return;
+        }
+        if (data) {
+          const list = data.filter((user: channelMemberType) => {
+            return userBadgeList.find((badge) => badge.email === user.email)
+              ? false
+              : true;
+          });
 
-        setUserList(list);
+          setUserList((prev) => [...prev, ...list]);
+          setSequence((prev) => prev + 1);
+        }
       }
     },
     [channelId, userBadgeList]
@@ -164,13 +189,15 @@ const ChannelAddMemberModal = ({
     [userBadgeList, inviteUserList]
   );
 
+  // useEffect(() => {
+  //   setUserList([]);
+  // }, [channelId, userListApi]);
+
   useEffect(() => {
-    if (keyword) {
-      userListApi(keyword);
-    } else {
-      setUserList([]);
+    if (channelId) {
+      userListApi(debouncedValue);
     }
-  }, [keyword, channelId, userListApi]);
+  }, [debouncedValue, channelId]);
 
   const registMember = () => {
     const body = {
@@ -180,13 +207,32 @@ const ChannelAddMemberModal = ({
   };
 
   const exitModal = useCallback(() => {
-    setKeyword('');
+    // setKeyword('');
     inputRef.current!.value = '';
     setUserBadgeList([]);
     setInviteUserList([]);
     setUserList([]);
     onClose();
   }, [onClose]);
+
+  useEffect(() => {
+    let observer: any;
+    if (target) {
+      observer = new IntersectionObserver(onIntersect, {
+        threshold: 0.2,
+      });
+      observer.observe(target);
+    }
+    return () => observer && observer.disconnect();
+  }, [target]);
+
+  const onIntersect = async ([entry]: any, observer: any) => {
+    if (entry.isIntersecting && !isLoaded) {
+      observer.unobserve(entry.target);
+      await userListApi(debouncedValue);
+      observer.observe(entry.target);
+    }
+  };
 
   return (
     <Modal isOpen={isOpen}>
@@ -207,9 +253,21 @@ const ChannelAddMemberModal = ({
               key={user.email}
               onClick={() => createUserBadge(user.name, user.email)}
             >
-              <UserInfo name={user.name} email={user.email} />
+              <UserInfo
+                name={user.name}
+                email={user.email}
+                nickname={user.nickname}
+                profileImage={user.profileImage}
+              />
             </UserInfoWrapper>
           ))}
+          <div
+            ref={setTarget}
+            style={{
+              width: '100vw',
+              height: '5px',
+            }}
+          ></div>
         </UserBox>
         <Label label="추가 멤버 목록" />
         <UserBadgeWrapper>
