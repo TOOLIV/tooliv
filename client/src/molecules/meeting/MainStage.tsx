@@ -24,6 +24,7 @@ const MainStage = ({ streamManager }: MainStagePropsType) => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
+    console.log("streamManager>>>>>>>>>>>>>>>>>>>>>>>", streamManager);
     if (videoRef.current) streamManager.addVideoElement(videoRef.current);
   }, [streamManager]);
 
