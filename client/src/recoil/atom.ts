@@ -52,7 +52,10 @@ export const currentWorkspace = atom<string>({
   key: 'currentWorkspace',
   default: 'main',
 });
-
+export const modifyWorkspaceName = atom<string>({
+  key: 'modifyWorkspaceName',
+  default: '',
+});
 export const currentChannel = atom<string>({
   key: 'currentChannel',
   default: '',

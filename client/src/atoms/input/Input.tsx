@@ -18,7 +18,11 @@ const Container = styled.div`
   border: none;
 `;
 
-const InputText = styled.input<{ status: string; mode: string }>`
+const InputText = styled.input<{
+  status: string;
+  mode: string;
+  disabled?: boolean;
+}>`
   width: 100%;
   padding: 10px 16px;
   border: ${(props) =>
@@ -30,13 +34,14 @@ const InputText = styled.input<{ status: string; mode: string }>`
   background-color: ${(props) =>
     props.mode === 'dark' ? props.theme.sideBgColor : 'none'};
   color: ${(props) => props.theme.textColor};
+  opacity: ${(props) => (props.disabled ? '0.5' : '1')};
   &:focus {
     border: 1px solid ${colors.gray700};
   }
 `;
 
 const Input = forwardRef<HTMLInputElement, inputTypes>(
-  ({ placeholder, status, type, onChange, onKeyPress }, ref) => {
+  ({ placeholder, status, type, onChange, onKeyPress, disabled }, ref) => {
     const mode = useRecoilValue(appThemeMode);
 
     return (
@@ -50,6 +55,7 @@ const Input = forwardRef<HTMLInputElement, inputTypes>(
           autoComplete="on"
           type={type}
           ref={ref}
+          disabled={disabled}
         />
       </Container>
     );

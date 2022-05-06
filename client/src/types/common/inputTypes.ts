@@ -6,12 +6,14 @@ export type inputBoxTypes = {
   onChange?: () => void;
   onKeyPress?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
   message?: string;
+  disabled?: boolean;
 };
 
 export type inputTypes = {
   placeholder: string;
   status: string;
   type: string;
+  disabled?: boolean;
   onChange?: () => void;
   onKeyPress?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
 };

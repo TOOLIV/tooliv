@@ -6,6 +6,7 @@ import Label from '../../atoms/common/Label';
 import MenuTemplate from '../../atoms/sidemenu/MenuTemplate';
 import { labelType } from '../../types/common/labelType';
 import { SideWrapper, TopContainer } from './Channels';
+import Text from 'atoms/text/Text';
 
 const FriendsContainer = styled.div`
   padding: 0 24px 16px 24px;
@@ -31,7 +32,7 @@ const DirectMessage = () => {
   return (
     <>
       <TopContainer>
-        <MenuTemplate title="개인 메시지" />
+        <Text size={14}>개인 메시지</Text>
         <Icons icon="plus" />
       </TopContainer>
       <FriendsContainer>

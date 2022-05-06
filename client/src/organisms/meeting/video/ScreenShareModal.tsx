@@ -48,6 +48,7 @@ const ScreenItem = styled.div`
 
 const ScreenShareModal = ({
   setIsScreenShareModal,
+  setChoiceScreen,
 }: screenShareMadalPropsTypes) => {
   const [screenList, setScreenList] = useState<any>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -70,7 +71,9 @@ const ScreenShareModal = ({
     }
   }, [isLoading]);
 
-  const onClickScreenItem = () => {
+  const onClickScreenItem = (screenName: string) => {
+    console.log(screenName);
+    setChoiceScreen(screenName);
     setIsScreenShareModal(false);
   };
 
@@ -80,7 +83,10 @@ const ScreenShareModal = ({
       {isLoading &&
         screenList &&
         screenList.map((stream: any) => (
-          <ScreenItem key={stream.name} onClick={onClickScreenItem}>
+          <ScreenItem
+            key={stream.name}
+            onClick={() => onClickScreenItem(stream.id)}
+          >
             <img src={stream.thumbnail.toDataURL()} />
             <div>{stream.name}</div>
           </ScreenItem>

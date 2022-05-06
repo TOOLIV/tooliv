@@ -23,16 +23,11 @@ public class RedisConfig {
     @Value("${spring.redis.port}")
     private int redisPort;
 
-//    @Value("${spring.redis.password}")
-//    private String password;
-
-
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
         redisStandaloneConfiguration.setHostName(redisHost);
         redisStandaloneConfiguration.setPort(redisPort);
-//        redisStandaloneConfiguration.setPassword(password);
         return new LettuceConnectionFactory(redisStandaloneConfiguration);
     }
 
@@ -44,7 +39,7 @@ public class RedisConfig {
         return container;
     }
 
-    // 어플리케이션에서 사용할 redisTemplate 설정
+    // 어플리케이션에서 사용할 redisTemplate 설정 , 채팅방
     @Bean
     public RedisTemplate<String, ?> redisChannelTemplate() {
         RedisTemplate<String, ?> redisTemplate = new RedisTemplate<>();
@@ -53,4 +48,5 @@ public class RedisConfig {
         redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(ChatRequestDTO.class));
         return redisTemplate;
     }
+
 }

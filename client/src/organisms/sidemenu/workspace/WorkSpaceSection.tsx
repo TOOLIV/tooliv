@@ -5,11 +5,12 @@ import Icons from 'atoms/common/Icons';
 import WorkSpaces from 'molecules/sidemenu/WorkSpaces';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
   currentChannel,
   // currentChannel,
   currentWorkspace,
+  modifyWorkspaceName,
   userLog,
 } from 'recoil/atom';
 import { workspaceListType } from 'types/workspace/workspaceTypes';
@@ -35,6 +36,8 @@ const WorkSpaceSection = () => {
   const [curWorkspaceId, setCurWorkspaceId] = useRecoilState(currentWorkspace);
   const setCurrentChannel = useSetRecoilState(currentChannel);
   const [userLogList, setUserLogList] = useRecoilState(userLog);
+  const modWorkspaceName = useRecoilValue(modifyWorkspaceName);
+
   const navigate = useNavigate();
 
   const handleOpenModal = () => {
@@ -77,7 +80,7 @@ const WorkSpaceSection = () => {
 
   useEffect(() => {
     if (curWorkspaceId) handleWorkspace();
-  }, [curWorkspaceId]);
+  }, [curWorkspaceId, modWorkspaceName]);
 
   return (
     <Container isOpen={isOpen}>
