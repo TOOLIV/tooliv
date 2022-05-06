@@ -99,13 +99,14 @@ public class ChannelMemberServiceImpl implements ChannelMemberService {
     }
 
     @Override
-    public ChannelMemberListGetResponseDTO searchChannelMember(String channelId, String keyword) {
+    public ChannelMemberListGetResponseDTO searchChannelMember(String channelId, String keyword, int sequence) {
         List<ChannelMemberGetResponseDTO> channelMemberGetResponseDTOList = new ArrayList<>();
 
         Channel channel = channelRepository.findByIdAndDeletedAt(channelId, null)
             .orElseThrow(() -> new IllegalArgumentException("채널 정보가 존재하지 않습니다."));
 
-        channelMembersRepository.searchByChannelIdAndKeyword(channelId, keyword).forEach(channelMember -> {
+        int offset = sequence <= 0 ? 0 : (sequence - 1) * 10;
+        channelMembersRepository.searchByChannelIdAndKeyword(channelId, keyword, offset).forEach(channelMember -> {
             User member = channelMember.getUser();
             ChannelMemberGetResponseDTO channelMemberGetResponseDTO = ChannelMemberGetResponseDTO.builder()
                 .channelMemberCode(channelMember.getChannelMemberCode())
@@ -119,25 +120,18 @@ public class ChannelMemberServiceImpl implements ChannelMemberService {
     }
 
     @Override
-    public ChannelMemberListGetResponseDTO searchChannelMemberForRegister(String channelId, String keyword) {
+    public ChannelMemberListGetResponseDTO searchChannelMemberForRegister(String channelId, String keyword, int sequence) {
         List<ChannelMemberGetResponseDTO> channelMemberGetResponseDTOList = new ArrayList<>();
 
         Channel channel = channelRepository.findByIdAndDeletedAt(channelId, null)
             .orElseThrow(() -> new IllegalArgumentException("채널 정보가 존재하지 않습니다."));
 
-        List<ChannelMembers> channelMembersList = channelMembersRepository.findByChannel(channel);
+        int offset = sequence <= 0 ? 0 : (sequence - 1) * 10;
+        List<WorkspaceMembers> searchMemberList = workspaceMemberRepository.findAllToRegisterChannelMember(channel.getWorkspace().getId(), channelId, keyword, offset);
 
-        List<WorkspaceMembers> searchMemberList = workspaceMemberRepository.findByWorkspaceIdAndKeyword(channel.getWorkspace().getId(), keyword);
-        search:
         for (WorkspaceMembers searchMember : searchMemberList) {
 
             User member = searchMember.getUser();
-            for (ChannelMembers channelMember : channelMembersList) {
-                if (member.equals(channelMember.getUser())) {
-                    continue search;
-                }
-            }
-
             ChannelMemberGetResponseDTO channelMemberGetResponseDTO = ChannelMemberGetResponseDTO.builder()
                 .nickname(member.getNickname())
                 .name(member.getName())
@@ -158,7 +152,7 @@ public class ChannelMemberServiceImpl implements ChannelMemberService {
         Channel channel = channelRepository.findByIdAndDeletedAt(channelId, null)
             .orElseThrow(() -> new IllegalArgumentException("채널 정보가 존재하지 않습니다."));
 
-        ChannelMembers channelMember = channelMembersRepository.findByChannelAndUser(channel,user)
+        ChannelMembers channelMember = channelMembersRepository.findByChannelAndUser(channel, user)
             .orElseThrow(() -> new IllegalArgumentException("채널 멤버 정보가 존재하지 않습니다."));
 
         return new ChannelMemberCodeGetResponseDTO(channelMember.getChannelMemberCode());

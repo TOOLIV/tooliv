@@ -111,12 +111,13 @@ public class WorkspaceMemberServiceImpl implements WorkspaceMemberService {
     }
 
     @Override
-    public WorkspaceMemberListGetResponseDTO getWorkspaceMemberListForRegister(String workspaceId, String keyword) {
+    public WorkspaceMemberListGetResponseDTO getWorkspaceMemberListForRegister(String workspaceId, String keyword, int sequence) {
         Workspace workspace = workspaceRepository.findByIdAndDeletedAt(workspaceId, null)
             .orElseThrow(() -> new IllegalArgumentException("워크스페이스 정보가 존재하지 않습니다."));
 
+        int offset = sequence <= 0 ? 0 : (sequence - 1) * 10;
         List<WorkspaceMemberGetResponseDTO> workspaceMemberGetResponseDTOList = new ArrayList<>();
-        List<User> userList = userRepository.findAllToRegisterWorkspaceMember(workspaceId, keyword);
+        List<User> userList = userRepository.findAllToRegisterWorkspaceMember(workspaceId, keyword, offset);
 
         userList.forEach(user -> {
             WorkspaceMemberGetResponseDTO workspaceMemberGetResponseDTO = WorkspaceMemberGetResponseDTO.builder()
@@ -133,9 +134,10 @@ public class WorkspaceMemberServiceImpl implements WorkspaceMemberService {
     }
 
     @Override
-    public WorkspaceMemberListGetResponseDTO searchWorkspaceMember(String workspaceId, String keyword) {
+    public WorkspaceMemberListGetResponseDTO searchWorkspaceMember(String workspaceId, String keyword, int sequence) {
         List<WorkspaceMemberGetResponseDTO> workspaceMemberGetResponseDTOList = new ArrayList<>();
-        workspaceMemberRepository.findByWorkspaceIdAndKeyword(workspaceId, keyword).forEach(workspaceMember -> {
+        int offset = sequence <= 0 ? 0 : (sequence - 1) * 10;
+        workspaceMemberRepository.findByWorkspaceIdAndKeyword(workspaceId, keyword, offset).forEach(workspaceMember -> {
             User member = workspaceMember.getUser();
             WorkspaceMemberGetResponseDTO workspaceMemberGetResponseDTO = WorkspaceMemberGetResponseDTO.builder()
                 .workspaceMemberCode(workspaceMember.getWorkspaceMemberCode())

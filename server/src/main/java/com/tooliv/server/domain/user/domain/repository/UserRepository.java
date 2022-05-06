@@ -33,7 +33,7 @@ public interface UserRepository extends JpaRepository<User, String> {
         + "JOIN workspace w ON m.workspace_id = w.id \n"
         + " WHERE w.id = :workspace_id  AND w.deleted_at IS NULL\n"
         + ")\n"
-        + "ORDER BY u.name;", nativeQuery = true)
-    List<User> findAllToRegisterWorkspaceMember(@Param("workspace_id") String workspaceId, @Param("keyword") String keyword);
+        + "ORDER BY u.name LIMIT :offset, 10", nativeQuery = true)
+    List<User> findAllToRegisterWorkspaceMember(@Param("workspace_id") String workspaceId, @Param("keyword") String keyword, @Param("offset") int offset);
 
 }
