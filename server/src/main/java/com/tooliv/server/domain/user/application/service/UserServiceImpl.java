@@ -159,4 +159,11 @@ public class UserServiceImpl implements UserService {
         return "https://tooliva402.s3.ap-northeast-2.amazonaws.com/" + fileName;
     }
 
+    @Override
+    public String getUserId(String email) {
+        User user = userRepository.findByEmailAndDeletedAt(email, null)
+            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+        return user.getId();
+    }
+
 }

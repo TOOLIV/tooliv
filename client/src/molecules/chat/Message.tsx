@@ -6,6 +6,7 @@ import Avatar from '../../atoms/profile/Avatar';
 import { colors } from '../../shared/color';
 import { contentTypes } from '../../types/channel/contentType';
 import { SideWrapper } from '../sidemenu/Channels';
+import File from './File';
 
 const Container = styled.div`
   width: 100%;
@@ -30,9 +31,10 @@ const ContentContainer = styled.div`
   padding-left: 30px;
   line-height: 1.2;
   color: ${(props) => props.theme.textColor};
+  display: flex;
 `;
 
-const File = styled.img`
+const Img = styled.img`
   max-width: 300px;
 `;
 
@@ -43,7 +45,21 @@ const Message = ({
   contents,
   type,
   files,
+  email,
+  originFiles,
 }: contentTypes) => {
+  const fileTypes = ['.bmp', '.gif', '.jpg', '.png', '.jpeg', '.jfif'];
+
+  const checkType = (file: string) => {
+    const fileLen = file.length;
+    const lastDot = file.lastIndexOf('.');
+    const fileExt = file.substring(lastDot, fileLen).toLowerCase();
+    if (fileTypes.includes(fileExt)) {
+      return true;
+    } else {
+      return false;
+    }
+  };
   return (
     <Container>
       <ProfileContainer>
@@ -56,11 +72,15 @@ const Message = ({
       <ContentContainer
         dangerouslySetInnerHTML={{ __html: contents }}
       ></ContentContainer>
-      {files && files.length > 0 && (
+      {files && originFiles && files.length > 0 && (
         <ContentContainer>
-          {files.map((file) => (
-            <File src={file}></File>
-          ))}
+          {files.map((file, i) =>
+            checkType(file) ? (
+              <Img key={file} src={file}></Img>
+            ) : (
+              <File key={file} name={originFiles[i]} url={file} />
+            )
+          )}
         </ContentContainer>
       )}
     </Container>
