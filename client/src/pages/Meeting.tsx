@@ -51,10 +51,15 @@ const Meeting = () => {
   const [publisherForScreenSharing, setPublisherForScreenSharing] =
     useState<Publisher | null>(null);
 
-  const [isScreenSharing, setIsScreenSharing] = useState<boolean>(false);
   const [isAudioOn, setIsAudioOn] = useState<boolean>(true);
   const [isVideoOn, setIsVideoOn] = useState<boolean>(true);
 
+  const [isReadyScreenSharing, setIsReadyScreenSharing] =
+    useState<boolean>(false);
+
+  const [doScreenSharing, setDoScreenSharing] = useState<boolean>(false);
+  const [doStartScreenSharing, setDoStartScreenSharing] = useState<boolean>(false);
+  const [doStopScreenSharing, setDoStopScreenSharing] = useState<boolean>(false);
   const [isScreen, setIsScreen] = useState<boolean>(false);
   const [pauseScreenSharing, setPauseScreenSharing] = useState<boolean>();
 
@@ -103,7 +108,7 @@ const Meeting = () => {
           // 비디오인 경우 화면 공유 스트림
           setMainStreamManager(newSubscriber);
           setIsScreen(true);
-          // setPauseScreenSharing(true);
+          setPauseScreenSharing(true);
         }
       });
 
@@ -114,6 +119,14 @@ const Meeting = () => {
           setMainStreamManager(null);
           setIsScreen(false);
         }
+      });
+
+      newSession.on('publisherStartSpeaking', (event) => {
+        console.log(event);
+      });
+
+      newSession.on('publisherStopSpeaking', (event) => {
+        console.log(event);
       });
 
       newSession.on('sessionDisconnected', (event) => {
@@ -134,10 +147,10 @@ const Meeting = () => {
             );
 
             const newPublisher = newOV.initPublisher(initUserData.myUserName, {
-              audioSource: true,
+              audioSource: undefined,
               videoSource: videoDevices[0].deviceId,
-              publishAudio: true,
-              publishVideo: true,
+              publishAudio: isAudioOn,
+              publishVideo: isVideoOn,
               resolution: '1080x720',
               frameRate: 10,
               insertMode: 'APPEND',
@@ -159,30 +172,56 @@ const Meeting = () => {
     connection();
   };
 
-  useEffect(() => {
-    console.log(isScreenSharing);
-    if (isScreenSharing) {
-      console.log('화면공유 중지>>>>>>>>>>>>>>>>>>>>>>>>');
-      if (!sessionForScreenSharing) return;
-      if (!publisherForScreenSharing) return;
-      sessionForScreenSharing.unpublish(publisherForScreenSharing);
-    }
-  }, [pauseScreenSharing]);
+  // useEffect(() => {
+  //   console.log(isScreenSharing);
+  //   if (isScreenSharing) {
+  //     console.log('화면공유 중지>>>>>>>>>>>>>>>>>>>>>>>>');
+  //     if (!sessionForScreenSharing) return;
+  //     if (!publisherForScreenSharing) return;
+  //     sessionForScreenSharing.unpublish(publisherForScreenSharing);
+  //   }
+  // }, [pauseScreenSharing]);
+
+
+  // 화면 공유 준비
+  // useEffect(() => {
+  //   console.log(sessionForScreenSharing);
+  //   if (!isReadyScreenSharing) {
+  //     stopScreenShare();
+  //     setChoiceScreen('');
+  //   } else {
+  //     if (isElectron() && choiceScreen) {
+  //       startScreenShare();
+  //     } else if (isElectron() && !choiceScreen) {
+  //       setOpenScreenModal(true);
+  //     } else {
+  //       startScreenShare();
+  //     }
+  //   }
+  // }, [isReadyScreenSharing, choiceScreen]);
 
   useEffect(() => {
-    if (!isScreenSharing) {
-      stopScreenShare();
-      setChoiceScreen('');
-    } else {
-      if (isElectron() && choiceScreen) {
-        startScreenShare();
-      } else if (isElectron() && !choiceScreen) {
+    if (doStartScreenSharing) {
+      if (isElectron()) {
         setOpenScreenModal(true);
       } else {
         startScreenShare();
       }
     }
-  }, [isScreenSharing, choiceScreen]);
+  }, [doStartScreenSharing])
+
+  // 일렉트론에서 공유할 화면 선택하면
+  useEffect(() => {
+    if (doStartScreenSharing && choiceScreen) {
+      startScreenShare();
+    }
+  }, [choiceScreen])
+
+  useEffect(() => {
+    if (doStopScreenSharing) {
+      stopScreenShare()
+    }
+  }, [doStopScreenSharing])
 
   const deleteSubscriber = (streamManager: StreamManager) => {
     let prevSubscribers = subscribers;
@@ -232,9 +271,8 @@ const Meeting = () => {
 
           // Init a publisher passing undefined as targetElement (we don't want OpenVidu to insert a video
           // element: we will manage it on our own) and with the desired properties
-          const newPublisher = newOV.initPublisher(
-            initScreenData.myScreenName,
-            {
+          newOV
+            .initPublisherAsync(initScreenData.myScreenName, {
               audioSource: false, // The source of audio. If undefined default microphone
               // videoSource: videoDevices[0].deviceId, // The source of video. If undefined default webcam
               videoSource: isElectron() ? 'screen: ' + choiceScreen : 'screen', // The source of video. If undefined default webcam
@@ -243,11 +281,17 @@ const Meeting = () => {
               resolution: '1080x720', // The resolution of your video
               frameRate: 10, // The frame rate of your video
               // insertMode: 'APPEND', // How the video is inserted in the target element 'video-container'
-            }
-          );
-          newSession.publish(newPublisher);
-          setPublisherForScreenSharing(newPublisher);
-          setSessionForScreenSharing(newSession);
+            })
+            .then((newPublisher) => {
+              newSession.publish(newPublisher);
+              setPublisherForScreenSharing(newPublisher);
+              setDoScreenSharing(true);
+              setDoStartScreenSharing(false);
+            })
+            .catch(() => {
+              console.log('화면 공유 실패!!!!!');
+              setDoStartScreenSharing(false);
+            });
         })
         .catch((error) => {
           console.log(
@@ -263,6 +307,9 @@ const Meeting = () => {
     if (!sessionForScreenSharing) return;
     if (!publisherForScreenSharing) return;
     sessionForScreenSharing.unpublish(publisherForScreenSharing);
+    if (isElectron()) setChoiceScreen('');
+    setDoStopScreenSharing(false);
+    setDoScreenSharing(false);
   };
 
   return (
@@ -282,6 +329,7 @@ const Meeting = () => {
           <ScreenShareModal
             setIsScreenShareModal={setOpenScreenModal}
             setChoiceScreen={setChoiceScreen}
+            setDoStartScreenSharing={setDoStartScreenSharing}
           />
         )}
       </MeetingInnerContainer>
@@ -292,9 +340,9 @@ const Meeting = () => {
           setIsAudioOn={setIsAudioOn}
           setIsVideoOn={setIsVideoOn}
           publisher={publisher}
-          isScreenSharing={isScreenSharing}
-          setIsScreenSharing={setIsScreenSharing}
-          leaveSession={leaveSession}
+          doScreenSharing={doScreenSharing}
+          setDoStartScreenSharing={setDoStartScreenSharing}
+          setDoStopScreenSharing={setDoStopScreenSharing}
         />
       )}
       {!isChatOpen && <ChatButton onClick={onOpenChat} />}

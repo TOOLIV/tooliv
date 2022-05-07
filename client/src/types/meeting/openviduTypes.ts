@@ -23,18 +23,18 @@ export type subscriberVideoPropsType = {
 }
 
 export type funcButtonPropsTypes = {
-  publisher?: Publisher;
+  publisher: Publisher;
   isAudioOn: boolean;
   isVideoOn: boolean;
-  isScreenSharing: boolean;
   setIsAudioOn: Dispatch<SetStateAction<boolean>>;
   setIsVideoOn: Dispatch<SetStateAction<boolean>>;
-  setIsScreenSharing: Dispatch<SetStateAction<boolean>>;
-  leaveSession: () => void;
-  // setIsScreenShareModal: Dispatch<SetStateAction<boolean>>;
+  doScreenSharing: boolean;
+  setDoStartScreenSharing: Dispatch<SetStateAction<boolean>>;
+  setDoStopScreenSharing: Dispatch<SetStateAction<boolean>>;
 };
 
 export type screenShareMadalPropsTypes = {
   setIsScreenShareModal: Dispatch<SetStateAction<boolean>>;
   setChoiceScreen: Dispatch<SetStateAction<string>>;
+  setDoStartScreenSharing: Dispatch<SetStateAction<boolean>>;
 };
