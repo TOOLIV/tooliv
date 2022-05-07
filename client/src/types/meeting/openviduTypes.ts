@@ -1,45 +1,40 @@
 import { Publisher, Session, StreamManager } from 'openvidu-browser';
 import { Dispatch, SetStateAction } from 'react';
 
-export type openviduTypes = {
-  mySessionId: string;
-  myUserName: string;
-  session: undefined | Session;
-};
-
-export type openviduTypesCopy = {
-  mySessionId: string;
-  myUserName: string;
-  session: undefined | Session;
-  mainStreamManager: undefined | StreamManager;
-  publisher: undefined | Publisher;
-  subscribers: Array<StreamManager>;
-};
 
 export type videosTypes = {
-  publisher?: Publisher;
-  subscribers?: Array<StreamManager>;
+  publisher: Publisher;
+  subscribers: Array<StreamManager>;
   isScreen: boolean;
 };
-export type videoTypes = {
-  publisher?: Publisher;
-  subscribers?: StreamManager;
-  totalUser: number;
-};
+
+export type publisherVideoPropsType = {
+  publisher: Publisher;
+  rowCnt : number;
+  colCnt : number;
+  isScreenSharing: boolean;
+}
+
+export type subscriberVideoPropsType = {
+  subscriber: StreamManager;
+  rowCnt : number;
+  colCnt : number;
+  isScreenSharing: boolean
+}
 
 export type funcButtonPropsTypes = {
-  publisher?: Publisher;
+  publisher: Publisher;
   isAudioOn: boolean;
   isVideoOn: boolean;
-  isScreenSharing: boolean;
   setIsAudioOn: Dispatch<SetStateAction<boolean>>;
   setIsVideoOn: Dispatch<SetStateAction<boolean>>;
-  setIsScreenSharing: Dispatch<SetStateAction<boolean>>;
-  leaveSession: () => void;
-  // setIsScreenShareModal: Dispatch<SetStateAction<boolean>>;
+  doScreenSharing: boolean;
+  setDoStartScreenSharing: Dispatch<SetStateAction<boolean>>;
+  setDoStopScreenSharing: Dispatch<SetStateAction<boolean>>;
 };
 
 export type screenShareMadalPropsTypes = {
   setIsScreenShareModal: Dispatch<SetStateAction<boolean>>;
   setChoiceScreen: Dispatch<SetStateAction<string>>;
+  setDoStartScreenSharing: Dispatch<SetStateAction<boolean>>;
 };

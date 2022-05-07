@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -15,24 +16,40 @@ import com.tooliv.server.domain.user.application.dto.request.SignUpRequestDTO;
 import com.tooliv.server.domain.user.application.service.UserService;
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
+import com.tooliv.server.global.security.util.JwtAuthenticationProvider;
+import java.io.FileInputStream;
 import java.util.Optional;
+import org.apache.http.HttpHeaders;
+import org.json.JSONObject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserControllerTest extends BaseIntegrationTest {
 
     @Autowired
+    ApplicationContext resourceLoader;
+
+    @Autowired
+    JwtAuthenticationProvider jwtAuthenticationProvider;
+
+    @Autowired
     UserRepository userRepository;
 
     @Autowired
     UserService userService;
+
+    private static String token;
 
     @Order(1)
     @Test
@@ -140,12 +157,18 @@ public class UserControllerTest extends BaseIntegrationTest {
         assertNotNull(userRepository.findByEmailAndDeletedAt(logInRequestDTO.getEmail(), null).orElse(null));
 
         // When
-        ResultActions resultActions = mockMvc.perform(post("/api/user/login")
-            .content(new Gson().toJson(logInRequestDTO))
-            .contentType(MediaType.APPLICATION_JSON));
+        MvcResult result = mockMvc.perform(post("/api/user/login")
+                .content(new Gson().toJson(logInRequestDTO))
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isCreated())
+            .andReturn();
 
         // Then
-        resultActions.andExpect(status().isCreated());
+        assertNotNull(result.getResponse());
+
+        String jsonString = result.getResponse().getContentAsString();
+        JSONObject jsonObject = new JSONObject(jsonString);
+        token = jsonObject.getString("accessToken");
 
     }
 
@@ -181,6 +204,52 @@ public class UserControllerTest extends BaseIntegrationTest {
         ResultActions resultActions = mockMvc.perform(post("/api/user/login")
             .content(new Gson().toJson(logInRequestDTO))
             .contentType(MediaType.APPLICATION_JSON));
+
+        // Then
+        resultActions.andExpect(status().isConflict());
+
+    }
+
+    @Order(8)
+    @Test
+    @DisplayName("Image Upload Test - Uploading Image File")
+    void shouldAbleToUploadProfileImage() throws Exception {
+
+        // Given
+        assertNotNull(token);
+        assertEquals(jwtAuthenticationProvider.getEmail(token), "test@test.com");
+
+        Resource resource = resourceLoader.getResource("classpath:tooliv_img.jpeg");
+        MockMultipartFile mockMultipartFile = new MockMultipartFile("multipartFile", "tooliv_img.jpeg", "image/jpeg",
+            new FileInputStream(resource.getFile()));
+
+        // When
+        ResultActions resultActions = mockMvc.perform(multipart("/api/user/image")
+            .file(mockMultipartFile)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + token));
+
+        // Then
+        resultActions.andExpect(status().isCreated());
+
+    }
+
+    @Order(9)
+    @Test
+    @DisplayName("Image Upload Test - Uploading Non-Image File")
+    void shouldAbleToUploadProfileImageWithNonImageFile() throws Exception {
+
+        // Given
+        assertNotNull(token);
+        assertEquals(jwtAuthenticationProvider.getEmail(token), "test@test.com");
+
+        Resource resource = resourceLoader.getResource("classpath:tooliv_txt.txt");
+        MockMultipartFile mockMultipartFile = new MockMultipartFile("multipartFile", "tooliv_txt.txt", "text/*",
+            new FileInputStream(resource.getFile()));
+
+        // When
+        ResultActions resultActions = mockMvc.perform(multipart("/api/user/image")
+            .file(mockMultipartFile)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + token));
 
         // Then
         resultActions.andExpect(status().isConflict());
