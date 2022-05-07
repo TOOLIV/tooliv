@@ -40,7 +40,10 @@ export const updateProfileImage = async (body: any) => {
   return response;
 };
 
-export const getUserList = async (keyword: string) => {
-  const response = await instance.get(`/user/search?keyword=${keyword}`);
+export const getUserList = async (keyword: string, sequence: number) => {
+  const response = await instance.get(
+    `/user/search?keyword=${keyword}&sequence=${sequence}`
+  );
+  console.log(response);
   return response;
 };
