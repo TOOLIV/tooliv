@@ -53,7 +53,6 @@ const SideHeader = () => {
 
   const handleWorkspaceInfo = useCallback(async () => {
     const { data } = await getWorkspaceInfo(currentWorkspaceId);
-    console.log(data);
     setWorkspaceName(data.name);
     setThumbnailImage(data.thumbnailImage);
   }, [currentWorkspaceId]);
@@ -96,7 +95,6 @@ const SideHeader = () => {
       <DropdownWrapper ref={dropdownRef}>
         <Title
           onClick={() => {
-            console.log('hello');
             setDropdownOpen(!dropdownOpen);
           }}
         >

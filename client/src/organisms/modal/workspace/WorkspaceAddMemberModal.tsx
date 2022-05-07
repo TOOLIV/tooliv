@@ -15,10 +15,8 @@ import UserBadge from 'molecules/userBadge/UserBadge';
 import UserInfo from 'molecules/userInfo/UserInfo';
 import { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import { currentChannelNum } from 'recoil/atom';
-import { colors } from 'shared/color';
-import { userBadgeTypes } from 'types/common/userTypes';
 import {
   addWorkspaceMemberType,
   inviteMembersBadgeType,
@@ -65,7 +63,9 @@ const Header = styled.div`
 const UserBox = styled.div`
   display: flex;
   flex-wrap: wrap;
-  height: 30vh;
+  align-content: flex-start;
+  max-height: 25vh;
+  min-height: 15vh;
   overflow: scroll;
   margin-bottom: 10px;
 `;
@@ -83,13 +83,13 @@ const UserBadgeWrapper = styled.div`
   display: flex;
   align-content: flex-start;
   flex-wrap: wrap;
-  height: 18vh;
+  max-height: 18vh;
   overflow: scroll;
 `;
 
 const BadgeBox = styled.div`
+  width: 50%;
   padding: 5px;
-  height: fit-content;
 `;
 
 const UserInfoWrapper = styled.div`
@@ -109,6 +109,7 @@ const WorkspaceAddMemberModal = forwardRef<
   HTMLDivElement,
   addWorkspaceMemberType
 >(({ isOpen, onClose }, ref) => {
+  const [allUserList, setAllUserList] = useState<workspaceMemberType[]>([]);
   const [userList, setUserList] = useState<workspaceMemberType[]>([]);
   const [userBadgeList, setUserBadgeList] = useState<inviteMembersBadgeType[]>(
     []
@@ -134,38 +135,31 @@ const WorkspaceAddMemberModal = forwardRef<
 
   const searchUserList = useCallback(() => {
     const keyword = inputRef.current?.value!;
-    console.log(keyword);
     setKeyword(keyword);
-    setSequence(1);
-    setEndCheck(false);
-    setUserList([]);
   }, []);
 
   const userListApi = useCallback(
     async (keyword: string) => {
       if (!endCheckRef.current) {
-        console.log('들어옴?');
-        console.log(keyword);
-        console.log(sequenceRef.current);
         const response = await searchNotWorkspaceMemberList(
           workspaceId!,
           keyword,
           sequenceRef.current
         );
-        console.log(response);
         const data = response.data.workspaceMemberGetResponseDTOList;
-        console.log(data);
         if (data.length === 0) {
           setIsLoaded(false);
           setEndCheck(true);
           return;
         }
+        console.log(data);
         if (data) {
           const list = data.filter((user: workspaceMemberType) => {
             return userBadgeList.find((badge) => badge.email === user.email)
               ? false
               : true;
           });
+          setAllUserList((prev) => [...prev, ...data]);
           setUserList((prev) => [...prev, ...list]);
           setSequence((prev) => prev + 1);
         }
@@ -175,13 +169,12 @@ const WorkspaceAddMemberModal = forwardRef<
   );
 
   useEffect(() => {
-    setUserList([]);
-  }, [workspaceId, userListApi]);
-
-  useEffect(() => {
-    console.log(debouncedValue);
-    userListApi(debouncedValue);
-  }, [debouncedValue]);
+    if (workspaceId && isOpen) {
+      console.log('하이');
+      initModal();
+      userListApi(debouncedValue);
+    }
+  }, [debouncedValue, workspaceId]);
 
   const deleteUserBadge = useCallback(
     (email: string) => {
@@ -205,11 +198,27 @@ const WorkspaceAddMemberModal = forwardRef<
     [inviteUserList, userBadgeList]
   );
 
-  const exitModal = useCallback(() => {
-    inputRef.current!.value = '';
+  useEffect(() => {
+    const list = allUserList.filter((user: workspaceMemberType) => {
+      return userBadgeList.find((badge) => badge.email === user.email)
+        ? false
+        : true;
+    });
+    setUserList(list);
+  }, [userBadgeList]);
+
+  const initModal = useCallback(() => {
     setUserBadgeList([]);
     setInviteUserList([]);
     setUserList([]);
+    setSequence(1);
+    setEndCheck(false);
+  }, []);
+
+  const exitModal = useCallback(() => {
+    inputRef.current!.value = '';
+    setKeyword('');
+    initModal();
     onClose();
   }, [onClose]);
 
@@ -224,8 +233,9 @@ const WorkspaceAddMemberModal = forwardRef<
     async (body: inviteMembersType) => {
       try {
         await inviteWorkspaceMember(workspaceId!, body);
-        // const newMember = body.emailList.length;
-        // setCurrentChannelMemberNum((prev) => prev + newMember);
+        // 워크스페이스 내 다른 채널에서 워크스페이스 멤버 초대시
+        const newMember = body.emailList.length;
+        setCurrentChannelMemberNum((prev) => prev + newMember);
         exitModal();
       } catch (error) {
         console.log(error);
@@ -235,15 +245,17 @@ const WorkspaceAddMemberModal = forwardRef<
   );
 
   useEffect(() => {
-    let observer: any;
-    if (target) {
-      observer = new IntersectionObserver(onIntersect, {
-        threshold: 1,
-      });
-      observer.observe(target);
+    if (isOpen) {
+      let observer: any;
+      if (target) {
+        observer = new IntersectionObserver(onIntersect, {
+          threshold: 1,
+        });
+        observer.observe(target);
+      }
+      return () => observer && observer.disconnect();
     }
-    return () => observer && observer.disconnect();
-  }, [target]);
+  }, [target, isOpen, debouncedValue]);
 
   const onIntersect = async ([entry]: any, observer: any) => {
     if (entry.isIntersecting && !isLoaded) {
