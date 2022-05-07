@@ -7,7 +7,7 @@ export const VideoContainer = styled.div<{rowCnt:number, colCnt:number, isScreen
   width: ${props => props.isScreenSharing? '20vh' : 'calc(100% / '+ props.rowCnt + ' - '+ (props.rowCnt-1)*4 +'px)'};
   height: ${props => props.isScreenSharing? '15vh' : 'calc(100% / '+ props.colCnt + ' - '+ (props.colCnt-1)*4 +'px)'};
   border-radius: 10px;
-  background-color: ${colors.black};
+  background-color: ${colors.gray900};
   min-width: 20vh;
 `;
 
