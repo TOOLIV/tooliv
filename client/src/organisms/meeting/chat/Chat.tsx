@@ -1,6 +1,4 @@
 import styled from '@emotion/styled';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Variants } from 'framer-motion/types/types';
 import React from 'react';
 import { useRecoilState } from 'recoil';
 import Icons from '../../../atoms/common/Icons';
@@ -11,7 +9,6 @@ import { isOpenChat } from '../../../recoil/atom';
 import { chatTypes } from '../../../types/meeting/chatTypes';
 
 const ChatContainer = styled.div`
-  margin-top: 24px;
   width: 280px;
   background-color: ${(props) => props.theme.sideBgColor};
   border-radius: 40px 0 0 0;
@@ -19,11 +16,6 @@ const ChatContainer = styled.div`
 
 const Chat = () => {
   const [isChatOpen, setIsChatOpen] = useRecoilState<boolean>(isOpenChat);
-
-  const variants: Variants = {
-    open: { opacity: 1, x: 0 },
-    closed: { opacity: 1, x: 'calc(100vw - 280px)' },
-  };
 
   const testSet: chatTypes[] = [
     {
@@ -48,19 +40,15 @@ const Chat = () => {
   };
 
   return (
-    <AnimatePresence>
-      {isChatOpen && (
-        <ChatContainer>
-          <>
-            <TopContainer>
-              <Icons icon="anglesRight" onClick={onCloseChat} />
-              <MenuTemplate title="채팅" />
-            </TopContainer>
-            {testSet && testSet.map((data, idx) => <ChatItem data={data} />)}
-          </>
-        </ChatContainer>
-      )}
-    </AnimatePresence>
+    <ChatContainer>
+      <>
+        <TopContainer>
+          <Icons icon="anglesRight" onClick={onCloseChat} />
+          <MenuTemplate title="채팅" />
+        </TopContainer>
+        {testSet && testSet.map((data, idx) => <ChatItem data={data} />)}
+      </>
+    </ChatContainer>
   );
 };
 
