@@ -4,9 +4,8 @@ import React, { useEffect, useRef } from 'react';
 import { colors } from 'shared/color';
 
 const MainStateContainer = styled.div`
-  margin-top: 3px;
   width: 100%;
-  height: 70%;
+  height: calc(85vh - 258px);
   border-radius: 10px;
   background-color: ${colors.black};
 `;
@@ -24,7 +23,6 @@ const MainStage = ({ streamManager }: MainStagePropsType) => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    console.log("streamManager>>>>>>>>>>>>>>>>>>>>>>>", streamManager);
     if (videoRef.current) streamManager.addVideoElement(videoRef.current);
   }, [streamManager]);
 

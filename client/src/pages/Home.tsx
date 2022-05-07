@@ -15,7 +15,6 @@ const Wrapper = styled.div<{ leftMargin: number; rightMargin: number }>`
   );
   height: calc(100vh - 64px);
   margin-left: ${(props) => props.leftMargin + 'px'};
-  margin-right: ${(props) => props.rightMargin + 'px'};
 `;
 
 const Container = styled.div`
@@ -49,7 +48,7 @@ const Home = () => {
             <Outlet />
           </InnerContainer>
         </Wrapper>
-        <Chat />
+        {isChatOpen && <Chat />}
       </Container>
     </>
   );

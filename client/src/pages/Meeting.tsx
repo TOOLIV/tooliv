@@ -6,18 +6,19 @@ import MainStage from 'molecules/meeting/MainStage';
 import { OpenVidu, Publisher, Session, StreamManager } from 'openvidu-browser';
 import FunctionButtons from 'organisms/meeting/FunctionButtons';
 import ScreenShareModal from 'organisms/meeting/video/ScreenShareModal';
-import VideosCopy from 'organisms/meeting/video/VideosCopy';
+import Videos from 'organisms/meeting/video/Videos';
 import React, { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import { isOpenChat } from 'recoil/atom';
 
 const MeetingContainer = styled.div`
   /* background-color: #787878; */
-  height: calc(100vh - 216px);
+  height: calc(100vh - 194px);
 `;
 
 const MeetingInnerContainer = styled.div`
-  height: calc(100vh - 240px);
+  height: calc(100vh - 252px);
+  margin-bottom: 12px;
 `;
 
 const Meeting = () => {
@@ -55,6 +56,7 @@ const Meeting = () => {
   const [isVideoOn, setIsVideoOn] = useState<boolean>(true);
 
   const [isScreen, setIsScreen] = useState<boolean>(false);
+  const [pauseScreenSharing, setPauseScreenSharing] = useState<boolean>();
 
   const [choiceScreen, setChoiceScreen] = useState<string>('');
   const [openScreenModal, setOpenScreenModal] = useState<boolean>(false);
@@ -64,21 +66,20 @@ const Meeting = () => {
   }, []);
 
   useEffect(() => {
-    window.addEventListener('beforeunload', leaveSession)
+    window.addEventListener('beforeunload', leaveSession);
     return () => {
       leaveSession();
       window.removeEventListener('beforeunload', leaveSession);
-    }
-  }, [session])
+    };
+  }, [session]);
 
   useEffect(() => {
-    window.addEventListener('beforeunload', leaveSessionForScreenSharing)
+    window.addEventListener('beforeunload', leaveSessionForScreenSharing);
     return () => {
       leaveSessionForScreenSharing();
-      window.removeEventListener('beforeunload', leaveSessionForScreenSharing)
-    }
+      window.removeEventListener('beforeunload', leaveSessionForScreenSharing);
+    };
   }, [sessionForScreenSharing]);
-
 
   const joinSession = () => {
     const newOV = new OpenVidu();
@@ -102,6 +103,7 @@ const Meeting = () => {
           // 비디오인 경우 화면 공유 스트림
           setMainStreamManager(newSubscriber);
           setIsScreen(true);
+          // setPauseScreenSharing(true);
         }
       });
 
@@ -158,6 +160,16 @@ const Meeting = () => {
   };
 
   useEffect(() => {
+    console.log(isScreenSharing);
+    if (isScreenSharing) {
+      console.log('화면공유 중지>>>>>>>>>>>>>>>>>>>>>>>>');
+      if (!sessionForScreenSharing) return;
+      if (!publisherForScreenSharing) return;
+      sessionForScreenSharing.unpublish(publisherForScreenSharing);
+    }
+  }, [pauseScreenSharing]);
+
+  useEffect(() => {
     if (!isScreenSharing) {
       stopScreenShare();
       setChoiceScreen('');
@@ -191,7 +203,6 @@ const Meeting = () => {
   };
 
   const leaveSessionForScreenSharing = () => {
-
     if (!sessionForScreenSharing) return;
     sessionForScreenSharing?.disconnect();
     setMainStreamManager(null);
@@ -258,7 +269,7 @@ const Meeting = () => {
     <MeetingContainer>
       <MeetingInnerContainer>
         {publisher && (
-          <VideosCopy
+          <Videos
             publisher={publisher}
             subscribers={subscribers}
             isScreen={isScreen}

@@ -137,6 +137,7 @@ const reset = css`
   }
   &::-webkit-scrollbar {
     width: 6px;
+    height: 6px;
   }
 
   /* 스크롤바 막대 설정*/
