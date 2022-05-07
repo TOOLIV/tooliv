@@ -55,7 +55,7 @@ const ChannelHeader = () => {
   const [channelMemberNum, setChannelMemberNum] = useState(0);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [modifyModalOpen, setModifyModalOpen] = useState(false);
-  const [memeberListOpen, setMemberListOpen] = useState(false);
+  const [memberListOpen, setMemberListOpen] = useState(false);
   const [addMemeberOpen, setAddMemberOpen] = useState(false);
   const [userCode, setUserCode] = useState('');
 
@@ -71,7 +71,7 @@ const ChannelHeader = () => {
     }
   };
   const handleClickMemberOutside = ({ target }: any) => {
-    if (memeberListOpen && !memberListRef.current?.contains(target)) {
+    if (memberListOpen && !memberListRef.current?.contains(target)) {
       setMemberListOpen(false);
     }
   };
@@ -88,21 +88,21 @@ const ChannelHeader = () => {
     return () => {
       document.removeEventListener('mousedown', handleClickMemberOutside);
     };
-  }, [memeberListOpen]);
+  }, [memberListOpen]);
 
-  // 새로고침시 채널별 인원수가 초기화 되므로 다시 저장하기 위한 useEffect
-  useEffect(() => {
-    if (currentChannelMemberNum === 0 && channelId) {
-      handleChannelInfo();
-    }
-  }, []);
+  // // 새로고침시 채널별 인원수가 초기화 되므로 다시 저장하기 위한 useEffect
+  // useEffect(() => {
+  //   if (currentChannelMemberNum === 0 && channelId) {
+  //     handleChannelInfo();
+  //   }
+  // }, []);
 
-  // 워크스페이스 멤버 초대시 인원수 변경 감지 후 리렌더링
-  useEffect(() => {
-    if (currentChannelMemberNum !== 0) {
-      setChannelMemberNum(currentChannelMemberNum);
-    }
-  }, [currentChannelMemberNum]);
+  // // 채널 멤버 초대시 인원수 변경 감지 후 리렌더링
+  // useEffect(() => {
+  //   if (currentChannelMemberNum !== 0) {
+  //     setChannelMemberNum(currentChannelMemberNum);
+  //   }
+  // }, [currentChannelMemberNum]);
 
   useEffect(() => {
     if (channelId) {
@@ -112,11 +112,10 @@ const ChannelHeader = () => {
       setChannelName('홈');
       setUserCode('');
     }
-  }, [channelId, modChannelName]);
+  }, [channelId, modChannelName, currentChannelMemberNum]);
 
   const handleChannelInfo = async () => {
     try {
-      // channelId로 channel명 및 명수 받아오는 api 있으면 좋을듯
       const { data } = await getChannelInfo(channelId!);
       console.log(data);
       setChannelName(data.name);
@@ -178,25 +177,25 @@ const ChannelHeader = () => {
         <MemberListWrapper ref={memberListRef}>
           <Members
             onClick={() => {
-              setMemberListOpen(!memeberListOpen);
+              setMemberListOpen(!memberListOpen);
             }}
           >
             <Icons
               icon="solidPerson"
               width="28"
               height="28"
-              color={memeberListOpen ? 'blue100' : 'gray500'}
+              color={memberListOpen ? 'blue100' : 'gray500'}
             />
             <Text
               size={16}
-              color={memeberListOpen ? 'blue100' : 'gray500'}
+              color={memberListOpen ? 'blue100' : 'gray500'}
               pointer
             >
               {String(channelMemberNum)}
             </Text>
           </Members>
           <ChannelMemberListModal
-            isOpen={memeberListOpen}
+            isOpen={memberListOpen}
             onClick={handleAddMemberModalOpen}
             onClose={closeMemberList}
           />
