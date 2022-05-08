@@ -58,6 +58,7 @@ public class UserControllerTest extends BaseIntegrationTest {
 
         // Given
         SignUpRequestDTO signUpRequestDTO = new SignUpRequestDTO("test@test.com", "test", "password");
+        SignUpRequestDTO signUpRequestDTO2 = new SignUpRequestDTO("test2@test.com", "test2", "password2");
 
         // When
         mockMvc.perform(post("/api/user")
@@ -65,11 +66,19 @@ public class UserControllerTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isCreated());
 
+        mockMvc.perform(post("/api/user")
+                .content(new Gson().toJson(signUpRequestDTO2))
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isCreated());
+
         Optional<User> user = userRepository.findByEmailAndDeletedAt("test@test.com", null);
+        Optional<User> user2 = userRepository.findByEmailAndDeletedAt("test2@test.com", null);
 
         // Then
         assertTrue(user.isPresent());
-        assertEquals(user.get().getEmail(), "test@test.com");
+        assertTrue(user2.isPresent());
+        assertEquals(user.get().getName(), "test");
+        assertEquals(user.get().getName(), "test2");
 
     }
 
@@ -241,6 +250,7 @@ public class UserControllerTest extends BaseIntegrationTest {
         // Given
         assertNotNull(token);
         assertEquals(jwtAuthenticationProvider.getEmail(token), "test@test.com");
+        String profileImage = userRepository.findByEmailAndDeletedAt("test@test.com", null).get().getProfileImage();
 
         Resource resource = resourceLoader.getResource("classpath:tooliv_txt.txt");
         MockMultipartFile mockMultipartFile = new MockMultipartFile("multipartFile", "tooliv_txt.txt", "text/*",
@@ -248,8 +258,8 @@ public class UserControllerTest extends BaseIntegrationTest {
 
         // When
         ResultActions resultActions = mockMvc.perform(multipart("/api/user/image")
-            .file(mockMultipartFile)
-            .header(HttpHeaders.AUTHORIZATION, "Bearer " + token));
+                .file(mockMultipartFile)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token));
 
         // Then
         resultActions.andExpect(status().isConflict());
