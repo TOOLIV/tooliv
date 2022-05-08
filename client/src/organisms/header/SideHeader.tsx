@@ -7,6 +7,7 @@ import WorkspaceDropDown from 'organisms/modal/workspace/WorkspaceDropDown';
 import WorkspaceMemberListModal from 'organisms/modal/workspace/WorkspaceMemberListModal';
 import WorkspaceModifyModal from 'organisms/modal/workspace/WorkspaceModifyModal';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { currentWorkspace, isOpenSide, modifyWorkspaceName } from 'recoil/atom';
 
@@ -37,7 +38,7 @@ const SideHeader = () => {
   const [thumbnailImage, setThumbnailImage] = useState('');
 
   const dropdownRef = useRef<HTMLDivElement>(null);
-
+  const { workspaceId } = useParams();
   const handleClickOutside = ({ target }: any) => {
     if (dropdownOpen && !dropdownRef.current?.contains(target)) {
       setDropdownOpen(false);
@@ -53,13 +54,12 @@ const SideHeader = () => {
 
   const handleWorkspaceInfo = useCallback(async () => {
     const { data } = await getWorkspaceInfo(currentWorkspaceId);
-    console.log(data);
     setWorkspaceName(data.name);
     setThumbnailImage(data.thumbnailImage);
   }, [currentWorkspaceId]);
 
   useEffect(() => {
-    if (currentWorkspaceId !== 'main') handleWorkspaceInfo();
+    if (workspaceId && currentWorkspaceId !== 'main') handleWorkspaceInfo();
     else setWorkspaceName('홈');
   }, [currentWorkspaceId, handleWorkspaceInfo, modWorkspaceName]);
 
@@ -96,7 +96,6 @@ const SideHeader = () => {
       <DropdownWrapper ref={dropdownRef}>
         <Title
           onClick={() => {
-            console.log('hello');
             setDropdownOpen(!dropdownOpen);
           }}
         >

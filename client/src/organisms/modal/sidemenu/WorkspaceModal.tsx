@@ -137,14 +137,7 @@ const WorkspaceModal = ({ isOpen, onClose }: workspaceModalType) => {
         // 구독 풀고
         unsub();
         // 다시 구독 (바로 메시지 전송할 수 있게)
-        sub(
-          setContents,
-          notiList,
-          setNotiList,
-          userInfo.userId,
-          workspaceList,
-          setWorkspaceList
-        );
+        sub(setContents, userInfo.userId);
         onClose();
       }
     } catch (error) {
