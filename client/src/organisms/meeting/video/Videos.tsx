@@ -7,20 +7,23 @@ import { useRecoilValue } from 'recoil';
 import { isOpenChat, isOpenSide } from '../../../recoil/atom';
 import { videosTypes } from '../../../types/meeting/openviduTypes';
 
-const VideoContainer = styled.div<{ isChat: boolean; isScreen: boolean }>`
+const VideoContainer = styled.div<{
+  isChat: boolean;
+  isScreenSharing: boolean;
+}>`
   display: flex;
-  flex-wrap: ${(props) => (props.isScreen ? '' : 'wrap')};
+  flex-wrap: ${(props) => (props.isScreenSharing ? '' : 'wrap')};
   place-items: center;
-  justify-content: ${(props) => (props.isScreen ? '' : 'center')};
+  justify-content: ${(props) => (props.isScreenSharing ? '' : 'center')};
   align-items: center;
   gap: 4px;
   width: inherit;
-  height: ${(props) => (props.isScreen ? '15vh' : 'calc(100% - 12px)')};
-  overflow-x: ${props => props.isScreen? 'scroll':""};
+  height: ${(props) => (props.isScreenSharing ? '15vh' : 'calc(100% - 12px)')};
+  overflow-x: ${(props) => (props.isScreenSharing ? 'scroll' : '')};
   overflow-y: hidden;
 `;
 
-const Videos = ({ publisher, subscribers, isScreen }: videosTypes) => {
+const Videos = ({ publisher, subscribers, isScreenSharing }: videosTypes) => {
   const isChat = useRecoilValue(isOpenChat);
   const isSide = useRecoilValue(isOpenSide);
   const [rowCnt, setRowCnt] = useState<number>(1);
@@ -46,19 +49,19 @@ const Videos = ({ publisher, subscribers, isScreen }: videosTypes) => {
   }, [publisher, subscribers, isChat, isSide]);
 
   return (
-    <VideoContainer isChat={isChat} isScreen={isScreen}>
+    <VideoContainer isChat={isChat} isScreenSharing={isScreenSharing}>
       <PublisherVideo
         publisher={publisher}
         rowCnt={rowCnt}
         colCnt={colCnt}
-        isScreenSharing={isScreen}
+        isScreenSharing={isScreenSharing}
       />
       {subscribers.map((sub: StreamManager) => (
         <SubscriberVideo
           subscriber={sub}
           rowCnt={rowCnt}
           colCnt={colCnt}
-          isScreenSharing={isScreen}
+          isScreenSharing={isScreenSharing}
           key={sub.stream.connection.connectionId}
         />
       ))}
