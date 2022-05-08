@@ -5,7 +5,7 @@ import Button from 'atoms/common/Button';
 import Icons from 'atoms/common/Icons';
 import Text from 'atoms/text/Text';
 import InputBox from 'molecules/inputBox/InputBox';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 import { modifyChannelName } from 'recoil/atom';
@@ -59,6 +59,11 @@ const ChannelModifyModal = ({
   const { channelId } = useParams();
   const setModifyChannelName = useSetRecoilState(modifyChannelName);
 
+  useEffect(() => {
+    inputRef.current!.value = channelName;
+    setName(channelName);
+  }, [channelName]);
+
   const onChange = () => {
     setName(inputRef.current?.value!);
   };
@@ -89,7 +94,7 @@ const ChannelModifyModal = ({
         </Header>
         <InputBox
           label="채널명"
-          placeholder={channelName}
+          placeholder="채널명을 입력해주세요."
           ref={inputRef}
           onChange={onChange}
         />

@@ -82,6 +82,11 @@ const WorkspaceModifyModal = ({
   const inputWorkspaceRef = useRef<HTMLInputElement>(null);
   const setModifyWorkspaceName = useSetRecoilState(modifyWorkspaceName);
 
+  useEffect(() => {
+    inputWorkspaceRef.current!.value = workspaceName;
+    setName(workspaceName);
+  }, [workspaceName]);
+
   const onChange = () => {
     setName(inputWorkspaceRef.current?.value!);
   };
@@ -89,6 +94,7 @@ const WorkspaceModifyModal = ({
   const handleSetImg = (file: FileList) => {
     setFile(file[0]);
   };
+
   const { workspaceId } = useParams();
   const modWorkspace = async () => {
     const formData = new FormData();
@@ -144,7 +150,7 @@ const WorkspaceModifyModal = ({
         </Title>
         <InputBox
           label="워크스페이스명"
-          placeholder={workspaceName}
+          placeholder="워크스페이스명을 입력해주세요."
           ref={inputWorkspaceRef}
           onChange={onChange}
         />

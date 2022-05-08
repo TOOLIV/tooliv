@@ -12,9 +12,9 @@ const Container = styled.div`
   width: 100%;
   border-radius: 10px;
   border: 1px solid ${(props) => props.theme.borderColor};
-  /* border: 1px solid ${colors.gray200}; */
+  display: flex;
   min-height: 64px;
-  position: relative;
+  padding: 0 10px;
 `;
 const Input = styled.textarea`
   width: 85%;
@@ -24,12 +24,16 @@ const Input = styled.textarea`
   resize: none;
   color: ${(props) => props.theme.textColor};
   background-color: ${(props) => props.theme.bgColor};
+
+  &:focus {
+    outline: none;
+  }
 `;
 const Wrapper = styled.div`
   display: flex;
-  position: absolute;
-  right: 16px;
-  top: 12px;
+  /* position: absolute; */
+  /* right: 16px; */
+  /* top: 12px; */
   justify-content: center;
   align-items: center;
 `;
