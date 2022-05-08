@@ -28,7 +28,7 @@ const AppRouter = () => {
             <Route path="" element={<Navigate replace to="/main" />} />
             <Route path="/main" element={<Main />} />
             <Route path="/:workspaceId/:channelId" element={<Channel />} />
-            <Route path="/:userId" element={<DM />} />
+            <Route path="/direct/:workspaceId/:channelId" element={<DM />} />
             <Route
               path="/meeting/:workspaceId/:channelId"
               element={<Meeting />}

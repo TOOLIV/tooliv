@@ -98,6 +98,6 @@ export type modifyChannelType = {
 
 export type channelNotiType = {
   channelId: string;
-  workspaceId: string;
+  workspaceId?: string;
   notificationRead: boolean;
 };

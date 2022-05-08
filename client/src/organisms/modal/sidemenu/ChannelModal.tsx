@@ -8,9 +8,10 @@ import ChannelRadio from 'molecules/radio/channelRadio/ChannelRadio';
 import VisibilityRadio from 'molecules/radio/visibiltyRadio/VisibilityRadio';
 import React, { useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useSetRecoilState } from 'recoil';
-import { currentChannel } from 'recoil/atom';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import { channelNotiList, currentChannel } from 'recoil/atom';
 import { colors } from 'shared/color';
+import { channelNotiType } from 'types/channel/contentType';
 import { workspaceModalType } from 'types/workspace/workspaceTypes';
 
 const Modal = styled.div<{ isOpen: boolean }>`
@@ -63,6 +64,8 @@ const ChannelModal = ({ isOpen, onClose }: workspaceModalType) => {
   const [channelCode, setChannelCode] = useState('CHAT');
   const [privateYn, setPrivateYn] = useState(false);
   const setCurrentChannelId = useSetRecoilState(currentChannel);
+  const [notiList, setNotiList] =
+    useRecoilState<channelNotiType[]>(channelNotiList);
   const { workspaceId } = useParams();
   const navigate = useNavigate();
 
@@ -87,6 +90,10 @@ const ChannelModal = ({ isOpen, onClose }: workspaceModalType) => {
         console.log(response);
         const channelId = response.data.id;
         setCurrentChannelId(channelId);
+        setNotiList([
+          ...notiList,
+          { channelId, workspaceId, notificationRead: true },
+        ]);
         navigate(`${workspaceId}/${channelId}`);
         onClose();
       }
