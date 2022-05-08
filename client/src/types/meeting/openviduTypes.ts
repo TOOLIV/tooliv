@@ -5,6 +5,7 @@ export type videosTypes = {
   publisher: Publisher;
   subscribers: Array<StreamManager>;
   isScreenSharing: boolean;
+  isSpeakList: Array<string>;
 };
 
 export type publisherVideoPropsType = {
@@ -12,6 +13,7 @@ export type publisherVideoPropsType = {
   rowCnt: number;
   colCnt: number;
   isScreenSharing: boolean;
+  isSpeak: boolean;
 };
 
 export type subscriberVideoPropsType = {
@@ -19,6 +21,7 @@ export type subscriberVideoPropsType = {
   rowCnt: number;
   colCnt: number;
   isScreenSharing: boolean;
+  isSpeak: boolean;
 };
 
 export type funcButtonPropsTypes = {
