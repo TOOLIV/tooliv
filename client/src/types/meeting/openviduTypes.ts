@@ -37,3 +37,7 @@ export type screenShareMadalPropsTypes = {
   setChoiceScreen: Dispatch<SetStateAction<string>>;
   setDoStartScreenSharing: Dispatch<SetStateAction<boolean>>;
 };
+
+export type userLabelPropsType = {
+  userName: string;
+};
