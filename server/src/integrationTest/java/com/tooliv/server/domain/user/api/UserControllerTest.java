@@ -14,9 +14,7 @@ import com.google.gson.Gson;
 import com.tooliv.server.BaseIntegrationTest;
 import com.tooliv.server.domain.user.application.dto.request.LogInRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.SignUpRequestDTO;
-import com.tooliv.server.domain.user.application.service.UserService;
 import com.tooliv.server.domain.user.domain.User;
-import com.tooliv.server.domain.user.domain.enums.UserCode;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
 import com.tooliv.server.global.security.util.JwtAuthenticationProvider;
 import java.io.FileInputStream;
@@ -47,9 +45,6 @@ public class UserControllerTest extends BaseIntegrationTest {
 
     @Autowired
     UserRepository userRepository;
-
-    @Autowired
-    UserService userService;
 
     private static String token;
 
