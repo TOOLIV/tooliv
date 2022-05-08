@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -15,6 +16,7 @@ import com.tooliv.server.domain.user.application.dto.request.LogInRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.SignUpRequestDTO;
 import com.tooliv.server.domain.user.application.service.UserService;
 import com.tooliv.server.domain.user.domain.User;
+import com.tooliv.server.domain.user.domain.enums.UserCode;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
 import com.tooliv.server.global.security.util.JwtAuthenticationProvider;
 import java.io.FileInputStream;
@@ -78,7 +80,7 @@ public class UserControllerTest extends BaseIntegrationTest {
         assertTrue(user.isPresent());
         assertTrue(user2.isPresent());
         assertEquals(user.get().getName(), "test");
-        assertEquals(user.get().getName(), "test2");
+        assertEquals(user2.get().getName(), "test2");
 
     }
 
@@ -107,7 +109,7 @@ public class UserControllerTest extends BaseIntegrationTest {
     void shouldNotAbleToSignUpWithDuplicatedEmail() throws Exception {
 
         // Given
-        SignUpRequestDTO signUpRequestDTO = new SignUpRequestDTO("test@test.com", "test2", "password2");
+        SignUpRequestDTO signUpRequestDTO = new SignUpRequestDTO("test@test.com", "test3", "password2");
 
         // When
         mockMvc.perform(post("/api/user")
@@ -187,7 +189,7 @@ public class UserControllerTest extends BaseIntegrationTest {
     void shouldNotAbleToLogIn() throws Exception {
 
         // Given
-        LogInRequestDTO logInRequestDTO = new LogInRequestDTO("test2@test.com", "password2");
+        LogInRequestDTO logInRequestDTO = new LogInRequestDTO("test3@test.com", "password3");
         assertNull(userRepository.findByEmailAndDeletedAt(logInRequestDTO.getEmail(), null).orElse(null));
 
         // When
@@ -258,11 +260,35 @@ public class UserControllerTest extends BaseIntegrationTest {
 
         // When
         ResultActions resultActions = mockMvc.perform(multipart("/api/user/image")
-                .file(mockMultipartFile)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token));
+            .file(mockMultipartFile)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + token));
 
         // Then
         resultActions.andExpect(status().isConflict());
+
+    }
+
+    @Order(10)
+    @Test
+    @DisplayName("Get User Profile Info Test - Existing User")
+    void shouldReturnUserInfo() throws Exception {
+
+        // Given
+        assertNotNull(token);
+        assertEquals(jwtAuthenticationProvider.getEmail(token), "test@test.com");
+        assertTrue(userRepository.findByEmailAndDeletedAt("test2@test.com", null).isPresent());
+
+        // When
+        MvcResult result = mockMvc.perform(get("/api/user/info/test2@test.com")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        // Then
+        String jsonString = result.getResponse().getContentAsString();
+        JSONObject jsonObject = new JSONObject(jsonString);
+
+        assertEquals(jsonObject.getString("nickname"), "test2");
 
     }
 
