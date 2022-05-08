@@ -1,26 +1,28 @@
 import { Publisher, Session, StreamManager } from 'openvidu-browser';
 import { Dispatch, SetStateAction } from 'react';
 
-
 export type videosTypes = {
   publisher: Publisher;
   subscribers: Array<StreamManager>;
-  isScreen: boolean;
+  isScreenSharing: boolean;
+  isSpeakList: Array<string>;
 };
 
 export type publisherVideoPropsType = {
   publisher: Publisher;
-  rowCnt : number;
-  colCnt : number;
+  rowCnt: number;
+  colCnt: number;
   isScreenSharing: boolean;
-}
+  isSpeak: boolean;
+};
 
 export type subscriberVideoPropsType = {
   subscriber: StreamManager;
-  rowCnt : number;
-  colCnt : number;
-  isScreenSharing: boolean
-}
+  rowCnt: number;
+  colCnt: number;
+  isScreenSharing: boolean;
+  isSpeak: boolean;
+};
 
 export type funcButtonPropsTypes = {
   publisher: Publisher;
@@ -37,4 +39,8 @@ export type screenShareMadalPropsTypes = {
   setIsScreenShareModal: Dispatch<SetStateAction<boolean>>;
   setChoiceScreen: Dispatch<SetStateAction<string>>;
   setDoStartScreenSharing: Dispatch<SetStateAction<boolean>>;
+};
+
+export type userLabelPropsType = {
+  userName: string;
 };

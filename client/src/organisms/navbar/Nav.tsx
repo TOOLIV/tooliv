@@ -7,15 +7,24 @@ import Logo from '../../atoms/common/Logo';
 import { useEffect, useRef, useState } from 'react';
 import { user } from 'recoil/auth';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { appThemeMode, channelContents, channelNotiList } from 'recoil/atom';
+import {
+  appThemeMode,
+  channelContents,
+  channelNotiList,
+  DMList,
+  wsList,
+} from 'recoil/atom';
 import { channelNotiType, contentTypes } from 'types/channel/contentType';
 import { connect } from 'services/wsconnect';
 import Avatar from 'atoms/profile/Avatar';
 import { DarkModeSwitch } from 'react-toggle-dark-mode';
 import UserDropdown from 'organisms/modal/user/UserDropdown';
 import UserConfigModal from 'organisms/modal/user/UserConfigModal';
-import { getChannels } from 'api/chatApi';
+import { getChannels, getDMList } from 'api/chatApi';
 import { useNavigate } from 'react-router-dom';
+import { DMInfoType } from 'types/channel/chatTypes';
+import { workspaceListType } from 'types/workspace/workspaceTypes';
+import { getWorkspaceList } from 'api/workspaceApi';
 
 const NavContainer = styled.div`
   padding: 0px 20px;
@@ -65,22 +74,47 @@ const Nav = () => {
   const userInfo = useRecoilValue(user);
   const [notiList, setNotiList] =
     useRecoilState<channelNotiType[]>(channelNotiList);
-
+  const [dmList, setDmList] = useRecoilState<DMInfoType[]>(DMList);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [workspaceList, setWorkspaceList] =
+    useRecoilState<workspaceListType[]>(wsList);
   const navigate = useNavigate();
   useEffect(() => {
+    setIsLoading(true);
+
     getChannels(email).then((res) => {
       const {
         data: { notificationChannelList },
       } = res;
-      console.log(notificationChannelList);
-      setNotiList(notificationChannelList);
-      connect(
-        accessToken,
-        setContents,
-        notificationChannelList,
-        setNotiList,
-        userInfo.userId
-      );
+      getDMList(userInfo.email).then((res) => {
+        const {
+          data: { directInfoDTOList },
+        } = res;
+        setDmList(directInfoDTOList);
+        const newList = [...notificationChannelList, ...directInfoDTOList];
+        setNotiList(newList);
+        getWorkspaceList().then((res) => {
+          const notiWorkspace = notiList.filter((noti) => {
+            if (!noti.notificationRead) {
+              return noti;
+            }
+          });
+          const map = new Map(notiWorkspace.map((el) => [el.workspaceId, el]));
+          const newWSList = res.data.workspaceGetResponseDTOList.map(
+            (dto: any) => {
+              if (map.get(dto.id)) {
+                return { ...dto, noti: false };
+              } else {
+                return { ...dto, noti: true };
+              }
+            }
+          );
+          setWorkspaceList(newWSList);
+          connect(accessToken, setContents, userInfo.userId);
+          setIsLoading(false);
+        });
+        console.log(notiList);
+      });
     });
   }, []);
 

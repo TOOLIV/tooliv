@@ -15,7 +15,6 @@ import com.tooliv.server.global.exception.UserNotFoundException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import java.io.File;
 import java.io.InputStream;
 import java.util.Arrays;
 import javax.validation.Valid;

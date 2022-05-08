@@ -7,15 +7,18 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
+  channelNotiList,
   currentChannel,
   // currentChannel,
   currentWorkspace,
   modifyWorkspaceName,
   userLog,
+  wsList,
 } from 'recoil/atom';
 import { workspaceListType } from 'types/workspace/workspaceTypes';
 import WorkspaceModal from 'organisms/modal/sidemenu/WorkspaceModal';
 import Text from 'atoms/text/Text';
+import { channelNotiType } from 'types/channel/contentType';
 
 const Container = styled.div<{ isOpen: boolean }>`
   padding: 16px 0;
@@ -31,13 +34,14 @@ const Header = styled.div`
 
 const WorkSpaceSection = () => {
   const [isOpen, setIsOpen] = useState(false);
-
-  const [workspaceList, setWorkspaceList] = useState<workspaceListType[]>([]);
+  const [workspaceList, setWorkspaceList] =
+    useRecoilState<workspaceListType[]>(wsList);
   const [curWorkspaceId, setCurWorkspaceId] = useRecoilState(currentWorkspace);
   const setCurrentChannel = useSetRecoilState(currentChannel);
   const [userLogList, setUserLogList] = useRecoilState(userLog);
   const modWorkspaceName = useRecoilValue(modifyWorkspaceName);
-
+  const [notiList, setNotiList] =
+    useRecoilState<channelNotiType[]>(channelNotiList);
   const navigate = useNavigate();
 
   const handleOpenModal = () => {
@@ -48,8 +52,24 @@ const WorkSpaceSection = () => {
   };
 
   const handleWorkspace = async () => {
-    const response = await getWorkspaceList();
-    setWorkspaceList(response.data.workspaceGetResponseDTOList);
+    // getWorkspaceList().then((res) => {
+    //   const notiWorkspace = notiList.filter((noti) => {
+    //     if (!noti.notificationRead) {
+    //       return noti;
+    //     }
+    //   });
+    //   const map = new Map(notiWorkspace.map((el) => [el.workspaceId, el]));
+    //   console.log(map);
+    //   setWorkspaceList(
+    //     res.data.workspaceGetResponseDTOList.map((dto: any) => {
+    //       if (map.get(dto.id)) {
+    //         return { ...dto, noti: false };
+    //       } else {
+    //         return { ...dto, noti: true };
+    //       }
+    //     })
+    //   );
+    // });
   };
 
   const getNextChannelId = async (workspaceId: string) => {
@@ -74,6 +94,14 @@ const WorkSpaceSection = () => {
         [id]: channelId,
       });
       setCurrentChannel(channelId);
+      setWorkspaceList(
+        workspaceList.map((dto: any) => {
+          console.log(dto.id, id);
+          if (id === dto.id) {
+            return { ...dto, noti: true };
+          } else return dto;
+        })
+      );
       navigate(`${id}/${channelId}`);
     }
   };

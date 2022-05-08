@@ -11,6 +11,7 @@ import {
   chatFileNames,
   chatFiles,
   chatFileUrl,
+  wsList,
 } from '../recoil/atom';
 import { channelNotiType, contentTypes } from '../types/channel/contentType';
 import Messages from '../organisms/chat/Messages';
@@ -20,6 +21,7 @@ import { FileTypes } from 'types/common/fileTypes';
 import { user } from 'recoil/auth';
 import LoadSpinner from 'atoms/common/LoadSpinner';
 import { send } from 'services/wsconnect';
+import { workspaceListType } from 'types/workspace/workspaceTypes';
 
 const Container = styled.div`
   width: 100%;
@@ -42,23 +44,42 @@ const Channel = () => {
     useRecoilState<contentTypes[]>(channelContents);
   const [fileUrl, setFileUrl] = useRecoilState<string[]>(chatFileUrl);
   const [fileNames, setFileNames] = useRecoilState<string[]>(chatFileNames);
-  const { accessToken, nickname, email } = useRecoilValue(user);
+  const { accessToken, email } = useRecoilValue(user);
   const [notiList, setNotiList] =
     useRecoilState<channelNotiType[]>(channelNotiList);
-  const { channelId } = useParams<string>();
+  const { workspaceId, channelId } = useParams<string>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [workspaceList, setWorkspaceList] =
+    useRecoilState<workspaceListType[]>(wsList);
 
   useEffect(() => {
+    let flag = true;
     const newList: channelNotiType[] = notiList.map((noti) => {
-      if (noti.channelId === channelId)
+      if (
+        noti.workspaceId === workspaceId &&
+        noti.channelId !== channelId &&
+        !noti.notificationRead
+      ) {
+        flag = false;
+      }
+      if (noti.channelId === channelId) {
         return { ...noti, notificationRead: true };
-      else return noti;
+      } else return noti;
     });
+
+    if (flag) {
+      setWorkspaceList(
+        workspaceList.map((dto: any) => {
+          if (workspaceId === dto.id) {
+            return { ...dto, noti: true };
+          } else return dto;
+        })
+      );
+    }
     setNotiList(newList);
     setIsLoading(true);
     enterChannel(channelId!).then(() => {
       subChannel(channelId!).then((res) => {
-        console.log(res.data);
         setContents(res.data.chatMessageDTOList);
         setIsLoading(false);
       });
