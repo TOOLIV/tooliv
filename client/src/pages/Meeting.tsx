@@ -48,6 +48,7 @@ const Meeting = () => {
 
   const [publisher, setPublisher] = useState<Publisher | null>(null);
   const [subscribers, setSubscribers] = useState<Array<StreamManager>>([]);
+  const [isSpeakList, setIsSpeakList] = useState<Array<string>>([]);
   const [publisherForScreenSharing, setPublisherForScreenSharing] =
     useState<Publisher | null>(null);
 
@@ -128,10 +129,14 @@ const Meeting = () => {
 
       newSession.on('publisherStartSpeaking', (event) => {
         console.log(event);
+        const newIsSpeakList = isSpeakList;
+        newIsSpeakList.push(event.connection.connectionId);
+        setIsSpeakList([...newIsSpeakList]);
       });
 
       newSession.on('publisherStopSpeaking', (event) => {
         console.log(event);
+        deleteIsSperker(event.connection.connectionId);
       });
 
       newSession.on('sessionDisconnected', (event) => {
@@ -241,6 +246,15 @@ const Meeting = () => {
     }
   };
 
+  const deleteIsSperker = (connectionId: string) => {
+    let prevIsSpeakList = isSpeakList;
+    let index = prevIsSpeakList.indexOf(connectionId, 0);
+    if (index > -1) {
+      prevIsSpeakList.splice(index, 1);
+      setIsSpeakList([...prevIsSpeakList]);
+    }
+  };
+
   const leaveSession = () => {
     if (!session) return;
     session?.disconnect();
@@ -300,7 +314,6 @@ const Meeting = () => {
               setSessionForScreenSharing(newSession);
             })
             .catch(() => {
-              console.log('화면 공유 실패!!!!!');
               setDoStartScreenSharing(false);
             });
         })
@@ -331,6 +344,7 @@ const Meeting = () => {
             publisher={publisher}
             subscribers={subscribers}
             isScreenSharing={isScreenSharing}
+            isSpeakList={isSpeakList}
           />
         )}
         {mainStreamManager && (

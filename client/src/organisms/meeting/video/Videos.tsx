@@ -23,7 +23,12 @@ const VideoContainer = styled.div<{
   overflow-y: hidden;
 `;
 
-const Videos = ({ publisher, subscribers, isScreenSharing }: videosTypes) => {
+const Videos = ({
+  publisher,
+  subscribers,
+  isScreenSharing,
+  isSpeakList,
+}: videosTypes) => {
   const isChat = useRecoilValue(isOpenChat);
   const isSide = useRecoilValue(isOpenSide);
   const [rowCnt, setRowCnt] = useState<number>(1);
@@ -55,6 +60,7 @@ const Videos = ({ publisher, subscribers, isScreenSharing }: videosTypes) => {
         rowCnt={rowCnt}
         colCnt={colCnt}
         isScreenSharing={isScreenSharing}
+        isSpeak={isSpeakList.includes(publisher.stream.connection.connectionId)}
       />
       {subscribers.map((sub: StreamManager) => (
         <SubscriberVideo
@@ -63,6 +69,7 @@ const Videos = ({ publisher, subscribers, isScreenSharing }: videosTypes) => {
           colCnt={colCnt}
           isScreenSharing={isScreenSharing}
           key={sub.stream.connection.connectionId}
+          isSpeak={isSpeakList.includes(sub.stream.connection.connectionId)}
         />
       ))}
     </VideoContainer>

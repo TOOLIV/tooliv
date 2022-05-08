@@ -8,6 +8,7 @@ const SubscriberVideo = ({
   colCnt,
   rowCnt,
   isScreenSharing,
+  isSpeak,
 }: subscriberVideoPropsType) => {
   const subscriberVideoRef = useRef<HTMLVideoElement>(null);
   const [visiableLable, setVisiableLabel] = useState<boolean>(false);
@@ -24,6 +25,7 @@ const SubscriberVideo = ({
       isScreenSharing={isScreenSharing}
       onMouseEnter={() => setVisiableLabel(true)}
       onMouseLeave={() => setVisiableLabel(false)}
+      isSpeak={isSpeak}
     >
       <StyledVideo
         ref={subscriberVideoRef}
