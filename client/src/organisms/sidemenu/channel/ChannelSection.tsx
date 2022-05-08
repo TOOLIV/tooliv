@@ -56,7 +56,6 @@ const ChannelSection = () => {
 
   useEffect(() => {
     if (currentChannelId) {
-      console.log(currentChannelId);
       handleChannel();
     }
   }, [currentChannelId, modChannelName]);

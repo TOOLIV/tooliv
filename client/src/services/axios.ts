@@ -69,7 +69,7 @@ instance.interceptors.response.use(
           console.log('401 ERROR, not authorized.');
           // history.push('/login');
           // // // 강제로 새로고침 (임시)
-          localStorage.removeItem('user');
+          localStorage.removeItem('tooliv_info');
           window.location.reload();
 
           break;

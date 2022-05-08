@@ -93,8 +93,6 @@ const UserConfigModal = ({ isOpen, onClose }: userConfigType) => {
     onClose();
   };
   useEffect(() => {
-    console.log(userInfo);
-
     inputNameRef.current!.value = userInfo.name;
     inputEmailRef.current!.value = userInfo.email;
     inputNickNameRef.current!.value = userInfo.nickname;

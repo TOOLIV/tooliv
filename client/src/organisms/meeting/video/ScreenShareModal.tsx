@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import Button from 'atoms/common/Button';
 import React, { useEffect, useState } from 'react';
 import { colors } from '../../../shared/color';
 import { screenShareMadalPropsTypes } from '../../../types/meeting/openviduTypes';
@@ -15,20 +16,12 @@ const ModalContainer = styled.div`
   border-radius: 10px;
   box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px,
     rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px;
+`;
 
+const ListContainer = styled.div`
+  height: 50vh;
   overflow-y: scroll;
   overflow-x: hidden;
-
-  ::-webkit-scrollbar {
-    width: 10px;
-  }
-  ::-webkit-scrollbar-thumb {
-    background-color: ${colors.gray400};
-    border-radius: 45px;
-  }
-  ::-webkit-scrollbar-track {
-    background-color: ${colors.white};
-  }
 `;
 
 const ScreenItem = styled.div`
@@ -49,8 +42,9 @@ const ScreenItem = styled.div`
 const ScreenShareModal = ({
   setIsScreenShareModal,
   setChoiceScreen,
+  setDoStartScreenSharing
 }: screenShareMadalPropsTypes) => {
-  const [screenList, setScreenList] = useState<any>();
+  const [screenList, setScreenList] = useState<Array<any>>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const desktopCapturer = {
     getSources: async (opts: any) =>
@@ -66,31 +60,35 @@ const ScreenShareModal = ({
         setScreenList(data);
         setIsLoading(true);
       });
-    } else {
-      console.log(screenList);
     }
   }, [isLoading]);
 
   const onClickScreenItem = (screenName: string) => {
-    console.log(screenName);
     setChoiceScreen(screenName);
     setIsScreenShareModal(false);
   };
 
+  const onClose = () => {
+    setIsScreenShareModal(false);
+    setDoStartScreenSharing(false);
+  }
+
   return (
     <ModalContainer>
       <div>화면 목록</div>
-      {isLoading &&
-        screenList &&
-        screenList.map((stream: any) => (
-          <ScreenItem
-            key={stream.name}
-            onClick={() => onClickScreenItem(stream.id)}
-          >
-            <img src={stream.thumbnail.toDataURL()} />
-            <div>{stream.name}</div>
-          </ScreenItem>
-        ))}
+      <ListContainer>
+        {isLoading &&
+          screenList.map((stream: any) => (
+            <ScreenItem
+              key={stream.id}
+              onClick={() => onClickScreenItem(stream.id)}
+            >
+              <img alt={stream.name} src={stream.thumbnail.toDataURL()} />
+              <div>{stream.name}</div>
+            </ScreenItem>
+          ))}
+      </ListContainer>
+      <Button text="취소" onClick={onClose}/>
     </ModalContainer>
   );
 };

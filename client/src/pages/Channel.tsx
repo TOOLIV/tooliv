@@ -54,7 +54,6 @@ const Channel = () => {
         return { ...noti, notificationRead: true };
       else return noti;
     });
-    console.log(newList);
     setNotiList(newList);
     setIsLoading(true);
     enterChannel(channelId!).then(() => {
