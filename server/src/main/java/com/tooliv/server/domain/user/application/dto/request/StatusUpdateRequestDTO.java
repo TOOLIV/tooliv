@@ -1,5 +1,6 @@
 package com.tooliv.server.domain.user.application.dto.request;
 
+import com.tooliv.server.domain.user.domain.enums.StatusCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import javax.validation.constraints.NotBlank;
@@ -17,5 +18,5 @@ public class StatusUpdateRequestDTO {
     @NotBlank
     @NotNull
     @ApiModelProperty(name = "상태 코드")
-    private String statusCode;
+    private StatusCode statusCode;
 }

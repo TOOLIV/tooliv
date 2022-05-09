@@ -157,7 +157,8 @@ public class UserController {
     @PatchMapping()
     @ApiOperation(value = "상태 수정")
     public ResponseEntity<? extends BaseResponseDTO> updateStatus(
-        @RequestBody @ApiParam(value = "수정할 상태", required = true) StatusUpdateRequestDTO staus
-    )
+        @RequestBody @ApiParam(value = "수정할 상태", required = true) StatusUpdateRequestDTO statusUpdateRequestDTO) {
+
+    }
 
 }
