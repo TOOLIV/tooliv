@@ -28,7 +28,7 @@ public class ChatDirectDTO implements Serializable {
     private String channelId;
 
     @ApiModelProperty(name = "보내는사람 Id")
-    private String senderEmail;
+    private String email;
 
 //    @ApiModelProperty(name = "받는사람 Id")
 //    private String receiverEmail;
