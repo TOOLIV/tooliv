@@ -3,6 +3,7 @@ package com.tooliv.server.domain.user.application.service;
 import com.tooliv.server.domain.user.application.dto.request.LogInRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.NicknameUpdateRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.SignUpRequestDTO;
+import com.tooliv.server.domain.user.application.dto.request.StatusUpdateRequestDTO;
 import com.tooliv.server.domain.user.application.dto.response.LogInResponseDTO;
 import com.tooliv.server.domain.user.application.dto.response.NicknameResponseDTO;
 import com.tooliv.server.domain.user.application.dto.response.ProfileInfoResponseDTO;
@@ -20,7 +21,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -115,6 +115,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void updateStatus(StatusUpdateRequestDTO statusUpdateRequestDTO) {
+        User user = getCurrentUser();
+
+        user.updateStatusCode(statusUpdateRequestDTO.getStatusCode());
+        userRepository.save(user);
+    }
+
+    @Override
     public void uploadProfileImage(MultipartFile multipartFile) {
         String fileName = awsS3Service.uploadFile(multipartFile);
 
@@ -140,7 +148,8 @@ public class UserServiceImpl implements UserService {
 
         for (User user : userRepository.findAllByDeletedAtAndNameContainingOrderByNameAsc(null, keyword, PageRequest.of(sequence - 1, 15, Sort.Direction.ASC, "name"))
             .orElseThrow(() -> new UserNotFoundException("조회 가능한 회원이 없음"))) {
-            userInfoResponseDTOList.add(new UserInfoResponseDTO(user.getId(), user.getEmail(), user.getName(), user.getNickname(), user.getUserCode(), user.getStatusCode(), awsS3Service.getFilePath(user.getProfileImage())));
+            userInfoResponseDTOList.add(
+                new UserInfoResponseDTO(user.getId(), user.getEmail(), user.getName(), user.getNickname(), user.getUserCode(), user.getStatusCode(), awsS3Service.getFilePath(user.getProfileImage())));
         }
 
         return new UserListResponseDTO(userInfoResponseDTOList, userInfoResponseDTOList.size());
