@@ -43,3 +43,8 @@ export const getUserList = async (keyword: string, sequence: number) => {
   );
   return response;
 };
+
+export const getUserInfo = async (email: string) => {
+  const response = await instance.get(`user/info/${email}`);
+  return response;
+};

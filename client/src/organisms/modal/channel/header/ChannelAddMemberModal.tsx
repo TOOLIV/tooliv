@@ -76,7 +76,7 @@ const UserBadgeWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   align-content: flex-start;
-  max-height: 18vh;
+  max-height: 15vh;
   overflow: scroll;
 `;
 
@@ -218,6 +218,7 @@ const ChannelAddMemberModal = ({
   };
 
   const initModal = useCallback(() => {
+    setAllUserList([]);
     setUserBadgeList([]);
     setInviteUserList([]);
     setUserList([]);
