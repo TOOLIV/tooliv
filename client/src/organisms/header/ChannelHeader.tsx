@@ -7,7 +7,7 @@ import ChannelHeaderDropdown from 'organisms/modal/channel/header/ChannelHeaderD
 import ChannelMemberListModal from 'organisms/modal/channel/header/ChannelMemberListModal';
 import ChannelModifyModal from 'organisms/modal/channel/header/ChannelModifyModal';
 import { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
   currentChannelNum,
@@ -47,15 +47,18 @@ const DropdownWrapper = styled.div`
 `;
 const MemberListWrapper = styled.div`
   width: fit-content;
+  display: flex;
+  gap: 10px;
 `;
 const ChannelHeader = () => {
-  const { channelId } = useParams();
+  const { workspaceId, channelId } = useParams();
   const currentWorkspaceId = useRecoilValue(currentWorkspace);
   const [channelName, setChannelName] = useState('');
   const [channelMemberNum, setChannelMemberNum] = useState(0);
+  const [channelCode, setChannelCode] = useState('');
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [modifyModalOpen, setModifyModalOpen] = useState(false);
-  const [memeberListOpen, setMemberListOpen] = useState(false);
+  const [memberListOpen, setMemberListOpen] = useState(false);
   const [addMemeberOpen, setAddMemberOpen] = useState(false);
   const [userCode, setUserCode] = useState('');
 
@@ -65,13 +68,15 @@ const ChannelHeader = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const memberListRef = useRef<HTMLDivElement>(null);
 
+  const navigate = useNavigate();
+
   const handleClickDropdownOutside = ({ target }: any) => {
     if (dropdownOpen && !dropdownRef.current?.contains(target)) {
       setDropdownOpen(false);
     }
   };
   const handleClickMemberOutside = ({ target }: any) => {
-    if (memeberListOpen && !memberListRef.current?.contains(target)) {
+    if (memberListOpen && !memberListRef.current?.contains(target)) {
       setMemberListOpen(false);
     }
   };
@@ -88,21 +93,7 @@ const ChannelHeader = () => {
     return () => {
       document.removeEventListener('mousedown', handleClickMemberOutside);
     };
-  }, [memeberListOpen]);
-
-  // 새로고침시 채널별 인원수가 초기화 되므로 다시 저장하기 위한 useEffect
-  useEffect(() => {
-    if (currentChannelMemberNum === 0) {
-      handleChannelInfo();
-    }
-  }, []);
-
-  // 워크스페이스 멤버 초대시 인원수 변경 감지 후 리렌더링
-  useEffect(() => {
-    if (currentChannelMemberNum !== 0) {
-      setChannelMemberNum(currentChannelMemberNum);
-    }
-  }, [currentChannelMemberNum]);
+  }, [memberListOpen]);
 
   useEffect(() => {
     if (channelId) {
@@ -112,16 +103,16 @@ const ChannelHeader = () => {
       setChannelName('홈');
       setUserCode('');
     }
-  }, [channelId, modChannelName]);
+  }, [channelId, modChannelName, currentChannelMemberNum]);
 
   const handleChannelInfo = async () => {
     try {
-      // channelId로 channel명 및 명수 받아오는 api 있으면 좋을듯
       const { data } = await getChannelInfo(channelId!);
       console.log(data);
       setChannelName(data.name);
       setChannelMemberNum(data.numOfPeople);
       setCurrentChannelMemberNum(data.numOfPeople);
+      setChannelCode(data.channelCode);
     } catch (error) {
       console.log(error);
     }
@@ -178,25 +169,34 @@ const ChannelHeader = () => {
         <MemberListWrapper ref={memberListRef}>
           <Members
             onClick={() => {
-              setMemberListOpen(!memeberListOpen);
+              setMemberListOpen(!memberListOpen);
             }}
           >
             <Icons
               icon="solidPerson"
               width="28"
               height="28"
-              color={memeberListOpen ? 'blue100' : 'gray500'}
+              color={memberListOpen ? 'blue100' : 'gray500'}
             />
             <Text
               size={16}
-              color={memeberListOpen ? 'blue100' : 'gray500'}
+              color={memberListOpen ? 'blue100' : 'gray500'}
               pointer
             >
               {String(channelMemberNum)}
             </Text>
           </Members>
+          {channelCode === 'VIDEO' ? (
+            <Icons
+              icon="solidVideoOn"
+              width="28"
+              height="28"
+              color={memberListOpen ? 'blue100' : 'gray500'}
+              onClick={() => navigate(`meeting/${workspaceId}/${channelId}`)}
+            />
+          ) : null}
           <ChannelMemberListModal
-            isOpen={memeberListOpen}
+            isOpen={memberListOpen}
             onClick={handleAddMemberModalOpen}
             onClose={closeMemberList}
           />

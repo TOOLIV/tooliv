@@ -15,18 +15,15 @@ export const login = async (body: userLoginTypes) => {
     profileImage: response.data.profileImage,
   };
 
-  localStorage.setItem('user', JSON.stringify(user));
+  localStorage.setItem('tooliv_info', JSON.stringify(user));
   if (response.data.userCode === 'ADMIN')
     localStorage.setItem('isAdmin', JSON.stringify(true));
   else localStorage.removeItem('isAdmin');
-
-  console.log(response);
   return response;
 };
 
 export const join = async (body: userCreationTypes) => {
   const response = await instance.post(`/user`, body);
-  console.log(response);
   return response;
 };
 
@@ -40,7 +37,14 @@ export const updateProfileImage = async (body: any) => {
   return response;
 };
 
-export const getUserList = async (keyword: string) => {
-  const response = await instance.get(`/user/search?keyword=${keyword}`);
+export const getUserList = async (keyword: string, sequence: number) => {
+  const response = await instance.get(
+    `/user/search?keyword=${keyword}&sequence=${sequence}`
+  );
+  return response;
+};
+
+export const getUserInfo = async (email: string) => {
+  const response = await instance.get(`user/info/${email}`);
   return response;
 };

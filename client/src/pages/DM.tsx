@@ -45,10 +45,8 @@ const DM = () => {
   const { accessToken, nickname, email } = useRecoilValue(user);
   const [notiList, setNotiList] =
     useRecoilState<channelNotiType[]>(channelNotiList);
-  // const { channelId } = useParams<string>();
+  const { channelId } = useParams<string>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
-
-  const channelId = 'ffdfd08b-2969-4037-b313-e5a88d94dd95';
   useEffect(() => {
     // const newList: channelNotiType[] = notiList.map((noti) => {
     //   if (noti.channelId === channelId)

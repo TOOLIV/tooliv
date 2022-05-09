@@ -46,8 +46,9 @@ const Header = styled.div`
 `;
 
 const UserBox = styled.div`
-  height: 50vh;
-  overflow: scroll;
+  height: 40vh;
+  overflow-y: scroll;
+  overflow-x: hidden;
 `;
 
 export const UserInfoWrapper = styled.div`
@@ -64,11 +65,23 @@ const ChannelMemberListModal = ({
   onClick,
   onClose,
 }: channelMemberListType) => {
-  const [channelMemberList, setChannelMemberList] = useState([]);
+  const [channelMemberList, setChannelMemberList] = useState<
+    channelMemberType[]
+  >([]);
   const [searchKeyword, setSearchKeyword] = useState('');
   const debouncedValue = useDebounce<string>(searchKeyword, 500);
+  const [sequence, setSequence] = useState(1);
+  const [target, setTarget] = useState<any>(null);
+  const [endCheck, setEndCheck] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
 
+  const sequenceRef = useRef(sequence);
+  sequenceRef.current = sequence;
+
+  const endCheckRef = useRef(endCheck);
+  endCheckRef.current = endCheck;
   const inputRef = useRef<HTMLInputElement>(null);
+
   const { channelId } = useParams();
 
   const handleDirectMessage = (email: string) => {
@@ -77,44 +90,82 @@ const ChannelMemberListModal = ({
 
   const searchChannelMember = useCallback(
     async (keyword: string) => {
-      try {
-        const { data } = await searchChannelMemberList(channelId!, keyword);
-        setChannelMemberList(data.channelMemberGetResponseDTOList);
-        console.log(data);
-      } catch (error) {
-        console.log(error);
+      if (!endCheckRef.current) {
+        try {
+          const response = await searchChannelMemberList(
+            channelId!,
+            keyword,
+            sequenceRef.current
+          );
+          const data = response.data.channelMemberGetResponseDTOList;
+          if (data.length === 0) {
+            setIsLoaded(false);
+            setEndCheck(true);
+            return;
+          }
+          setChannelMemberList((prev) => [...prev, ...data]);
+          setSequence((prev) => prev + 1);
+        } catch (error) {
+          console.log(error);
+        }
       }
     },
-    [channelId]
+    [channelId, sequence]
   );
-
-  // const searchUserList = useCallback(() => {
-  //   const keyword = inputRef.current?.value!;
-  //   searchChannelMember(keyword);
-  // }, [searchChannelMember]);
 
   const searchUserList = useCallback(() => {
     const keyword = inputRef.current?.value!;
     setSearchKeyword(keyword);
-    // searchChannelMember(keyword);
   }, []);
-
-  useEffect(() => {
-    if (isOpen) {
-      inputRef.current!.value = '';
-      searchChannelMember('');
-    }
-  }, [isOpen, searchChannelMember]);
 
   const handleAddMemberClick = () => {
     onClose();
     onClick();
   };
 
+  const initModal = useCallback(() => {
+    setSequence(1);
+    setEndCheck(false);
+    setChannelMemberList([]);
+  }, []);
+
   useEffect(() => {
-    console.log(debouncedValue);
-    searchChannelMember(debouncedValue);
+    // 키워드 입력시 초기화 (안할 경우 이전 데이터가 남아있어 오류)
+    if (channelId && isOpen) {
+      initModal();
+      searchChannelMember(debouncedValue);
+    }
   }, [debouncedValue]);
+
+  useEffect(() => {
+    // 모달창 열리면 리스트 불러오는 api호출
+    if (isOpen) {
+      let observer: any;
+      // 스크롤이 마지막에 도달할 경우
+      if (target) {
+        observer = new IntersectionObserver(onIntersect, {
+          threshold: 0.2,
+        });
+        observer.observe(target);
+      }
+      return () => observer && observer.disconnect();
+    }
+    // 모달창 닫히면 검색 초기화
+    else {
+      initModal();
+      inputRef.current!.value = '';
+      setSearchKeyword('');
+    }
+  }, [target, isOpen, debouncedValue]);
+
+  // 스크롤이 마지막에 도달시 호출되는 함수
+  const onIntersect = async ([entry]: any, observer: any) => {
+    if (entry.isIntersecting && !isLoaded) {
+      observer.unobserve(entry.target);
+      await searchChannelMember(debouncedValue);
+      observer.observe(entry.target);
+    }
+  };
 
   return (
     <Modal isOpen={isOpen}>
@@ -148,6 +199,13 @@ const ChannelMemberListModal = ({
               />
             </UserInfoWrapper>
           ))}
+          <div
+            ref={setTarget}
+            style={{
+              width: '100vw',
+              height: '5px',
+            }}
+          ></div>
         </UserBox>
       </Container>
     </Modal>

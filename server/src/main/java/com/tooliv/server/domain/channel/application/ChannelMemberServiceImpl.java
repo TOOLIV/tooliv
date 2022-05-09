@@ -1,6 +1,5 @@
 package com.tooliv.server.domain.channel.application;
 
-import com.amazonaws.services.dynamodbv2.xspec.L;
 import com.tooliv.server.domain.channel.application.dto.request.RegisterChannelMemberRequestDTO;
 import com.tooliv.server.domain.channel.application.dto.response.ChannelInfoGetResponseDTO;
 import com.tooliv.server.domain.channel.application.dto.response.ChannelMemberCodeGetResponseDTO;
@@ -176,6 +175,7 @@ public class ChannelMemberServiceImpl implements ChannelMemberService {
         ChannelInfoGetResponseDTO channelInfoGetResponseDTO = ChannelInfoGetResponseDTO.builder()
             .name(channel.getName())
             .numOfPeople(channelMembersRepository.countByChannel(channel))
+            .channelCode(channel.getChannelCode())
             .build();
         return channelInfoGetResponseDTO;
     }

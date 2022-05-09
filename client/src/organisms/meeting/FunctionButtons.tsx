@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import React, { useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import FunctionButton from '../../molecules/meeting/FunctionButton';
 import { funcButtonPropsTypes } from '../../types/meeting/openviduTypes';
 
@@ -15,15 +16,16 @@ const FunctionButtons = ({
   setIsAudioOn,
   isVideoOn,
   setIsVideoOn,
-  isScreenSharing,
-  setIsScreenSharing,
-  leaveSession,
-}: // setIsScreenShareModal,
+  doScreenSharing,
+  setDoStartScreenSharing,
+  setDoStopScreenSharing,
+}: 
 funcButtonPropsTypes) => {
-  const [shareMoniter, setShareMoniter] = useState(false);
+
+  const param = useParams();
+  const navigate = useNavigate();
 
   const onhandleAudio = () => {
-    if (!publisher) return;
     if (isAudioOn) {
       publisher.publishAudio(false);
       setIsAudioOn(false);
@@ -33,24 +35,25 @@ funcButtonPropsTypes) => {
     }
   };
   const onhandleVideo = () => {
-    if (!publisher) return;
     if (isVideoOn) {
       publisher.publishVideo(false);
-      console.log(publisher);
       setIsVideoOn(false);
     } else {
       publisher.publishVideo(true);
-      console.log(publisher);
       setIsVideoOn(true);
     }
   };
 
   const onhandleScreenShare = () => {
-    setIsScreenSharing(!isScreenSharing);
+    if (doScreenSharing) {
+      setDoStopScreenSharing(true);
+    } else {
+      setDoStartScreenSharing(true);
+    }
   };
 
   const onleaveSession = () => {
-    leaveSession();
+    navigate(`/${param.workspaceId}/${param.channelId}`)
   };
 
   return (

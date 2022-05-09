@@ -19,20 +19,22 @@ export const createChannel = async (body: channelTypes) => {
 
 export const searchNotChannelMemberList = async (
   channelId: string,
-  keyword: string
+  keyword: string,
+  sequence: number
 ) => {
   const response = await instance.get(
-    `channel/${channelId}/member/list?keyword=${keyword}`
+    `channel/${channelId}/member/list?keyword=${keyword}&seq=${sequence}`
   );
   return response;
 };
 
 export const searchChannelMemberList = async (
   channelId: string,
-  keyword: string
+  keyword: string,
+  sequence: number
 ) => {
   const response = await instance.get(
-    `channel/${channelId}/member/search?keyword=${keyword}`
+    `channel/${channelId}/member/search?keyword=${keyword}&seq=${sequence}`
   );
   return response;
 };
@@ -41,7 +43,6 @@ export const inviteChannelMember = async (
   channelId: string,
   body: inviteMembersType
 ) => {
-  console.log(body);
   const response = await instance.post(`channel/${channelId}/member`, body);
   return response;
 };
@@ -60,12 +61,10 @@ export const deleteChannelMember = async (channelId: string, email: string) => {
   const response = await instance.delete(
     `channel/${channelId}/member?email=${email}`
   );
-
   return response;
 };
 
 export const getChannelUserCode = async (channelId: string) => {
   const response = await instance.get(`channel/${channelId}/member/code`);
-
   return response;
 };

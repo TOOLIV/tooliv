@@ -23,3 +23,7 @@ export const subDM = async (channelId?: string) => {
 export const createDMRoom = async (receiverEmail?: string) => {
   return instance.post(`/chat/directChat/${receiverEmail}`);
 };
+
+export const getDMList = async (email?: string) => {
+  return instance.get(`/direct/${email}`);
+};

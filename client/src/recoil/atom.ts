@@ -1,5 +1,7 @@
 import { atom } from 'recoil';
+import { DMInfoType } from 'types/channel/chatTypes';
 import { FileTypes } from 'types/common/fileTypes';
+import { workspaceListType } from 'types/workspace/workspaceTypes';
 import {
   channelListTypes,
   channelNotiType,
@@ -87,5 +89,15 @@ export const chatFiles = atom<FileTypes[]>({
 
 export const channelNotiList = atom<channelNotiType[]>({
   key: 'channelNotiList',
+  default: [],
+});
+
+export const DMList = atom<DMInfoType[]>({
+  key: 'dmInfoList',
+  default: [],
+});
+
+export const wsList = atom<workspaceListType[]>({
+  key: 'workspaceList',
   default: [],
 });

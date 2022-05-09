@@ -6,7 +6,6 @@ export const createToken = (sessionId: string) => {
     await openviduInstance
       .post(`/openvidu/api/sessions/${sessionId}/connection`, data)
       .then((response) => {
-        console.log('TOKEN', response);
         resolve(response.data.token);
       })
       .catch((error) => reject(error));
@@ -18,7 +17,6 @@ export const getSession = (sessionId: string) => {
     await openviduInstance
       .get(`/openvidu/api/sessions/${sessionId}`)
       .then((response) => {
-        console.log('GET SESSION', response);
         resolve(response);
       })
       .catch((e) => {
@@ -29,12 +27,10 @@ export const getSession = (sessionId: string) => {
 
 export const createSession = (sessionId: string) => {
   const data = JSON.stringify({ customSessionId: sessionId });
-  console.log(data);
   return new Promise(async (resolve, reject) => {
     await openviduInstance
       .post(`/openvidu/api/sessions`, data)
       .then((response) => {
-        console.log('CREATE SESSION', response);
         resolve(response.data.id);
       })
       .catch((response) => {
@@ -42,7 +38,6 @@ export const createSession = (sessionId: string) => {
         if (err?.response?.status === 409) {
           resolve(sessionId);
         } else {
-          console.log(err);
           console.warn(
             'No connection to OpenVidu Server. This may be a certificate error at ' +
               process.env.REACT_APP_OPENVIDU_SERVER_URL
@@ -63,5 +58,11 @@ export const createSession = (sessionId: string) => {
           }
         }
       });
+  });
+};
+
+export const deleteSession = (sessionId: string) => {
+  return new Promise(async () => {
+    await openviduInstance.delete(`/openvidu/api/sessions/${sessionId}`);
   });
 };

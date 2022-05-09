@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
+import { getUserInfo } from 'api/userApi';
 import Time from 'atoms/chat/Time';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Label from '../../atoms/common/Label';
 import Avatar from '../../atoms/profile/Avatar';
 import { colors } from '../../shared/color';
@@ -48,6 +49,8 @@ const Message = ({
   email,
   originFiles,
 }: contentTypes) => {
+  const [thumbnailImage, setThumbnailImage] = useState('');
+
   const fileTypes = ['.bmp', '.gif', '.jpg', '.png', '.jpeg', '.jfif'];
 
   const checkType = (file: string) => {
@@ -60,11 +63,21 @@ const Message = ({
       return false;
     }
   };
+
+  useEffect(() => {
+    getUserProfile();
+  }, [email]);
+
+  const getUserProfile = async () => {
+    const response = await getUserInfo(email);
+    setThumbnailImage(response.data.profileImage);
+    console.log(response);
+  };
   return (
     <Container>
       <ProfileContainer>
         <SideWrapper>
-          <Avatar />
+          <Avatar src={thumbnailImage} />
         </SideWrapper>
         <Label name={sender} size="16px" />
         <Time time={sendTime} />

@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -12,27 +14,39 @@ import com.google.gson.Gson;
 import com.tooliv.server.BaseIntegrationTest;
 import com.tooliv.server.domain.user.application.dto.request.LogInRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.SignUpRequestDTO;
-import com.tooliv.server.domain.user.application.service.UserService;
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
+import com.tooliv.server.global.security.util.JwtAuthenticationProvider;
+import java.io.FileInputStream;
 import java.util.Optional;
+import org.apache.http.HttpHeaders;
+import org.json.JSONObject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserControllerTest extends BaseIntegrationTest {
 
     @Autowired
-    UserRepository userRepository;
+    ApplicationContext resourceLoader;
 
     @Autowired
-    UserService userService;
+    JwtAuthenticationProvider jwtAuthenticationProvider;
+
+    @Autowired
+    UserRepository userRepository;
+
+    private static String token;
 
     @Order(1)
     @Test
@@ -41,6 +55,7 @@ public class UserControllerTest extends BaseIntegrationTest {
 
         // Given
         SignUpRequestDTO signUpRequestDTO = new SignUpRequestDTO("test@test.com", "test", "password");
+        SignUpRequestDTO signUpRequestDTO2 = new SignUpRequestDTO("test2@test.com", "test2", "password2");
 
         // When
         mockMvc.perform(post("/api/user")
@@ -48,11 +63,19 @@ public class UserControllerTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isCreated());
 
+        mockMvc.perform(post("/api/user")
+                .content(new Gson().toJson(signUpRequestDTO2))
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isCreated());
+
         Optional<User> user = userRepository.findByEmailAndDeletedAt("test@test.com", null);
+        Optional<User> user2 = userRepository.findByEmailAndDeletedAt("test2@test.com", null);
 
         // Then
         assertTrue(user.isPresent());
-        assertEquals(user.get().getEmail(), "test@test.com");
+        assertTrue(user2.isPresent());
+        assertEquals(user.get().getName(), "test");
+        assertEquals(user2.get().getName(), "test2");
 
     }
 
@@ -81,7 +104,7 @@ public class UserControllerTest extends BaseIntegrationTest {
     void shouldNotAbleToSignUpWithDuplicatedEmail() throws Exception {
 
         // Given
-        SignUpRequestDTO signUpRequestDTO = new SignUpRequestDTO("test@test.com", "test2", "password2");
+        SignUpRequestDTO signUpRequestDTO = new SignUpRequestDTO("test@test.com", "test3", "password2");
 
         // When
         mockMvc.perform(post("/api/user")
@@ -140,12 +163,18 @@ public class UserControllerTest extends BaseIntegrationTest {
         assertNotNull(userRepository.findByEmailAndDeletedAt(logInRequestDTO.getEmail(), null).orElse(null));
 
         // When
-        ResultActions resultActions = mockMvc.perform(post("/api/user/login")
-            .content(new Gson().toJson(logInRequestDTO))
-            .contentType(MediaType.APPLICATION_JSON));
+        MvcResult result = mockMvc.perform(post("/api/user/login")
+                .content(new Gson().toJson(logInRequestDTO))
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isCreated())
+            .andReturn();
 
         // Then
-        resultActions.andExpect(status().isCreated());
+        assertNotNull(result.getResponse());
+
+        String jsonString = result.getResponse().getContentAsString();
+        JSONObject jsonObject = new JSONObject(jsonString);
+        token = jsonObject.getString("accessToken");
 
     }
 
@@ -155,7 +184,7 @@ public class UserControllerTest extends BaseIntegrationTest {
     void shouldNotAbleToLogIn() throws Exception {
 
         // Given
-        LogInRequestDTO logInRequestDTO = new LogInRequestDTO("test2@test.com", "password2");
+        LogInRequestDTO logInRequestDTO = new LogInRequestDTO("test3@test.com", "password3");
         assertNull(userRepository.findByEmailAndDeletedAt(logInRequestDTO.getEmail(), null).orElse(null));
 
         // When
@@ -184,6 +213,77 @@ public class UserControllerTest extends BaseIntegrationTest {
 
         // Then
         resultActions.andExpect(status().isConflict());
+
+    }
+
+    @Order(8)
+    @Test
+    @DisplayName("Image Upload Test - Uploading Image File")
+    void shouldAbleToUploadProfileImage() throws Exception {
+
+        // Given
+        assertNotNull(token);
+        assertEquals(jwtAuthenticationProvider.getEmail(token), "test@test.com");
+
+        Resource resource = resourceLoader.getResource("classpath:tooliv_img.jpeg");
+        MockMultipartFile mockMultipartFile = new MockMultipartFile("multipartFile", "tooliv_img.jpeg", "image/jpeg",
+            new FileInputStream(resource.getFile()));
+
+        // When
+        ResultActions resultActions = mockMvc.perform(multipart("/api/user/image")
+            .file(mockMultipartFile)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + token));
+
+        // Then
+        resultActions.andExpect(status().isCreated());
+
+    }
+
+    @Order(9)
+    @Test
+    @DisplayName("Image Upload Test - Uploading Non-Image File")
+    void shouldAbleToUploadProfileImageWithNonImageFile() throws Exception {
+
+        // Given
+        assertNotNull(token);
+        assertEquals(jwtAuthenticationProvider.getEmail(token), "test@test.com");
+        String profileImage = userRepository.findByEmailAndDeletedAt("test@test.com", null).get().getProfileImage();
+
+        Resource resource = resourceLoader.getResource("classpath:tooliv_txt.txt");
+        MockMultipartFile mockMultipartFile = new MockMultipartFile("multipartFile", "tooliv_txt.txt", "text/*",
+            new FileInputStream(resource.getFile()));
+
+        // When
+        ResultActions resultActions = mockMvc.perform(multipart("/api/user/image")
+            .file(mockMultipartFile)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + token));
+
+        // Then
+        resultActions.andExpect(status().isConflict());
+
+    }
+
+    @Order(10)
+    @Test
+    @DisplayName("Get User Profile Info Test - Existing User")
+    void shouldReturnUserInfo() throws Exception {
+
+        // Given
+        assertNotNull(token);
+        assertEquals(jwtAuthenticationProvider.getEmail(token), "test@test.com");
+        assertTrue(userRepository.findByEmailAndDeletedAt("test2@test.com", null).isPresent());
+
+        // When
+        MvcResult result = mockMvc.perform(get("/api/user/info/test2@test.com")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        // Then
+        String jsonString = result.getResponse().getContentAsString();
+        JSONObject jsonObject = new JSONObject(jsonString);
+
+        assertEquals(jsonObject.getString("nickname"), "test2");
 
     }
 

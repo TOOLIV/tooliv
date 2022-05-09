@@ -35,7 +35,7 @@ if (isElectron() && baseURL) {
 instance.interceptors.request.use(
   (config) => {
     // 추후 로그인 구현시 주석 해제
-    const user = localStorage.getItem('user');
+    const user = localStorage.getItem('tooliv_info');
     if (user) {
       const Juser = JSON.parse(user);
       if (Juser.accessToken) {
@@ -57,7 +57,6 @@ instance.interceptors.response.use(
   },
   function (error) {
     if (error.response) {
-      const [userInfo, setUserInfo] = useRecoilState(user);
       const history = createBrowserHistory();
 
       console.log(error.response);
@@ -70,15 +69,7 @@ instance.interceptors.response.use(
           console.log('401 ERROR, not authorized.');
           // history.push('/login');
           // // // 강제로 새로고침 (임시)
-          setUserInfo({
-            accessToken: undefined,
-            email: '',
-            name: '',
-            nickname: '',
-            userId: '',
-            profileImage: '',
-          });
-          localStorage.removeItem('user');
+          localStorage.removeItem('tooliv_info');
           window.location.reload();
 
           break;

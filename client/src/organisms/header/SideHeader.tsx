@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { getWorkspaceInfo } from 'api/workspaceApi';
+import { getWorkspaceInfo, getWorkspaceUserCode } from 'api/workspaceApi';
 import Icons from 'atoms/common/Icons';
 import Text from 'atoms/text/Text';
 import WorkspaceAddMemberModal from 'organisms/modal/workspace/WorkspaceAddMemberModal';
@@ -7,6 +7,7 @@ import WorkspaceDropDown from 'organisms/modal/workspace/WorkspaceDropDown';
 import WorkspaceMemberListModal from 'organisms/modal/workspace/WorkspaceMemberListModal';
 import WorkspaceModifyModal from 'organisms/modal/workspace/WorkspaceModifyModal';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { currentWorkspace, isOpenSide, modifyWorkspaceName } from 'recoil/atom';
 
@@ -35,9 +36,10 @@ const SideHeader = () => {
   const [addMemberModalOpen, setAddMemberModalOpen] = useState(false);
   const [workspaceName, setWorkspaceName] = useState('홈');
   const [thumbnailImage, setThumbnailImage] = useState('');
+  const [userCode, setUserCode] = useState('');
 
   const dropdownRef = useRef<HTMLDivElement>(null);
-
+  const { workspaceId } = useParams();
   const handleClickOutside = ({ target }: any) => {
     if (dropdownOpen && !dropdownRef.current?.contains(target)) {
       setDropdownOpen(false);
@@ -53,15 +55,24 @@ const SideHeader = () => {
 
   const handleWorkspaceInfo = useCallback(async () => {
     const { data } = await getWorkspaceInfo(currentWorkspaceId);
-    console.log(data);
     setWorkspaceName(data.name);
     setThumbnailImage(data.thumbnailImage);
   }, [currentWorkspaceId]);
 
   useEffect(() => {
-    if (currentWorkspaceId !== 'main') handleWorkspaceInfo();
-    else setWorkspaceName('홈');
+    if (workspaceId && currentWorkspaceId !== 'main') {
+      handleWorkspaceInfo();
+      getUserCode();
+    } else {
+      setWorkspaceName('홈');
+      setUserCode('');
+    }
   }, [currentWorkspaceId, handleWorkspaceInfo, modWorkspaceName]);
+
+  const getUserCode = async () => {
+    const { data } = await getWorkspaceUserCode(workspaceId!);
+    setUserCode(data.workspaceMemberCode);
+  };
 
   const onClickSide = () => {
     setIsOpen((prev) => !prev);
@@ -95,17 +106,17 @@ const SideHeader = () => {
     <Container isOpen={isOpen}>
       <DropdownWrapper ref={dropdownRef}>
         <Title
-          onClick={() => {
-            console.log('hello');
-            setDropdownOpen(!dropdownOpen);
-          }}
+          onClick={
+            userCode === 'WADMIN'
+              ? () => setDropdownOpen(!dropdownOpen)
+              : undefined
+          }
         >
           <Text size={24} weight="700" pointer={currentWorkspaceId !== 'main'}>
-            {/* 워크스페이스 id로 워크스페이명 불러오는 api 연동. */}
             {workspaceName}
           </Text>
-          {currentWorkspaceId !== 'main' ? (
-            <Icons width="30" height="30" icon="dropdown" />
+          {currentWorkspaceId !== 'main' && userCode === 'WADMIN' ? (
+            <Icons width="24" height="24" icon="dropdown" />
           ) : null}
         </Title>
         <WorkspaceDropDown

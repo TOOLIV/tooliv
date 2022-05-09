@@ -15,10 +15,8 @@ import UserBadge from 'molecules/userBadge/UserBadge';
 import UserInfo from 'molecules/userInfo/UserInfo';
 import { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import { currentChannelNum } from 'recoil/atom';
-import { colors } from 'shared/color';
-import { userBadgeTypes } from 'types/common/userTypes';
 import {
   addWorkspaceMemberType,
   inviteMembersBadgeType,
@@ -65,7 +63,9 @@ const Header = styled.div`
 const UserBox = styled.div`
   display: flex;
   flex-wrap: wrap;
-  max-height: 15vh;
+  align-content: flex-start;
+  max-height: 25vh;
+  min-height: 15vh;
   overflow: scroll;
   margin-bottom: 10px;
 `;
@@ -83,13 +83,13 @@ const UserBadgeWrapper = styled.div`
   display: flex;
   align-content: flex-start;
   flex-wrap: wrap;
-  height: 18vh;
+  max-height: 18vh;
   overflow: scroll;
 `;
 
 const BadgeBox = styled.div`
+  width: 50%;
   padding: 5px;
-  height: fit-content;
 `;
 
 const UserInfoWrapper = styled.div`
@@ -109,6 +109,7 @@ const WorkspaceAddMemberModal = forwardRef<
   HTMLDivElement,
   addWorkspaceMemberType
 >(({ isOpen, onClose }, ref) => {
+  const [allUserList, setAllUserList] = useState<workspaceMemberType[]>([]);
   const [userList, setUserList] = useState<workspaceMemberType[]>([]);
   const [userBadgeList, setUserBadgeList] = useState<inviteMembersBadgeType[]>(
     []
@@ -116,6 +117,16 @@ const WorkspaceAddMemberModal = forwardRef<
   const [inviteUserList, setInviteUserList] = useState<string[]>([]);
   const [keyword, setKeyword] = useState('');
   const debouncedValue = useDebounce<string>(keyword, 500);
+  const [sequence, setSequence] = useState(1);
+  const [target, setTarget] = useState<any>(null);
+  const [endCheck, setEndCheck] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  const sequenceRef = useRef(sequence);
+  sequenceRef.current = sequence;
+
+  const endCheckRef = useRef(endCheck);
+  endCheckRef.current = endCheck;
 
   const inputRef = useRef<HTMLInputElement>(null);
   const { workspaceId } = useParams();
@@ -129,30 +140,41 @@ const WorkspaceAddMemberModal = forwardRef<
 
   const userListApi = useCallback(
     async (keyword: string) => {
-      const response = await searchNotWorkspaceMemberList(
-        workspaceId!,
-        keyword
-      );
-      const data = response.data.workspaceMemberGetResponseDTOList;
-      if (data) {
-        const list = data.filter((user: workspaceMemberType) => {
-          return userBadgeList.find((badge) => badge.email === user.email)
-            ? false
-            : true;
-        });
-        setUserList(list);
+      if (!endCheckRef.current) {
+        const response = await searchNotWorkspaceMemberList(
+          workspaceId!,
+          keyword,
+          sequenceRef.current
+        );
+        const data = response.data.workspaceMemberGetResponseDTOList;
+        if (data.length === 0) {
+          setIsLoaded(false);
+          setEndCheck(true);
+          return;
+        }
+        console.log(data);
+        if (data) {
+          const list = data.filter((user: workspaceMemberType) => {
+            return userBadgeList.find((badge) => badge.email === user.email)
+              ? false
+              : true;
+          });
+          setAllUserList((prev) => [...prev, ...data]);
+          setUserList((prev) => [...prev, ...list]);
+          setSequence((prev) => prev + 1);
+        }
       }
     },
     [workspaceId, userBadgeList]
   );
 
   useEffect(() => {
-    setUserList([]);
-  }, [workspaceId, userListApi]);
-
-  useEffect(() => {
-    userListApi(debouncedValue);
-  }, [debouncedValue]);
+    if (workspaceId && isOpen) {
+      console.log('하이');
+      initModal();
+      userListApi(debouncedValue);
+    }
+  }, [debouncedValue, workspaceId]);
 
   const deleteUserBadge = useCallback(
     (email: string) => {
@@ -176,11 +198,28 @@ const WorkspaceAddMemberModal = forwardRef<
     [inviteUserList, userBadgeList]
   );
 
-  const exitModal = useCallback(() => {
-    inputRef.current!.value = '';
+  useEffect(() => {
+    const list = allUserList.filter((user: workspaceMemberType) => {
+      return userBadgeList.find((badge) => badge.email === user.email)
+        ? false
+        : true;
+    });
+    setUserList(list);
+  }, [userBadgeList]);
+
+  const initModal = useCallback(() => {
+    setAllUserList([]);
     setUserBadgeList([]);
     setInviteUserList([]);
     setUserList([]);
+    setSequence(1);
+    setEndCheck(false);
+  }, []);
+
+  const exitModal = useCallback(() => {
+    inputRef.current!.value = '';
+    setKeyword('');
+    initModal();
     onClose();
   }, [onClose]);
 
@@ -195,15 +234,37 @@ const WorkspaceAddMemberModal = forwardRef<
     async (body: inviteMembersType) => {
       try {
         await inviteWorkspaceMember(workspaceId!, body);
-        // const newMember = body.emailList.length;
-        // setCurrentChannelMemberNum((prev) => prev + newMember);
+        // 워크스페이스 내 다른 채널에서 워크스페이스 멤버 초대시
+        const newMember = body.emailList.length;
+        setCurrentChannelMemberNum((prev) => prev + newMember);
         exitModal();
       } catch (error) {
         console.log(error);
       }
     },
-    [workspaceId, setCurrentChannelMemberNum, exitModal]
+    [workspaceId]
   );
+
+  useEffect(() => {
+    if (isOpen) {
+      let observer: any;
+      if (target) {
+        observer = new IntersectionObserver(onIntersect, {
+          threshold: 1,
+        });
+        observer.observe(target);
+      }
+      return () => observer && observer.disconnect();
+    }
+  }, [target, isOpen, debouncedValue]);
+
+  const onIntersect = async ([entry]: any, observer: any) => {
+    if (entry.isIntersecting && !isLoaded) {
+      observer.unobserve(entry.target);
+      await userListApi(debouncedValue);
+      observer.observe(entry.target);
+    }
+  };
 
   return (
     <Modal isOpen={isOpen}>
@@ -232,6 +293,13 @@ const WorkspaceAddMemberModal = forwardRef<
               />
             </UserInfoWrapper>
           ))}
+          <div
+            ref={setTarget}
+            style={{
+              width: '100vw',
+              height: '5px',
+            }}
+          ></div>
         </UserBox>
         <Label label="추가 멤버 목록" />
         <UserBadgeWrapper>

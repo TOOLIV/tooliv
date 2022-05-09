@@ -56,7 +56,9 @@ const Header = styled.div`
 const UserBox = styled.div`
   display: flex;
   flex-wrap: wrap;
-  height: 15vh;
+  align-content: flex-start;
+  max-height: 25vh;
+  min-height: 15vh;
   overflow: scroll;
   margin-bottom: 10px;
 `;
@@ -73,16 +75,20 @@ const UserBadgeWrapper = styled.div`
   margin-top: 10px;
   display: flex;
   flex-wrap: wrap;
-  height: 18vh;
+  align-content: flex-start;
+  max-height: 15vh;
   overflow: scroll;
 `;
 
 const BadgeBox = styled.div`
-  margin: 5px;
+  width: 50%;
+  padding: 5px;
+  /* margin: 5px; */
 `;
 
 const UserInfoWrapper = styled.div`
-  width: fit-content;
+  width: 50%;
+  /* height: fit-content; */
   padding: 10px;
   border-radius: 8px;
 
@@ -97,10 +103,22 @@ const ChannelAddMemberModal = ({
   onClose,
   channelId,
 }: addMemberType) => {
+  const [allUserList, setAllUserList] = useState<channelMemberType[]>([]);
   const [userList, setUserList] = useState<channelMemberType[]>([]);
   const [userBadgeList, setUserBadgeList] = useState<inviteMembersBadgeType[]>(
     []
   );
+  const [sequence, setSequence] = useState(1);
+  const [target, setTarget] = useState<any>(null);
+  const [endCheck, setEndCheck] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  const sequenceRef = useRef(sequence);
+  sequenceRef.current = sequence;
+
+  const endCheckRef = useRef(endCheck);
+  endCheckRef.current = endCheck;
+
   const [inviteUserList, setInviteUserList] = useState<string[]>([]);
 
   const [keyword, setKeyword] = useState('');
@@ -116,17 +134,29 @@ const ChannelAddMemberModal = ({
 
   const userListApi = useCallback(
     async (keyword: string) => {
-      const response = await searchNotChannelMemberList(channelId, keyword);
-      console.log(response);
-      const data = response.data.channelMemberGetResponseDTOList;
-      if (data) {
-        const list = data.filter((user: channelMemberType) => {
-          return userBadgeList.find((badge) => badge.email === user.email)
-            ? false
-            : true;
-        });
-
-        setUserList(list);
+      if (!endCheckRef.current) {
+        const response = await searchNotChannelMemberList(
+          channelId,
+          keyword,
+          sequenceRef.current
+        );
+        const data = response.data.channelMemberGetResponseDTOList;
+        if (data.length === 0) {
+          setIsLoaded(false);
+          setEndCheck(true);
+          return;
+        }
+        console.log(data);
+        if (data) {
+          const list = data.filter((user: channelMemberType) => {
+            return userBadgeList.find((badge) => badge.email === user.email)
+              ? false
+              : true;
+          });
+          setAllUserList((prev) => [...prev, ...data]);
+          setUserList((prev) => [...prev, ...list]);
+          setSequence((prev) => prev + 1);
+        }
       }
     },
     [channelId, userBadgeList]
@@ -152,11 +182,18 @@ const ChannelAddMemberModal = ({
         },
       ]);
       setInviteUserList([...inviteUserList, email]);
-      // setUserList([]);
-      // inputRef.current!.value = '';
     },
     [userBadgeList, inviteUserList]
   );
+
+  useEffect(() => {
+    const list = allUserList.filter((user: channelMemberType) => {
+      return userBadgeList.find((badge) => badge.email === user.email)
+        ? false
+        : true;
+    });
+    setUserList(list);
+  }, [userBadgeList]);
 
   const deleteUserBadge = useCallback(
     (email: string) => {
@@ -166,14 +203,12 @@ const ChannelAddMemberModal = ({
     [userBadgeList, inviteUserList]
   );
 
-  // useEffect(() => {
-  //   setUserList([]);
-  // }, [channelId, userListApi]);
-
   useEffect(() => {
-    console.log(debouncedValue);
-    userListApi(debouncedValue);
-  }, [debouncedValue]);
+    if (channelId && isOpen) {
+      initModal();
+      userListApi(debouncedValue);
+    }
+  }, [debouncedValue, channelId]);
 
   const registMember = () => {
     const body = {
@@ -182,14 +217,42 @@ const ChannelAddMemberModal = ({
     inviteUserApi(body);
   };
 
-  const exitModal = useCallback(() => {
-    // setKeyword('');
-    inputRef.current!.value = '';
+  const initModal = useCallback(() => {
+    setAllUserList([]);
     setUserBadgeList([]);
     setInviteUserList([]);
     setUserList([]);
+    setSequence(1);
+    setEndCheck(false);
+  }, []);
+
+  const exitModal = useCallback(() => {
+    inputRef.current!.value = '';
+    setKeyword('');
+    initModal();
     onClose();
-  }, [onClose]);
+  }, [onClose, initModal]);
+
+  useEffect(() => {
+    if (isOpen) {
+      let observer: any;
+      if (target) {
+        observer = new IntersectionObserver(onIntersect, {
+          threshold: 0.2,
+        });
+        observer.observe(target);
+      }
+      return () => observer && observer.disconnect();
+    }
+  }, [target, isOpen, debouncedValue]);
+
+  const onIntersect = async ([entry]: any, observer: any) => {
+    if (entry.isIntersecting && !isLoaded) {
+      observer.unobserve(entry.target);
+      await userListApi(debouncedValue);
+      observer.observe(entry.target);
+    }
+  };
 
   return (
     <Modal isOpen={isOpen}>
@@ -218,6 +281,13 @@ const ChannelAddMemberModal = ({
               />
             </UserInfoWrapper>
           ))}
+          <div
+            ref={setTarget}
+            style={{
+              width: '100vw',
+              height: '5px',
+            }}
+          ></div>
         </UserBox>
         <Label label="추가 멤버 목록" />
         <UserBadgeWrapper>
