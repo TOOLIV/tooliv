@@ -42,10 +42,10 @@ public class ChatRequestDTO implements Serializable {
     private LocalDateTime sendTime;
 
     @ApiModelProperty(name = "메시지 수정 여부")
-    private boolean isUpdated;
+    private boolean updated;
 
     @ApiModelProperty(name = "메시지 삭제 여부")
-    private boolean isDeleted;
+    private boolean deleted;
 
     @ApiModelProperty(name = "메시지 타입")
     private String type;
@@ -66,11 +66,11 @@ public class ChatRequestDTO implements Serializable {
     }
 
     public void updateIsUpdated() {
-        this.isUpdated = true;
+        this.updated = true;
     }
 
     public void updateIsDeleted() {
-        this.isDeleted = true;
+        this.deleted = true;
     }
 
     public void deletedData(long chatId) {
