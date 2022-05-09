@@ -17,6 +17,9 @@ public class ChatUpdatedDTO {
     @ApiModelProperty(name = "메시지 ID")
     private long chatId;
 
+    @ApiModelProperty(name = "email")
+    private String email;
+
     @ApiModelProperty(name = "채팅방 ID")
     private String channelId;
 
