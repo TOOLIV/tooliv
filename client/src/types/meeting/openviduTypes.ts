@@ -44,3 +44,8 @@ export type screenShareMadalPropsTypes = {
 export type userLabelPropsType = {
   userName: string;
 };
+
+export type MainStagePropsType = {
+  streamManager: StreamManager;
+  isHideCam: boolean;
+};
