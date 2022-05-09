@@ -37,10 +37,11 @@ public class RedisUserSubscriber implements MessageListener {
             objectMapper.registerModule(new JavaTimeModule());
             ChatDirectDTO chatDirectDTO = objectMapper.readValue(publishMessage, ChatDirectDTO.class);
             // Websocket 구독자에게 채팅 메시지 Send
-            User user = directChatRoomRepository.findById(chatDirectDTO.getChannelId()).orElseThrow(() -> new IllegalArgumentException("채팅방 정보가 존재하지 않습니다.")).getUser2();
-            messagingTemplate.convertAndSend("/sub/chat/" + userService.getUserId(chatDirectDTO.getSenderEmail()),
+            User user1 = directChatRoomRepository.findById(chatDirectDTO.getChannelId()).orElseThrow(() -> new IllegalArgumentException("채팅방 정보가 존재하지 않습니다.")).getUser1();
+            User user2 = directChatRoomRepository.findById(chatDirectDTO.getChannelId()).orElseThrow(() -> new IllegalArgumentException("채팅방 정보가 존재하지 않습니다.")).getUser2();
+            messagingTemplate.convertAndSend("/sub/chat/" + user1.getId(),
                 chatDirectDTO);
-            messagingTemplate.convertAndSend("/sub/chat/" + user.getId(),
+            messagingTemplate.convertAndSend("/sub/chat/" + user2.getId(),
                 chatDirectDTO);
         } catch (Exception e) {
             log.error(e.getMessage());
