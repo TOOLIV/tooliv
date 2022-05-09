@@ -80,6 +80,7 @@ const Channel = () => {
     setIsLoading(true);
     enterChannel(channelId!).then(() => {
       subChannel(channelId!).then((res) => {
+        console.log(res.data.chatMessageDTOList);
         setContents(res.data.chatMessageDTOList);
         setIsLoading(false);
       });
