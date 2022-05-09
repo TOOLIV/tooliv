@@ -14,5 +14,4 @@ public interface AdminService {
 
     User getCurrentUser();
 
-    String getImageURL(String fileName);
 }

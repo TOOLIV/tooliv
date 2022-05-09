@@ -227,12 +227,12 @@ public class ChatServiceImpl implements ChatService {
             ChatRequestDTO chatRequestDTO = redisChannelTemplate.opsForList().index(key, value.getChatId());
             chatRequestDTO.updateIsUpdated();
             redisChannelTemplate.opsForList().set(key, value.getChatId(), chatRequestDTO);
-            updateMessage(new ChatUpdatedDTO(value.getChatId(), value.getChannelId(), value.getType()));
+            updateMessage(new ChatUpdatedDTO(value.getChatId(),value.getEmail(),value.getChannelId(), value.getType()));
         } else if (value.getType().equals("DELETE")) {
             ChatRequestDTO chatRequestDTO = redisChannelTemplate.opsForList().index(key, value.getChatId());
             chatRequestDTO.updateIsDeleted();
             redisChannelTemplate.opsForList().set(key, value.getChatId(), chatRequestDTO);
-            updateMessage(new ChatUpdatedDTO(value.getChatId(), value.getChannelId(), value.getType()));
+            updateMessage(new ChatUpdatedDTO(value.getChatId(),value.getEmail(),value.getChannelId(), value.getType()));
         }
 
     }
@@ -251,12 +251,12 @@ public class ChatServiceImpl implements ChatService {
             ChatDirectDTO chatDirectDTO = redisDirectTemplate.opsForList().index(key, value.getChatId());
             chatDirectDTO.updateIsUpdated();
             redisDirectTemplate.opsForList().set(key, value.getChatId(), chatDirectDTO);
-            updateDirectMessage(new ChatUpdatedDTO(value.getChatId(), value.getChannelId(), value.getType()));
+            updateDirectMessage(new ChatUpdatedDTO(value.getChatId(),value.getEmail(),value.getChannelId(), value.getType()));
         } else if (value.getType().equals("DELETE")) {
             ChatDirectDTO chatDirectDTO = redisDirectTemplate.opsForList().index(key, value.getChatId());
             chatDirectDTO.updateIsDeleted();
             redisDirectTemplate.opsForList().set(key, value.getChatId(), chatDirectDTO);
-            updateDirectMessage(new ChatUpdatedDTO(value.getChatId(), value.getChannelId(), value.getType()));
+            updateDirectMessage(new ChatUpdatedDTO(value.getChatId(),value.getEmail(),value.getChannelId(), value.getType()));
         }
     }
 

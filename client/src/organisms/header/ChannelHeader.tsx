@@ -57,6 +57,7 @@ const ChannelHeader = () => {
   const [channelName, setChannelName] = useState('');
   const [channelMemberNum, setChannelMemberNum] = useState(0);
   const [channelCode, setChannelCode] = useState('');
+  const [isMeeting, setIsMeeting] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [modifyModalOpen, setModifyModalOpen] = useState(false);
   const [memberListOpen, setMemberListOpen] = useState(false);
@@ -85,6 +86,15 @@ const ChannelHeader = () => {
     }
   };
 
+  useEffect(() => {
+    console.log(location.pathname.split('/')[1]);
+    const currentLocation = location.pathname.split('/')[1];
+    if (currentLocation === 'meeting') {
+      setIsMeeting(true);
+    } else {
+      setIsMeeting(false);
+    }
+  }, [location.pathname]);
   useEffect(() => {
     document.addEventListener('mousedown', handleClickDropdownOutside);
     return () => {
@@ -195,12 +205,11 @@ const ChannelHeader = () => {
               {String(channelMemberNum)}
             </Text>
           </Members>
-          {channelCode === 'VIDEO' ? (
+          {channelCode === 'VIDEO' && !isMeeting ? (
             <Icons
               icon="solidVideoOn"
               width="28"
               height="28"
-              color={memberListOpen ? 'blue100' : 'gray500'}
               onClick={() => navigate(`meeting/${workspaceId}/${channelId}`)}
             />
           ) : null}
