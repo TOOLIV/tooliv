@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { getUserInfo } from 'api/userApi';
 import Time from 'atoms/chat/Time';
 import React, { useEffect, useState } from 'react';
+import { fToNow } from 'utils/formatTime';
 import Label from '../../atoms/common/Label';
 import Avatar from '../../atoms/profile/Avatar';
 import { colors } from '../../shared/color';
@@ -80,7 +81,7 @@ const Message = ({
           <Avatar src={thumbnailImage} />
         </SideWrapper>
         <Label name={sender} size="16px" />
-        <Time time={sendTime} />
+        <Time time={fToNow(sendTime)} />
       </ProfileContainer>
       <ContentContainer
         dangerouslySetInnerHTML={{ __html: contents }}

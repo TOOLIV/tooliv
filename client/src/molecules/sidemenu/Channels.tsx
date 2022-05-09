@@ -45,6 +45,7 @@ const ChannelContainer = styled.div<{ isSelected: boolean }>`
   padding: 0 16px 0 8px;
   width: 220px;
   transition: 0.3s;
+  position: relative;
   cursor: pointer;
   box-sizing: content-box;
   background-color: ${(props) => props.isSelected && props.theme.hoverColor};
@@ -113,8 +114,8 @@ const Channels = ({ channelList, onClick }: channelsType) => {
           </NotiWrapper>
           <HoverIcon onClick={() => setExitModalOpen(!exitModalOpen)}>
             <Icons icon="menu" />
-            <ChannelExitModal isOpen={exitModalOpen} />
           </HoverIcon>
+          <ChannelExitModal isOpen={exitModalOpen} />
         </ChannelContainer>
       ))}
     </ChannelsContainer>
