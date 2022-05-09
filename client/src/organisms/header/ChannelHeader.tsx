@@ -7,7 +7,7 @@ import ChannelHeaderDropdown from 'organisms/modal/channel/header/ChannelHeaderD
 import ChannelMemberListModal from 'organisms/modal/channel/header/ChannelMemberListModal';
 import ChannelModifyModal from 'organisms/modal/channel/header/ChannelModifyModal';
 import { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
   currentChannelNum,
@@ -47,12 +47,15 @@ const DropdownWrapper = styled.div`
 `;
 const MemberListWrapper = styled.div`
   width: fit-content;
+  display: flex;
+  gap: 10px;
 `;
 const ChannelHeader = () => {
-  const { channelId } = useParams();
+  const { workspaceId, channelId } = useParams();
   const currentWorkspaceId = useRecoilValue(currentWorkspace);
   const [channelName, setChannelName] = useState('');
   const [channelMemberNum, setChannelMemberNum] = useState(0);
+  const [channelCode, setChannelCode] = useState('VIDEO');
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [modifyModalOpen, setModifyModalOpen] = useState(false);
   const [memberListOpen, setMemberListOpen] = useState(false);
@@ -64,6 +67,8 @@ const ChannelHeader = () => {
   const modChannelName = useRecoilValue(modifyChannelName);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const memberListRef = useRef<HTMLDivElement>(null);
+
+  const navigate = useNavigate();
 
   const handleClickDropdownOutside = ({ target }: any) => {
     if (dropdownOpen && !dropdownRef.current?.contains(target)) {
@@ -90,20 +95,6 @@ const ChannelHeader = () => {
     };
   }, [memberListOpen]);
 
-  // // 새로고침시 채널별 인원수가 초기화 되므로 다시 저장하기 위한 useEffect
-  // useEffect(() => {
-  //   if (currentChannelMemberNum === 0 && channelId) {
-  //     handleChannelInfo();
-  //   }
-  // }, []);
-
-  // // 채널 멤버 초대시 인원수 변경 감지 후 리렌더링
-  // useEffect(() => {
-  //   if (currentChannelMemberNum !== 0) {
-  //     setChannelMemberNum(currentChannelMemberNum);
-  //   }
-  // }, [currentChannelMemberNum]);
-
   useEffect(() => {
     if (channelId) {
       handleChannelInfo();
@@ -121,6 +112,7 @@ const ChannelHeader = () => {
       setChannelName(data.name);
       setChannelMemberNum(data.numOfPeople);
       setCurrentChannelMemberNum(data.numOfPeople);
+      // setChannelCode(data.channelCode);
     } catch (error) {
       console.log(error);
     }
@@ -194,6 +186,15 @@ const ChannelHeader = () => {
               {String(channelMemberNum)}
             </Text>
           </Members>
+          {channelCode === 'VIDEO' ? (
+            <Icons
+              icon="solidVideoOn"
+              width="28"
+              height="28"
+              color={memberListOpen ? 'blue100' : 'gray500'}
+              onClick={() => navigate(`meeting/${workspaceId}/${channelId}`)}
+            />
+          ) : null}
           <ChannelMemberListModal
             isOpen={memberListOpen}
             onClick={handleAddMemberModalOpen}

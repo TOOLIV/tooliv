@@ -35,12 +35,12 @@ export type iconsTypes = {
     | 'search'
     | 'menu'
     | 'night'
-    | 'sun'
     | 'modify'
     | 'online'
     | 'later'
     | 'remove'
-    | 'offline';
+    | 'offline'
+    | 'solidVideoOn';
 
   onClick?: () => void;
   width?: string;
