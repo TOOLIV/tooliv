@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -32,6 +33,12 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
+
+    @Value("${cloud.aws.region.static}")
+    private String region;
 
     private final AuthenticationManager authenticationManager;
 
@@ -92,7 +99,7 @@ public class UserServiceImpl implements UserService {
 
         ProfileInfoResponseDTO profileInfoResponseDTO = ProfileInfoResponseDTO.builder()
             .nickname(user.getNickname())
-            .profileImage(user.getProfileImage()).build();
+            .profileImage(getImageURL(user.getProfileImage())).build();
 
         if(user.getProfileImage() == null) {
             profileInfoResponseDTO.updateProfileImage("");
@@ -158,7 +165,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String getImageURL(String fileName) {
-        return "https://tooliva402.s3.ap-northeast-2.amazonaws.com/" + fileName;
+        return "https://" + bucket + ".s3." + region + ".amazonaws.com/" + fileName;
     }
 
     @Override
