@@ -6,11 +6,13 @@ import com.tooliv.server.domain.user.application.dto.response.UserListResponseDT
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.enums.UserCode;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
+import com.tooliv.server.global.common.AwsS3Service;
 import com.tooliv.server.global.exception.UserNotFoundException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -20,13 +22,16 @@ public class AdminServiceImpl implements AdminService {
 
     private final UserRepository userRepository;
 
+    private final AwsS3Service awsS3Service;
+
     @Override
     public UserListResponseDTO getUserList(String keyword) {
         List<UserInfoResponseDTO> userInfoResponseDTOList = new ArrayList<>();
 
         for (User user : userRepository.findAllByUserCodeNotAndDeletedAtAndNameContainingOrderByNameAsc(UserCode.ADMIN, null, keyword)
             .orElseThrow(() -> new UserNotFoundException("조회 가능한 회원이 없음"))) {
-            userInfoResponseDTOList.add(new UserInfoResponseDTO(user.getId(), user.getEmail(), user.getName(), user.getNickname(), user.getUserCode(), getImageURL(user.getProfileImage())));
+            userInfoResponseDTOList.add(
+                new UserInfoResponseDTO(user.getId(), user.getEmail(), user.getName(), user.getNickname(), user.getUserCode(), user.getStatusCode(), awsS3Service.getFilePath(user.getProfileImage())));
         }
 
         return new UserListResponseDTO(userInfoResponseDTOList, userInfoResponseDTOList.size());
@@ -61,8 +66,4 @@ public class AdminServiceImpl implements AdminService {
         return user;
     }
 
-    @Override
-    public String getImageURL(String fileName) {
-        return "https://tooliva402.s3.ap-northeast-2.amazonaws.com/" + fileName;
-    }
 }

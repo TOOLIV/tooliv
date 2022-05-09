@@ -12,6 +12,7 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import {
   currentChannelNum,
   currentWorkspace,
+  dmName,
   modifyChannelName,
 } from 'recoil/atom';
 
@@ -62,6 +63,7 @@ const ChannelHeader = () => {
   const [memberListOpen, setMemberListOpen] = useState(false);
   const [addMemeberOpen, setAddMemberOpen] = useState(false);
   const [userCode, setUserCode] = useState('');
+  const [directName, setDirectName] = useRecoilState<string>(dmName);
 
   const [currentChannelMemberNum, setCurrentChannelMemberNum] =
     useRecoilState(currentChannelNum);
@@ -108,8 +110,13 @@ const ChannelHeader = () => {
 
   useEffect(() => {
     if (channelId) {
-      handleChannelInfo();
-      getUserCode();
+      if (location.pathname.includes('/direct')) {
+        setChannelName(directName);
+        setChannelMemberNum(2);
+      } else {
+        handleChannelInfo();
+        getUserCode();
+      }
     } else {
       setChannelName('홈');
       setUserCode('');

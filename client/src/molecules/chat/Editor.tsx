@@ -17,7 +17,7 @@ const Container = styled.div`
   min-height: 64px;
   padding: 0 10px;
 `;
-const Input = styled.textarea`
+export const EditorInput = styled.textarea`
   width: 85%;
   margin: 12px;
   min-height: 50%;
@@ -68,11 +68,11 @@ const Editor = ({ onClick, sendMessage }: editorProps) => {
   return (
     <>
       <Container>
-        <Input
+        <EditorInput
           value={message}
           onChange={onChange}
           onKeyPress={onKeyPress}
-        ></Input>
+        ></EditorInput>
         <Wrapper>
           <Icons icon="file" color="gray500" onClick={handleFileModal} />
           <Button onClick={onClick} width="50" height="40" text="전송" />

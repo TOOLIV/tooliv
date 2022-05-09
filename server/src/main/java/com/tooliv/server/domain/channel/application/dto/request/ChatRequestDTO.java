@@ -41,6 +41,15 @@ public class ChatRequestDTO implements Serializable {
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime sendTime;
 
+    @ApiModelProperty(name = "메시지 수정 여부")
+    private boolean updated;
+
+    @ApiModelProperty(name = "메시지 삭제 여부")
+    private boolean deleted;
+
+    @ApiModelProperty(name = "메시지 타입")
+    private String type;
+
     @ApiModelProperty(name = "파일")
     private List<String> files;
 
@@ -54,5 +63,20 @@ public class ChatRequestDTO implements Serializable {
 
     public void updateChatId(long chatId) {
         this.chatId = chatId;
+    }
+
+    public void updateIsUpdated() {
+        this.updated = true;
+    }
+
+    public void updateIsDeleted() {
+        this.deleted = true;
+    }
+
+    public void deletedData(long chatId) {
+        this.chatId = chatId;
+        this.contents = "";
+        this.files = null;
+        this.originFiles = null;
     }
 }

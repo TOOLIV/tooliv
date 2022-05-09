@@ -21,9 +21,10 @@ export const VideoContainer = styled.div<{
   border-radius: 10px;
   background-color: ${colors.gray900};
   min-width: 20vh;
+
   position: relative;
   border: ${(props) =>
-    props.isSpeak ? `3px solid ${colors.primary}` : 'none'};
+    props.isSpeak ? `3px solid ${colors.secondary}` : 'none'};
 `;
 
 export const StyledVideo = styled.video`

@@ -2,14 +2,16 @@ import styled from '@emotion/styled';
 import { StreamManager } from 'openvidu-browser';
 import React, { useEffect, useRef, useState } from 'react';
 import { colors } from 'shared/color';
+import { MainStagePropsType } from 'types/meeting/openviduTypes';
 import UserLabel from './UserLabel';
 
-const MainStateContainer = styled.div`
+const MainStateContainer = styled.div<{ isHideCam: boolean }>`
   width: 100%;
-  height: calc(85vh - 258px);
+  height: calc(85vh - 250px + ${(props) => (props.isHideCam ? '15vh' : '0px')});
   border-radius: 10px;
   background-color: ${colors.black};
   position: relative;
+  border: 1.5px solid ${colors.black};
 `;
 const StyledVideo = styled.video`
   width: 100%;
@@ -17,11 +19,7 @@ const StyledVideo = styled.video`
   border-radius: 10px;
 `;
 
-type MainStagePropsType = {
-  streamManager: StreamManager;
-};
-
-const MainStage = ({ streamManager }: MainStagePropsType) => {
+const MainStage = ({ streamManager, isHideCam }: MainStagePropsType) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [visiableLable, setVisiableLabel] = useState<boolean>(false);
 
@@ -33,6 +31,7 @@ const MainStage = ({ streamManager }: MainStagePropsType) => {
     <MainStateContainer
       onMouseEnter={() => setVisiableLabel(true)}
       onMouseLeave={() => setVisiableLabel(false)}
+      isHideCam={isHideCam}
     >
       <StyledVideo
         ref={videoRef}

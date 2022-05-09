@@ -14,6 +14,7 @@ import com.tooliv.server.domain.channel.domain.repository.DirectChatNotification
 import com.tooliv.server.domain.channel.domain.repository.DirectChatRoomMembersRepository;
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
+import com.tooliv.server.global.common.AwsS3Service;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,8 @@ public class NotificationServiceImpl implements NotificationService {
     private final ChannelMembersRepository channelMembersRepository;
 
     private final DirectChatRoomMembersRepository directChatRoomMembersRepository;
+
+    private final AwsS3Service awsS3Service;
 
     @Override
     public NotificationListResponseDTO getNotificationList(String email) {
@@ -59,7 +62,8 @@ public class NotificationServiceImpl implements NotificationService {
             for (int j = 0; j < directChatRoomMembers.size(); j++) {
                 if (!directChatRoomMembers.get(j).getUser().getId().equals(user.getId())) {
                     User receiver = directChatRoomMembers.get(j).getUser();
-                    directInfoDTOList.add(new DirectInfoDTO(receiver.getProfileImage(), receiver.getNickname(), directChatRoomMembersList.get(i).getDirectChatRoom().getId(),
+                    String imageUrl = awsS3Service.getFilePath(receiver.getProfileImage());
+                    directInfoDTOList.add(new DirectInfoDTO(imageUrl, receiver.getNickname(), directChatRoomMembersList.get(i).getDirectChatRoom().getId(),
                         checkDirectNotification(directChatRoomMembersList.get(i), directChatRoomMembersList.get(i).getDirectChatRoom())));
                 }
             }
