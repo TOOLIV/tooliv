@@ -6,6 +6,7 @@ import com.tooliv.server.domain.user.application.dto.response.UserListResponseDT
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.enums.UserCode;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
+import com.tooliv.server.global.common.AwsS3Service;
 import com.tooliv.server.global.exception.UserNotFoundException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -19,13 +20,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AdminServiceImpl implements AdminService {
 
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucket;
-
-    @Value("${cloud.aws.region.static}")
-    private String region;
-
     private final UserRepository userRepository;
+
+    private final AwsS3Service awsS3Service;
 
     @Override
     public UserListResponseDTO getUserList(String keyword) {
@@ -34,7 +31,7 @@ public class AdminServiceImpl implements AdminService {
         for (User user : userRepository.findAllByUserCodeNotAndDeletedAtAndNameContainingOrderByNameAsc(UserCode.ADMIN, null, keyword)
             .orElseThrow(() -> new UserNotFoundException("조회 가능한 회원이 없음"))) {
             userInfoResponseDTOList.add(
-                new UserInfoResponseDTO(user.getId(), user.getEmail(), user.getName(), user.getNickname(), user.getUserCode(), user.getStatusCode(), getImageURL(user.getProfileImage())));
+                new UserInfoResponseDTO(user.getId(), user.getEmail(), user.getName(), user.getNickname(), user.getUserCode(), user.getStatusCode(), awsS3Service.getFilePath(user.getProfileImage())));
         }
 
         return new UserListResponseDTO(userInfoResponseDTOList, userInfoResponseDTOList.size());
@@ -69,8 +66,4 @@ public class AdminServiceImpl implements AdminService {
         return user;
     }
 
-    @Override
-    public String getImageURL(String fileName) {
-        return "https://" + bucket + ".s3." + region + ".amazonaws.com/" + fileName;
-    }
 }

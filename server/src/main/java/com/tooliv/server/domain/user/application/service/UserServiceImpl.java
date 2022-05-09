@@ -35,12 +35,6 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucket;
-
-    @Value("${cloud.aws.region.static}")
-    private String region;
-
     private final AuthenticationManager authenticationManager;
 
     private final JwtAuthenticationProvider jwtAuthenticationProvider;
@@ -78,21 +72,18 @@ public class UserServiceImpl implements UserService {
             .orElseThrow(() -> new UserNotFoundException("회원 정보를 찾을 수 없음"));
 
         user.updateStatusCode(StatusCode.ONLINE);
+        userRepository.save(user);
 
-        LogInResponseDTO logInResponseDTO = LogInResponseDTO.builder()
+        return LogInResponseDTO.builder()
             .userId(user.getId())
             .name(user.getName())
             .email(user.getEmail())
             .nickname(user.getNickname())
             .userCode(user.getUserCode())
-            .profileImage(getImageURL(user.getProfileImage()))
+            .statusCode(user.getStatusCode())
+            .profileImage(awsS3Service.getFilePath(user.getProfileImage()))
             .accessToken(jwt).build();
 
-        if(user.getProfileImage() == null) {
-            logInResponseDTO.updateProfileImage("");
-        }
-
-        return logInResponseDTO;
     }
 
     @Override
@@ -100,16 +91,11 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByEmailAndDeletedAt(email, null)
             .orElseThrow(() -> new UserNotFoundException("회원 정보 없음"));
 
-        ProfileInfoResponseDTO profileInfoResponseDTO = ProfileInfoResponseDTO.builder()
+        return ProfileInfoResponseDTO.builder()
             .nickname(user.getNickname())
             .statusCode(user.getStatusCode())
-            .profileImage(getImageURL(user.getProfileImage())).build();
+            .profileImage(awsS3Service.getFilePath(user.getProfileImage())).build();
 
-        if(user.getProfileImage() == null) {
-            profileInfoResponseDTO.updateProfileImage("");
-        }
-
-        return profileInfoResponseDTO;
     }
 
     @Override
@@ -153,7 +139,7 @@ public class UserServiceImpl implements UserService {
 
         for (User user : userRepository.findAllByDeletedAtAndNameContainingOrderByNameAsc(null, keyword, PageRequest.of(sequence - 1, 15, Sort.Direction.ASC, "name"))
             .orElseThrow(() -> new UserNotFoundException("조회 가능한 회원이 없음"))) {
-            userInfoResponseDTOList.add(new UserInfoResponseDTO(user.getId(), user.getEmail(), user.getName(), user.getNickname(), user.getUserCode(), user.getStatusCode(), getImageURL(user.getProfileImage())));
+            userInfoResponseDTOList.add(new UserInfoResponseDTO(user.getId(), user.getEmail(), user.getName(), user.getNickname(), user.getUserCode(), user.getStatusCode(), awsS3Service.getFilePath(user.getProfileImage())));
         }
 
         return new UserListResponseDTO(userInfoResponseDTOList, userInfoResponseDTOList.size());
@@ -165,11 +151,6 @@ public class UserServiceImpl implements UserService {
             .orElseThrow(() -> new UserNotFoundException("회원 정보를 찾을 수 없음"));
 
         return user;
-    }
-
-    @Override
-    public String getImageURL(String fileName) {
-        return "https://" + bucket + ".s3." + region + ".amazonaws.com/" + fileName;
     }
 
     @Override
