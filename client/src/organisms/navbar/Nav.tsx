@@ -64,14 +64,13 @@ const DropdownWrapper = styled.div`
   /* cursor: pointer; */
 `;
 const Nav = () => {
-  const { accessToken, email } = useRecoilValue(user);
+  const { accessToken, email, userId, profileImage } = useRecoilValue(user);
   const [contents, setContents] =
     useRecoilState<contentTypes[]>(channelContents);
   const [mode, setMode] = useRecoilState(appThemeMode);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [profileConfigOpen, setProfileConfigOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const userInfo = useRecoilValue(user);
   const [notiList, setNotiList] =
     useRecoilState<channelNotiType[]>(channelNotiList);
   const [dmList, setDmList] = useRecoilState<DMInfoType[]>(DMList);
@@ -79,14 +78,14 @@ const Nav = () => {
   const [workspaceList, setWorkspaceList] =
     useRecoilState<workspaceListType[]>(wsList);
   const navigate = useNavigate();
+
   useEffect(() => {
     setIsLoading(true);
-
     getChannels(email).then((res) => {
       const {
         data: { notificationChannelList },
       } = res;
-      getDMList(userInfo.email).then((res) => {
+      getDMList(email).then((res) => {
         const {
           data: { directInfoDTOList },
         } = res;
@@ -110,13 +109,17 @@ const Nav = () => {
             }
           );
           setWorkspaceList(newWSList);
+          setIsLoading(false);
         });
-        connect(accessToken, setContents, userInfo.userId);
-        setIsLoading(false);
       });
     });
   }, []);
 
+  useEffect(() => {
+    if (!isLoading) {
+      connect(accessToken, setContents, userId);
+    }
+  }, [isLoading]);
   // 다크모드/일반모드 설정
   const handleDarkMode = () => {
     if (mode === 'dark') {
@@ -173,7 +176,7 @@ const Nav = () => {
         />
         <DropdownWrapper ref={dropdownRef}>
           <AvatarWrapper onClick={() => setDropdownOpen(!dropdownOpen)}>
-            <Avatar size="42" src={userInfo.profileImage} />
+            <Avatar size="42" src={profileImage} />
           </AvatarWrapper>
           <UserDropdown
             isOpen={dropdownOpen}

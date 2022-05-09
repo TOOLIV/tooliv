@@ -71,7 +71,6 @@ const Message = ({
   const getUserProfile = async () => {
     const response = await getUserInfo(email);
     setThumbnailImage(response.data.profileImage);
-    console.log(response);
   };
   return (
     <Container>

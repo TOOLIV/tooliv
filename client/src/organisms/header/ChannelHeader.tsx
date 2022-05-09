@@ -7,11 +7,12 @@ import ChannelHeaderDropdown from 'organisms/modal/channel/header/ChannelHeaderD
 import ChannelMemberListModal from 'organisms/modal/channel/header/ChannelMemberListModal';
 import ChannelModifyModal from 'organisms/modal/channel/header/ChannelModifyModal';
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
   currentChannelNum,
   currentWorkspace,
+  dmName,
   modifyChannelName,
 } from 'recoil/atom';
 
@@ -69,6 +70,9 @@ const ChannelHeader = () => {
   const memberListRef = useRef<HTMLDivElement>(null);
 
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const [directName, setDirectName] = useRecoilState<string>(dmName);
 
   const handleClickDropdownOutside = ({ target }: any) => {
     if (dropdownOpen && !dropdownRef.current?.contains(target)) {
@@ -97,8 +101,13 @@ const ChannelHeader = () => {
 
   useEffect(() => {
     if (channelId) {
-      handleChannelInfo();
-      getUserCode();
+      if (location.pathname.includes('/direct')) {
+        setChannelName(directName);
+        setChannelMemberNum(2);
+      } else {
+        handleChannelInfo();
+        getUserCode();
+      }
     } else {
       setChannelName('홈');
       setUserCode('');

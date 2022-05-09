@@ -13,20 +13,24 @@ let sockJS = baseURL
   ? new SockJS(`${JSON.parse(baseURL).url}/chatting`)
   : // 로컬에서 테스트시 REACT_APP_TEST_URL, server 주소는 REACT_APP_BASE_SERVER_URL
     new SockJS(`${process.env.REACT_APP_BASE_SERVER_URL}/chatting`);
-let client: Stomp.Client = Stomp.over(sockJS);
+export let client: Stomp.Client = Stomp.over(sockJS);
 let subscribe: Stomp.Subscription;
-
+console.log(client);
 export const connect = (
   accessToken: string,
   setContents: SetterOrUpdater<contentTypes[]>,
   userId: string
 ) => {
+  console.log('connect start', accessToken);
   client.connect(
     {
       Authorization: `Bearer ${accessToken}`,
     },
     (frame) => {
       sub(setContents, userId);
+    },
+    (frame) => {
+      console.log('connect error');
     }
   );
 };
@@ -108,11 +112,7 @@ export const sub = (
     let updateWorkspaceId: string = '';
     if (channelId === recChannelId) {
       // 현재 채널 아이디와 도착한 메시지의 채널 아이디가 같으면
-      setContents((prev) =>
-        prev
-          ? [...prev, JSON.parse(response.body)]
-          : [JSON.parse(response.body)]
-      );
+      setContents((prev) => [...prev, JSON.parse(response.body)]);
     } else {
       // 현재 채널 아이디와 도착한 메시지의 채널 아이디가 다르면
       const newList: channelNotiType[] = notiList.map((noti) => {

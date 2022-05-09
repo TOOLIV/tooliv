@@ -10,25 +10,47 @@ import Text from 'atoms/text/Text';
 import DirectMessageModal from 'organisms/modal/sidemenu/DirectMessageModal';
 import { useRecoilState } from 'recoil';
 import { DMInfoType } from 'types/channel/chatTypes';
-import { DMList } from 'recoil/atom';
+import { DMList, dmName } from 'recoil/atom';
 import { useNavigate, useParams } from 'react-router-dom';
+import { css } from '@emotion/react';
 
 const FriendsContainer = styled.div`
-  padding: 0 24px 16px 24px;
+  padding-left: 14px;
+  padding-bottom: 18px;
   cursor: pointer;
 `;
-const FriendContainer = styled.div`
+const FriendContainer = styled.div<{ isSelected: boolean }>`
   display: flex;
   height: 30px;
   align-items: center;
-  padding-left: 8px;
+  padding: 0 16px 0 8px;
+  width: 220px;
+  transition: 0.3s;
+  cursor: pointer;
+  box-sizing: content-box;
+  background-color: ${(props) => props.isSelected && props.theme.hoverColor};
+  border-radius: ${(props) => props.isSelected && `10px 0 0 10px`};
+  border-right: ${(props) =>
+    props.isSelected && `4px solid ${props.theme.darkPointColor}`};
+  ${(props) =>
+    css`
+      &:hover {
+        background-color: ${props.theme.hoverColor};
+        border-radius: 10px 0 0 10px;
+      }
+
+      &:hover > div:last-child {
+        display: block;
+      }
+    `}
 `;
 
 const DirectMessage = () => {
   const [userListOpen, setUserListOpen] = useState(false);
   const [dmList, setDmList] = useRecoilState<DMInfoType[]>(DMList);
+  const [directName, setDirectName] = useRecoilState<string>(dmName);
   const navigate = useNavigate();
-  const { workspaceId } = useParams();
+  const { workspaceId, channelId } = useParams();
   const closeUserList = () => {
     setUserListOpen(false);
   };
@@ -43,7 +65,11 @@ const DirectMessage = () => {
         {dmList.map((dm) => (
           <FriendContainer
             key={dm.channelId}
-            onClick={() => navigate(`/direct/${workspaceId}/${dm.channelId}`)}
+            onClick={() => {
+              setDirectName(dm.receiveName);
+              navigate(`/direct/${workspaceId}/${dm.channelId}`);
+            }}
+            isSelected={channelId === dm.channelId}
           >
             <SideWrapper>
               <Avatar />
