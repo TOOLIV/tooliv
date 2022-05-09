@@ -73,14 +73,14 @@ export const deleteChat = (
   );
 };
 
-export const updateMessage = ({
+export const updateChat = ({
   accessToken,
   channelId,
+  chatId,
   email,
   message,
   fileUrl,
   fileNames,
-  chatId,
 }: SendMessageProps) => {
   client.send(
     '/pub/chat/message',
@@ -96,6 +96,35 @@ export const updateMessage = ({
       type: 'UPDATE',
       files: fileUrl ? fileUrl : null,
       originFiles: fileNames ? fileNames : null,
+      updated: true,
+    })
+  );
+};
+
+export const updateDM = ({
+  accessToken,
+  channelId,
+  chatId,
+  email,
+  message,
+  fileUrl,
+  fileNames,
+}: SendMessageProps) => {
+  client.send(
+    '/pub/chat/directMessage',
+    {
+      Authorization: `Bearer ${accessToken}`,
+    },
+    JSON.stringify({
+      channelId: channelId,
+      chatId: chatId,
+      email: email,
+      sendTime: new Date(),
+      contents: getMarkdownText(message),
+      type: 'UPDATE',
+      files: fileUrl ? fileUrl : null,
+      originFiles: fileNames ? fileNames : null,
+      updated: true,
     })
   );
 };

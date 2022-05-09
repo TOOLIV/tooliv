@@ -40,7 +40,8 @@ export type iconsTypes = {
     | 'later'
     | 'remove'
     | 'offline'
-    | 'solidVideoOn';
+    | 'solidVideoOn'
+    | 'delete';
 
   onClick?: () => void;
   width?: string;

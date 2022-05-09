@@ -4,8 +4,8 @@ export type SendMessageProps = {
   chatId?: string;
   email: string;
   message: string;
-  fileUrl: string[];
-  fileNames: string[];
+  fileUrl?: string[];
+  fileNames?: string[];
 };
 
 export type SendDMProps = {
@@ -22,4 +22,13 @@ export type DMInfoType = {
   receiveName: string;
   channelId: string;
   notificationRead: boolean;
+};
+
+export type UpdateChatType = {
+  isOpen: boolean;
+  onClose: () => void;
+  contents: string;
+  channelId?: string;
+  chatId?: string;
+  email: string;
 };
