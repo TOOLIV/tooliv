@@ -70,6 +70,7 @@ const Container = styled.div<{
 const WorkspaceName = styled.div`
   font-size: 12px;
   word-break: keep-all;
+  color: ${(props) => props.theme.textColor};
   cursor: pointer;
 `;
 const Noti = styled.div`

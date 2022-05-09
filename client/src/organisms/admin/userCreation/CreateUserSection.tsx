@@ -18,7 +18,6 @@ const CreateUserSection = () => {
   const checkEmailValid = () => {
     const email = inputEmailRef.current?.value!;
     if (emailPattern.test(email)) {
-      console.log(email);
       handleEmailCheck(email);
     } else {
       setEmailStatus('default');

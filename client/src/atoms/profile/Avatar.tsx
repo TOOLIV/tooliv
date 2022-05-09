@@ -12,7 +12,7 @@ const Image = styled.img<{ size?: string }>`
 
 const Avatar = ({ src, size = '20' }: avatarTypes) => {
   return src ? (
-    <Image src={src} size={size} />
+    <Image src={src} size={size} alt="profile" />
   ) : (
     <AvatarIcon width={size} height={size} fill={colors.gray500} />
   );
