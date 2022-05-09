@@ -1,10 +1,11 @@
 export type contentTypes = {
   chatId: string;
   channelId: string;
-  sender: string;
   email: string;
   contents: string;
   type: string;
+  deleted: boolean;
+  updated: boolean;
   sendTime: string;
   files?: string[];
   originFiles?: string[];

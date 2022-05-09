@@ -101,3 +101,8 @@ export const wsList = atom<workspaceListType[]>({
   key: 'workspaceList',
   default: [],
 });
+
+export const dmName = atom<string>({
+  key: 'dmName',
+  default: '홈',
+});

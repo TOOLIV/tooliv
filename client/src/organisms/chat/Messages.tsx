@@ -24,7 +24,6 @@ const Messages = () => {
   };
   useEffect(() => {
     scrollToBottom();
-    console.log(contents);
   }, [contents]);
 
   return (

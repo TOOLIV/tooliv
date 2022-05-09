@@ -5,8 +5,9 @@ const Main = () => {
     <div>
       <Message
         chatId="0"
-        sender="Tooliv"
         sendTime="0"
+        deleted={false}
+        updated={false}
         contents="test"
         channelId="1"
         type="test"

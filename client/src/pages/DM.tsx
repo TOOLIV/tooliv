@@ -48,13 +48,12 @@ const DM = () => {
   const { channelId } = useParams<string>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   useEffect(() => {
-    // const newList: channelNotiType[] = notiList.map((noti) => {
-    //   if (noti.channelId === channelId)
-    //     return { ...noti, notificationRead: true };
-    //   else return noti;
-    // });
-    // console.log(newList);
-    // setNotiList(newList);
+    const newList: channelNotiType[] = notiList.map((noti) => {
+      if (noti.channelId === channelId) {
+        return { ...noti, notificationRead: true };
+      } else return noti;
+    });
+    setNotiList(newList);
     setIsLoading(true);
     enterDM(channelId!).then(() => {
       subDM(channelId!).then((res) => {
@@ -67,27 +66,14 @@ const DM = () => {
 
   const onSendClick = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
-    sendDM({
-      accessToken,
-      channelId,
-      senderEmail: email,
-      receiverEmail: 'the@naver.com',
-      message,
-      fileUrl,
-      fileNames,
-    });
-
-    setMessage('');
-    setFiles([]);
-    setFileUrl([]);
+    sendMessage();
   };
 
   const sendMessage = () => {
     sendDM({
       accessToken,
       channelId,
-      senderEmail: email,
-      receiverEmail: 'the@naver.com',
+      email,
       message,
       fileUrl,
       fileNames,

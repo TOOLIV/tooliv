@@ -80,7 +80,7 @@ const Channel = () => {
     setIsLoading(true);
     enterChannel(channelId!).then(() => {
       subChannel(channelId!).then((res) => {
-        console.log(res.data.chatMessageDTOList);
+        console.log(res);
         setContents(res.data.chatMessageDTOList);
         setIsLoading(false);
       });
@@ -89,18 +89,7 @@ const Channel = () => {
 
   const onSendClick = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
-    send({
-      accessToken,
-      channelId,
-      email,
-      message,
-      fileUrl,
-      fileNames,
-    });
-
-    setMessage('');
-    setFiles([]);
-    setFileUrl([]);
+    sendMessage();
   };
 
   const sendMessage = () => {
