@@ -1,5 +1,6 @@
 package com.tooliv.server.domain.channel.application.dto.response;
 
+import com.tooliv.server.domain.channel.domain.enums.ChannelCode;
 import com.tooliv.server.global.common.BaseResponseDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -20,6 +21,10 @@ public class ChannelInfoGetResponseDTO extends BaseResponseDTO {
 
     @ApiModelProperty("채널 인원")
     private long numOfPeople;
+
+
+    @ApiModelProperty("채널 코드")
+    private ChannelCode channelCode;
 
     public static ChannelInfoGetResponseDTO of(String message, ChannelInfoGetResponseDTO channelInfoGetResponseDTO){
         channelInfoGetResponseDTO.setMessage(message);
