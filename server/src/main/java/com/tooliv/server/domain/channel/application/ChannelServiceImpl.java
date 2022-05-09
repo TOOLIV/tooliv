@@ -33,8 +33,6 @@ public class ChannelServiceImpl implements ChannelService {
 
     private final ChannelMembersRepository channelMembersRepository;
 
-//    private final ChannelVideoRepository channelVideoRepository;
-
     private final UserRepository userRepository;
 
     private final ChannelMemberService channelMemberService;
@@ -63,15 +61,6 @@ public class ChannelServiceImpl implements ChannelService {
         chatService.createChatRoom(channel);
 
         channelRepository.save(channel);
-
-//        if(registerChannelRequestDTO.getChannelCode() == ChannelCode.VIDEO){
-//            ChannelVideo channelVideo = ChannelVideo.builder()
-//                .isActive(false)
-//                .channel(channel)
-//                .build();
-//
-//            channelVideoRepository.save(channelVideo);
-//        }
 
         ChannelMembers channelMembers = ChannelMembers.builder()
             .createdAt(now)
