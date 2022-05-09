@@ -154,11 +154,17 @@ public class UserController {
             .body(NicknameResponseDTO.of("닉네임 변경 완료", nicknameResponseDTO));
     }
 
-    @PatchMapping()
+    @PatchMapping("/status")
     @ApiOperation(value = "상태 수정")
     public ResponseEntity<? extends BaseResponseDTO> updateStatus(
         @RequestBody @ApiParam(value = "수정할 상태", required = true) StatusUpdateRequestDTO statusUpdateRequestDTO) {
+        try {
+            userService.updateStatus(statusUpdateRequestDTO);
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(409).body(BaseResponseDTO.of(e.getMessage()));
+        }
 
+        return ResponseEntity.status(204).body(BaseResponseDTO.of("상태 변경 완료"));
     }
 
 }
