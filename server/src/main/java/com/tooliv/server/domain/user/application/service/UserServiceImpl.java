@@ -55,6 +55,7 @@ public class UserServiceImpl implements UserService {
             .nickname(signUpRequestDTO.getName())
             .password(passwordEncoder.encode(signUpRequestDTO.getPassword()))
             .userCode(UserCode.USER)
+            .statusCode(StatusCode.OFFLINE)
             .createdAt(LocalDateTime.now()).build();
 
         userRepository.save(user);
