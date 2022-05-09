@@ -8,8 +8,10 @@ import FunctionButtons from 'organisms/meeting/FunctionButtons';
 import ScreenShareModal from 'organisms/meeting/video/ScreenShareModal';
 import Videos from 'organisms/meeting/video/Videos';
 import React, { useEffect, useState } from 'react';
-import { useRecoilState } from 'recoil';
+import { useParams } from 'react-router-dom';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { isOpenChat } from 'recoil/atom';
+import { user } from 'recoil/auth';
 
 const MeetingContainer = styled.div`
   /* background-color: #787878; */
@@ -28,6 +30,9 @@ const Meeting = () => {
     setIsChatOpen(true);
   };
 
+  const { workspaceId, channelId } = useParams();
+  const userInfo = useRecoilValue(user);
+
   const [OV, setOV] = useState<OpenVidu>();
   const [OVForScreenSharing, setOVForScreenSharing] = useState<OpenVidu>();
   const [session, setSession] = useState<Session>();
@@ -35,12 +40,12 @@ const Meeting = () => {
     useState<Session>();
 
   const [initUserData, setInitUserData] = useState({
-    mySessionId: 'test3',
-    myUserName: 'Participant' + Math.floor(Math.random() * 100),
+    mySessionId: channelId,
+    myUserName: userInfo.nickname,
   });
   const [initScreenData, setInitScreenData] = useState({
     mySessionId: initUserData.mySessionId + '_screen',
-    myScreenName: initUserData.myUserName + '_screen',
+    myScreenName: initUserData.myUserName + '님의 화면',
   });
 
   const [mainStreamManager, setMainStreamManager] =
@@ -147,7 +152,7 @@ const Meeting = () => {
         console.warn(exception);
       });
 
-      getToken(initUserData.mySessionId).then((token: any) => {
+      getToken(initUserData.mySessionId!).then((token: any) => {
         newSession
           .connect(token, { clientData: initUserData.myUserName })
           .then(async () => {
@@ -281,7 +286,7 @@ const Meeting = () => {
     newOV.enableProdMode();
     const newSession = newOV.initSession();
 
-    await getToken(initUserData.mySessionId).then((token: any) => {
+    await getToken(initUserData.mySessionId!).then((token: any) => {
       // First param is the token got from OpenVidu Server. Second param can be retrieved by every user on event
       // 'streamCreated' (property Stream.connection.data), and will be appended to DOM as the user's nickname
       newSession
