@@ -29,6 +29,7 @@ export const VideoContainer = styled.div<{
 export const StyledVideo = styled.video`
   width: 100%;
   height: 100%;
+  border-radius: 10px;
 `;
 
 const PublisherVideo = ({

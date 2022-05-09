@@ -1,5 +1,6 @@
 package com.tooliv.server.domain.user.application.dto.response;
 
+import com.tooliv.server.domain.user.domain.enums.StatusCode;
 import com.tooliv.server.domain.user.domain.enums.UserCode;
 import com.tooliv.server.global.common.BaseResponseDTO;
 import io.swagger.annotations.ApiModel;
@@ -29,6 +30,9 @@ public class LogInResponseDTO extends BaseResponseDTO {
 
     @ApiModelProperty(name = "프로필 이미지")
     private String profileImage;
+
+    @ApiModelProperty(name = "상태 코드")
+    private StatusCode statusCode;
 
     @ApiModelProperty(name = "AccessToken")
     private String accessToken;
