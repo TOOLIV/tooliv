@@ -9,6 +9,7 @@ import com.tooliv.server.domain.user.application.dto.response.ProfileInfoRespons
 import com.tooliv.server.domain.user.application.dto.response.UserInfoResponseDTO;
 import com.tooliv.server.domain.user.application.dto.response.UserListResponseDTO;
 import com.tooliv.server.domain.user.domain.User;
+import com.tooliv.server.domain.user.domain.enums.StatusCode;
 import com.tooliv.server.domain.user.domain.enums.UserCode;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
 import com.tooliv.server.global.exception.DuplicateEmailException;
@@ -19,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -53,6 +55,7 @@ public class UserServiceImpl implements UserService {
             .nickname(signUpRequestDTO.getName())
             .password(passwordEncoder.encode(signUpRequestDTO.getPassword()))
             .userCode(UserCode.USER)
+            .statusCode(StatusCode.OFFLINE)
             .createdAt(LocalDateTime.now()).build();
 
         userRepository.save(user);
@@ -69,20 +72,19 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByEmailAndDeletedAt(logInRequestDTO.getEmail(), null)
             .orElseThrow(() -> new UserNotFoundException("회원 정보를 찾을 수 없음"));
 
-        LogInResponseDTO logInResponseDTO = LogInResponseDTO.builder()
+        user.updateStatusCode(StatusCode.ONLINE);
+        userRepository.save(user);
+
+        return LogInResponseDTO.builder()
             .userId(user.getId())
             .name(user.getName())
             .email(user.getEmail())
             .nickname(user.getNickname())
             .userCode(user.getUserCode())
-            .profileImage(getImageURL(user.getProfileImage()))
+            .statusCode(user.getStatusCode())
+            .profileImage(awsS3Service.getFilePath(user.getProfileImage()))
             .accessToken(jwt).build();
 
-        if(user.getProfileImage() == null) {
-            logInResponseDTO.updateProfileImage("");
-        }
-
-        return logInResponseDTO;
     }
 
     @Override
@@ -90,15 +92,11 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByEmailAndDeletedAt(email, null)
             .orElseThrow(() -> new UserNotFoundException("회원 정보 없음"));
 
-        ProfileInfoResponseDTO profileInfoResponseDTO = ProfileInfoResponseDTO.builder()
+        return ProfileInfoResponseDTO.builder()
             .nickname(user.getNickname())
-            .profileImage(user.getProfileImage()).build();
+            .statusCode(user.getStatusCode())
+            .profileImage(awsS3Service.getFilePath(user.getProfileImage())).build();
 
-        if(user.getProfileImage() == null) {
-            profileInfoResponseDTO.updateProfileImage("");
-        }
-
-        return profileInfoResponseDTO;
     }
 
     @Override
@@ -142,7 +140,7 @@ public class UserServiceImpl implements UserService {
 
         for (User user : userRepository.findAllByDeletedAtAndNameContainingOrderByNameAsc(null, keyword, PageRequest.of(sequence - 1, 15, Sort.Direction.ASC, "name"))
             .orElseThrow(() -> new UserNotFoundException("조회 가능한 회원이 없음"))) {
-            userInfoResponseDTOList.add(new UserInfoResponseDTO(user.getId(), user.getEmail(), user.getName(), user.getNickname(), user.getUserCode(), getImageURL(user.getProfileImage())));
+            userInfoResponseDTOList.add(new UserInfoResponseDTO(user.getId(), user.getEmail(), user.getName(), user.getNickname(), user.getUserCode(), user.getStatusCode(), awsS3Service.getFilePath(user.getProfileImage())));
         }
 
         return new UserListResponseDTO(userInfoResponseDTOList, userInfoResponseDTOList.size());
@@ -154,11 +152,6 @@ public class UserServiceImpl implements UserService {
             .orElseThrow(() -> new UserNotFoundException("회원 정보를 찾을 수 없음"));
 
         return user;
-    }
-
-    @Override
-    public String getImageURL(String fileName) {
-        return "https://tooliva402.s3.ap-northeast-2.amazonaws.com/" + fileName;
     }
 
     @Override

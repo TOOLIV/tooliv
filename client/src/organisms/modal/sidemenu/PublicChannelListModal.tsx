@@ -111,35 +111,34 @@ const PublicChannelListModal = ({
   }, [workspaceId]);
 
   const inviteUserApi = useCallback(
-    async (body: inviteMembersType) => {
-      await inviteChannelMember(publicChannelList[0].id, body);
+    async (body: inviteMembersType, id: string) => {
+      await inviteChannelMember(id, body);
       const newMember = body.emailList.length;
       setCurrentChannelMemberNum((prev) => prev + newMember);
       setUserLogList({
         ...userLogList,
-        [workspaceId!]: publicChannelList[0].id,
+        [workspaceId!]: id,
       });
-      setCurrentChannelId(publicChannelList[0].id);
+      setCurrentChannelId(id);
       setNotiList([
         ...notiList,
         {
-          channelId: publicChannelList[0].id,
+          channelId: id,
           workspaceId,
           notificationRead: true,
         },
       ]);
-      navigate(`${workspaceId}/${publicChannelList[0].id}`);
+      navigate(`${workspaceId}/${id}`);
       exitModal();
     },
     [channelId, publicChannelList, workspaceId]
   );
 
-  const registChannel = () => {
-    console.log(userInfo.email);
+  const registChannel = (id: string) => {
     const body = {
       emailList: [userInfo.email],
     };
-    inviteUserApi(body);
+    inviteUserApi(body, id);
   };
 
   const exitModal = () => {
@@ -167,7 +166,7 @@ const PublicChannelListModal = ({
                 width="70"
                 height="35"
                 text="참가하기"
-                onClick={registChannel}
+                onClick={() => registChannel(channel.id)}
               />
             </ChannelWrapper>
           ))}

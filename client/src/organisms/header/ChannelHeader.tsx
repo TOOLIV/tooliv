@@ -7,7 +7,7 @@ import ChannelHeaderDropdown from 'organisms/modal/channel/header/ChannelHeaderD
 import ChannelMemberListModal from 'organisms/modal/channel/header/ChannelMemberListModal';
 import ChannelModifyModal from 'organisms/modal/channel/header/ChannelModifyModal';
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
   currentChannelNum,
@@ -56,6 +56,7 @@ const ChannelHeader = () => {
   const [channelName, setChannelName] = useState('');
   const [channelMemberNum, setChannelMemberNum] = useState(0);
   const [channelCode, setChannelCode] = useState('');
+  const [isMeeting, setIsMeeting] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [modifyModalOpen, setModifyModalOpen] = useState(false);
   const [memberListOpen, setMemberListOpen] = useState(false);
@@ -69,6 +70,7 @@ const ChannelHeader = () => {
   const memberListRef = useRef<HTMLDivElement>(null);
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleClickDropdownOutside = ({ target }: any) => {
     if (dropdownOpen && !dropdownRef.current?.contains(target)) {
@@ -81,6 +83,15 @@ const ChannelHeader = () => {
     }
   };
 
+  useEffect(() => {
+    console.log(location.pathname.split('/')[1]);
+    const currentLocation = location.pathname.split('/')[1];
+    if (currentLocation === 'meeting') {
+      setIsMeeting(true);
+    } else {
+      setIsMeeting(false);
+    }
+  }, [location.pathname]);
   useEffect(() => {
     document.addEventListener('mousedown', handleClickDropdownOutside);
     return () => {
@@ -186,12 +197,11 @@ const ChannelHeader = () => {
               {String(channelMemberNum)}
             </Text>
           </Members>
-          {channelCode === 'VIDEO' ? (
+          {channelCode === 'VIDEO' && !isMeeting ? (
             <Icons
               icon="solidVideoOn"
               width="28"
               height="28"
-              color={memberListOpen ? 'blue100' : 'gray500'}
               onClick={() => navigate(`meeting/${workspaceId}/${channelId}`)}
             />
           ) : null}

@@ -4,16 +4,19 @@ import com.tooliv.server.global.common.CommonCode;
 import lombok.Getter;
 
 @Getter
-public enum UserCode implements CommonCode {
+public enum StatusCode implements CommonCode {
 
-    ADMIN("U01", "관리자"), USER("U02", "사용자"), MANAGER("U03", "매니저");
+    ONLINE("S01","온라인"),
+    AWAY("S02","다른 용무 중"),
+    OFFLINE("S03","오프라인");
 
     private String code;
 
     private String description;
 
-    UserCode(String code, String description) {
+    StatusCode(String code, String description) {
         this.code = code;
         this.description = description;
     }
+
 }
