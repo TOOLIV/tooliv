@@ -8,6 +8,7 @@ import FunctionButtons from 'organisms/meeting/FunctionButtons';
 import ScreenShareModal from 'organisms/meeting/video/ScreenShareModal';
 import Videos from 'organisms/meeting/video/Videos';
 import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { isOpenChat } from 'recoil/atom';
@@ -75,6 +76,8 @@ const Meeting = () => {
 
   const [choiceScreen, setChoiceScreen] = useState<string>('');
   const [openScreenModal, setOpenScreenModal] = useState<boolean>(false);
+
+  const location = useLocation();
 
   useEffect(() => {
     joinSession();
@@ -157,6 +160,7 @@ const Meeting = () => {
           .connect(token, { clientData: initUserData.myUserName })
           .then(async () => {
             const devices = await newOV.getDevices();
+            console.log(devices);
             const videoDevices = devices.filter(
               (device) => device.kind === 'videoinput'
             );
