@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { createSession, createToken } from 'api/openvidu/session';
+import Button from 'atoms/common/Button';
 import isElectron from 'is-electron';
 import ChatButton from 'molecules/meeting/ChatButton';
 import MainStage from 'molecules/meeting/MainStage';
@@ -17,11 +18,18 @@ import { user } from 'recoil/auth';
 const MeetingContainer = styled.div`
   /* background-color: #787878; */
   height: calc(100vh - 194px);
+  position: relative;
+`;
+
+const ButtonContainer = styled.div`
+  position: absolute;
+  top: -29px;
+  right: 0;
 `;
 
 const MeetingInnerContainer = styled.div`
-  height: calc(100vh - 252px);
-  margin-bottom: 12px;
+  height: calc(100vh - 244px);
+  margin-bottom: 4px;
 `;
 
 const Meeting = () => {
@@ -76,8 +84,7 @@ const Meeting = () => {
 
   const [choiceScreen, setChoiceScreen] = useState<string>('');
   const [openScreenModal, setOpenScreenModal] = useState<boolean>(false);
-
-  const location = useLocation();
+  const [isHideCam, setIsHideCam] = useState<boolean>(false);
 
   useEffect(() => {
     joinSession();
@@ -211,6 +218,7 @@ const Meeting = () => {
   useEffect(() => {
     if (doStopScreenSharing) {
       stopScreenShare();
+      setIsHideCam(false);
     }
   }, [doStopScreenSharing]);
 
@@ -240,6 +248,7 @@ const Meeting = () => {
       ) {
         setIsScreenSharing(false);
         setMainStreamManager(null);
+        setIsHideCam(false);
       }
       setDestroyedStream(null);
       setCheckMyScreen(false);
@@ -347,8 +356,19 @@ const Meeting = () => {
 
   return (
     <MeetingContainer>
+      {isScreenSharing && (
+        <ButtonContainer>
+          <Button
+            text={isHideCam ? '카메라 표시' : '카메라 가리기'}
+            width="110"
+            height="28"
+            bgColor="gray300"
+            onClick={() => setIsHideCam(!isHideCam)}
+          />
+        </ButtonContainer>
+      )}
       <MeetingInnerContainer>
-        {publisher && (
+        {publisher && !isHideCam && (
           <Videos
             publisher={publisher}
             subscribers={subscribers}
@@ -357,7 +377,7 @@ const Meeting = () => {
           />
         )}
         {mainStreamManager && (
-          <MainStage streamManager={mainStreamManager}></MainStage>
+          <MainStage streamManager={mainStreamManager} isHideCam={isHideCam} />
         )}
         {openScreenModal && (
           <ScreenShareModal
