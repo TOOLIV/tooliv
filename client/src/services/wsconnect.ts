@@ -108,7 +108,11 @@ export const sub = (
     let updateWorkspaceId: string = '';
     if (channelId === recChannelId) {
       // 현재 채널 아이디와 도착한 메시지의 채널 아이디가 같으면
-      setContents((prev) => [...prev, JSON.parse(response.body)]);
+      setContents((prev) =>
+        prev
+          ? [...prev, JSON.parse(response.body)]
+          : [JSON.parse(response.body)]
+      );
     } else {
       // 현재 채널 아이디와 도착한 메시지의 채널 아이디가 다르면
       const newList: channelNotiType[] = notiList.map((noti) => {
