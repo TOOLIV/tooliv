@@ -166,25 +166,57 @@ const Meeting = () => {
         newSession
           .connect(token, { clientData: initUserData.myUserName })
           .then(async () => {
-            const devices = await newOV.getDevices();
-            console.log(devices);
-            const videoDevices = devices.filter(
-              (device) => device.kind === 'videoinput'
-            );
+            // const devices = await newOV.getDevices();
+            // console.log(devices);
+            // const videoDevices = devices.filter(
+            //   (device) => device.kind === 'videoinput'
+            // );
 
-            const newPublisher = newOV.initPublisher(initUserData.myUserName, {
-              audioSource: undefined,
-              videoSource: videoDevices[0].deviceId,
-              publishAudio: isAudioOn,
-              publishVideo: isVideoOn,
-              resolution: '1080x720',
-              frameRate: 10,
-              insertMode: 'APPEND',
-              mirror: true,
-            });
+            // const newPublisher = newOV.initPublisher(initUserData.myUserName, {
+            //   audioSource: undefined,
+            //   videoSource: videoDevices[0].deviceId,
+            //   publishAudio: isAudioOn,
+            //   publishVideo: isVideoOn,
+            //   resolution: '1080x720',
+            //   frameRate: 10,
+            //   insertMode: 'APPEND',
+            //   mirror: true,
+            // });
 
-            newSession.publish(newPublisher);
-            setPublisher(newPublisher);
+            // newPublisher.once('accessAllowed', () => {
+            //   newSession.publish(newPublisher);
+            //   setPublisher(newPublisher);
+            // });
+
+            newOV
+              .getUserMedia({
+                audioSource: false,
+                videoSource: undefined,
+                resolution: '1280x720',
+                frameRate: 10,
+              })
+              .then((mediaStream) => {
+                var videoTrack = mediaStream.getVideoTracks()[0];
+
+                var newPublisher = newOV.initPublisher(
+                  initUserData.myUserName,
+                  {
+                    audioSource: undefined,
+                    videoSource: videoTrack,
+                    publishAudio: isAudioOn,
+                    publishVideo: isVideoOn,
+                    // resolution: '1280x720',
+                    // frameRate: 10,
+                    insertMode: 'APPEND',
+                    mirror: true,
+                  }
+                );
+
+                newPublisher.once('accessAllowed', () => {
+                  newSession.publish(newPublisher);
+                  setPublisher(newPublisher);
+                });
+              });
           })
           .catch((error) => {
             console.warn(
@@ -318,7 +350,7 @@ const Meeting = () => {
               videoSource: isElectron() ? 'screen: ' + choiceScreen : 'screen', // The source of video. If undefined default webcam
               publishAudio: false,
               publishVideo: true,
-              resolution: '1080x720', // The resolution of your video
+              resolution: '1280x720', // The resolution of your video
               frameRate: 10, // The frame rate of your video
               // insertMode: 'APPEND', // How the video is inserted in the target element 'video-container'
             })
