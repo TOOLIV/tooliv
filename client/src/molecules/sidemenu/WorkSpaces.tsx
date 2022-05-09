@@ -11,7 +11,7 @@ const WorkSpaceContainer = styled.div`
   display: flex;
   /* justify-content: ; */
   align-items: flex-start;
-  overflow: scroll;
+  overflow-x: scroll;
   height: 100px;
 `;
 

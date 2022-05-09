@@ -13,6 +13,7 @@ const Container = styled.div`
   border-radius: 10px;
   border: 1px solid ${(props) => props.theme.borderColor};
   display: flex;
+  justify-content: space-between;
   min-height: 64px;
   padding: 0 10px;
 `;
@@ -23,6 +24,7 @@ const Input = styled.textarea`
   border: 0;
   resize: none;
   color: ${(props) => props.theme.textColor};
+  font-size: 16px;
   background-color: ${(props) => props.theme.bgColor};
 
   &:focus {

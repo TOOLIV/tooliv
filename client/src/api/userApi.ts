@@ -20,13 +20,11 @@ export const login = async (body: userLoginTypes) => {
     localStorage.setItem('isAdmin', JSON.stringify(true));
   else localStorage.removeItem('isAdmin');
 
-  console.log(response);
   return response;
 };
 
 export const join = async (body: userCreationTypes) => {
   const response = await instance.post(`/user`, body);
-  console.log(response);
   return response;
 };
 
@@ -44,6 +42,10 @@ export const getUserList = async (keyword: string, sequence: number) => {
   const response = await instance.get(
     `/user/search?keyword=${keyword}&sequence=${sequence}`
   );
-  console.log(response);
+  return response;
+};
+
+export const getUserInfo = async (email: string) => {
+  const response = await instance.get(`user/info/${email}`);
   return response;
 };
