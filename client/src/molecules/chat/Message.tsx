@@ -2,6 +2,10 @@ import styled from '@emotion/styled';
 import { getUserInfo } from 'api/userApi';
 import Time from 'atoms/chat/Time';
 import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
+import { user } from 'recoil/auth';
+import { deleteChat, deleteDM } from 'services/wsconnect';
 import Label from '../../atoms/common/Label';
 import Avatar from '../../atoms/profile/Avatar';
 import { colors } from '../../shared/color';
@@ -41,17 +45,22 @@ const Img = styled.img`
 
 const Message = ({
   channelId,
-  sender,
+  chatId,
   sendTime,
   contents,
+  deleted,
+  updated,
   type,
   files,
   email,
   originFiles,
 }: contentTypes) => {
   const [thumbnailImage, setThumbnailImage] = useState('');
-
+  const [nickname, setNickname] = useState('');
+  const { accessToken } = useRecoilValue(user);
+  const userInfo = useRecoilValue(user);
   const fileTypes = ['.bmp', '.gif', '.jpg', '.png', '.jpeg', '.jfif'];
+  const location = useLocation();
 
   const checkType = (file: string) => {
     const fileLen = file.length;
@@ -71,6 +80,15 @@ const Message = ({
   const getUserProfile = async () => {
     const response = await getUserInfo(email);
     setThumbnailImage(response.data.profileImage);
+    setNickname(response.data.nickname);
+  };
+
+  const deleteMessage = () => {
+    if (location.pathname.includes('/direct')) {
+      deleteDM(accessToken, channelId, chatId);
+    } else {
+      deleteChat(accessToken, channelId, chatId);
+    }
   };
   return (
     <Container>
@@ -78,12 +96,22 @@ const Message = ({
         <SideWrapper>
           <Avatar src={thumbnailImage} />
         </SideWrapper>
-        <Label name={sender} size="16px" />
+        <Label name={nickname} size="16px" />
         <Time time={sendTime} />
+        {email === userInfo.email && (
+          <>
+            <div>수정</div>
+            <div onClick={deleteMessage}>삭제</div>
+          </>
+        )}
       </ProfileContainer>
-      <ContentContainer
-        dangerouslySetInnerHTML={{ __html: contents }}
-      ></ContentContainer>
+      {deleted ? (
+        <ContentContainer>(삭제된 메시지)</ContentContainer>
+      ) : (
+        <ContentContainer
+          dangerouslySetInnerHTML={{ __html: contents }}
+        ></ContentContainer>
+      )}
       {files && originFiles && files.length > 0 && (
         <ContentContainer>
           {files.map((file, i) =>

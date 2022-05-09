@@ -25,13 +25,11 @@ const ChannelsContainer = styled.div`
   padding-bottom: 18px;
 `;
 
-const InnerContainer = styled.div`
+export const InnerContainer = styled.div`
   display: flex;
   align-items: center;
-  /* padding-left: 14px; */
-  /* padding-bottom: 18px; */
 `;
-const NotiWrapper = styled.div`
+export const NotiWrapper = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
@@ -52,13 +50,11 @@ const ChannelContainer = styled.div<{ isSelected: boolean }>`
   border-right: ${(props) =>
     props.isSelected && `4px solid ${props.theme.darkPointColor}`};
   ${(props) =>
-    // !props.isSelected &&
     css`
       &:hover {
         background-color: ${props.theme.hoverColor};
-
         border-radius: 10px 0 0 10px;
-        /* border-right: none; */
+        border-right: 4px solid ${props.theme.hoverColor};
       }
 
       &:hover > div:last-child {
@@ -72,7 +68,7 @@ const HoverIcon = styled.div`
   position: relative;
 `;
 
-const Noti = styled.div`
+export const Noti = styled.div`
   font-size: 10px;
   color: ${colors.gray700};
 `;

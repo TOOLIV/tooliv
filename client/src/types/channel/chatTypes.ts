@@ -1,6 +1,7 @@
 export type SendMessageProps = {
   accessToken: string;
   channelId?: string;
+  chatId?: string;
   email: string;
   message: string;
   fileUrl: string[];
@@ -10,8 +11,7 @@ export type SendMessageProps = {
 export type SendDMProps = {
   accessToken: string;
   channelId?: string;
-  senderEmail: string;
-  receiverEmail: string;
+  email: string;
   message: string;
   fileUrl: string[];
   fileNames: string[];

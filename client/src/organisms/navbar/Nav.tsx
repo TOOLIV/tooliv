@@ -79,39 +79,42 @@ const Nav = () => {
     useRecoilState<workspaceListType[]>(wsList);
   const navigate = useNavigate();
 
+  const getSideInfo = async () => {
+    const chaRes = await getChannels(email);
+    const dmRes = await getDMList(email);
+    const wsRes = await getWorkspaceList();
+    const {
+      data: { notificationChannelList },
+    } = chaRes;
+    const {
+      data: { directInfoDTOList },
+    } = dmRes;
+    const {
+      data: { workspaceGetResponseDTOList },
+    } = wsRes;
+    setDmList(directInfoDTOList);
+    setNotiList([...notificationChannelList, ...directInfoDTOList]);
+
+    const notiWorkspace = notiList.filter((noti) => {
+      if (!noti.notificationRead) {
+        return noti;
+      }
+    });
+    const map = new Map(notiWorkspace.map((el) => [el.workspaceId, el]));
+    const newWSList = workspaceGetResponseDTOList.map((dto: any) => {
+      if (map.get(dto.id)) {
+        return { ...dto, noti: false };
+      } else {
+        return { ...dto, noti: true };
+      }
+    });
+    setWorkspaceList(newWSList);
+  };
+
   useEffect(() => {
     setIsLoading(true);
-    getChannels(email).then((res) => {
-      const {
-        data: { notificationChannelList },
-      } = res;
-      getDMList(email).then((res) => {
-        const {
-          data: { directInfoDTOList },
-        } = res;
-        setDmList(directInfoDTOList);
-        const newList = [...notificationChannelList, ...directInfoDTOList];
-        setNotiList(newList);
-        getWorkspaceList().then((res) => {
-          const notiWorkspace = notiList.filter((noti) => {
-            if (!noti.notificationRead) {
-              return noti;
-            }
-          });
-          const map = new Map(notiWorkspace.map((el) => [el.workspaceId, el]));
-          const newWSList = res.data.workspaceGetResponseDTOList.map(
-            (dto: any) => {
-              if (map.get(dto.id)) {
-                return { ...dto, noti: false };
-              } else {
-                return { ...dto, noti: true };
-              }
-            }
-          );
-          setWorkspaceList(newWSList);
-          setIsLoading(false);
-        });
-      });
+    getSideInfo().then(() => {
+      setIsLoading(false);
     });
   }, []);
 
@@ -120,6 +123,7 @@ const Nav = () => {
       connect(accessToken, setContents, userId);
     }
   }, [isLoading]);
+
   // 다크모드/일반모드 설정
   const handleDarkMode = () => {
     if (mode === 'dark') {
