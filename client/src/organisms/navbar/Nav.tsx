@@ -110,10 +110,9 @@ const Nav = () => {
             }
           );
           setWorkspaceList(newWSList);
-          connect(accessToken, setContents, userInfo.userId);
-          setIsLoading(false);
         });
-        console.log(notiList);
+        connect(accessToken, setContents, userInfo.userId);
+        setIsLoading(false);
       });
     });
   }, []);

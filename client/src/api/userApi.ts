@@ -19,7 +19,6 @@ export const login = async (body: userLoginTypes) => {
   if (response.data.userCode === 'ADMIN')
     localStorage.setItem('isAdmin', JSON.stringify(true));
   else localStorage.removeItem('isAdmin');
-
   return response;
 };
 

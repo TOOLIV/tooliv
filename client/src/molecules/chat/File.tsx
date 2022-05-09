@@ -23,7 +23,6 @@ type fileType = {
   url: string;
 };
 const File = ({ name, url }: fileType) => {
-  console.log(name);
   const onClick = (e: React.MouseEvent<HTMLElement>) => {
     // e.preventDefault();
     window.open(url);
