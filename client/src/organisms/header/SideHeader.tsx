@@ -116,7 +116,7 @@ const SideHeader = () => {
             {workspaceName}
           </Text>
           {currentWorkspaceId !== 'main' && userCode === 'WADMIN' ? (
-            <Icons width="30" height="30" icon="dropdown" />
+            <Icons width="24" height="24" icon="dropdown" />
           ) : null}
         </Title>
         <WorkspaceDropDown

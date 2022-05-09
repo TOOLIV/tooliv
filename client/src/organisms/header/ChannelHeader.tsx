@@ -55,7 +55,7 @@ const ChannelHeader = () => {
   const currentWorkspaceId = useRecoilValue(currentWorkspace);
   const [channelName, setChannelName] = useState('');
   const [channelMemberNum, setChannelMemberNum] = useState(0);
-  const [channelCode, setChannelCode] = useState('VIDEO');
+  const [channelCode, setChannelCode] = useState('');
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [modifyModalOpen, setModifyModalOpen] = useState(false);
   const [memberListOpen, setMemberListOpen] = useState(false);
@@ -112,7 +112,7 @@ const ChannelHeader = () => {
       setChannelName(data.name);
       setChannelMemberNum(data.numOfPeople);
       setCurrentChannelMemberNum(data.numOfPeople);
-      // setChannelCode(data.channelCode);
+      setChannelCode(data.channelCode);
     } catch (error) {
       console.log(error);
     }
