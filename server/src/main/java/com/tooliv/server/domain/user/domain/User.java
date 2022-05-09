@@ -1,5 +1,6 @@
 package com.tooliv.server.domain.user.domain;
 
+import com.tooliv.server.domain.user.domain.enums.StatusCode;
 import com.tooliv.server.domain.user.domain.enums.UserCode;
 import com.tooliv.server.global.common.BaseEntity;
 import java.io.Serializable;
@@ -44,6 +45,9 @@ public class User extends BaseEntity implements Serializable {
     @Column(name = "user_code")
     private UserCode userCode;
 
+    @Column(name = "status_code")
+    private StatusCode statusCode;
+
     @Column(name = "profile_image")
     private String profileImage;
 
@@ -62,5 +66,9 @@ public class User extends BaseEntity implements Serializable {
 
     public void updateProfileImage(String fileName) {
         this.profileImage = fileName;
+    }
+
+    public void updateStatusCode(StatusCode statusCode) {
+        this.statusCode = statusCode;
     }
 }

@@ -9,6 +9,7 @@ import com.tooliv.server.domain.user.application.dto.response.ProfileInfoRespons
 import com.tooliv.server.domain.user.application.dto.response.UserInfoResponseDTO;
 import com.tooliv.server.domain.user.application.dto.response.UserListResponseDTO;
 import com.tooliv.server.domain.user.domain.User;
+import com.tooliv.server.domain.user.domain.enums.StatusCode;
 import com.tooliv.server.domain.user.domain.enums.UserCode;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
 import com.tooliv.server.global.exception.DuplicateEmailException;
@@ -76,6 +77,8 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByEmailAndDeletedAt(logInRequestDTO.getEmail(), null)
             .orElseThrow(() -> new UserNotFoundException("회원 정보를 찾을 수 없음"));
 
+        user.updateStatusCode(StatusCode.ONLINE);
+
         LogInResponseDTO logInResponseDTO = LogInResponseDTO.builder()
             .userId(user.getId())
             .name(user.getName())
@@ -99,6 +102,7 @@ public class UserServiceImpl implements UserService {
 
         ProfileInfoResponseDTO profileInfoResponseDTO = ProfileInfoResponseDTO.builder()
             .nickname(user.getNickname())
+            .statusCode(user.getStatusCode())
             .profileImage(getImageURL(user.getProfileImage())).build();
 
         if(user.getProfileImage() == null) {
@@ -149,7 +153,7 @@ public class UserServiceImpl implements UserService {
 
         for (User user : userRepository.findAllByDeletedAtAndNameContainingOrderByNameAsc(null, keyword, PageRequest.of(sequence - 1, 15, Sort.Direction.ASC, "name"))
             .orElseThrow(() -> new UserNotFoundException("조회 가능한 회원이 없음"))) {
-            userInfoResponseDTOList.add(new UserInfoResponseDTO(user.getId(), user.getEmail(), user.getName(), user.getNickname(), user.getUserCode(), getImageURL(user.getProfileImage())));
+            userInfoResponseDTOList.add(new UserInfoResponseDTO(user.getId(), user.getEmail(), user.getName(), user.getNickname(), user.getUserCode(), user.getStatusCode(), getImageURL(user.getProfileImage())));
         }
 
         return new UserListResponseDTO(userInfoResponseDTOList, userInfoResponseDTOList.size());
