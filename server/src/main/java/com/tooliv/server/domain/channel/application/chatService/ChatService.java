@@ -2,6 +2,7 @@ package com.tooliv.server.domain.channel.application.chatService;
 
 import com.tooliv.server.domain.channel.application.dto.request.ChatDirectDTO;
 import com.tooliv.server.domain.channel.application.dto.request.ChatRequestDTO;
+import com.tooliv.server.domain.channel.application.dto.request.ChatUpdatedDTO;
 import com.tooliv.server.domain.channel.application.dto.response.DirectRoomInfoResponseDTO;
 import com.tooliv.server.domain.channel.application.dto.response.FileUrlListResponseDTO;
 import com.tooliv.server.domain.channel.domain.Channel;
@@ -34,5 +35,9 @@ public interface ChatService {
     void setDirectChatInfoValue(String key, ChatDirectDTO value);
 
     FileUrlListResponseDTO getFileURL(List<MultipartFile> multipartFiles);
+
+    void updateMessage(ChatUpdatedDTO chatUpdatedDTO);
+
+    void updateDirectMessage(ChatUpdatedDTO chatUpdatedDTO);
 
 }
