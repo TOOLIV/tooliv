@@ -10,7 +10,6 @@ import {
   channelMessage,
   isOpenChat,
 } from '../../../recoil/atom';
-import { chatTypes } from '../../../types/meeting/chatTypes';
 import { enterChannel, subChannel } from 'api/chatApi';
 import { contentTypes } from 'types/channel/contentType';
 import { useParams } from 'react-router-dom';
