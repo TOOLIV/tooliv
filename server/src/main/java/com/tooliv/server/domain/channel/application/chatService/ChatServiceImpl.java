@@ -9,11 +9,14 @@ import com.tooliv.server.domain.channel.application.dto.response.FileUrlListResp
 import com.tooliv.server.domain.channel.domain.Channel;
 import com.tooliv.server.domain.channel.domain.ChannelMembers;
 import com.tooliv.server.domain.channel.domain.ChatFile;
+import com.tooliv.server.domain.channel.domain.ChatMessage;
+import com.tooliv.server.domain.channel.domain.ChatMessage.Chat;
 import com.tooliv.server.domain.channel.domain.DirectChatRoom;
 import com.tooliv.server.domain.channel.domain.DirectChatRoomMembers;
 import com.tooliv.server.domain.channel.domain.repository.ChannelMembersRepository;
 import com.tooliv.server.domain.channel.domain.repository.ChannelRepository;
 import com.tooliv.server.domain.channel.domain.repository.ChatFileRepository;
+import com.tooliv.server.domain.channel.domain.repository.ChatMessageRepository;
 import com.tooliv.server.domain.channel.domain.repository.DirectChatRoomMembersRepository;
 import com.tooliv.server.domain.channel.domain.repository.DirectChatRoomRepository;
 import com.tooliv.server.domain.user.application.service.UserService;
@@ -78,8 +81,9 @@ public class ChatServiceImpl implements ChatService {
     private final DirectChatRoomRepository directChatRoomRepository;
     private final ChannelMembersRepository channelMembersRepository;
     private final DirectChatRoomMembersRepository directChatRoomMembersRepository;
-    private final AwsS3Service awsS3Service;
+    private final ChatMessageRepository chatMessageRepository;
     private final ChannelMemberService channelMemberService;
+    private final AwsS3Service awsS3Service;
     private final UserService userService;
 
     @Override
@@ -183,9 +187,9 @@ public class ChatServiceImpl implements ChatService {
             List<ChatRequestDTO> chatInfoList = redisChannelTemplate.opsForList().range(key, 0, -1);
             for (int i = 0; i < chatInfoList.size(); i++) {
                 ChatRequestDTO chatRequestDTO = chatInfoList.get(i);
-                if(chatRequestDTO.isDeleted()){
+                if (chatRequestDTO.isDeleted()) {
                     chatRequestDTO.deletedData(i);
-                    chatInfoList.set(i,chatRequestDTO);
+                    chatInfoList.set(i, chatRequestDTO);
                 }
             }
             return chatInfoList;
@@ -201,9 +205,9 @@ public class ChatServiceImpl implements ChatService {
             List<ChatDirectDTO> chatInfoList = redisDirectTemplate.opsForList().range(key, 0, -1);
             for (int i = 0; i < chatInfoList.size(); i++) {
                 ChatDirectDTO chatDirectDTO = chatInfoList.get(i);
-                if(chatDirectDTO.isDeleted()){
+                if (chatDirectDTO.isDeleted()) {
                     chatDirectDTO.deletedData(i);
-                    chatInfoList.set(i,chatDirectDTO);
+                    chatInfoList.set(i, chatDirectDTO);
                 }
             }
             return chatInfoList;
@@ -219,20 +223,32 @@ public class ChatServiceImpl implements ChatService {
         channel.updateWroteAt();
         channelRepository.save(channel);
         long idx = redisChannelTemplate.opsForList().size(key);
+        Chat chat = Chat.builder().chatId(idx).channelId(value.getChannelId()).build();
+        ChatMessage chatMessage;
 
         if (value.getType().equals("TALK")) {
             value.updateChatId(idx);
             redisChannelTemplate.opsForList().rightPush(key, value);
+            chatMessage = ChatMessage.builder().chat(chat).content(value.getContents()).sendTime(LocalDateTime.now()).build();
+            chatMessageRepository.save(chatMessage);
         } else if (value.getType().equals("UPDATE")) {
             ChatRequestDTO chatRequestDTO = redisChannelTemplate.opsForList().index(key, value.getChatId());
             chatRequestDTO.updateIsUpdated();
             redisChannelTemplate.opsForList().set(key, value.getChatId(), chatRequestDTO);
-            updateMessage(new ChatUpdatedDTO(value.getChatId(),value.getEmail(),value.getChannelId(), value.getType()));
+            updateMessage(new ChatUpdatedDTO(value.getChatId(), value.getEmail(), value.getChannelId(), value.getType()));
+
+            chatMessage = chatMessageRepository.findByChatChatIdAndChatChannelId(value.getChatId(), value.getChannelId()).orElseThrow(() -> new IllegalArgumentException("채팅이 존재하지 않습니다."));
+            chatMessage.updateChat();
+            chatMessageRepository.save(chatMessage);
         } else if (value.getType().equals("DELETE")) {
             ChatRequestDTO chatRequestDTO = redisChannelTemplate.opsForList().index(key, value.getChatId());
             chatRequestDTO.updateIsDeleted();
             redisChannelTemplate.opsForList().set(key, value.getChatId(), chatRequestDTO);
-            updateMessage(new ChatUpdatedDTO(value.getChatId(),value.getEmail(),value.getChannelId(), value.getType()));
+            updateMessage(new ChatUpdatedDTO(value.getChatId(), value.getEmail(), value.getChannelId(), value.getType()));
+
+            chatMessage = chatMessageRepository.findByChatChatIdAndChatChannelId(value.getChatId(), value.getChannelId()).orElseThrow(() -> new IllegalArgumentException("채팅이 존재하지 않습니다."));
+            chatMessage.deleteChat();
+            chatMessageRepository.save(chatMessage);
         }
 
     }
@@ -243,20 +259,32 @@ public class ChatServiceImpl implements ChatService {
         directChatRoom.updateWroteAt();
         directChatRoomRepository.save(directChatRoom);
         long idx = redisDirectTemplate.opsForList().size(key);
+        Chat chat = Chat.builder().chatId(idx).channelId(value.getChannelId()).build();
+        ChatMessage chatMessage;
 
         if (value.getType().equals("TALK")) {
             value.updateChatId(idx);
             redisDirectTemplate.opsForList().rightPush(key, value);
+            chatMessage = ChatMessage.builder().chat(chat).content(value.getContents()).sendTime(LocalDateTime.now()).build();
+            chatMessageRepository.save(chatMessage);
         } else if (value.getType().equals("UPDATE")) {
             ChatDirectDTO chatDirectDTO = redisDirectTemplate.opsForList().index(key, value.getChatId());
             chatDirectDTO.updateIsUpdated();
             redisDirectTemplate.opsForList().set(key, value.getChatId(), chatDirectDTO);
-            updateDirectMessage(new ChatUpdatedDTO(value.getChatId(),value.getEmail(),value.getChannelId(), value.getType()));
+            updateDirectMessage(new ChatUpdatedDTO(value.getChatId(), value.getEmail(), value.getChannelId(), value.getType()));
+
+            chatMessage = chatMessageRepository.findByChatChatIdAndChatChannelId(value.getChatId(), value.getChannelId()).orElseThrow(() -> new IllegalArgumentException("채팅이 존재하지 않습니다."));
+            chatMessage.updateChat();
+            chatMessageRepository.save(chatMessage);
         } else if (value.getType().equals("DELETE")) {
             ChatDirectDTO chatDirectDTO = redisDirectTemplate.opsForList().index(key, value.getChatId());
             chatDirectDTO.updateIsDeleted();
             redisDirectTemplate.opsForList().set(key, value.getChatId(), chatDirectDTO);
-            updateDirectMessage(new ChatUpdatedDTO(value.getChatId(),value.getEmail(),value.getChannelId(), value.getType()));
+            updateDirectMessage(new ChatUpdatedDTO(value.getChatId(), value.getEmail(), value.getChannelId(), value.getType()));
+
+            chatMessage = chatMessageRepository.findByChatChatIdAndChatChannelId(value.getChatId(), value.getChannelId()).orElseThrow(() -> new IllegalArgumentException("채팅이 존재하지 않습니다."));
+            chatMessage.deleteChat();
+            chatMessageRepository.save(chatMessage);
         }
     }
 

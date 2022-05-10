@@ -39,7 +39,7 @@ public class NotificationController {
         } catch (Exception e) {
         }
 
-        return ResponseEntity.status(200).body(NotificationListResponseDTO.of("알람 목록 조회 실패", notificationListResponseDTO));
+        return ResponseEntity.status(200).body(NotificationListResponseDTO.of("알람 목록 조회 성공", notificationListResponseDTO));
     }
 
 }

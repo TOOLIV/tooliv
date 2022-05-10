@@ -1,12 +1,11 @@
 package com.tooliv.server.domain.channel.domain;
 
-import com.tooliv.server.domain.user.domain.User;
-import com.tooliv.server.global.common.BaseEntity;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,30 +18,45 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChatMessage extends BaseEntity {
+public class ChatMessage {
 
-    // 내용
+    @EmbeddedId
+    @Column(name = "chat")
+    private Chat chat;
+
     @Column(name = "content")
     private String content;
 
-    // 시간
+    @Column(name = "updated")
+    private boolean updated;
+
+    @Column(name = "deleted")
+    private boolean deleted;
+
     @Column(name = "created_at")
     private LocalDateTime sendTime;
 
-    // 채팅방 => 채널방으로 변경의 여지가 있다.
-    @ManyToOne
-    @JoinColumn(name = "channel_id")
-    private Channel channel;
-
-    // 작성자
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User sender;
-
-    @Column(name = "type")
-    private MessageType type; // 메시지 타입
-
-    public enum MessageType {
-        ENTER, QUIT, TALK
+    public void updateChat(){
+        this.updated = true;
     }
+
+    public void deleteChat(){
+        this.deleted = true;
+    }
+
+    @Embeddable
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Chat implements Serializable {
+
+        @Column(name = "chat_id")
+        private long chatId;
+
+        @Column(name = "channel_id")
+        private String channelId;
+
+    }
+
 }

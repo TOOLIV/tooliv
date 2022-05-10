@@ -6,11 +6,9 @@ import com.tooliv.server.domain.channel.application.dto.response.NotificationInf
 import com.tooliv.server.domain.channel.application.dto.response.NotificationListResponseDTO;
 import com.tooliv.server.domain.channel.domain.Channel;
 import com.tooliv.server.domain.channel.domain.ChannelMembers;
-import com.tooliv.server.domain.channel.domain.DirectChatNotification;
 import com.tooliv.server.domain.channel.domain.DirectChatRoom;
 import com.tooliv.server.domain.channel.domain.DirectChatRoomMembers;
 import com.tooliv.server.domain.channel.domain.repository.ChannelMembersRepository;
-import com.tooliv.server.domain.channel.domain.repository.DirectChatNotificationRepository;
 import com.tooliv.server.domain.channel.domain.repository.DirectChatRoomMembersRepository;
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
@@ -24,8 +22,6 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class NotificationServiceImpl implements NotificationService {
-
-    private final DirectChatNotificationRepository directChatNotificationRepository;
 
     private final UserRepository userRepository;
 
@@ -69,19 +65,6 @@ public class NotificationServiceImpl implements NotificationService {
             }
         }
         return new DirectListResponseDTO(directInfoDTOList);
-    }
-
-    @Override
-    public void createDirectChatNotification(User user, DirectChatRoom directChatRoom) {// 개인 메시지지 알람 생성
-        DirectChatNotification directChatNotification = DirectChatNotification.builder().directChatRoom(directChatRoom).user(user).build();
-        directChatNotificationRepository.save((directChatNotification));
-    }
-
-    @Override
-    public void readDirectChatNotification(User user, DirectChatRoom directChatRoom) {
-        DirectChatNotification directChatNotification = directChatNotificationRepository.findByDirectChatRoomAndUserAndNotificationYn(directChatRoom, user, false).orElse(null);
-        directChatNotification.updateRead(true);
-        directChatNotificationRepository.save(directChatNotification);
     }
 
     boolean checkNotification(ChannelMembers channelMembers, Channel channel) {
