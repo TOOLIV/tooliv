@@ -1,9 +1,7 @@
 package com.tooliv.server;
 
 import com.tooliv.server.domain.user.api.UserControllerTest;
-import javax.transaction.Transactional;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,10 +32,21 @@ public class BaseIntegrationTest {
 
     @Container
     private static MySQLContainer<?> mySQLContainer = new MySQLContainer<>(DockerImageName.parse("mysql:5.7"))
-        .withDatabaseName("test-db");
+        .withDatabaseName("test_db");
+//        .withConfigurationOverride("mysql_conf_override")
+//        .withCommand("--character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci")
+//        .withEnv("MYSQL_ROOT_HOST", "%")
+//        .withInitScript("schema.sql");
 
     @AfterAll
     static void afterAll() {
+
+        System.out.println("야야야야야양 좀 되라고요`~~~~~~~");
+        System.out.println(mySQLContainer.getEnv());
+        System.out.println(mySQLContainer.getJdbcUrl());
+        for (String s : mySQLContainer.getCommandParts()) {
+            System.out.println(s);
+        }
         Slf4jLogConsumer logConsumer = new Slf4jLogConsumer(LOGGER);
         mySQLContainer.followOutput(logConsumer);
     }
