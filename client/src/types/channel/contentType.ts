@@ -40,6 +40,7 @@ export type channelTypes = {
 export type channelsType = {
   normalChannelList: channelListTypes[];
   videoChannelList: channelListTypes[];
+  listNum: number;
   onClick: (id: string) => void;
 };
 
@@ -74,6 +75,8 @@ export type channelDropdownType = {
 export type exitChannelModalType = {
   isOpen: boolean;
   channelId: string;
+  top: number;
+  left: number;
 };
 
 export type channelHeaderDropdownType = {

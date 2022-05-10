@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import ChannelExitModal from 'organisms/modal/channel/sidemenu/ChannelExitModal';
-import { useEffect, useRef, useState } from 'react';
+import { createRef, useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { channelNotiList } from 'recoil/atom';
@@ -87,20 +87,19 @@ const Channels = ({
   normalChannelList,
   videoChannelList,
   onClick,
+  listNum,
 }: channelsType) => {
   const [exitModalOpen, setExitModalOpen] = useState(false);
   const [clickChannelId, setClickChannelId] = useState('');
   const exitModalRef = useRef<HTMLDivElement>(null);
-  const menuRef = useRef<HTMLDivElement>(null);
+  const [top, setTop] = useState(0);
+  const [left, setLeft] = useState(0);
   const [notiList, setNotiList] =
     useRecoilState<channelNotiType[]>(channelNotiList);
   const { channelId } = useParams();
-  const itemEls = useRef(new Array());
   const map = new Map(notiList.map((el) => [el.channelId, el]));
+  const refArray = useRef<HTMLDivElement[]>([]);
 
-  useEffect(() => {
-    console.log(itemEls);
-  }, [itemEls]);
   const handleClickOutside = ({ target }: any) => {
     if (exitModalOpen && !exitModalRef.current?.contains(target)) {
       setExitModalOpen(false);
@@ -114,16 +113,22 @@ const Channels = ({
     };
   }, [exitModalOpen]);
 
-  const handleClickModal = (id: string) => {
+  const handleClickModal = (id: string, index: number) => {
     setClickChannelId(id);
     setExitModalOpen(true);
+    console.log(index);
+    console.log(refArray.current[index].getBoundingClientRect());
+    // console.log(e);
+    // console.log(e.getBoundingClientRect());
+    setTop(refArray.current[index].getBoundingClientRect().top - 70);
+    setLeft(refArray.current[index].getBoundingClientRect().left + 40);
   };
 
   return (
     <ChannelsContainer ref={exitModalRef}>
       <ChannelsWrapper>
         <ChannelLabel label="일반 채널" />
-        {normalChannelList.map((channel) => (
+        {normalChannelList.map((channel, i) => (
           <ChannelContainer
             key={channel.id}
             isSelected={channel.id === channelId}
@@ -144,15 +149,20 @@ const Channels = ({
               </InnerContainer>
               {!map.get(channel.id)?.notificationRead && <Noti>●</Noti>}
             </NotiWrapper>
-            <HoverIcon ref={(element) => itemEls.current.push(element)}>
-              <Icons icon="menu" onClick={() => handleClickModal(channel.id)} />
+            <HoverIcon
+              onClick={() => handleClickModal(channel.id, i)}
+              ref={(ref) => {
+                if (ref !== null) refArray.current[i] = ref; // took this from your guide's example.
+              }}
+            >
+              <Icons icon="menu" />
             </HoverIcon>
           </ChannelContainer>
         ))}
       </ChannelsWrapper>
       <ChannelsWrapper>
         <ChannelLabel label="화상 채널" />
-        {videoChannelList.map((channel) => (
+        {videoChannelList.map((channel, i) => (
           <ChannelContainer
             key={channel.id}
             isSelected={channel.id === channelId}
@@ -173,13 +183,23 @@ const Channels = ({
               </InnerContainer>
               {!map.get(channel.id)?.notificationRead && <Noti>●</Noti>}
             </NotiWrapper>
-            <HoverIcon ref={(element) => itemEls.current.push(element)}>
-              <Icons icon="menu" onClick={() => handleClickModal(channel.id)} />
+            <HoverIcon
+              onClick={() => handleClickModal(channel.id, i + listNum)}
+              ref={(ref) => {
+                if (ref !== null) refArray.current[i + listNum] = ref; // took this from your guide's example.
+              }}
+            >
+              <Icons icon="menu" />
             </HoverIcon>
           </ChannelContainer>
         ))}
       </ChannelsWrapper>
-      <ChannelExitModal isOpen={exitModalOpen} channelId={clickChannelId} />
+      <ChannelExitModal
+        isOpen={exitModalOpen}
+        channelId={clickChannelId}
+        top={top}
+        left={left}
+      />
     </ChannelsContainer>
   );
 };

@@ -45,6 +45,7 @@ const ChannelSection = () => {
   const [videoChannelList, setVideoChannelList] = useState<channelListTypes[]>(
     []
   );
+  const [listNum, setListNum] = useState(0);
   const currentWorkspaceId = useRecoilValue(currentWorkspace);
   const modChannelName = useRecoilValue(modifyChannelName);
   const [currentChannelId, setCurrentChannelId] =
@@ -71,6 +72,7 @@ const ChannelSection = () => {
     });
     setNormalChannelList(normalList);
     setVideoChannelList(videoList);
+    setListNum(normalList.length);
   };
 
   useEffect(() => {
@@ -133,6 +135,7 @@ const ChannelSection = () => {
       <Channels
         normalChannelList={normalChannelList}
         videoChannelList={videoChannelList}
+        listNum={listNum}
         onClick={handleClickChannel}
       />
       <ChannelDropDown
