@@ -1,5 +1,6 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
+import { updateUserStatus } from 'api/userApi';
 import Icons from 'atoms/common/Icons';
 import Avatar from 'atoms/profile/Avatar';
 import Text from 'atoms/text/Text';
@@ -71,24 +72,42 @@ const UserDropdown = forwardRef<HTMLDivElement, userDropdownType>(
         nickname: '',
         userId: '',
         profileImage: '',
+        statusCode: '',
       });
+      changeStatus('OFFLINE');
+    };
+
+    const changeStatus = async (statusCode: string) => {
+      const body = {
+        statusCode,
+      };
+
+      const response = await updateUserStatus(body);
+      console.log(response);
+      setUserInfo({ ...userInfo, statusCode });
+      onClose();
     };
 
     const handleUserConfig = () => {
       openProfileConfig();
       onClose();
     };
+
     return (
       <Modal isOpen={isOpen} ref={ref}>
         <Container>
           <UserItem>
-            <Avatar size="36" src={userInfo.profileImage} />
+            <Avatar
+              size="36"
+              src={userInfo.profileImage}
+              status={userInfo.statusCode}
+            />
             <User>
               <Text size={16}>{userInfo.name}</Text>
               <Text size={14}>{userInfo.email}</Text>
             </User>
           </UserItem>
-          <ListItem>
+          <ListItem onClick={() => changeStatus('ONLINE')}>
             <IconItem>
               <Icons icon="online" width="20" height="20" />
             </IconItem>
@@ -96,7 +115,7 @@ const UserDropdown = forwardRef<HTMLDivElement, userDropdownType>(
               온라인
             </Text>
           </ListItem>
-          <ListItem>
+          <ListItem onClick={() => changeStatus('AWAY')}>
             <IconItem>
               <Icons icon="later" width="20" height="20" />
             </IconItem>
@@ -104,15 +123,15 @@ const UserDropdown = forwardRef<HTMLDivElement, userDropdownType>(
               다른 용무 중
             </Text>
           </ListItem>
-          <ListItem>
+          {/* <ListItem>
             <IconItem>
               <Icons icon="remove" width="20" height="20" />
             </IconItem>
             <Text size={16} pointer>
               방해 금지
             </Text>
-          </ListItem>
-          <ListItem>
+          </ListItem> */}
+          <ListItem onClick={() => changeStatus('OFFLINE')}>
             <IconItem>
               <Icons icon="offline" width="20" height="20" />
             </IconItem>

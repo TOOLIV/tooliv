@@ -5,7 +5,6 @@ import React, { useState } from 'react';
 import { useRecoilState } from 'recoil';
 import Button from '../../atoms/common/Button';
 import { channelMessage } from '../../recoil/atom';
-import { colors } from '../../shared/color';
 import { editorProps } from '../../types/common/buttonTypes';
 
 const Container = styled.div`
@@ -26,7 +25,6 @@ export const EditorInput = styled.textarea`
   color: ${(props) => props.theme.textColor};
   font-size: 16px;
   background-color: ${(props) => props.theme.bgColor};
-
   &:focus {
     outline: none;
   }
@@ -74,7 +72,13 @@ const Editor = ({ onClick, sendMessage }: editorProps) => {
           onKeyPress={onKeyPress}
         ></EditorInput>
         <Wrapper>
-          <Icons icon="file" color="gray500" onClick={handleFileModal} />
+          <Icons
+            icon="file"
+            color="gray500"
+            onClick={handleFileModal}
+            width="30"
+            height="30"
+          />
           <Button onClick={onClick} width="50" height="40" text="전송" />
         </Wrapper>
       </Container>

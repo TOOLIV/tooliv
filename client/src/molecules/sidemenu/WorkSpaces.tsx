@@ -3,16 +3,17 @@ import { workspacesType } from 'types/workspace/workspaceTypes';
 import WorkSpace from '../../atoms/sidemenu/WorkSpace';
 import mainSrc from '../../assets/img/logo.svg';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
-import { channelNotiType } from 'types/channel/contentType';
-import { channelNotiList } from 'recoil/atom';
 
 const WorkSpaceContainer = styled.div`
   display: flex;
   /* justify-content: ; */
   align-items: flex-start;
   overflow-x: scroll;
-  height: 100px;
+  height: 80px;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const WorkSpaces = ({ workspaceList, onClick }: workspacesType) => {

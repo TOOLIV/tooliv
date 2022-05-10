@@ -57,9 +57,6 @@ instance.interceptors.response.use(
   },
   function (error) {
     if (error.response) {
-      const history = createBrowserHistory();
-
-      console.log(error.response);
       switch (error.response.status) {
         /* 'JWT expired' exeption */
         case 400:

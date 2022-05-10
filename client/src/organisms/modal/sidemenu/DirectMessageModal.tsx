@@ -61,7 +61,8 @@ const Header = styled.div`
 
 const UserBox = styled.div`
   height: 50vh;
-  overflow: scroll;
+  overflow-y: scroll;
+  overflow-x: hidden;
 `;
 
 export const UserInfoWrapper = styled.div`
@@ -104,10 +105,11 @@ const DirectMessageModal = ({ isOpen, onClose }: userDirectMessageType) => {
       setDmList([
         ...dmList,
         {
-          profileImage: member.profileImage,
-          receiveName: member.nickname,
+          receiveName: member.name,
           channelId: roomId,
           notificationRead: true,
+          statusCode: member.statusCode,
+          profileImage: member.profileImage,
         },
       ]);
       navigate(`/direct/${workspaceId}/${roomId}`);
@@ -213,6 +215,7 @@ const DirectMessageModal = ({ isOpen, onClose }: userDirectMessageType) => {
                 email={member.email}
                 nickname={member.nickname}
                 profileImage={member.profileImage}
+                statusCode={member.statusCode}
               />
             </UserInfoWrapper>
           ))}

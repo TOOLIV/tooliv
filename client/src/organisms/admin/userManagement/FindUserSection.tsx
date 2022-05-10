@@ -74,6 +74,7 @@ const FindUserSection = () => {
             profileImage={user.profileImage}
             email={user.email}
             userCode={user.userCode}
+            statusCode={user.statusCode}
             onDelete={onDelete}
             onChange={changeUserCode}
           />

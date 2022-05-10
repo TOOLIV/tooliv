@@ -105,17 +105,11 @@ const SideHeader = () => {
   return (
     <Container isOpen={isOpen}>
       <DropdownWrapper ref={dropdownRef}>
-        <Title
-          onClick={
-            userCode === 'WADMIN'
-              ? () => setDropdownOpen(!dropdownOpen)
-              : undefined
-          }
-        >
+        <Title onClick={() => setDropdownOpen(!dropdownOpen)}>
           <Text size={24} weight="700" pointer={currentWorkspaceId !== 'main'}>
             {workspaceName}
           </Text>
-          {currentWorkspaceId !== 'main' && userCode === 'WADMIN' ? (
+          {currentWorkspaceId !== 'main' ? (
             <Icons width="24" height="24" icon="dropdown" />
           ) : null}
         </Title>
@@ -125,6 +119,7 @@ const SideHeader = () => {
           openMemberList={openWorkspaceMemberList}
           openAddMemberModal={openAddMemberModal}
           openModifyModal={openModifyModal}
+          userCode={userCode}
         />
       </DropdownWrapper>
       <Icons

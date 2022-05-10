@@ -206,6 +206,7 @@ const WorkspaceMemberListModal = ({
                 email={member.email}
                 nickname={member.nickname}
                 profileImage={member.profileImage}
+                statusCode={member.statusCode}
               />
             </UserInfoWrapper>
           ))}

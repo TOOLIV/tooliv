@@ -21,6 +21,7 @@ export type DMInfoType = {
   profileImage?: string;
   receiveName: string;
   channelId: string;
+  statusCode: string;
   notificationRead: boolean;
 };
 

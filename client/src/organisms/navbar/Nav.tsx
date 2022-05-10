@@ -64,7 +64,7 @@ const DropdownWrapper = styled.div`
   /* cursor: pointer; */
 `;
 const Nav = () => {
-  const { accessToken, email, userId, profileImage } = useRecoilValue(user);
+  const userInfo = useRecoilValue(user);
   const [contents, setContents] =
     useRecoilState<contentTypes[]>(channelContents);
   const [mode, setMode] = useRecoilState(appThemeMode);
@@ -80,9 +80,10 @@ const Nav = () => {
   const navigate = useNavigate();
 
   const getSideInfo = async () => {
-    const chaRes = await getChannels(email);
-    const dmRes = await getDMList(email);
+    const chaRes = await getChannels(userInfo.email);
+    const dmRes = await getDMList(userInfo.email);
     const wsRes = await getWorkspaceList();
+
     const {
       data: { notificationChannelList },
     } = chaRes;
@@ -99,6 +100,7 @@ const Nav = () => {
       if (!noti.notificationRead) {
         return noti;
       }
+      return null;
     });
     const map = new Map(notiWorkspace.map((el) => [el.workspaceId, el]));
     const newWSList = workspaceGetResponseDTOList.map((dto: any) => {
@@ -120,7 +122,7 @@ const Nav = () => {
 
   useEffect(() => {
     if (!isLoading) {
-      connect(accessToken, setContents, userId);
+      connect(userInfo.accessToken, setContents, userInfo.userId);
     }
   }, [isLoading]);
 
@@ -180,7 +182,11 @@ const Nav = () => {
         />
         <DropdownWrapper ref={dropdownRef}>
           <AvatarWrapper onClick={() => setDropdownOpen(!dropdownOpen)}>
-            <Avatar size="42" src={profileImage} />
+            <Avatar
+              size="32"
+              src={userInfo.profileImage}
+              status={userInfo.statusCode}
+            />
           </AvatarWrapper>
           <UserDropdown
             isOpen={dropdownOpen}

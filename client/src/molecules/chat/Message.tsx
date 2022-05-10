@@ -2,7 +2,8 @@ import styled from '@emotion/styled';
 import { getUserInfo } from 'api/userApi';
 import Time from 'atoms/chat/Time';
 import UpdateChatModal from 'organisms/modal/channel/chat/UpdateChatModal';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { fToNow } from 'utils/formatTime';
 import { useLocation } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { user } from 'recoil/auth';
@@ -73,6 +74,7 @@ const Message = ({
   const [thumbnailImage, setThumbnailImage] = useState('');
   const [isUpdatModalOpen, setIsUpdateModalOpen] = useState<boolean>(false);
   const [nickname, setNickname] = useState('');
+  const [status, setStatus] = useState('');
   const { accessToken } = useRecoilValue(user);
   const userInfo = useRecoilValue(user);
   const fileTypes = ['.bmp', '.gif', '.jpg', '.png', '.jpeg', '.jfif'];
@@ -120,7 +122,7 @@ const Message = ({
         <ProfileContainer>
           <LeftWrapper>
             <SideWrapper>
-              <Avatar src={thumbnailImage} />
+              <Avatar src={thumbnailImage} status={status} size="32" />
             </SideWrapper>
             <SideWrapper>
               <Label name={nickname} size="16px" />

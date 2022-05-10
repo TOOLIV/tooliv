@@ -38,7 +38,9 @@ export type channelTypes = {
 };
 
 export type channelsType = {
-  channelList: channelListTypes[];
+  normalChannelList: channelListTypes[];
+  videoChannelList: channelListTypes[];
+  listNum: number;
   onClick: (id: string) => void;
 };
 
@@ -54,6 +56,7 @@ export type channelMemberType = {
   nickname: string;
   profileImage: string;
   channelMemberCode: string;
+  statusCode: string;
 };
 
 export type addMemberType = {
@@ -71,6 +74,9 @@ export type channelDropdownType = {
 
 export type exitChannelModalType = {
   isOpen: boolean;
+  channelId: string;
+  top: number;
+  left: number;
 };
 
 export type channelHeaderDropdownType = {
