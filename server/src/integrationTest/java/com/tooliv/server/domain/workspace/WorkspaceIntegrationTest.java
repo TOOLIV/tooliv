@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tooliv.server.BaseIntegrationTest;
 import com.tooliv.server.domain.user.application.dto.request.LogInRequestDTO;
 import com.tooliv.server.domain.user.domain.User;
+import com.tooliv.server.domain.user.domain.enums.StatusCode;
 import com.tooliv.server.domain.user.domain.enums.UserCode;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
 import com.tooliv.server.domain.workspace.application.dto.request.RegisterWorkspaceRequestDTO;
@@ -81,6 +82,7 @@ public class WorkspaceIntegrationTest extends BaseIntegrationTest {
                 .password(passwordEncoder.encode("1234"))
                 .createdAt(LocalDateTime.now())
                 .userCode(UserCode.USER)
+                .statusCode(StatusCode.OFFLINE)
                 .build();
 
             userRepository.save(user);
