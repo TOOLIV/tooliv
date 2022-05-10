@@ -94,6 +94,7 @@ const Meeting = () => {
     window.addEventListener('beforeunload', leaveSession);
     return () => {
       leaveSession();
+      setIsChatOpen(false);
       window.removeEventListener('beforeunload', leaveSession);
     };
   }, [session]);
@@ -102,6 +103,7 @@ const Meeting = () => {
     window.addEventListener('beforeunload', leaveSessionForScreenSharing);
     return () => {
       leaveSessionForScreenSharing();
+      setIsChatOpen(false);
       window.removeEventListener('beforeunload', leaveSessionForScreenSharing);
     };
   }, [sessionForScreenSharing]);
