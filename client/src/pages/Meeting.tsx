@@ -143,20 +143,18 @@ const Meeting = () => {
       });
 
       newSession.on('publisherStartSpeaking', (event) => {
-        console.log(event);
         const newIsSpeakList = isSpeakList;
         newIsSpeakList.push(event.connection.connectionId);
         setIsSpeakList([...newIsSpeakList]);
       });
 
       newSession.on('publisherStopSpeaking', (event) => {
-        console.log(event);
         deleteIsSperker(event.connection.connectionId);
       });
 
-      newSession.on('sessionDisconnected', (event) => {
-        console.log(event);
-      });
+      // newSession.on('sessionDisconnected', (event) => {
+      //   console.log(event);
+      // });
 
       newSession.on('exception', (exception) => {
         console.warn(exception);
@@ -256,11 +254,6 @@ const Meeting = () => {
 
   useEffect(() => {
     if (doPauseScreenSharing) {
-      console.log(
-        doScreenSharing,
-        mainStreamManager,
-        publisherForScreenSharing
-      );
       if (
         doScreenSharing &&
         mainStreamManager?.stream.connection.connectionId !==
@@ -368,7 +361,7 @@ const Meeting = () => {
             });
         })
         .catch((error) => {
-          console.log(
+          console.warn(
             'There was an error connecting to the session:',
             error.code,
             error.message
