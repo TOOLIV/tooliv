@@ -14,6 +14,7 @@ export const light: Theme = {
   loginBgColor: colors.lightPrimary,
   loginFormBgColor: '#FFFFFF',
   dropdownHoverColor: colors.gray100,
+  selectedItemColor: colors.gray200,
 };
 
 export const dark: Theme = {
@@ -29,4 +30,5 @@ export const dark: Theme = {
   loginBgColor: colors.gray800,
   loginFormBgColor: colors.gray600,
   dropdownHoverColor: 'rgba(255, 255, 255, 0.3)',
+  selectedItemColor: colors.gray500,
 };

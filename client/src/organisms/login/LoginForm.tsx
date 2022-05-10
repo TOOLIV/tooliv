@@ -75,6 +75,7 @@ const LoginForm = () => {
           nickname: data.nickname,
           userId: data.userId,
           profileImage: data.profileImage,
+          statusCode: data.statusCode,
         });
         navigate('/');
       }

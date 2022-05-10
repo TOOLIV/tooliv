@@ -9,6 +9,7 @@ export type userInfoType = {
   email: string;
   nickname: string;
   profileImage: string;
+  statusCode: string;
 };
 export type userItemTypes = {
   name: string;
@@ -16,6 +17,7 @@ export type userItemTypes = {
   nickname: string;
   profileImage: string;
   userCode: string;
+  statusCode: string;
   onDelete: (email: string) => void;
   onChange: (value: string, email: string) => void;
 };
@@ -27,6 +29,7 @@ export type userListTypes = {
   profileImage: string;
   email: string;
   userCode: string;
+  statusCode: string;
 };
 
 // 유저 역할 변경 타입(관리자 or 일반)
@@ -74,4 +77,13 @@ export type userNicknameType = {
 export type userDirectMessageType = {
   isOpen: boolean;
   onClose: () => void;
+};
+
+export type userStatusType = {
+  statusCode: string;
+};
+
+export type userStatusInfoType = {
+  email: string;
+  statusCode: string;
 };

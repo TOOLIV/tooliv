@@ -3,16 +3,19 @@ import {
   userCreationTypes,
   userLoginTypes,
   userNicknameType,
+  userStatusType,
 } from '../types/common/userTypes';
 
 export const login = async (body: userLoginTypes) => {
   const response = await instance.post(`/user/login`, body);
+  console.log(response);
   const user = {
     name: response.data.name,
     accessToken: response.data.accessToken,
     nickname: response.data.nickname,
     email: response.data.email,
     profileImage: response.data.profileImage,
+    statusCode: response.data.statusCode,
   };
 
   localStorage.setItem('tooliv_info', JSON.stringify(user));
@@ -46,5 +49,10 @@ export const getUserList = async (keyword: string, sequence: number) => {
 
 export const getUserInfo = async (email: string) => {
   const response = await instance.get(`user/info/${email}`);
+  return response;
+};
+
+export const updateUserStatus = async (body: userStatusType) => {
+  const response = await instance.patch(`user/status`, body);
   return response;
 };

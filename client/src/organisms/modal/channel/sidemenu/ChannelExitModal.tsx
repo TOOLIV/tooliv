@@ -11,11 +11,12 @@ import { user } from 'recoil/auth';
 import { colors } from 'shared/color';
 import { exitChannelModalType } from 'types/channel/contentType';
 
-const Modal = styled.div<{ isOpen: boolean }>`
+const Modal = styled.div<{ isOpen: boolean; top: number; left: number }>`
   display: none;
   position: absolute;
-  top: 20px;
-  left: 20px;
+  top: ${(props) => props.top}px;
+  left: ${(props) => props.left}px;
+  /* left: 20px; */
 
   ${(props) =>
     props.isOpen &&
@@ -47,8 +48,13 @@ const ListItem = styled.div`
   }
 `;
 
-const ChannelExitModal = ({ isOpen }: exitChannelModalType) => {
-  const { workspaceId, channelId } = useParams();
+const ChannelExitModal = ({
+  isOpen,
+  channelId,
+  top,
+  left,
+}: exitChannelModalType) => {
+  const { workspaceId } = useParams();
   const { email } = useRecoilValue(user);
   const setCurrentWorkspaceId = useSetRecoilState(currentWorkspace);
   const setCurrentChannelMemberNum = useSetRecoilState(currentChannelNum);
@@ -67,8 +73,10 @@ const ChannelExitModal = ({ isOpen }: exitChannelModalType) => {
     navigate('/main');
   };
 
+  console.log(top, left);
+
   return (
-    <Modal isOpen={isOpen}>
+    <Modal isOpen={isOpen} top={top} left={left}>
       <Container>
         <ListItem onClick={() => exitChannel()}>
           <Icons color="secondary" icon="xMark" />

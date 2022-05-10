@@ -141,7 +141,7 @@ const UserConfigModal = ({ isOpen, onClose }: userConfigType) => {
           <Icons icon="xMark" width="32" height="32" onClick={exitModal} />
         </Header>
         <AvatarBox onClick={uploadImg}>
-          <Avatar src={imgSrc} size="130" />
+          <Avatar src={imgSrc} size="130" status={userInfo.statusCode} />
           <input
             style={{ display: 'none' }}
             type="file"

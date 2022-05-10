@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { createSession, createToken } from 'api/openvidu/session';
+import Button from 'atoms/common/Button';
 import isElectron from 'is-electron';
 import ChatButton from 'molecules/meeting/ChatButton';
 import MainStage from 'molecules/meeting/MainStage';
@@ -17,11 +18,18 @@ import { user } from 'recoil/auth';
 const MeetingContainer = styled.div`
   /* background-color: #787878; */
   height: calc(100vh - 194px);
+  position: relative;
+`;
+
+const ButtonContainer = styled.div`
+  position: absolute;
+  top: -29px;
+  right: 0;
 `;
 
 const MeetingInnerContainer = styled.div`
-  height: calc(100vh - 252px);
-  margin-bottom: 12px;
+  height: calc(100vh - 244px);
+  margin-bottom: 4px;
 `;
 
 const Meeting = () => {
@@ -76,8 +84,7 @@ const Meeting = () => {
 
   const [choiceScreen, setChoiceScreen] = useState<string>('');
   const [openScreenModal, setOpenScreenModal] = useState<boolean>(false);
-
-  const location = useLocation();
+  const [isHideCam, setIsHideCam] = useState<boolean>(false);
 
   useEffect(() => {
     joinSession();
@@ -87,6 +94,7 @@ const Meeting = () => {
     window.addEventListener('beforeunload', leaveSession);
     return () => {
       leaveSession();
+      setIsChatOpen(false);
       window.removeEventListener('beforeunload', leaveSession);
     };
   }, [session]);
@@ -95,6 +103,7 @@ const Meeting = () => {
     window.addEventListener('beforeunload', leaveSessionForScreenSharing);
     return () => {
       leaveSessionForScreenSharing();
+      setIsChatOpen(false);
       window.removeEventListener('beforeunload', leaveSessionForScreenSharing);
     };
   }, [sessionForScreenSharing]);
@@ -113,7 +122,7 @@ const Meeting = () => {
           event.stream,
           JSON.parse(event.stream.connection.data).clientData
         );
-        if (newSubscriber.stream.typeOfVideo === 'CAMERA') {
+        if (newSubscriber.stream.typeOfVideo === 'CUSTOM') {
           const newSubscribers = subscribers;
           newSubscribers.push(newSubscriber);
 
@@ -127,7 +136,7 @@ const Meeting = () => {
       });
 
       newSession.on('streamDestroyed', (event) => {
-        if (event.stream.typeOfVideo === 'CAMERA') {
+        if (event.stream.typeOfVideo === 'CUSTOM') {
           deleteSubscriber(event.stream.streamManager);
         } else {
           setDestroyedStream(event.stream.streamManager);
@@ -136,20 +145,18 @@ const Meeting = () => {
       });
 
       newSession.on('publisherStartSpeaking', (event) => {
-        console.log(event);
         const newIsSpeakList = isSpeakList;
         newIsSpeakList.push(event.connection.connectionId);
         setIsSpeakList([...newIsSpeakList]);
       });
 
       newSession.on('publisherStopSpeaking', (event) => {
-        console.log(event);
         deleteIsSperker(event.connection.connectionId);
       });
 
-      newSession.on('sessionDisconnected', (event) => {
-        console.log(event);
-      });
+      // newSession.on('sessionDisconnected', (event) => {
+      //   console.log(event);
+      // });
 
       newSession.on('exception', (exception) => {
         console.warn(exception);
@@ -159,25 +166,57 @@ const Meeting = () => {
         newSession
           .connect(token, { clientData: initUserData.myUserName })
           .then(async () => {
-            const devices = await newOV.getDevices();
-            console.log(devices);
-            const videoDevices = devices.filter(
-              (device) => device.kind === 'videoinput'
-            );
+            // const devices = await newOV.getDevices();
+            // console.log(devices);
+            // const videoDevices = devices.filter(
+            //   (device) => device.kind === 'videoinput'
+            // );
 
-            const newPublisher = newOV.initPublisher(initUserData.myUserName, {
-              audioSource: undefined,
-              videoSource: videoDevices[0].deviceId,
-              publishAudio: isAudioOn,
-              publishVideo: isVideoOn,
-              resolution: '1080x720',
-              frameRate: 10,
-              insertMode: 'APPEND',
-              mirror: true,
-            });
+            // const newPublisher = newOV.initPublisher(initUserData.myUserName, {
+            //   audioSource: undefined,
+            //   videoSource: videoDevices[0].deviceId,
+            //   publishAudio: isAudioOn,
+            //   publishVideo: isVideoOn,
+            //   resolution: '1080x720',
+            //   frameRate: 10,
+            //   insertMode: 'APPEND',
+            //   mirror: true,
+            // });
 
-            newSession.publish(newPublisher);
-            setPublisher(newPublisher);
+            // newPublisher.once('accessAllowed', () => {
+            //   newSession.publish(newPublisher);
+            //   setPublisher(newPublisher);
+            // });
+
+            newOV
+              .getUserMedia({
+                audioSource: false,
+                videoSource: undefined,
+                resolution: '1280x720',
+                frameRate: 10,
+              })
+              .then((mediaStream) => {
+                var videoTrack = mediaStream.getVideoTracks()[0];
+
+                var newPublisher = newOV.initPublisher(
+                  initUserData.myUserName,
+                  {
+                    audioSource: undefined,
+                    videoSource: videoTrack,
+                    publishAudio: isAudioOn,
+                    publishVideo: isVideoOn,
+                    // resolution: '1280x720',
+                    // frameRate: 10,
+                    insertMode: 'APPEND',
+                    mirror: true,
+                  }
+                );
+
+                newPublisher.once('accessAllowed', () => {
+                  newSession.publish(newPublisher);
+                  setPublisher(newPublisher);
+                });
+              });
           })
           .catch((error) => {
             console.warn(
@@ -211,16 +250,12 @@ const Meeting = () => {
   useEffect(() => {
     if (doStopScreenSharing) {
       stopScreenShare();
+      setIsHideCam(false);
     }
   }, [doStopScreenSharing]);
 
   useEffect(() => {
     if (doPauseScreenSharing) {
-      console.log(
-        doScreenSharing,
-        mainStreamManager,
-        publisherForScreenSharing
-      );
       if (
         doScreenSharing &&
         mainStreamManager?.stream.connection.connectionId !==
@@ -240,6 +275,7 @@ const Meeting = () => {
       ) {
         setIsScreenSharing(false);
         setMainStreamManager(null);
+        setIsHideCam(false);
       }
       setDestroyedStream(null);
       setCheckMyScreen(false);
@@ -309,7 +345,7 @@ const Meeting = () => {
               videoSource: isElectron() ? 'screen: ' + choiceScreen : 'screen', // The source of video. If undefined default webcam
               publishAudio: false,
               publishVideo: true,
-              resolution: '1080x720', // The resolution of your video
+              resolution: '1280x720', // The resolution of your video
               frameRate: 10, // The frame rate of your video
               // insertMode: 'APPEND', // How the video is inserted in the target element 'video-container'
             })
@@ -327,7 +363,7 @@ const Meeting = () => {
             });
         })
         .catch((error) => {
-          console.log(
+          console.warn(
             'There was an error connecting to the session:',
             error.code,
             error.message
@@ -347,8 +383,19 @@ const Meeting = () => {
 
   return (
     <MeetingContainer>
+      {isScreenSharing && (
+        <ButtonContainer>
+          <Button
+            text={isHideCam ? '카메라 표시' : '카메라 가리기'}
+            width="110"
+            height="28"
+            bgColor="gray300"
+            onClick={() => setIsHideCam(!isHideCam)}
+          />
+        </ButtonContainer>
+      )}
       <MeetingInnerContainer>
-        {publisher && (
+        {publisher && !isHideCam && (
           <Videos
             publisher={publisher}
             subscribers={subscribers}
@@ -357,7 +404,7 @@ const Meeting = () => {
           />
         )}
         {mainStreamManager && (
-          <MainStage streamManager={mainStreamManager}></MainStage>
+          <MainStage streamManager={mainStreamManager} isHideCam={isHideCam} />
         )}
         {openScreenModal && (
           <ScreenShareModal

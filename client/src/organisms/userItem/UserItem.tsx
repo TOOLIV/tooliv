@@ -42,6 +42,7 @@ const UserItem = ({
   nickname,
   profileImage,
   userCode,
+  statusCode,
   onDelete,
   onChange,
 }: // onChange,
@@ -78,6 +79,7 @@ userItemTypes) => {
         email={email}
         nickname={nickname}
         profileImage={profileImage}
+        statusCode={statusCode}
       />
       <ControlBox>
         <DropdownBox>

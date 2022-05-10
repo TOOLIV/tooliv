@@ -278,6 +278,7 @@ const ChannelAddMemberModal = ({
                 email={user.email}
                 nickname={user.nickname}
                 profileImage={user.profileImage}
+                statusCode={user.statusCode}
               />
             </UserInfoWrapper>
           ))}
