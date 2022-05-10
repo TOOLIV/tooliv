@@ -1,7 +1,6 @@
 import styled from '@emotion/styled';
 import { getUserInfo } from 'api/userApi';
 import Time from 'atoms/chat/Time';
-import Icons from 'atoms/common/Icons';
 import UpdateChatModal from 'organisms/modal/channel/chat/UpdateChatModal';
 import React, { useEffect, useState } from 'react';
 import { fToNow } from 'utils/formatTime';
@@ -15,6 +14,7 @@ import { colors } from '../../shared/color';
 import { contentTypes } from '../../types/channel/contentType';
 import { SideWrapper } from '../sidemenu/Channels';
 import File from './File';
+import mainSrc from '../../assets/img/logo.svg';
 
 const Container = styled.div`
   width: 100%;
@@ -96,10 +96,14 @@ const Message = ({
   }, [email]);
 
   const getUserProfile = async () => {
-    const response = await getUserInfo(email);
-    setThumbnailImage(response.data.profileImage);
-    setNickname(response.data.nickname);
-    setStatus(response.data.statusCode);
+    if (type === 'home') {
+      setThumbnailImage(mainSrc);
+      setNickname('TOOLIV');
+    } else {
+      const response = await getUserInfo(email);
+      setThumbnailImage(response.data.profileImage);
+      setNickname(response.data.nickname);
+    }
   };
 
   const deleteMessage = () => {
@@ -123,7 +127,7 @@ const Message = ({
             <SideWrapper>
               <Label name={nickname} size="16px" />
             </SideWrapper>
-            <Time time={fToNow(sendTime)} />
+            {sendTime && <Time time={sendTime} />}
           </LeftWrapper>
           {email === userInfo.email && !deleted && (
             <SideWrapper>

@@ -63,7 +63,7 @@ const UpdateChatModal = ({
   const location = useLocation();
   const { accessToken } = useRecoilValue(user);
   const [message, setMessage] = useState<string>(contents);
-  console.log(contents);
+
   const updateMessage = () => {
     console.log(document.getElementById('edit'));
     // if (location.pathname.includes('/direct')) {

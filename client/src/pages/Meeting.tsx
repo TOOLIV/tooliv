@@ -120,7 +120,7 @@ const Meeting = () => {
           event.stream,
           JSON.parse(event.stream.connection.data).clientData
         );
-        if (newSubscriber.stream.typeOfVideo === 'CAMERA') {
+        if (newSubscriber.stream.typeOfVideo === 'CUSTOM') {
           const newSubscribers = subscribers;
           newSubscribers.push(newSubscriber);
 
@@ -134,7 +134,7 @@ const Meeting = () => {
       });
 
       newSession.on('streamDestroyed', (event) => {
-        if (event.stream.typeOfVideo === 'CAMERA') {
+        if (event.stream.typeOfVideo === 'CUSTOM') {
           deleteSubscriber(event.stream.streamManager);
         } else {
           setDestroyedStream(event.stream.streamManager);

@@ -6,7 +6,7 @@ export type contentTypes = {
   type: string;
   deleted: boolean;
   updated: boolean;
-  sendTime: string;
+  sendTime?: string;
   files?: string[];
   originFiles?: string[];
 };
