@@ -11,7 +11,4 @@ public interface NotificationService {
 
     DirectListResponseDTO getDirectNotificationList(String email);
 
-    void createDirectChatNotification(User user, DirectChatRoom directChatRoom);
-
-    void readDirectChatNotification(User user, DirectChatRoom directChatRoom);
 }
