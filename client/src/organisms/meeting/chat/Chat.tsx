@@ -24,9 +24,13 @@ const ChatContainer = styled.div`
   height: calc(100vh - 64px);
 `;
 
+const Header = styled.div`
+  padding: 0 18px;
+`;
+
 const ContentContainer = styled.div`
   overflow-y: auto;
-  height: 100%;
+  height: calc(100vh - 178px);
 `;
 const Chat = () => {
   const [isChatOpen, setIsChatOpen] = useRecoilState<boolean>(isOpenChat);
@@ -78,15 +82,17 @@ const Chat = () => {
   return (
     <ChatContainer>
       <>
-        <TopContainer>
-          <Icons icon="anglesRight" onClick={onCloseChat} />
-          <MenuTemplate title="채팅" />
-        </TopContainer>
+        <Header>
+          <TopContainer>
+            <Icons icon="anglesRight" onClick={onCloseChat} />
+            <MenuTemplate title="채팅" />
+          </TopContainer>
+        </Header>
         <ContentContainer ref={messageBoxRef}>
           {contents &&
             contents.map((content, idx) => <ChatItem {...content} />)}
-          <Editor onClick={onSendClick} sendMessage={sendMessage} />
         </ContentContainer>
+        <Editor onClick={onSendClick} sendMessage={sendMessage} />
       </>
     </ChatContainer>
   );
