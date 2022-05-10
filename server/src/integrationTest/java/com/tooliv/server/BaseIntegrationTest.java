@@ -33,20 +33,9 @@ public class BaseIntegrationTest {
     @Container
     private static MySQLContainer<?> mySQLContainer = new MySQLContainer<>(DockerImageName.parse("mysql:5.7"))
         .withDatabaseName("test_db");
-//        .withConfigurationOverride("mysql_conf_override")
-//        .withCommand("--character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci")
-//        .withEnv("MYSQL_ROOT_HOST", "%")
-//        .withInitScript("schema.sql");
 
     @AfterAll
     static void afterAll() {
-
-        System.out.println("야야야야야양 좀 되라고요`~~~~~~~");
-        System.out.println(mySQLContainer.getEnv());
-        System.out.println(mySQLContainer.getJdbcUrl());
-        for (String s : mySQLContainer.getCommandParts()) {
-            System.out.println(s);
-        }
         Slf4jLogConsumer logConsumer = new Slf4jLogConsumer(LOGGER);
         mySQLContainer.followOutput(logConsumer);
     }
