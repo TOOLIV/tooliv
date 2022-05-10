@@ -58,11 +58,9 @@ const DirectMessage = () => {
   const map = new Map(notiList.map((el) => [el.channelId, el]));
   const navigate = useNavigate();
   const { workspaceId, channelId } = useParams();
-  console.log(notiList);
   const closeUserList = () => {
     setUserListOpen(false);
   };
-  console.log(dmList);
   return (
     <>
       <TopContainer>

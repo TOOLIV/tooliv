@@ -86,7 +86,6 @@ const ChannelHeader = () => {
   };
 
   useEffect(() => {
-    console.log(location.pathname.split('/')[1]);
     const currentLocation = location.pathname.split('/')[1];
     if (currentLocation === 'meeting') {
       setIsMeeting(true);
@@ -126,7 +125,6 @@ const ChannelHeader = () => {
   const handleChannelInfo = async () => {
     try {
       const { data } = await getChannelInfo(channelId!);
-      console.log(data);
       setChannelName(data.name);
       setChannelMemberNum(data.numOfPeople);
       setCurrentChannelMemberNum(data.numOfPeople);

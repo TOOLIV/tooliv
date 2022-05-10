@@ -16,6 +16,7 @@ const Modal = styled.div<{ isOpen: boolean; top: number; left: number }>`
   position: absolute;
   top: ${(props) => props.top}px;
   left: ${(props) => props.left}px;
+  z-index: 1;
   /* left: 20px; */
 
   ${(props) =>
@@ -67,13 +68,10 @@ const ChannelExitModal = ({
 
     if (workspaceId) {
       let log = JSON.parse(JSON.stringify(userLogList));
-      delete log[workspaceId];
       setUserLogList(log);
     }
     navigate('/main');
   };
-
-  console.log(top, left);
 
   return (
     <Modal isOpen={isOpen} top={top} left={left}>

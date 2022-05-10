@@ -12,6 +12,7 @@ import {
   channelContents,
   channelNotiList,
   DMList,
+  memberStatus,
   wsList,
 } from 'recoil/atom';
 import { channelNotiType, contentTypes } from 'types/channel/contentType';
@@ -25,6 +26,7 @@ import { useNavigate } from 'react-router-dom';
 import { DMInfoType } from 'types/channel/chatTypes';
 import { workspaceListType } from 'types/workspace/workspaceTypes';
 import { getWorkspaceList } from 'api/workspaceApi';
+import { userStatusInfoType } from 'types/common/userTypes';
 
 const NavContainer = styled.div`
   padding: 0px 20px;
@@ -74,6 +76,8 @@ const Nav = () => {
   const [notiList, setNotiList] =
     useRecoilState<channelNotiType[]>(channelNotiList);
   const [dmList, setDmList] = useRecoilState<DMInfoType[]>(DMList);
+  const [status, setStatus] =
+    useRecoilState<userStatusInfoType[]>(memberStatus);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [workspaceList, setWorkspaceList] =
     useRecoilState<workspaceListType[]>(wsList);
@@ -94,6 +98,8 @@ const Nav = () => {
       data: { workspaceGetResponseDTOList },
     } = wsRes;
     setDmList(directInfoDTOList);
+    // setStatus()
+    console.log(directInfoDTOList);
     setNotiList([...notificationChannelList, ...directInfoDTOList]);
 
     const notiWorkspace = notiList.filter((noti) => {
