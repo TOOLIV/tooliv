@@ -10,4 +10,6 @@ import org.springframework.stereotype.Repository;
 public interface ChatMessageRepository extends JpaRepository<ChatMessage, String> {
 
     Optional<List<ChatMessage>> findByContentContaining(String content);
+
+    Optional<ChatMessage> findByChatChatIdAndChatChannelId(long chatId,String channelId);
 }
