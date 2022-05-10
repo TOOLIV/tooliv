@@ -26,6 +26,7 @@ import lombok.ToString;
 public class ChatMessage  {
 
     @EmbeddedId
+    @Column(name = "chat")
     private Chat chat;
 
     // 내용
@@ -43,7 +44,8 @@ public class ChatMessage  {
     private LocalDateTime sendTime;
 
     @Embeddable
-    public static class Chat implements Serializable {
+    @Getter
+    public class Chat implements Serializable {
 
         @Column(name = "chat_id")
         private long chatId;
