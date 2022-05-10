@@ -1,6 +1,8 @@
-import styled from "@emotion/styled";
-import React from "react";
-import { chatItemPropsTypes } from "../../types/meeting/chatTypes";
+import styled from '@emotion/styled';
+import { getUserInfo } from 'api/userApi';
+import React, { useEffect, useState } from 'react';
+import { contentTypes } from 'types/channel/contentType';
+import { chatItemPropsTypes } from '../../types/meeting/chatTypes';
 
 const ChatItemContainer = styled.div`
   padding: 8px 16px 8px 16px;
@@ -21,14 +23,33 @@ const Content = styled.div`
   font-size: 16px;
 `;
 
-const ChatItem = ({ data }: chatItemPropsTypes) => {
+const ChatItem = ({
+  chatId,
+  email,
+  contents,
+  deleted,
+  sendTime,
+}: contentTypes) => {
+  const [thumbnailImage, setThumbnailImage] = useState('');
+  const [nickname, setNickname] = useState('');
+
+  const getUserProfile = async () => {
+    const response = await getUserInfo(email);
+    setThumbnailImage(response.data.profileImage);
+    setNickname(response.data.nickname);
+  };
+
+  useEffect(() => {
+    getUserProfile();
+  }, [email]);
+
   return (
     <ChatItemContainer>
       <ChatItemHeader>
-        <div className="name">{data.name}</div>
-        <div className="timestamp">{data.timestamp}</div>
+        <div className="name">{nickname}</div>
+        <div className="timestamp">{sendTime}</div>
       </ChatItemHeader>
-      <Content>{data.content}</Content>
+      <Content dangerouslySetInnerHTML={{ __html: contents }}></Content>
     </ChatItemContainer>
   );
 };
