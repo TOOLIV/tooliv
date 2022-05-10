@@ -40,9 +40,7 @@ const Friends = () => {
       <FriendsContainer>
         {dummyData.map((friend) => (
           <FriendContainer key={friend.id}>
-            <SideWrapper>
-              <Avatar />
-            </SideWrapper>
+            <SideWrapper>{/* <Avatar /> */}</SideWrapper>
             <Label {...friend} noti={true} />
           </FriendContainer>
         ))}

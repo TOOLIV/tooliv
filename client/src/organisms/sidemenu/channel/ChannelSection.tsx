@@ -16,16 +16,17 @@ import {
   modifyChannelName,
   userLog,
 } from 'recoil/atom';
+import { channelListTypes } from 'types/channel/contentType';
 
 const Container = styled.div<{ isOpen: boolean }>`
-  position: relative;
+  /* position: relative; */
 `;
 
 const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 0;
+  padding-bottom: 16px;
 `;
 
 const ChannelSection = () => {
@@ -38,7 +39,12 @@ const ChannelSection = () => {
   const [isPublicChannelModalOpen, setIsPublicChannelModalOpen] =
     useState(false);
 
-  const [channelList, setChannelList] = useState([]);
+  const [normalChannelList, setNormalChannelList] = useState<
+    channelListTypes[]
+  >([]);
+  const [videoChannelList, setVideoChannelList] = useState<channelListTypes[]>(
+    []
+  );
   const currentWorkspaceId = useRecoilValue(currentWorkspace);
   const modChannelName = useRecoilValue(modifyChannelName);
   const [currentChannelId, setCurrentChannelId] =
@@ -50,8 +56,21 @@ const ChannelSection = () => {
 
   const handleChannel = async () => {
     const response = await getChannelList(currentWorkspaceId);
-    setChannelList(response.data.channelGetResponseDTOList);
-    console.log(response);
+    const channelList = response.data.channelGetResponseDTOList;
+    console.log(channelList);
+    const normalList: channelListTypes[] = [];
+    const videoList: channelListTypes[] = [];
+
+    channelList.forEach((list: channelListTypes) => {
+      console.log(list);
+      if (list.channelCode === 'CHAT') {
+        normalList.push(list);
+      } else {
+        videoList.push(list);
+      }
+    });
+    setNormalChannelList(normalList);
+    setVideoChannelList(videoList);
   };
 
   useEffect(() => {
@@ -111,7 +130,11 @@ const ChannelSection = () => {
         <Text size={14}>채널</Text>
         <Icons icon="plus" onClick={openDropdownModal} />
       </Header>
-      <Channels channelList={channelList} onClick={handleClickChannel} />
+      <Channels
+        normalChannelList={normalChannelList}
+        videoChannelList={videoChannelList}
+        onClick={handleClickChannel}
+      />
       <ChannelDropDown
         isOpen={isDropdownModalOpen}
         onClose={closeDropdownModal}

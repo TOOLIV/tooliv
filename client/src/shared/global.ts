@@ -115,7 +115,13 @@ const reset = css`
     line-height: 1;
     font-family: 'SUIT', sans-serif;
     font-weight: 600;
+
+    -ms-overflow-style: none;
+    ::-webkit-scrollbar {
+      display: none;
+    }
   }
+
   ol,
   ul {
     list-style: none;

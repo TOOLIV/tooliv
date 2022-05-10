@@ -47,8 +47,8 @@ const ListItem = styled.div`
   }
 `;
 
-const ChannelExitModal = ({ isOpen }: exitChannelModalType) => {
-  const { workspaceId, channelId } = useParams();
+const ChannelExitModal = ({ isOpen, channelId }: exitChannelModalType) => {
+  const { workspaceId } = useParams();
   const { email } = useRecoilValue(user);
   const setCurrentWorkspaceId = useSetRecoilState(currentWorkspace);
   const setCurrentChannelMemberNum = useSetRecoilState(currentChannelNum);

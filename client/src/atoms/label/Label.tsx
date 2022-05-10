@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
 import React from 'react';
-import { colors } from '../../shared/color';
 export const Container = styled.label`
-  color: ${colors.gray400};
+  display: inline-block;
+  color: ${(props) => props.theme.textColor};
   font-size: 12px;
   font-weight: 600;
   margin-bottom: 4px;

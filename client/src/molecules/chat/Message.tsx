@@ -74,6 +74,7 @@ const Message = ({
   const [thumbnailImage, setThumbnailImage] = useState('');
   const [isUpdatModalOpen, setIsUpdateModalOpen] = useState<boolean>(false);
   const [nickname, setNickname] = useState('');
+  const [status, setStatus] = useState('');
   const { accessToken } = useRecoilValue(user);
   const userInfo = useRecoilValue(user);
   const fileTypes = ['.bmp', '.gif', '.jpg', '.png', '.jpeg', '.jfif'];
@@ -98,6 +99,7 @@ const Message = ({
     const response = await getUserInfo(email);
     setThumbnailImage(response.data.profileImage);
     setNickname(response.data.nickname);
+    setStatus(response.data.statusCode);
   };
 
   const deleteMessage = () => {
@@ -116,7 +118,7 @@ const Message = ({
         <ProfileContainer>
           <LeftWrapper>
             <SideWrapper>
-              <Avatar src={thumbnailImage} />
+              <Avatar src={thumbnailImage} status={status} size="32" />
             </SideWrapper>
             <SideWrapper>
               <Label name={nickname} size="16px" />

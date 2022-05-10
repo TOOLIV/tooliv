@@ -21,7 +21,8 @@ const Container = styled.div<{
   flex: 0 0 auto;
   border-radius: 10px;
   background-color: ${(props) => props.theme.bgColor};
-  margin: 12px 12px 12px 0;
+  /* margin: 12px 12px 0 0; */
+  margin-right: 12px;
   display: flex;
   justify-content: center;
   align-items: center;

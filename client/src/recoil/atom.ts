@@ -8,7 +8,11 @@ import {
   contentTypes,
 } from '../types/channel/contentType';
 import { ThemeMode } from '../types/common/themeTypes';
-import { userCreationTypes, userLogTypes } from '../types/common/userTypes';
+import {
+  userCreationTypes,
+  userLogTypes,
+  userStatusInfoType,
+} from '../types/common/userTypes';
 
 export const appThemeMode = atom<ThemeMode>({
   key: 'AppThemeMode',
@@ -105,4 +109,9 @@ export const wsList = atom<workspaceListType[]>({
 export const dmName = atom<string>({
   key: 'dmName',
   default: '홈',
+});
+
+export const memberStatus = atom<userStatusInfoType[]>({
+  key: 'memberStatus',
+  default: [],
 });

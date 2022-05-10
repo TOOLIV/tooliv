@@ -21,7 +21,8 @@ import Text from 'atoms/text/Text';
 import { channelNotiType } from 'types/channel/contentType';
 
 const Container = styled.div<{ isOpen: boolean }>`
-  padding: 16px 0;
+  /* padding: 16px 0; */
+  padding-top: 16px;
   border-bottom: ${(props) => props.isOpen && '1px solid #ffffff'};
 `;
 

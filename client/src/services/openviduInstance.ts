@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 export const openviduInstance = axios.create({
-  // baseURL: process.env.REACT_APP_OPENVIDU_SERVER_URL,
-  baseURL: 'https://k6a402.p.ssafy.io:4443',
+  baseURL: process.env.REACT_APP_OPENVIDU_SERVER_URL,
+  // baseURL: 'https://k6a402.p.ssafy.io:4443',
   headers: {
     Authorization:
       'Basic ' +

@@ -62,7 +62,7 @@ const DirectMessage = () => {
   const closeUserList = () => {
     setUserListOpen(false);
   };
-
+  console.log(dmList);
   return (
     <>
       <TopContainer>
@@ -82,7 +82,7 @@ const DirectMessage = () => {
             <NotiWrapper>
               <InnerContainer>
                 <SideWrapper>
-                  <Avatar src={dm.profileImage} />
+                  <Avatar src={dm.profileImage} status={dm.statusCode} />
                 </SideWrapper>
                 <Label id={dm.channelId} name={dm.receiveName} />
               </InnerContainer>

@@ -11,14 +11,22 @@ import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
 const Container = styled(motion.div)`
-  width: 280px;
+  min-width: 280px;
   background-color: ${(props) => props.theme.sideBgColor};
   border-radius: 0 50px 0 0;
   position: absolute;
   height: calc(100vh - 64px);
   padding: 16px 18px;
 `;
-
+const Contents = styled.div`
+  height: calc(100vh - 265px);
+  overflow-y: scroll;
+  overflow-x: hidden;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`;
 const SideMenu = () => {
   const variants = {
     open: { opacity: 1, x: 0 },
@@ -48,16 +56,12 @@ const SideMenu = () => {
     >
       <SideHeader />
       <WorkSpaceSection />
-      {isOpen && currentWorkspaceId === 'main' ? (
-        <>
-          <Friends />
-        </>
-      ) : (
-        <>
+      {isOpen && currentWorkspaceId !== 'main' ? (
+        <Contents>
           <ChannelSection />
           <DirectMessage />
-        </>
-      )}
+        </Contents>
+      ) : null}
     </Container>
   );
 };
