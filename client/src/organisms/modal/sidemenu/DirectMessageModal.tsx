@@ -100,9 +100,15 @@ const DirectMessageModal = ({ isOpen, onClose }: userDirectMessageType) => {
       const {
         data: { roomId },
       } = res;
+
       setDmList([
         ...dmList,
-        { receiveName: member.name, channelId: roomId, notificationRead: true },
+        {
+          profileImage: member.profileImage,
+          receiveName: member.nickname,
+          channelId: roomId,
+          notificationRead: true,
+        },
       ]);
       navigate(`/direct/${workspaceId}/${roomId}`);
       onClose();
