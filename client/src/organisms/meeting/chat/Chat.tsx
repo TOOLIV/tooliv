@@ -70,7 +70,6 @@ const Chat = () => {
 
   const sendMessage = () => {
     send({
-      accessToken,
       channelId,
       email,
       message,

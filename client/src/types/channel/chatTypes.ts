@@ -1,5 +1,4 @@
 export type SendMessageProps = {
-  accessToken: string;
   channelId?: string;
   chatId?: string;
   email: string;

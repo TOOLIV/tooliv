@@ -1,3 +1,4 @@
+import Stomp from 'stompjs';
 import { atom } from 'recoil';
 import { DMInfoType } from 'types/channel/chatTypes';
 import { FileTypes } from 'types/common/fileTypes';
@@ -114,4 +115,9 @@ export const dmName = atom<string>({
 export const memberStatus = atom<userStatusInfoType[]>({
   key: 'memberStatus',
   default: [],
+});
+
+export const stompClient = atom<Stomp.Client | null>({
+  key: 'stompClient',
+  default: null,
 });

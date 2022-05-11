@@ -11,6 +11,7 @@ import {
   chatFileNames,
   chatFiles,
   chatFileUrl,
+  stompClient,
   wsList,
 } from '../recoil/atom';
 import { channelNotiType, contentTypes } from '../types/channel/contentType';
@@ -20,8 +21,9 @@ import Files from 'organisms/chat/Files';
 import { FileTypes } from 'types/common/fileTypes';
 import { user } from 'recoil/auth';
 import LoadSpinner from 'atoms/common/LoadSpinner';
-import { send } from 'services/wsconnect';
+import { getMarkdownText, send } from 'services/wsconnect';
 import { workspaceListType } from 'types/workspace/workspaceTypes';
+import SockJS from 'sockjs-client';
 
 const Container = styled.div`
   width: 100%;
@@ -51,6 +53,7 @@ const Channel = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [workspaceList, setWorkspaceList] =
     useRecoilState<workspaceListType[]>(wsList);
+  const [client, setClient] = useRecoilState<Stomp.Client | null>(stompClient);
 
   useEffect(() => {
     let flag = true;
@@ -94,13 +97,37 @@ const Channel = () => {
 
   const sendMessage = () => {
     send({
-      accessToken,
       channelId,
       email,
       message,
       fileUrl,
       fileNames,
     });
+    // const baseURL = localStorage.getItem('baseURL');
+    // let sockJS = baseURL
+    //   ? new SockJS(`${JSON.parse(baseURL).url}/chatting`)
+    //   : // 로컬에서 테스트시 REACT_APP_TEST_URL, server 주소는 REACT_APP_BASE_SERVER_URL
+    //     new SockJS(`${process.env.REACT_APP_TEST_URL}/chatting`);
+
+    // let client: Stomp.Client = Stomp.over(sockJS);
+    // {
+    //   client &&
+    //     client.send(
+    //       '/pub/chat/message',
+    //       {
+    //         Authorization: `Bearer ${accessToken}`,
+    //       },
+    //       JSON.stringify({
+    //         channelId: channelId,
+    //         email: email,
+    //         sendTime: new Date(),
+    //         contents: getMarkdownText(message),
+    //         type: 'TALK',
+    //         files: fileUrl ? fileUrl : null,
+    //         originFiles: fileNames ? fileNames : null,
+    //       })
+    //     );
+    // }
 
     setMessage('');
     setFiles([]);
