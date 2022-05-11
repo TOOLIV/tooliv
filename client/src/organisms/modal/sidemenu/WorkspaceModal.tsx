@@ -126,7 +126,6 @@ const WorkspaceModal = ({ isOpen, onClose }: workspaceModalType) => {
           ...userLogList,
           [workspaceId]: channelId,
         });
-        navigate(`${workspaceId}/${channelId}`);
         inputWorkspaceRef.current!.value = '';
         setFile(undefined);
         // 알림 state에 추가
@@ -138,6 +137,7 @@ const WorkspaceModal = ({ isOpen, onClose }: workspaceModalType) => {
         unsub();
         // 다시 구독 (바로 메시지 전송할 수 있게)
         sub();
+        navigate(`${workspaceId}/${channelId}`);
         onClose();
       }
     } catch (error) {

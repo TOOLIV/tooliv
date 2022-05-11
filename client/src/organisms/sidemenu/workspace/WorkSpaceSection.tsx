@@ -53,24 +53,8 @@ const WorkSpaceSection = () => {
   };
 
   const handleWorkspace = async () => {
-    // getWorkspaceList().then((res) => {
-    //   const notiWorkspace = notiList.filter((noti) => {
-    //     if (!noti.notificationRead) {
-    //       return noti;
-    //     }
-    //   });
-    //   const map = new Map(notiWorkspace.map((el) => [el.workspaceId, el]));
-    //   console.log(map);
-    //   setWorkspaceList(
-    //     res.data.workspaceGetResponseDTOList.map((dto: any) => {
-    //       if (map.get(dto.id)) {
-    //         return { ...dto, noti: false };
-    //       } else {
-    //         return { ...dto, noti: true };
-    //       }
-    //     })
-    //   );
-    // });
+    const response = await getWorkspaceList();
+    setWorkspaceList(response.data.workspaceGetResponseDTOList);
   };
 
   const getNextChannelId = async (workspaceId: string) => {
