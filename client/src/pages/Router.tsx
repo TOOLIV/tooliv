@@ -1,7 +1,13 @@
 import styled from '@emotion/styled';
 import LoadSpinner from 'atoms/common/LoadSpinner';
 import React, { Suspense, lazy } from 'react';
-import { HashRouter, Navigate, Route, Routes } from 'react-router-dom';
+import {
+  BrowserRouter,
+  HashRouter,
+  Navigate,
+  Route,
+  Routes,
+} from 'react-router-dom';
 
 const Login = lazy(() => import('./Login'));
 const Home = lazy(() => import('./Home'));
@@ -26,7 +32,7 @@ const Container = styled.div`
 const AppRouter = () => {
   return (
     <>
-      <HashRouter>
+      <HashRouter basename="/app">
         <Suspense
           fallback={
             <Container>
@@ -35,6 +41,7 @@ const AppRouter = () => {
           }
         >
           <Routes>
+            {/* <Route path="/" element={<Main />} /> */}
             <Route path="/login" element={<Login />} />
             <Route path="/join" element={<Join />} />
             <Route path="/enterprisetest" element={<EnterPriseTest />} />
@@ -42,7 +49,7 @@ const AppRouter = () => {
               path="/"
               element={<PrivateRoute outlet={<Home />} fallback={'login'} />}
             >
-              <Route path="" element={<Navigate replace to="/main" />} />
+              <Route path="/" element={<Navigate replace to="main" />} />
               <Route path="/main" element={<Main />} />
               <Route path="/:workspaceId/:channelId" element={<Channel />} />
               <Route path="/direct/:workspaceId/:channelId" element={<DM />} />
