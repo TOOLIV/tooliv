@@ -48,19 +48,20 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public DirectListResponseDTO getDirectNotificationList(String email) {
-        User user = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
+        // 현재 나의 아이디
+        User sender = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
             .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
-        List<DirectChatRoomMembers> directChatRoomMembersList = directChatRoomMembersRepository.findByUser(user).orElseThrow(() -> new IllegalArgumentException("메시지 정보가 존재하지 않습니다."));
+        List<DirectChatRoomMembers> directChatRoomMembersList = directChatRoomMembersRepository.findByUser(sender).orElseThrow(() -> new IllegalArgumentException("메시지 정보가 존재하지 않습니다."));
         List<DirectInfoDTO> directInfoDTOList = new ArrayList<>();
         for (int i = 0; i < directChatRoomMembersList.size(); i++) {
             List<DirectChatRoomMembers> directChatRoomMembers = directChatRoomMembersRepository.findByDirectChatRoom(directChatRoomMembersList.get(i).getDirectChatRoom())
                 .orElseThrow(() -> new IllegalArgumentException("다이렉트 룸 정보가 존재하지 않습니다."));
             for (int j = 0; j < directChatRoomMembers.size(); j++) {
-                if (!directChatRoomMembers.get(j).getUser().getId().equals(user.getId())) {
+                if (!directChatRoomMembers.get(j).getUser().getId().equals(sender.getId())) {
                     User receiver = directChatRoomMembers.get(j).getUser();
                     String imageUrl = awsS3Service.getFilePath(receiver.getProfileImage());
                     directInfoDTOList.add(new DirectInfoDTO(imageUrl, receiver.getNickname(), directChatRoomMembersList.get(i).getDirectChatRoom().getId(),
-                        checkDirectNotification(directChatRoomMembersList.get(i), directChatRoomMembersList.get(i).getDirectChatRoom())));
+                        sender.getEmail(), receiver.getEmail(), checkDirectNotification(directChatRoomMembersList.get(i), directChatRoomMembersList.get(i).getDirectChatRoom())));
                 }
             }
         }

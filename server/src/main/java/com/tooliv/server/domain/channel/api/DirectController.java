@@ -40,7 +40,7 @@ public class DirectController {
         } catch (Exception e) {
         }
 
-        return ResponseEntity.status(200).body(DirectListResponseDTO.of("개인 메시지 알람 목록 조회 실패", directListResponseDTO));
+        return ResponseEntity.status(200).body(DirectListResponseDTO.of("개인 메시지 알람 목록 조회 성공", directListResponseDTO));
     }
 
 }
