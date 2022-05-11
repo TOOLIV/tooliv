@@ -1,5 +1,6 @@
 package com.tooliv.server.domain.workspace.application.dto.response;
 
+import com.tooliv.server.domain.user.domain.enums.StatusCode;
 import com.tooliv.server.domain.workspace.domain.enums.WorkspaceMemberCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -20,6 +21,9 @@ public class WorkspaceMemberGetResponseDTO {
 
     @ApiModelProperty("user 이름")
     private String name;
+
+    @ApiModelProperty("user 상태코드")
+    private StatusCode statusCode;
 
     @ApiModelProperty("user 닉네임")
     private String nickname;

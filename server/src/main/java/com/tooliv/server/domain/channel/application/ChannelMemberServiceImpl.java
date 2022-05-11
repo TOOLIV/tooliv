@@ -92,6 +92,7 @@ public class ChannelMemberServiceImpl implements ChannelMemberService {
             ChannelMemberGetResponseDTO channelMemberGetResponseDTO = ChannelMemberGetResponseDTO.builder()
                 .email(member.getEmail())
                 .name(member.getName())
+                .statusCode(member.getStatusCode())
                 .nickname(member.getNickname())
                 .channelMemberCode(channelMembers.getChannelMemberCode())
                 .profileImage(profileImage)
@@ -118,6 +119,7 @@ public class ChannelMemberServiceImpl implements ChannelMemberService {
                 .channelMemberCode(channelMember.getChannelMemberCode())
                 .nickname(member.getNickname())
                 .name(member.getName())
+                .statusCode(member.getStatusCode())
                 .email(member.getEmail())
                 .profileImage(profileImage)
                 .build();
@@ -143,6 +145,7 @@ public class ChannelMemberServiceImpl implements ChannelMemberService {
             ChannelMemberGetResponseDTO channelMemberGetResponseDTO = ChannelMemberGetResponseDTO.builder()
                 .nickname(member.getNickname())
                 .name(member.getName())
+                .statusCode(member.getStatusCode())
                 .email(member.getEmail())
                 .profileImage(profileImage)
                 .build();
