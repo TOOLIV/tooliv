@@ -130,6 +130,7 @@ public class WorkspaceMemberServiceImpl implements WorkspaceMemberService {
             WorkspaceMemberGetResponseDTO workspaceMemberGetResponseDTO = WorkspaceMemberGetResponseDTO.builder()
                 .email(user.getEmail())
                 .name(user.getName())
+                .statusCode(user.getStatusCode())
                 .nickname(user.getNickname())
                 .profileImage(profileImage)
                 .build();
@@ -153,6 +154,7 @@ public class WorkspaceMemberServiceImpl implements WorkspaceMemberService {
                 .workspaceMemberCode(workspaceMember.getWorkspaceMemberCode())
                 .nickname(member.getNickname())
                 .name(member.getName())
+                .statusCode(member.getStatusCode())
                 .email(member.getEmail())
                 .profileImage(profileImage)
                 .build();
