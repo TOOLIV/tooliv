@@ -1,8 +1,10 @@
 package com.tooliv.server.domain.user.api;
 
 import com.tooliv.server.domain.user.application.dto.request.SignUpRequestDTO;
+import com.tooliv.server.domain.user.application.dto.request.StatusRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.StatusUpdateRequestDTO;
 import com.tooliv.server.domain.user.application.dto.response.ProfileInfoResponseDTO;
+import com.tooliv.server.domain.user.application.dto.response.StatusListResponseDTO;
 import com.tooliv.server.domain.user.application.dto.response.UserListResponseDTO;
 import com.tooliv.server.domain.user.application.service.UserService;
 import com.tooliv.server.domain.user.application.dto.request.LogInRequestDTO;
@@ -82,7 +84,7 @@ public class UserController {
             InputStream is = multipartFile.getInputStream();
             String mimeType = new Tika().detect(is);
 
-            if(!Arrays.asList(MIME_TYPE).contains(mimeType)) {
+            if (!Arrays.asList(MIME_TYPE).contains(mimeType)) {
                 throw new NotImageFileException("사진 파일이 아님");
             }
 
@@ -142,8 +144,16 @@ public class UserController {
     @GetMapping("/status")
     @ApiOperation(value = "회원 상태 조회")
     public ResponseEntity<? extends BaseResponseDTO> getStatusList(
-        @RequestBody @Valid @ApiParam(value = "회원 이메일 리스트", required = true) SignUpRequestDTO signUpRequestDTO) {
+        @RequestBody @Valid @ApiParam(value = "회원 이메일 리스트", required = true) StatusRequestDTO statusRequestDTO) {
+        StatusListResponseDTO statusListResponseDTO = null;
 
+        try {
+            statusListResponseDTO = userService.getStatusList(statusRequestDTO);
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(404).body(BaseResponseDTO.of(e.getMessage()));
+        }
+
+        return ResponseEntity.status(200).body(StatusListResponseDTO.of("회원 상태 목록 조회 완료", statusListResponseDTO));
     }
 
 

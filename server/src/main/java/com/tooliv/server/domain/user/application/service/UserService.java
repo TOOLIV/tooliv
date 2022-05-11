@@ -8,7 +8,7 @@ import com.tooliv.server.domain.user.application.dto.request.StatusUpdateRequest
 import com.tooliv.server.domain.user.application.dto.response.LogInResponseDTO;
 import com.tooliv.server.domain.user.application.dto.response.NicknameResponseDTO;
 import com.tooliv.server.domain.user.application.dto.response.ProfileInfoResponseDTO;
-import com.tooliv.server.domain.user.application.dto.response.StatusResponseDTO;
+import com.tooliv.server.domain.user.application.dto.response.StatusListResponseDTO;
 import com.tooliv.server.domain.user.application.dto.response.UserListResponseDTO;
 import com.tooliv.server.domain.user.domain.User;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,7 +31,7 @@ public interface UserService {
 
     UserListResponseDTO getUserList(String keyword, int sequence);
 
-    StatusResponseDTO getStatusList(StatusRequestDTO statusRequestDTO);
+    StatusListResponseDTO getStatusList(StatusRequestDTO statusRequestDTO);
 
     User getCurrentUser();
 

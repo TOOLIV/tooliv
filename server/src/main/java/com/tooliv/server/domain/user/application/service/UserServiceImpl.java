@@ -8,6 +8,7 @@ import com.tooliv.server.domain.user.application.dto.request.StatusUpdateRequest
 import com.tooliv.server.domain.user.application.dto.response.LogInResponseDTO;
 import com.tooliv.server.domain.user.application.dto.response.NicknameResponseDTO;
 import com.tooliv.server.domain.user.application.dto.response.ProfileInfoResponseDTO;
+import com.tooliv.server.domain.user.application.dto.response.StatusListResponseDTO;
 import com.tooliv.server.domain.user.application.dto.response.StatusResponseDTO;
 import com.tooliv.server.domain.user.application.dto.response.UserInfoResponseDTO;
 import com.tooliv.server.domain.user.application.dto.response.UserListResponseDTO;
@@ -157,11 +158,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public StatusResponseDTO getStatusList(StatusRequestDTO statusRequestDTO) {
-        List<StatusCode> statusList = userRepository.findStatusCodeIn(statusRequestDTO.getEmailList())
+    public StatusListResponseDTO getStatusList(StatusRequestDTO statusRequestDTO) {
+        List<User> userList = userRepository.findUserIn(statusRequestDTO.getEmailList())
             .orElseThrow(() -> new UserNotFoundException("조회 가능한 회원이 없음"));
 
-        return new StatusResponseDTO(statusList);
+        List<StatusResponseDTO> statusResponseDTOList = new ArrayList<>();
+
+        userList.forEach(user -> statusResponseDTOList.add(
+            new StatusResponseDTO(user.getEmail(), user.getStatusCode())
+        ));
+
+        return new StatusListResponseDTO(statusResponseDTOList);
 
     }
 

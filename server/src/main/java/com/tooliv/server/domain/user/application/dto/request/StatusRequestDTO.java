@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
 public class StatusRequestDTO {
 
     @NotNull
-    @NotBlank
     @ApiModelProperty(name = "이메일 목록")
     private String[] emailList;
 

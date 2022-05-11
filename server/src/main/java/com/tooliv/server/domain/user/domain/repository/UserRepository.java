@@ -1,7 +1,6 @@
 package com.tooliv.server.domain.user.domain.repository;
 
 import com.tooliv.server.domain.user.domain.User;
-import com.tooliv.server.domain.user.domain.enums.StatusCode;
 import com.tooliv.server.domain.user.domain.enums.UserCode;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,10 +26,10 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     Optional<List<User>> findAllByUserCodeNotAndDeletedAtAndNameContainingOrderByNameAsc(UserCode userCode, LocalDateTime localDateTime, String keyword);
 
-    @Query("select u.status_code from user u where u.email in :emailList")
-    Optional<List<StatusCode>> findStatusCodeIn(String[] emailList);
+    @Query(value = "SELECT * FROM user u WHERE u.email IN :emailList", nativeQuery = true)
+    Optional<List<User>> findUserIn(String[] emailList);
 
-    @Query(value="SELECT * \n"
+    @Query(value = "SELECT * \n"
         + "FROM user u\n"
         + "WHERE u.deleted_at IS NULL  AND u.name LIKE %:keyword% AND u.id NOT IN (\n"
         + "SELECT DISTINCT m.user_id\n"
