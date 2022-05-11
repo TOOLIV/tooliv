@@ -55,12 +55,10 @@ const SideMenu = () => {
     >
       <SideHeader />
       <WorkSpaceSection />
-      {isOpen && currentWorkspaceId !== 'main' ? (
-        <Contents>
-          <ChannelSection />
-          <DirectMessage />
-        </Contents>
-      ) : null}
+      <Contents>
+        {isOpen && currentWorkspaceId !== 'main' ? <ChannelSection /> : null}
+        <DirectMessage />
+      </Contents>
     </Container>
   );
 };
