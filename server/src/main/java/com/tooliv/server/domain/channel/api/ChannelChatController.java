@@ -19,10 +19,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@Api(value = "ChatRoom API", tags = {"ChatRoom"})
+@Api(value = "ChannelChat API", tags = {"ChannelChat"})
 @RequiredArgsConstructor
 @RequestMapping("/api/chat")
-public class ChatRoomController {
+public class ChannelChatController {
 
     private final ChatService chatService;
 

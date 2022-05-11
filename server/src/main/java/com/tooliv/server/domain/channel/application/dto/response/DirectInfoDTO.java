@@ -22,6 +22,12 @@ public class DirectInfoDTO {
     @ApiModelProperty("채널 List 목록")
     private String channelId;
 
+    @ApiModelProperty("나의 이메일")
+    private String senderEmail;
+
+    @ApiModelProperty("상대방 이메일")
+    private String receiverEmail;
+
     @ApiModelProperty("알람 List 목록")
     private boolean notificationRead;
 }
