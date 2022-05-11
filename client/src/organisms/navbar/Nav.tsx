@@ -28,10 +28,15 @@ import { useNavigate } from 'react-router-dom';
 import { DMInfoType } from 'types/channel/chatTypes';
 import { workspaceListType } from 'types/workspace/workspaceTypes';
 import { getWorkspaceList } from 'api/workspaceApi';
-import { usersStatusType, userStatusInfoType } from 'types/common/userTypes';
+import {
+  statusType,
+  usersStatusType,
+  userStatusInfoType,
+} from 'types/common/userTypes';
 import { getUserStatus } from 'api/userApi';
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
+import { useInterval } from 'hooks/useInterval';
 
 const NavContainer = styled.div`
   padding: 0px 20px;
@@ -85,7 +90,8 @@ const Nav = () => {
   const [dmMemberList, setDmMemberList] = useRecoilState<string[]>(dmMember);
   const [chatMemberList, setChatMemberList] =
     useRecoilState<string[]>(chatMember);
-
+  const [membersStatus, setMembersStatus] =
+    useRecoilState<userStatusInfoType>(memberStatus);
   const navigate = useNavigate();
 
   const getSideInfo = async () => {
@@ -173,8 +179,24 @@ const Nav = () => {
 
   const handleUsersStatus = async (body: usersStatusType) => {
     const response = await getUserStatus(body);
-    console.log(response);
+    const data = response.data.statusResponseDTOList;
+    let status: userStatusInfoType = {};
+
+    data.forEach((value: statusType) => {
+      status[value.email] = value.statusCode;
+    });
+    status[userInfo.email] = userInfo.statusCode;
+    setMembersStatus(status);
   };
+
+  useInterval(() => {
+    let list = [...dmMemberList, ...chatMemberList];
+    let emailList = Array.from(new Set(list));
+    const body = {
+      emailList,
+    };
+    handleUsersStatus(body);
+  }, 30000);
 
   // 다크모드/일반모드 설정
   const handleDarkMode = () => {

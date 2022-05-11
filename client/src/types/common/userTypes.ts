@@ -83,6 +83,11 @@ export type userStatusType = {
   statusCode: string;
 };
 
+export type statusType = {
+  email: string;
+  statusCode: string;
+};
+
 export type usersStatusType = {
   emailList: string[];
 };
