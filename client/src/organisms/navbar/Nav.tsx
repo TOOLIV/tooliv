@@ -30,6 +30,8 @@ import { workspaceListType } from 'types/workspace/workspaceTypes';
 import { getWorkspaceList } from 'api/workspaceApi';
 import { usersStatusType, userStatusInfoType } from 'types/common/userTypes';
 import { getUserStatus } from 'api/userApi';
+import SockJS from 'sockjs-client';
+import Stomp from 'stompjs';
 
 const NavContainer = styled.div`
   padding: 0px 20px;
@@ -132,7 +134,22 @@ const Nav = () => {
 
   useEffect(() => {
     if (!isLoading) {
-      connect(userInfo.accessToken, setContents, userInfo.userId);
+      let sockJS = new SockJS(
+        `${process.env.REACT_APP_BASE_SERVER_URL}/chatting`
+      );
+      let client: Stomp.Client = Stomp.over(sockJS);
+      client.connect(
+        {
+          Authorization: `Bearer ${userInfo.accessToken}`,
+        },
+        (frame) => {
+          console.log('Connect success');
+        },
+        (frame) => {
+          console.log('connect error');
+        }
+      );
+      // connect(userInfo.accessToken, setContents, userInfo.userId);
     }
   }, [isLoading]);
 

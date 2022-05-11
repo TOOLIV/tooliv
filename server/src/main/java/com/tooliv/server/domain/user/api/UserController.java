@@ -97,6 +97,21 @@ public class UserController {
         return ResponseEntity.status(201).body(BaseResponseDTO.of("프로필 이미지 등록 성공"));
     }
 
+    @PostMapping("/status")
+    @ApiOperation(value = "회원 상태 조회")
+    public ResponseEntity<? extends BaseResponseDTO> getStatusList(
+        @RequestBody @Valid @ApiParam(value = "회원 이메일 리스트", required = true) StatusRequestDTO statusRequestDTO) {
+        StatusListResponseDTO statusListResponseDTO = null;
+
+        try {
+            statusListResponseDTO = userService.getStatusList(statusRequestDTO);
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(404).body(BaseResponseDTO.of(e.getMessage()));
+        }
+
+        return ResponseEntity.status(200).body(StatusListResponseDTO.of("회원 상태 목록 조회 완료", statusListResponseDTO));
+    }
+
     @GetMapping("/info/{email}")
     @ApiOperation(value = "회원 프로필 정보 조회 - 프로필 사진, 닉네임")
     public ResponseEntity<? extends BaseResponseDTO> getProfileInfo(
@@ -140,22 +155,6 @@ public class UserController {
 
         return ResponseEntity.status(200).body(UserListResponseDTO.of("회원 정보 목록 조회 완료", userListResponseDTO));
     }
-
-    @GetMapping("/status")
-    @ApiOperation(value = "회원 상태 조회")
-    public ResponseEntity<? extends BaseResponseDTO> getStatusList(
-        @RequestBody @Valid @ApiParam(value = "회원 이메일 리스트", required = true) StatusRequestDTO statusRequestDTO) {
-        StatusListResponseDTO statusListResponseDTO = null;
-
-        try {
-            statusListResponseDTO = userService.getStatusList(statusRequestDTO);
-        } catch (UserNotFoundException e) {
-            return ResponseEntity.status(404).body(BaseResponseDTO.of(e.getMessage()));
-        }
-
-        return ResponseEntity.status(200).body(StatusListResponseDTO.of("회원 상태 목록 조회 완료", statusListResponseDTO));
-    }
-
 
     @PatchMapping()
     @ApiOperation(value = "닉네임 수정")
