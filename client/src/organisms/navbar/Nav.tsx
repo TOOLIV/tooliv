@@ -25,6 +25,8 @@ import { useNavigate } from 'react-router-dom';
 import { DMInfoType } from 'types/channel/chatTypes';
 import { workspaceListType } from 'types/workspace/workspaceTypes';
 import { getWorkspaceList } from 'api/workspaceApi';
+import SockJS from 'sockjs-client';
+import Stomp from 'stompjs';
 
 const NavContainer = styled.div`
   padding: 0px 20px;
@@ -122,7 +124,22 @@ const Nav = () => {
 
   useEffect(() => {
     if (!isLoading) {
-      connect(userInfo.accessToken, setContents, userInfo.userId);
+      let sockJS = new SockJS(
+        `${process.env.REACT_APP_BASE_SERVER_URL}/chatting`
+      );
+      let client: Stomp.Client = Stomp.over(sockJS);
+      client.connect(
+        {
+          Authorization: `Bearer ${userInfo.accessToken}`,
+        },
+        (frame) => {
+          console.log('Connect success');
+        },
+        (frame) => {
+          console.log('connect error');
+        }
+      );
+      // connect(userInfo.accessToken, setContents, userInfo.userId);
     }
   }, [isLoading]);
 
