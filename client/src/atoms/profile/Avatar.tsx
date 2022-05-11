@@ -33,7 +33,7 @@ const Status = styled.div<{ status: string }>`
   right: 0;
 `;
 
-const Avatar = ({ src, size = '24', status = 'ONLINE' }: avatarTypes) => {
+const Avatar = ({ src, size = '24', status }: avatarTypes) => {
   return (
     <Container>
       {src ? (

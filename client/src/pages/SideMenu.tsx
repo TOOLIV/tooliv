@@ -11,7 +11,7 @@ import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
 const Container = styled(motion.div)`
-  min-width: 280px;
+  width: 280px;
   background-color: ${(props) => props.theme.sideBgColor};
   border-radius: 0 50px 0 0;
   position: absolute;

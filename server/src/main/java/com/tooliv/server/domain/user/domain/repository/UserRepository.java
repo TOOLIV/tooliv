@@ -26,7 +26,10 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     Optional<List<User>> findAllByUserCodeNotAndDeletedAtAndNameContainingOrderByNameAsc(UserCode userCode, LocalDateTime localDateTime, String keyword);
 
-    @Query(value="SELECT * \n"
+    @Query(value = "SELECT * FROM user u WHERE u.email IN :emailList", nativeQuery = true)
+    Optional<List<User>> findUserIn(String[] emailList);
+
+    @Query(value = "SELECT * \n"
         + "FROM user u\n"
         + "WHERE u.deleted_at IS NULL  AND u.name LIKE %:keyword% AND u.id NOT IN (\n"
         + "SELECT DISTINCT m.user_id\n"

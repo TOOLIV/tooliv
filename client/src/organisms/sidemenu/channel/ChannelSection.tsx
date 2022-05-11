@@ -58,12 +58,10 @@ const ChannelSection = () => {
   const handleChannel = async () => {
     const response = await getChannelList(currentWorkspaceId);
     const channelList = response.data.channelGetResponseDTOList;
-    console.log(channelList);
     const normalList: channelListTypes[] = [];
     const videoList: channelListTypes[] = [];
 
     channelList.forEach((list: channelListTypes) => {
-      console.log(list);
       if (list.channelCode === 'CHAT') {
         normalList.push(list);
       } else {

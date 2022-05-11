@@ -3,6 +3,7 @@ import {
   userCreationTypes,
   userLoginTypes,
   userNicknameType,
+  usersStatusType,
   userStatusType,
 } from '../types/common/userTypes';
 
@@ -54,5 +55,10 @@ export const getUserInfo = async (email: string) => {
 
 export const updateUserStatus = async (body: userStatusType) => {
   const response = await instance.patch(`user/status`, body);
+  return response;
+};
+
+export const getUserStatus = async (body: usersStatusType) => {
+  const response = await instance.post(`user/status`, body);
   return response;
 };

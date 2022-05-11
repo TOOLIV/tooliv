@@ -112,12 +112,17 @@ export const dmName = atom<string>({
   default: '홈',
 });
 
-export const memberStatus = atom<userStatusInfoType[]>({
-  key: 'memberStatus',
+export const chatMember = atom<string[]>({
+  key: 'chatMember',
   default: [],
 });
 
-export const stompClient = atom<Stomp.Client | null>({
-  key: 'stompClient',
-  default: null,
+export const dmMember = atom<string[]>({
+  key: 'dmMember',
+  default: [],
+});
+
+export const memberStatus = atom<userStatusInfoType>({
+  key: 'memberStatus',
+  default: {},
 });

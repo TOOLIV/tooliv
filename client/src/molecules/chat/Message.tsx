@@ -15,6 +15,7 @@ import { contentTypes } from '../../types/channel/contentType';
 import { SideWrapper } from '../sidemenu/Channels';
 import File from './File';
 import mainSrc from '../../assets/img/logo.svg';
+import { memberStatus } from 'recoil/atom';
 
 const Container = styled.div`
   width: 100%;
@@ -74,7 +75,8 @@ const Message = ({
   const [thumbnailImage, setThumbnailImage] = useState('');
   const [isUpdatModalOpen, setIsUpdateModalOpen] = useState<boolean>(false);
   const [nickname, setNickname] = useState('');
-  const [status, setStatus] = useState('');
+  const membersStatus = useRecoilValue(memberStatus);
+
   const { accessToken } = useRecoilValue(user);
   const userInfo = useRecoilValue(user);
   const fileTypes = ['.bmp', '.gif', '.jpg', '.png', '.jpeg', '.jfif'];
@@ -122,7 +124,11 @@ const Message = ({
         <ProfileContainer>
           <LeftWrapper>
             <SideWrapper>
-              <Avatar src={thumbnailImage} status={status} size="32" />
+              <Avatar
+                src={thumbnailImage}
+                status={membersStatus[email]}
+                size="32"
+              />
             </SideWrapper>
             <SideWrapper>
               <Label name={nickname} size="16px" />

@@ -6,13 +6,15 @@ import InputBox from 'molecules/inputBox/InputBox';
 import Logo from '../../atoms/common/Logo';
 import { useEffect, useRef, useState } from 'react';
 import { user } from 'recoil/auth';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
   appThemeMode,
   channelContents,
   channelNotiList,
+  chatMember,
   DMList,
-  stompClient,
+  dmMember,
+  memberStatus,
   wsList,
 } from 'recoil/atom';
 import { channelNotiType, contentTypes } from 'types/channel/contentType';
@@ -26,9 +28,15 @@ import { useNavigate } from 'react-router-dom';
 import { DMInfoType } from 'types/channel/chatTypes';
 import { workspaceListType } from 'types/workspace/workspaceTypes';
 import { getWorkspaceList } from 'api/workspaceApi';
+import {
+  statusType,
+  usersStatusType,
+  userStatusInfoType,
+} from 'types/common/userTypes';
+import { getUserStatus } from 'api/userApi';
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
-import { setRecoil } from 'recoil-nexus';
+import { useInterval } from 'hooks/useInterval';
 
 const NavContainer = styled.div`
   padding: 0px 20px;
@@ -69,20 +77,21 @@ const DropdownWrapper = styled.div`
 `;
 const Nav = () => {
   const userInfo = useRecoilValue(user);
-  const [contents, setContents] =
-    useRecoilState<contentTypes[]>(channelContents);
+  const setContents = useSetRecoilState<contentTypes[]>(channelContents);
   const [mode, setMode] = useRecoilState(appThemeMode);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [profileConfigOpen, setProfileConfigOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [notiList, setNotiList] =
     useRecoilState<channelNotiType[]>(channelNotiList);
-  const [dmList, setDmList] = useRecoilState<DMInfoType[]>(DMList);
+  const [dMList, setDmList] = useRecoilState<DMInfoType[]>(DMList);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [workspaceList, setWorkspaceList] =
-    useRecoilState<workspaceListType[]>(wsList);
-  // const [client, setClient] = useRecoilState<Stomp.Client | null>(stompClient);
-  // const [notiList, setNotiList] = useRecoilState<channelNotiType[]>(channelNotiList);
+  const setWorkspaceList = useSetRecoilState<workspaceListType[]>(wsList);
+  const [dmMemberList, setDmMemberList] = useRecoilState<string[]>(dmMember);
+  const [chatMemberList, setChatMemberList] =
+    useRecoilState<string[]>(chatMember);
+  const [membersStatus, setMembersStatus] =
+    useRecoilState<userStatusInfoType>(memberStatus);
   const navigate = useNavigate();
   // const baseURL = localStorage.getItem('baseURL');
   // let sockJS = baseURL
@@ -107,6 +116,9 @@ const Nav = () => {
       data: { workspaceGetResponseDTOList },
     } = wsRes;
     setDmList(directInfoDTOList);
+    // setStatus()
+    console.log(directInfoDTOList);
+
     setNotiList([...notificationChannelList, ...directInfoDTOList]);
 
     const notiWorkspace = notiList.filter((noti) => {
@@ -236,6 +248,45 @@ const Nav = () => {
   //   }
   //   // }
   // }, [client]);
+
+  useEffect(() => {
+    // dm 리스트에서 유저 이메일 뽑아서 저장
+    let list: string[] = [];
+    dMList.forEach((data: DMInfoType) => {
+      list.push(data.receiverEmail);
+    });
+    setDmMemberList(list);
+  }, [dMList]);
+
+  useEffect(() => {
+    let list = [...dmMemberList, ...chatMemberList];
+    let emailList = Array.from(new Set(list));
+    const body = {
+      emailList,
+    };
+    handleUsersStatus(body);
+  }, [dmMemberList, chatMemberList]);
+
+  const handleUsersStatus = async (body: usersStatusType) => {
+    const response = await getUserStatus(body);
+    const data = response.data.statusResponseDTOList;
+    let status: userStatusInfoType = {};
+
+    data.forEach((value: statusType) => {
+      status[value.email] = value.statusCode;
+    });
+    status[userInfo.email] = userInfo.statusCode;
+    setMembersStatus(status);
+  };
+
+  useInterval(() => {
+    let list = [...dmMemberList, ...chatMemberList];
+    let emailList = Array.from(new Set(list));
+    const body = {
+      emailList,
+    };
+    handleUsersStatus(body);
+  }, 30000);
 
   // 다크모드/일반모드 설정
   const handleDarkMode = () => {
