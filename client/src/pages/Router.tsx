@@ -32,7 +32,7 @@ const Container = styled.div`
 const AppRouter = () => {
   return (
     <>
-      <HashRouter basename="/app">
+      <BrowserRouter basename="/app">
         <Suspense
           fallback={
             <Container>
@@ -63,7 +63,7 @@ const AppRouter = () => {
             </Route>
           </Routes>
         </Suspense>
-      </HashRouter>
+      </BrowserRouter>
     </>
   );
 };
