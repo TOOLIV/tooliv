@@ -3,10 +3,12 @@ package com.tooliv.server.domain.user.application.service;
 import com.tooliv.server.domain.user.application.dto.request.LogInRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.NicknameUpdateRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.SignUpRequestDTO;
+import com.tooliv.server.domain.user.application.dto.request.StatusRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.StatusUpdateRequestDTO;
 import com.tooliv.server.domain.user.application.dto.response.LogInResponseDTO;
 import com.tooliv.server.domain.user.application.dto.response.NicknameResponseDTO;
 import com.tooliv.server.domain.user.application.dto.response.ProfileInfoResponseDTO;
+import com.tooliv.server.domain.user.application.dto.response.StatusResponseDTO;
 import com.tooliv.server.domain.user.application.dto.response.UserInfoResponseDTO;
 import com.tooliv.server.domain.user.application.dto.response.UserListResponseDTO;
 import com.tooliv.server.domain.user.domain.User;
@@ -141,7 +143,6 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-
     @Override
     public UserListResponseDTO getUserList(String keyword, int sequence) {
         List<UserInfoResponseDTO> userInfoResponseDTOList = new ArrayList<>();
@@ -153,6 +154,15 @@ public class UserServiceImpl implements UserService {
         }
 
         return new UserListResponseDTO(userInfoResponseDTOList, userInfoResponseDTOList.size());
+    }
+
+    @Override
+    public StatusResponseDTO getStatusList(StatusRequestDTO statusRequestDTO) {
+        List<StatusCode> statusList = userRepository.findStatusCodeIn(statusRequestDTO.getEmailList())
+            .orElseThrow(() -> new UserNotFoundException("조회 가능한 회원이 없음"));
+
+        return new StatusResponseDTO(statusList);
+
     }
 
     @Override

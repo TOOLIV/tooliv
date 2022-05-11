@@ -141,7 +141,7 @@ public class UserController {
 
     @GetMapping("/status")
     @ApiOperation(value = "회원 상태 조회")
-    public ResponseEntity<? extends BaseResponseDTO> getUserStatusList(
+    public ResponseEntity<? extends BaseResponseDTO> getStatusList(
         @RequestBody @Valid @ApiParam(value = "회원 이메일 리스트", required = true) SignUpRequestDTO signUpRequestDTO) {
 
     }
