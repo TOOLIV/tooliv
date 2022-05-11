@@ -1,13 +1,12 @@
-import { url } from 'inspector';
 import { marked } from 'marked';
-import { SetterOrUpdater } from 'recoil';
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { SendDMProps, SendMessageProps } from 'types/channel/chatTypes';
 import { channelNotiType, contentTypes } from 'types/channel/contentType';
 import { workspaceListType } from 'types/workspace/workspaceTypes';
-import { channelNotiList, wsList } from 'recoil/atom';
+import { channelContents, channelNotiList, wsList } from 'recoil/atom';
 import { getRecoil, setRecoil } from 'recoil-nexus';
+import { user } from 'recoil/auth';
 const baseURL = localStorage.getItem('baseURL');
 let sockJS = baseURL
   ? new SockJS(`${JSON.parse(baseURL).url}/chatting`)
@@ -15,35 +14,14 @@ let sockJS = baseURL
     new SockJS(`${process.env.REACT_APP_BASE_SERVER_URL}/chatting`);
 export let client: Stomp.Client = Stomp.over(sockJS);
 let subscribe: Stomp.Subscription;
-console.log(client);
-export const connect = (
-  accessToken: string,
-  setContents: SetterOrUpdater<contentTypes[]>,
-  userId: string
-) => {
-  console.log('connect start', accessToken);
-  client.connect(
-    {
-      Authorization: `Bearer ${accessToken}`,
-    },
-    (frame) => {
-      sub(setContents, userId);
-    },
-    (frame) => {
-      console.log('connect error');
-    }
-  );
-};
 
-export const deleteDM = (
-  accessToken: string,
-  channelId: string,
-  chatId: string
-) => {
+const userInfo = getRecoil(user);
+
+export const deleteDM = (channelId: string, chatId: string) => {
   client.send(
     '/pub/chat/directMessage',
     {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${userInfo.accessToken}`,
     },
     JSON.stringify({
       channelId: channelId,
@@ -54,15 +32,11 @@ export const deleteDM = (
   );
 };
 
-export const deleteChat = (
-  accessToken: string,
-  channelId: string,
-  chatId: string
-) => {
+export const deleteChat = (channelId: string, chatId: string) => {
   client.send(
     '/pub/chat/message',
     {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${userInfo.accessToken}`,
     },
     JSON.stringify({
       channelId: channelId,
@@ -74,7 +48,6 @@ export const deleteChat = (
 };
 
 export const updateChat = ({
-  accessToken,
   channelId,
   chatId,
   email,
@@ -85,7 +58,7 @@ export const updateChat = ({
   client.send(
     '/pub/chat/message',
     {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${userInfo.accessToken}`,
     },
     JSON.stringify({
       channelId: channelId,
@@ -102,7 +75,6 @@ export const updateChat = ({
 };
 
 export const updateDM = ({
-  accessToken,
   channelId,
   chatId,
   email,
@@ -113,7 +85,7 @@ export const updateDM = ({
   client.send(
     '/pub/chat/directMessage',
     {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${userInfo.accessToken}`,
     },
     JSON.stringify({
       channelId: channelId,
@@ -130,7 +102,6 @@ export const updateDM = ({
 };
 
 export const send = ({
-  accessToken,
   channelId,
   email,
   message,
@@ -140,7 +111,7 @@ export const send = ({
   client.send(
     '/pub/chat/message',
     {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${userInfo.accessToken}`,
     },
     JSON.stringify({
       channelId: channelId,
@@ -155,7 +126,6 @@ export const send = ({
 };
 
 export const sendDM = ({
-  accessToken,
   channelId,
   email,
   message,
@@ -165,7 +135,7 @@ export const sendDM = ({
   client.send(
     '/pub/chat/directMessage',
     {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${userInfo.accessToken}`,
     },
     JSON.stringify({
       channelId,
@@ -179,7 +149,7 @@ export const sendDM = ({
   );
 };
 
-const getMarkdownText = (message: string) => {
+export const getMarkdownText = (message: string) => {
   const rawMarkup = marked(message, {
     gfm: true,
     breaks: true,
@@ -189,11 +159,8 @@ const getMarkdownText = (message: string) => {
 };
 
 // 채널 새로 생성했을 때 구독 추가하기
-export const sub = (
-  setContents: SetterOrUpdater<contentTypes[]>,
-  userId: string
-) => {
-  subscribe = client.subscribe(`/sub/chat/${userId}`, (response) => {
+export const sub = () => {
+  subscribe = client.subscribe(`/sub/chat/${userInfo.userId}`, (response) => {
     const notiList = getRecoil(channelNotiList);
     const workspaceList = getRecoil(wsList);
     const link = window.location.href.split('/');
@@ -203,12 +170,10 @@ export const sub = (
     const content = JSON.parse(response.body);
     const recChannelId = content.channelId;
     let updateWorkspaceId: string = '';
-
     const type = content.type;
-
     if (type === 'DELETE') {
       const index = content.chatId;
-      setContents((prev) => [
+      setRecoil(channelContents, (prev) => [
         ...prev.slice(0, index),
         content,
         ...prev.slice(index + 1),
@@ -217,7 +182,7 @@ export const sub = (
     } else {
       if (channelId === recChannelId) {
         // 현재 채널 아이디와 도착한 메시지의 채널 아이디가 같으면
-        setContents((prev) => [...prev, content]);
+        setRecoil(channelContents, (prev) => [...prev, content]);
       } else {
         // 현재 채널 아이디와 도착한 메시지의 채널 아이디가 다르면
         const newList: channelNotiType[] = notiList.map((noti) => {
@@ -255,3 +220,15 @@ export const sub = (
 export const unsub = () => {
   subscribe.unsubscribe();
 };
+
+client.connect(
+  {
+    Authorization: `Bearer ${userInfo.accessToken}`,
+  },
+  (frame) => {
+    sub();
+  },
+  (frame) => {
+    console.log('connect error');
+  }
+);

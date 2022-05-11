@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -24,20 +25,19 @@ public class SearchController {
 
     private final ChatSearchService chatSearchService;
 
-    @GetMapping("/chat/{content}")
+    @GetMapping("/chat/content")
     @ApiOperation(value = "채팅 내용 검색")
     @ApiResponses({
         @ApiResponse(code = 200, message = "채팅 내용 검색 완료"),
         @ApiResponse(code = 409, message = "채팅 내용 검색 실패"),
     })
-    public ResponseEntity<? extends BaseResponseDTO> getChannelNotificationList(@PathVariable String content) {
+    public ResponseEntity<? extends BaseResponseDTO> getChannelNotificationList(@RequestParam String searchContent,@RequestParam String channelId) {
         ChatSearchInfoListResponseDTO chatSearchInfoListResponseDTO = null;
 
         try {
-            chatSearchInfoListResponseDTO = chatSearchService.getChatList(content);
+            chatSearchInfoListResponseDTO = chatSearchService.getChatList(searchContent,channelId);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(409).body(BaseResponseDTO.of("채팅 내용 검색 실패"));
-        } catch (Exception e) {
         }
 
         return ResponseEntity.status(200).body(ChatSearchInfoListResponseDTO.of("채팅 내용 검색 성공", chatSearchInfoListResponseDTO));

@@ -8,9 +8,10 @@ const WorkSpaceContainer = styled.div`
   display: flex;
   /* justify-content: ; */
   align-items: flex-start;
-  overflow-x: scroll;
+  overflow-x: auto;
   height: 80px;
   -ms-overflow-style: none;
+
   &::-webkit-scrollbar {
     display: none;
   }

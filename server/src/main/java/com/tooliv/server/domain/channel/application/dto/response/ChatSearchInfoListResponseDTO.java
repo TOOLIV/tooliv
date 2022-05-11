@@ -1,6 +1,5 @@
 package com.tooliv.server.domain.channel.application.dto.response;
 
-import com.tooliv.server.domain.channel.application.dto.request.ChatDirectDTO;
 import com.tooliv.server.global.common.BaseResponseDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -11,7 +10,7 @@ import lombok.Getter;
 @Getter
 public class ChatSearchInfoListResponseDTO extends BaseResponseDTO {
 
-    @ApiModelProperty("회원 정보 목록")
+    @ApiModelProperty("채팅 목록")
     private List<ChatSearchInfoDTO> chatSearchInfoDTOList;
 
     public ChatSearchInfoListResponseDTO() {

@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Icons from '../../atoms/common/Icons';
 import Avatar from '../../atoms/profile/Avatar';
 import Label from '../../atoms/common/Label';
@@ -14,12 +14,13 @@ import {
 } from './Channels';
 import Text from 'atoms/text/Text';
 import DirectMessageModal from 'organisms/modal/sidemenu/DirectMessageModal';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { DMInfoType } from 'types/channel/chatTypes';
-import { channelNotiList, DMList, dmName } from 'recoil/atom';
+import { channelNotiList, DMList, dmName, memberStatus } from 'recoil/atom';
 import { useNavigate, useParams } from 'react-router-dom';
 import { css } from '@emotion/react';
 import { channelNotiType } from 'types/channel/contentType';
+import { userStatusInfoType } from 'types/common/userTypes';
 
 const FriendsContainer = styled.div`
   padding-left: 14px;
@@ -58,11 +59,12 @@ const DirectMessage = () => {
   const map = new Map(notiList.map((el) => [el.channelId, el]));
   const navigate = useNavigate();
   const { workspaceId, channelId } = useParams();
-  console.log(notiList);
+  const membersStatus = useRecoilValue<userStatusInfoType>(memberStatus);
+
   const closeUserList = () => {
     setUserListOpen(false);
   };
-  console.log(dmList);
+
   return (
     <>
       <TopContainer>
@@ -82,7 +84,10 @@ const DirectMessage = () => {
             <NotiWrapper>
               <InnerContainer>
                 <SideWrapper>
-                  <Avatar src={dm.profileImage} status={dm.statusCode} />
+                  <Avatar
+                    src={dm.profileImage}
+                    status={membersStatus[dm.receiverEmail]}
+                  />
                 </SideWrapper>
                 <Label id={dm.channelId} name={dm.receiveName} />
               </InnerContainer>

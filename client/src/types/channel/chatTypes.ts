@@ -1,5 +1,4 @@
 export type SendMessageProps = {
-  accessToken: string;
   channelId?: string;
   chatId?: string;
   email: string;
@@ -23,6 +22,8 @@ export type DMInfoType = {
   channelId: string;
   statusCode: string;
   notificationRead: boolean;
+  receiverEmail: string;
+  senderEmail: string;
 };
 
 export type UpdateChatType = {
