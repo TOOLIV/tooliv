@@ -139,6 +139,14 @@ public class UserController {
         return ResponseEntity.status(200).body(UserListResponseDTO.of("회원 정보 목록 조회 완료", userListResponseDTO));
     }
 
+    @GetMapping("/status")
+    @ApiOperation(value = "회원 상태 조회")
+    public ResponseEntity<? extends BaseResponseDTO> getUserStatusList(
+        @RequestBody @Valid @ApiParam(value = "회원 이메일 리스트", required = true) SignUpRequestDTO signUpRequestDTO) {
+
+    }
+
+
     @PatchMapping()
     @ApiOperation(value = "닉네임 수정")
     public ResponseEntity<? extends BaseResponseDTO> updateNickname(
