@@ -10,8 +10,8 @@ import InputBox from 'molecules/inputBox/InputBox';
 import UserInfo from 'molecules/userInfo/UserInfo';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { DMList } from 'recoil/atom';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { DMList, dmName } from 'recoil/atom';
 import { user } from 'recoil/auth';
 import { DMInfoType } from 'types/channel/chatTypes';
 import {
@@ -87,6 +87,7 @@ const DirectMessageModal = ({ isOpen, onClose }: userDirectMessageType) => {
   const [target, setTarget] = useState<any>(null);
   const [endCheck, setEndCheck] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const setDirectName = useSetRecoilState<string>(dmName);
 
   const sequenceRef = useRef(sequence);
   sequenceRef.current = sequence;
@@ -116,6 +117,7 @@ const DirectMessageModal = ({ isOpen, onClose }: userDirectMessageType) => {
           senderEmail: userInfo.email,
         },
       ]);
+      setDirectName(member.name);
       navigate(`/direct/${workspaceId}/${roomId}`);
       onClose();
     });
