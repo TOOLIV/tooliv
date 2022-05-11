@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import React, { useEffect, useRef } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import Icons from '../../../atoms/common/Icons';
 import ChatItem from '../../../molecules/meeting/ChatItem';
 import MenuTemplate from '../../../atoms/sidemenu/MenuTemplate';
@@ -8,6 +8,7 @@ import { TopContainer } from '../../../molecules/sidemenu/Channels';
 import {
   channelContents,
   channelMessage,
+  chatMember,
   isOpenChat,
 } from '../../../recoil/atom';
 import { enterChannel, subChannel } from 'api/chatApi';
@@ -35,6 +36,7 @@ const ContentContainer = styled.div`
 const Chat = () => {
   const [isChatOpen, setIsChatOpen] = useRecoilState<boolean>(isOpenChat);
   const [message, setMessage] = useRecoilState<string>(channelMessage);
+  const [chatMembers, setChatMembers] = useRecoilState<string[]>(chatMember);
   const [contents, setContents] =
     useRecoilState<contentTypes[]>(channelContents);
   const { channelId } = useParams<string>();
@@ -58,10 +60,17 @@ const Chat = () => {
     enterChannel(channelId!).then(() => {
       subChannel(channelId!).then((res) => {
         setContents(res.data.chatMessageDTOList);
-        // setIsLoading(false);
+
+        // res.data.chatMessageDTOList.forEach((data: contentTypes) => {
+        //   setChatMembers([...chatMembers, data.email]);
+        // });
       });
     });
   }, []);
+
+  useEffect(() => {
+    console.log(chatMembers);
+  }, [chatMembers]);
 
   const onSendClick = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();

@@ -84,6 +84,5 @@ export type userStatusType = {
 };
 
 export type userStatusInfoType = {
-  email: string;
-  statusCode: string;
+  [key: string]: string;
 };

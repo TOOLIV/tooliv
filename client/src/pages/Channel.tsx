@@ -11,6 +11,7 @@ import {
   chatFileNames,
   chatFiles,
   chatFileUrl,
+  chatMember,
   wsList,
 } from '../recoil/atom';
 import { channelNotiType, contentTypes } from '../types/channel/contentType';
@@ -42,6 +43,7 @@ const Channel = () => {
   const [files, setFiles] = useRecoilState<FileTypes[]>(chatFiles);
   const [contents, setContents] =
     useRecoilState<contentTypes[]>(channelContents);
+  const [chatMembers, setChatMembers] = useRecoilState<string[]>(chatMember);
   const [fileUrl, setFileUrl] = useRecoilState<string[]>(chatFileUrl);
   const [fileNames, setFileNames] = useRecoilState<string[]>(chatFileNames);
   const { accessToken, email } = useRecoilValue(user);
@@ -83,6 +85,13 @@ const Channel = () => {
         console.log(res);
         setContents(res.data.chatMessageDTOList);
         setIsLoading(false);
+
+        let list: string[] = [];
+        res.data.chatMessageDTOList?.forEach((data: contentTypes) => {
+          list.push(data.email);
+        });
+        let result = Array.from(new Set(list));
+        setChatMembers(result);
       });
     });
   }, [channelId]);

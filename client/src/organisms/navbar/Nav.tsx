@@ -6,12 +6,13 @@ import InputBox from 'molecules/inputBox/InputBox';
 import Logo from '../../atoms/common/Logo';
 import { useEffect, useRef, useState } from 'react';
 import { user } from 'recoil/auth';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
   appThemeMode,
   channelContents,
   channelNotiList,
   DMList,
+  dmMember,
   memberStatus,
   wsList,
 } from 'recoil/atom';
@@ -67,20 +68,18 @@ const DropdownWrapper = styled.div`
 `;
 const Nav = () => {
   const userInfo = useRecoilValue(user);
-  const [contents, setContents] =
-    useRecoilState<contentTypes[]>(channelContents);
+  const setContents = useSetRecoilState<contentTypes[]>(channelContents);
   const [mode, setMode] = useRecoilState(appThemeMode);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [profileConfigOpen, setProfileConfigOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [notiList, setNotiList] =
     useRecoilState<channelNotiType[]>(channelNotiList);
-  const [dmList, setDmList] = useRecoilState<DMInfoType[]>(DMList);
-  const [status, setStatus] =
-    useRecoilState<userStatusInfoType[]>(memberStatus);
+  const [dMList, setDmList] = useRecoilState<DMInfoType[]>(DMList);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [workspaceList, setWorkspaceList] =
-    useRecoilState<workspaceListType[]>(wsList);
+  const setWorkspaceList = useSetRecoilState<workspaceListType[]>(wsList);
+  const [dmMemberList, setDmMemberList] = useRecoilState<string[]>(dmMember);
+
   const navigate = useNavigate();
 
   const getSideInfo = async () => {
@@ -100,6 +99,7 @@ const Nav = () => {
     setDmList(directInfoDTOList);
     // setStatus()
     console.log(directInfoDTOList);
+
     setNotiList([...notificationChannelList, ...directInfoDTOList]);
 
     const notiWorkspace = notiList.filter((noti) => {
@@ -131,6 +131,19 @@ const Nav = () => {
       connect(userInfo.accessToken, setContents, userInfo.userId);
     }
   }, [isLoading]);
+
+  useEffect(() => {
+    // dm 리스트에서 유저 이메일 뽑아서 저장
+    let list: string[] = [];
+    dMList.forEach((data: DMInfoType) => {
+      list.push(data.receiverEmail);
+    });
+    setDmMemberList(list);
+  }, [dMList]);
+
+  useEffect(() => {
+    console.log(dmMemberList);
+  }, [dmMemberList]);
 
   // 다크모드/일반모드 설정
   const handleDarkMode = () => {

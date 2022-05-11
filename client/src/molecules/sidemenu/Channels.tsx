@@ -125,13 +125,14 @@ const Channels = ({
   };
 
   return (
-    <ChannelsContainer ref={exitModalRef}>
+    <ChannelsContainer>
       <ChannelsWrapper>
         <ChannelLabel label="일반 채널" />
         {normalChannelList.map((channel, i) => (
           <ChannelContainer
             key={channel.id}
             isSelected={channel.id === channelId}
+            ref={exitModalRef}
           >
             <NotiWrapper onClick={() => onClick(channel.id)}>
               <InnerContainer>
@@ -166,6 +167,7 @@ const Channels = ({
           <ChannelContainer
             key={channel.id}
             isSelected={channel.id === channelId}
+            ref={exitModalRef}
           >
             <NotiWrapper onClick={() => onClick(channel.id)}>
               <InnerContainer>
