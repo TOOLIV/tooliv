@@ -27,3 +27,12 @@ export const createDMRoom = async (receiverEmail?: string) => {
 export const getDMList = async (email?: string) => {
   return instance.get(`/direct/${email}`);
 };
+
+export const searchChat = async (
+  searchContent?: string,
+  channelId?: string
+) => {
+  return instance.get(`/search/chat/content`, {
+    params: { searchContent, channelId },
+  });
+};
