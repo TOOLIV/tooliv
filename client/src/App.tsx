@@ -7,9 +7,11 @@ import AppRouter from './pages/Router';
 import global from './shared/global';
 import { useEffect } from 'react';
 import { updateUserStatus } from 'api/userApi';
+import { isLoginState } from 'recoil/auth';
 
 function App() {
   const mode = useRecoilValue(appThemeMode);
+  const isLogined = useRecoilValue(isLoginState);
 
   const handleStatus = (statusCode: string) => {
     updateStatus(statusCode);
@@ -25,7 +27,7 @@ function App() {
 
   useEffect(() => {
     // 로그인시 온라인으로 상태변경
-    handleStatus('ONLINE');
+    if (isLogined) handleStatus('ONLINE');
   }, []);
 
   // 브라우저 종료시 상태 OFFLINE으로 변경

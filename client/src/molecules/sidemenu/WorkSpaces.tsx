@@ -4,6 +4,7 @@ import WorkSpace from '../../atoms/sidemenu/WorkSpace';
 import mainSrc from '../../assets/img/logo.svg';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useRef } from 'react';
+import ScrollHorizontal from 'react-scroll-horizontal';
 
 const WorkSpaceContainer = styled.div`
   display: flex;
@@ -15,8 +16,12 @@ const WorkSpaceContainer = styled.div`
   -ms-overflow-style: none;
 
   &::-webkit-scrollbar {
-    /* width: 10px; */
     display: none;
+  }
+  :hover {
+    &::-webkit-scrollbar {
+      width: 10px;
+    }
   }
 `;
 
@@ -33,7 +38,6 @@ const WorkSpaces = ({ workspaceList, onClick }: workspacesType) => {
 
   return (
     <WorkSpaceContainer>
-      {/* <WorkSpaceWrapper> */}
       <WorkSpace
         id="main"
         name="홈"
@@ -49,7 +53,6 @@ const WorkSpaces = ({ workspaceList, onClick }: workspacesType) => {
           noti={workspace.noti}
         />
       ))}
-      {/* </WorkSpaceWrapper> */}
     </WorkSpaceContainer>
   );
 };
