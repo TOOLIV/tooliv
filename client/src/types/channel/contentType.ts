@@ -9,6 +9,7 @@ export type contentTypes = {
   sendTime?: string;
   files?: string[];
   originFiles?: string[];
+  isSearched?: boolean;
 };
 
 export type channelRadioTypes = {

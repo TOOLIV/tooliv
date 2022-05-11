@@ -4,25 +4,28 @@ import styled from '@emotion/styled';
 import Text from 'atoms/text/Text';
 import InputBox from 'molecules/inputBox/InputBox';
 import Logo from '../../atoms/common/Logo';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { user } from 'recoil/auth';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
   appThemeMode,
+  channelContents,
   channelNotiList,
   chatMember,
   DMList,
   dmMember,
   memberStatus,
+  searchIndex,
+  searchResults,
   wsList,
 } from 'recoil/atom';
-import { channelNotiType } from 'types/channel/contentType';
+import { channelNotiType, contentTypes } from 'types/channel/contentType';
 import Avatar from 'atoms/profile/Avatar';
 import { DarkModeSwitch } from 'react-toggle-dark-mode';
 import UserDropdown from 'organisms/modal/user/UserDropdown';
 import UserConfigModal from 'organisms/modal/user/UserConfigModal';
-import { getChannels, getDMList } from 'api/chatApi';
-import { useNavigate } from 'react-router-dom';
+import { getChannels, getDMList, searchChat } from 'api/chatApi';
+import { useNavigate, useParams } from 'react-router-dom';
 import { DMInfoType } from 'types/channel/chatTypes';
 import { workspaceListType } from 'types/workspace/workspaceTypes';
 import { getWorkspaceList } from 'api/workspaceApi';
@@ -33,6 +36,7 @@ import {
 } from 'types/common/userTypes';
 import { getUserStatus } from 'api/userApi';
 import { useInterval } from 'hooks/useInterval';
+import { useDebounce } from 'hooks/useHooks';
 
 const NavContainer = styled.div`
   padding: 0px 20px;
@@ -53,8 +57,24 @@ const LeftContainer = styled.div`
   margin-right: 50px;
   cursor: pointer;
 `;
+const SearchContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 const MidContainer = styled.div`
   width: 430px;
+`;
+
+const SearchButtonContainer = styled.div`
+  display: flex;
+  width: 100px;
+  margin-left: 20px;
+`;
+
+const Search = styled.div`
+  width: 40px;
+  cursor: pointer;
 `;
 
 const RightContainer = styled.div`
@@ -87,7 +107,16 @@ const Nav = () => {
     useRecoilState<string[]>(chatMember);
   const [membersStatus, setMembersStatus] =
     useRecoilState<userStatusInfoType>(memberStatus);
+  const [searchList, setSearchList] = useRecoilState<number[]>(searchResults);
+  const [searchedIndex, setSearchedIndex] = useRecoilState<number>(searchIndex);
+  const contents = useRecoilValue<contentTypes[]>(channelContents);
+
+  const { channelId } = useParams();
   const navigate = useNavigate();
+
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [keyword, setKeyword] = useState('');
+  const debouncedValue = useDebounce<string>(keyword, 500);
 
   const getSideInfo = async () => {
     const chaRes = await getChannels(userInfo.email);
@@ -128,6 +157,8 @@ const Nav = () => {
 
   useEffect(() => {
     setIsLoading(true);
+    setSearchList([]);
+    setSearchedIndex(contents.length - 1);
     getSideInfo().then(() => {
       setIsLoading(false);
     });
@@ -209,6 +240,30 @@ const Nav = () => {
     };
   }, [dropdownOpen]);
 
+  const search = useCallback(() => {
+    const keyword = inputRef.current?.value!;
+    setKeyword(keyword);
+  }, []);
+
+  useEffect(() => {
+    if (channelId && debouncedValue !== '') {
+      searchChat(debouncedValue, channelId).then((res) => {
+        const {
+          data: { chatSearchInfoDTOList },
+        } = res;
+        console.log(res);
+        console.log(chatSearchInfoDTOList);
+
+        setSearchList(
+          chatSearchInfoDTOList.map((c: any) => {
+            return Number(c.chatId);
+          })
+        );
+        setSearchedIndex(chatSearchInfoDTOList.length - 1);
+      });
+    }
+  }, [debouncedValue]);
+
   return (
     <NavContainer>
       <LeftContainer onClick={() => navigate('/')}>
@@ -217,9 +272,30 @@ const Nav = () => {
           TOOLIV
         </Text>
       </LeftContainer>
-      <MidContainer>
-        <InputBox label="" placeholder="검색" />
-      </MidContainer>
+      <SearchContainer>
+        <MidContainer>
+          <InputBox
+            label=""
+            placeholder="검색"
+            ref={inputRef}
+            onChange={search}
+          />
+        </MidContainer>
+        <SearchButtonContainer>
+          {searchList.length > 0 && searchedIndex !== 0 && (
+            <Search onClick={() => setSearchedIndex((prev) => --prev)}>
+              이전
+            </Search>
+          )}
+
+          {searchList.length > 0 && searchedIndex !== searchList.length - 1 && (
+            <Search onClick={() => setSearchedIndex((prev) => ++prev)}>
+              다음
+            </Search>
+          )}
+        </SearchButtonContainer>
+      </SearchContainer>
+
       <RightContainer>
         <DarkModeSwitch
           checked={mode === 'dark'}

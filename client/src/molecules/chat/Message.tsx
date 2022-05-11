@@ -15,13 +15,15 @@ import { contentTypes } from '../../types/channel/contentType';
 import { SideWrapper } from '../sidemenu/Channels';
 import File from './File';
 import mainSrc from '../../assets/img/logo.svg';
-import { memberStatus } from 'recoil/atom';
+import { memberStatus, searchIndex } from 'recoil/atom';
 
-const Container = styled.div`
+const Container = styled.div<{ isSearched?: boolean }>`
   width: 100%;
   border-radius: 10px;
   /* border: 1px solid ${colors.gray200}; */
   border: 1px solid ${(props) => props.theme.borderColor};
+  border: ${(props) =>
+    props.isSearched && `3px solid ${props.theme.pointColor}`};
   padding: 16px;
   margin: 16px 0;
   transition: 0.3s;
@@ -71,6 +73,7 @@ const Message = ({
   files,
   email,
   originFiles,
+  isSearched,
 }: contentTypes) => {
   const [thumbnailImage, setThumbnailImage] = useState('');
   const [isUpdatModalOpen, setIsUpdateModalOpen] = useState<boolean>(false);
@@ -118,7 +121,7 @@ const Message = ({
   };
   return (
     <>
-      <Container>
+      <Container isSearched={isSearched}>
         <ProfileContainer>
           <LeftWrapper>
             <SideWrapper>
