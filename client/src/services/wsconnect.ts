@@ -12,6 +12,7 @@ import {
 } from 'recoil/atom';
 import { getRecoil, setRecoil } from 'recoil-nexus';
 import { user } from 'recoil/auth';
+import { korDate } from 'utils/formatTime';
 const baseURL = localStorage.getItem('baseURL');
 let sockJS = baseURL
   ? new SockJS(`${JSON.parse(baseURL).url}/chatting`)
@@ -32,6 +33,7 @@ export const deleteDM = (channelId: string, chatId: string) => {
       channelId: channelId,
       chatId: chatId,
       type: 'DELETE',
+      email: userInfo.email,
       deleted: true,
     })
   );
@@ -47,6 +49,7 @@ export const deleteChat = (channelId: string, chatId: string) => {
       channelId: channelId,
       chatId: chatId,
       type: 'DELETE',
+      email: userInfo.email,
       deleted: true,
     })
   );
@@ -69,7 +72,7 @@ export const updateChat = ({
       channelId: channelId,
       chatId: chatId,
       email: email,
-      sendTime: new Date(),
+      sendTime: korDate(),
       contents: getMarkdownText(message),
       type: 'UPDATE',
       files: fileUrl ? fileUrl : null,
@@ -96,7 +99,7 @@ export const updateDM = ({
       channelId: channelId,
       chatId: chatId,
       email: email,
-      sendTime: new Date(),
+      sendTime: korDate(),
       contents: getMarkdownText(message),
       type: 'UPDATE',
       files: fileUrl ? fileUrl : null,
@@ -121,7 +124,7 @@ export const send = ({
     JSON.stringify({
       channelId: channelId,
       email: email,
-      sendTime: new Date(),
+      sendTime: korDate(),
       contents: getMarkdownText(message),
       type: 'TALK',
       files: fileUrl ? fileUrl : null,
@@ -145,7 +148,7 @@ export const sendDM = ({
     JSON.stringify({
       channelId,
       email,
-      sendTime: new Date(),
+      sendTime: korDate(),
       contents: getMarkdownText(message),
       type: 'TALK',
       files: fileUrl ? fileUrl : null,

@@ -18,6 +18,7 @@ const Container = styled(motion.div)`
   padding: 16px 18px;
 `;
 const Contents = styled.div`
+  width: 264px;
   height: calc(100vh - 275px);
   overflow-y: scroll;
   overflow-x: hidden;

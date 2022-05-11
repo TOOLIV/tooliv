@@ -3,7 +3,7 @@ import { getUserInfo } from 'api/userApi';
 import Time from 'atoms/chat/Time';
 import UpdateChatModal from 'organisms/modal/channel/chat/UpdateChatModal';
 import React, { useEffect, useState } from 'react';
-import { fToNow } from 'utils/formatTime';
+import { fDateTime, fToNow } from 'utils/formatTime';
 import { useLocation } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { user } from 'recoil/auth';

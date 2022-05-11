@@ -11,6 +11,7 @@ import {
   currentChannel,
   // currentChannel,
   currentWorkspace,
+  isOpenSide,
   modifyWorkspaceName,
   userLog,
   wsList,
@@ -21,9 +22,8 @@ import Text from 'atoms/text/Text';
 import { channelNotiType } from 'types/channel/contentType';
 
 const Container = styled.div<{ isOpen: boolean }>`
-  /* padding: 16px 0; */
   padding-top: 16px;
-  border-bottom: ${(props) => props.isOpen && '1px solid #ffffff'};
+  display: ${(props) => (props.isOpen ? 'block' : 'none')};
 `;
 
 const Header = styled.div`
@@ -34,6 +34,7 @@ const Header = styled.div`
 `;
 
 const WorkSpaceSection = () => {
+  const isSideOpen = useRecoilValue<boolean>(isOpenSide);
   const [isOpen, setIsOpen] = useState(false);
   const [workspaceList, setWorkspaceList] =
     useRecoilState<workspaceListType[]>(wsList);
@@ -96,7 +97,7 @@ const WorkSpaceSection = () => {
   }, [curWorkspaceId, modWorkspaceName]);
 
   return (
-    <Container isOpen={isOpen}>
+    <Container isOpen={isSideOpen}>
       <Header>
         <Text size={14}>워크스페이스</Text>
         <Icons icon="plus" onClick={handleOpenModal} />

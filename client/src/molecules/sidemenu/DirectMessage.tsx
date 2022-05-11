@@ -1,10 +1,8 @@
 import styled from '@emotion/styled';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Icons from '../../atoms/common/Icons';
 import Avatar from '../../atoms/profile/Avatar';
 import Label from '../../atoms/common/Label';
-import MenuTemplate from '../../atoms/sidemenu/MenuTemplate';
-import { labelType } from '../../types/common/labelType';
 import {
   InnerContainer,
   Noti,
@@ -14,13 +12,20 @@ import {
 } from './Channels';
 import Text from 'atoms/text/Text';
 import DirectMessageModal from 'organisms/modal/sidemenu/DirectMessageModal';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { DMInfoType } from 'types/channel/chatTypes';
-import { channelNotiList, DMList, dmName, memberStatus } from 'recoil/atom';
+import {
+  channelNotiList,
+  DMList,
+  dmName,
+  isOpenSide,
+  memberStatus,
+} from 'recoil/atom';
 import { useNavigate, useParams } from 'react-router-dom';
 import { css } from '@emotion/react';
 import { channelNotiType } from 'types/channel/contentType';
 import { userStatusInfoType } from 'types/common/userTypes';
+import { Header } from 'organisms/sidemenu/channel/ChannelSection';
 
 const FriendsContainer = styled.div`
   padding-left: 14px;
@@ -50,12 +55,16 @@ const FriendContainer = styled.div<{ isSelected: boolean }>`
     `}
 `;
 
+const Container = styled.div<{ isOpen: boolean }>`
+  display: ${(props) => (props.isOpen ? 'block' : 'none')};
+`;
+
 const DirectMessage = () => {
+  const isSideOpen = useRecoilValue<boolean>(isOpenSide);
   const [userListOpen, setUserListOpen] = useState(false);
-  const [dmList, setDmList] = useRecoilState<DMInfoType[]>(DMList);
-  const [directName, setDirectName] = useRecoilState<string>(dmName);
-  const [notiList, setNotiList] =
-    useRecoilState<channelNotiType[]>(channelNotiList);
+  const dmList = useRecoilValue<DMInfoType[]>(DMList);
+  const setDirectName = useSetRecoilState<string>(dmName);
+  const notiList = useRecoilValue<channelNotiType[]>(channelNotiList);
   const map = new Map(notiList.map((el) => [el.channelId, el]));
   const navigate = useNavigate();
   const { workspaceId, channelId } = useParams();
@@ -66,11 +75,11 @@ const DirectMessage = () => {
   };
 
   return (
-    <>
-      <TopContainer>
+    <Container isOpen={isSideOpen}>
+      <Header>
         <Text size={14}>개인 메시지</Text>
         <Icons icon="plus" onClick={() => setUserListOpen(!userListOpen)} />
-      </TopContainer>
+      </Header>
       <FriendsContainer>
         {dmList.map((dm) => (
           <FriendContainer
@@ -89,7 +98,15 @@ const DirectMessage = () => {
                     status={membersStatus[dm.receiverEmail]}
                   />
                 </SideWrapper>
-                <Label id={dm.channelId} name={dm.receiveName} />
+                <Text
+                  size={12}
+                  weight={
+                    !map.get(dm.channelId)?.notificationRead ? 'bold' : 'medium'
+                  }
+                >
+                  {dm.receiveName}
+                </Text>
+                {/* <Label id={dm.channelId} name={dm.receiveName} /> */}
               </InnerContainer>
               {!map.get(dm.channelId)?.notificationRead && <Noti>●</Noti>}
             </NotiWrapper>
@@ -97,7 +114,7 @@ const DirectMessage = () => {
         ))}
       </FriendsContainer>
       <DirectMessageModal isOpen={userListOpen} onClose={closeUserList} />
-    </>
+    </Container>
   );
 };
 
