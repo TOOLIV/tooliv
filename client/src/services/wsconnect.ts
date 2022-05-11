@@ -12,7 +12,7 @@ const baseURL = localStorage.getItem('baseURL');
 let sockJS = baseURL
   ? new SockJS(`${JSON.parse(baseURL).url}/chatting`)
   : // 로컬에서 테스트시 REACT_APP_TEST_URL, server 주소는 REACT_APP_BASE_SERVER_URL
-    new SockJS(`${process.env.REACT_APP_BASE_SERVER_URL}/chatting`);
+    new SockJS(`${process.env.REACT_APP_TEST_URL}/chatting`);
 export let client: Stomp.Client = Stomp.over(sockJS);
 let subscribe: Stomp.Subscription;
 console.log(client);
