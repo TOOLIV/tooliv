@@ -19,12 +19,10 @@ public class ChatSearchServiceImpl implements ChatSearchService {
     public ChatSearchInfoListResponseDTO getChatList(String searchContent) {
         // 검색 결과가 없는 경우 null
         List<ChatMessage> chatMessageList = chatMessageRepository.findByContents(searchContent).orElse(new ArrayList<>());
-        System.out.println(chatMessageList+"****************************");
         List<ChatSearchInfoDTO> chatSearchInfoDTOList = new ArrayList<>();
         for (ChatMessage chatMessage : chatMessageList) {
             chatSearchInfoDTOList.add(new ChatSearchInfoDTO(chatMessage.getChat().getChatId(),chatMessage.getChat().getChannelId(),chatMessage.getContent()));
         }
-        System.out.println(chatSearchInfoDTOList+"--------------------------");
         return new ChatSearchInfoListResponseDTO(chatSearchInfoDTOList);
     }
 }
