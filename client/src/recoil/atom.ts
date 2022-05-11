@@ -1,3 +1,4 @@
+import Stomp from 'stompjs';
 import { atom } from 'recoil';
 import { DMInfoType } from 'types/channel/chatTypes';
 import { FileTypes } from 'types/common/fileTypes';
