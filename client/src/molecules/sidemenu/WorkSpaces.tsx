@@ -3,16 +3,19 @@ import { workspacesType } from 'types/workspace/workspaceTypes';
 import WorkSpace from '../../atoms/sidemenu/WorkSpace';
 import mainSrc from '../../assets/img/logo.svg';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useRef } from 'react';
 
 const WorkSpaceContainer = styled.div`
   display: flex;
   /* justify-content: ; */
   align-items: flex-start;
-  overflow-x: auto;
-  height: 80px;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  height: 90px;
   -ms-overflow-style: none;
 
   &::-webkit-scrollbar {
+    /* width: 10px; */
     display: none;
   }
 `;
@@ -22,6 +25,11 @@ const WorkSpaces = ({ workspaceList, onClick }: workspacesType) => {
   const handleClickMain = (id: string) => {
     navigate(id);
   };
+  // const scrollRef = useRef<HTMLDivElement>(null);
+  // scrollContainer.addEventListener('wheel', (evt) => {
+  //   evt.preventDefault();
+  //   scrollContainer.scrollLeft += evt.deltaY;
+  // });
 
   return (
     <WorkSpaceContainer>
