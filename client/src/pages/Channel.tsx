@@ -47,7 +47,7 @@ const Channel = () => {
   const [chatMembers, setChatMembers] = useRecoilState<string[]>(chatMember);
   const [fileUrl, setFileUrl] = useRecoilState<string[]>(chatFileUrl);
   const [fileNames, setFileNames] = useRecoilState<string[]>(chatFileNames);
-  const { accessToken, email } = useRecoilValue(user);
+  const { email } = useRecoilValue(user);
   const [notiList, setNotiList] =
     useRecoilState<channelNotiType[]>(channelNotiList);
   const { workspaceId, channelId } = useParams<string>();
@@ -110,31 +110,6 @@ const Channel = () => {
       fileUrl,
       fileNames,
     });
-    // const baseURL = localStorage.getItem('baseURL');
-    // let sockJS = baseURL
-    //   ? new SockJS(`${JSON.parse(baseURL).url}/chatting`)
-    //   : // 로컬에서 테스트시 REACT_APP_TEST_URL, server 주소는 REACT_APP_BASE_SERVER_URL
-    //     new SockJS(`${process.env.REACT_APP_TEST_URL}/chatting`);
-
-    // let client: Stomp.Client = Stomp.over(sockJS);
-    // {
-    //   client &&
-    //     client.send(
-    //       '/pub/chat/message',
-    //       {
-    //         Authorization: `Bearer ${accessToken}`,
-    //       },
-    //       JSON.stringify({
-    //         channelId: channelId,
-    //         email: email,
-    //         sendTime: new Date(),
-    //         contents: getMarkdownText(message),
-    //         type: 'TALK',
-    //         files: fileUrl ? fileUrl : null,
-    //         originFiles: fileNames ? fileNames : null,
-    //       })
-    //     );
-    // }
 
     setMessage('');
     setFiles([]);

@@ -1,3 +1,5 @@
+import styled from '@emotion/styled';
+import LoadSpinner from 'atoms/common/LoadSpinner';
 import React, { Suspense, lazy } from 'react';
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom';
 
@@ -13,11 +15,25 @@ const Main = lazy(() => import('./Main'));
 const EnterPriseTest = lazy(() => import('./EnterPriseTest'));
 const DM = lazy(() => import('./DM'));
 
+const Container = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+`;
+
 const AppRouter = () => {
   return (
     <>
       <HashRouter>
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense
+          fallback={
+            <Container>
+              <LoadSpinner />
+            </Container>
+          }
+        >
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/join" element={<Join />} />

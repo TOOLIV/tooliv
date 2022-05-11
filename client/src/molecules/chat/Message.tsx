@@ -76,8 +76,6 @@ const Message = ({
   const [isUpdatModalOpen, setIsUpdateModalOpen] = useState<boolean>(false);
   const [nickname, setNickname] = useState('');
   const membersStatus = useRecoilValue(memberStatus);
-
-  const { accessToken } = useRecoilValue(user);
   const userInfo = useRecoilValue(user);
   const fileTypes = ['.bmp', '.gif', '.jpg', '.png', '.jpeg', '.jfif'];
   const location = useLocation();
@@ -110,9 +108,9 @@ const Message = ({
 
   const deleteMessage = () => {
     if (location.pathname.includes('/direct')) {
-      deleteDM(accessToken, channelId, chatId);
+      deleteDM(channelId, chatId);
     } else {
-      deleteChat(accessToken, channelId, chatId);
+      deleteChat(channelId, chatId);
     }
   };
   const handelModal = () => {

@@ -9,7 +9,6 @@ import { user } from 'recoil/auth';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
   appThemeMode,
-  channelContents,
   channelNotiList,
   chatMember,
   DMList,
@@ -17,8 +16,7 @@ import {
   memberStatus,
   wsList,
 } from 'recoil/atom';
-import { channelNotiType, contentTypes } from 'types/channel/contentType';
-import { connect } from 'services/wsconnect';
+import { channelNotiType } from 'types/channel/contentType';
 import Avatar from 'atoms/profile/Avatar';
 import { DarkModeSwitch } from 'react-toggle-dark-mode';
 import UserDropdown from 'organisms/modal/user/UserDropdown';
@@ -34,8 +32,6 @@ import {
   userStatusInfoType,
 } from 'types/common/userTypes';
 import { getUserStatus } from 'api/userApi';
-import SockJS from 'sockjs-client';
-import Stomp from 'stompjs';
 import { useInterval } from 'hooks/useInterval';
 
 const NavContainer = styled.div`
@@ -77,7 +73,6 @@ const DropdownWrapper = styled.div`
 `;
 const Nav = () => {
   const userInfo = useRecoilValue(user);
-  const setContents = useSetRecoilState<contentTypes[]>(channelContents);
   const [mode, setMode] = useRecoilState(appThemeMode);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [profileConfigOpen, setProfileConfigOpen] = useState(false);
@@ -93,13 +88,6 @@ const Nav = () => {
   const [membersStatus, setMembersStatus] =
     useRecoilState<userStatusInfoType>(memberStatus);
   const navigate = useNavigate();
-  // const baseURL = localStorage.getItem('baseURL');
-  // let sockJS = baseURL
-  //   ? new SockJS(`${JSON.parse(baseURL).url}/chatting`)
-  //   : // 로컬에서 테스트시 REACT_APP_TEST_URL, server 주소는 REACT_APP_BASE_SERVER_URL
-  //     new SockJS(`${process.env.REACT_APP_TEST_URL}/chatting`);
-
-  // let client: Stomp.Client = Stomp.over(sockJS);
 
   const getSideInfo = async () => {
     const chaRes = await getChannels(userInfo.email);
@@ -144,110 +132,6 @@ const Nav = () => {
       setIsLoading(false);
     });
   }, []);
-
-  // useEffect(() => {
-  //   // if (!isLoading) {
-  //   //   const baseURL = localStorage.getItem('baseURL');
-  //   //   let sockJS = baseURL
-  //   //     ? new SockJS(`${JSON.parse(baseURL).url}/chatting`)
-  //   //     : // 로컬에서 테스트시 REACT_APP_TEST_URL, server 주소는 REACT_APP_BASE_SERVER_URL
-  //   //       new SockJS(`${process.env.REACT_APP_TEST_URL}/chatting`);
-
-  //   //   let client: Stomp.Client = Stomp.over(sockJS);
-  //     // setClient(client);
-  //     // client.connect(
-  //     //   {
-  //     //     Authorization: `Bearer ${userInfo.accessToken}`,
-  //     //   },
-  //     //   (frame) => {
-  //     //     console.log('Connect success');
-  //     //   },
-  //     //   (frame) => {
-  //     //     console.log('connect error');
-  //     //   }
-  //     // );
-  //     // connect(userInfo.accessToken, setContents, userInfo.userId);
-  //   }
-  // }, [isLoading]);
-
-  // useEffect(() => {
-  // if (!isLoading) {
-  // const baseURL = localStorage.getItem('baseURL');
-  // let sockJS = baseURL
-  //   ? new SockJS(`${JSON.parse(baseURL).url}/chatting`)
-  //   : // 로컬에서 테스트시 REACT_APP_TEST_URL, server 주소는 REACT_APP_BASE_SERVER_URL
-  //     new SockJS(`${process.env.REACT_APP_TEST_URL}/chatting`);
-  // let client: Stomp.Client = Stomp.over(sockJS);
-  //   if (client) {
-  //     client.connect(
-  //       {
-  //         Authorization: `Bearer ${userInfo.accessToken}`,
-  //       },
-  //       (frame) => {
-  //         client.subscribe(`/sub/chat/${userInfo.userId}`, (response) => {
-  //           // const notiList = getRecoil(channelNotiList);
-  //           // const workspaceList = getRecoil(wsList);
-  //           const link = window.location.href.split('/');
-  //           // 현재 채널, 워크스페이스 아이디
-  //           const channelId = link[link.length - 1];
-  //           const workspaceId = link[link.length - 2];
-  //           const content = JSON.parse(response.body);
-  //           const recChannelId = content.channelId;
-  //           let updateWorkspaceId: string = '';
-  //           const type = content.type;
-  //           if (type === 'DELETE') {
-  //             const index = content.chatId;
-  //             setContents((prev) => [
-  //               ...prev.slice(0, index),
-  //               content,
-  //               ...prev.slice(index + 1),
-  //             ]);
-  //           } else if (type === 'UPDATE') {
-  //           } else {
-  //             if (channelId === recChannelId) {
-  //               // 현재 채널 아이디와 도착한 메시지의 채널 아이디가 같으면
-  //               setContents((prev) => [...prev, content]);
-  //             } else {
-  //               // 현재 채널 아이디와 도착한 메시지의 채널 아이디가 다르면
-  //               const newList: channelNotiType[] = notiList.map((noti) => {
-  //                 if (
-  //                   noti.workspaceId !== channelId &&
-  //                   noti.channelId === recChannelId
-  //                 ) {
-  //                   updateWorkspaceId = noti.workspaceId!;
-  //                   return { ...noti, notificationRead: false };
-  //                 } else {
-  //                   return noti;
-  //                 }
-  //               });
-  //               // setRecoil(channelNotiList, newList);
-  //               setNotiList(newList);
-  //               if (workspaceId !== updateWorkspaceId) {
-  //                 const newWSList: workspaceListType[] = workspaceList.map(
-  //                   (workspace) => {
-  //                     if (
-  //                       workspace.id !== workspaceId &&
-  //                       workspace.id === updateWorkspaceId
-  //                     ) {
-  //                       return { ...workspace, noti: false };
-  //                     } else {
-  //                       return workspace;
-  //                     }
-  //                   }
-  //                 );
-  //                 setRecoil(wsList, newWSList);
-  //               }
-  //             }
-  //           }
-  //         });
-  //       },
-  //       (frame) => {
-  //         console.log('connect error');
-  //       }
-  //     );
-  //   }
-  //   // }
-  // }, [client]);
 
   useEffect(() => {
     // dm 리스트에서 유저 이메일 뽑아서 저장
