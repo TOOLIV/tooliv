@@ -60,17 +60,9 @@ const Chat = () => {
     enterChannel(channelId!).then(() => {
       subChannel(channelId!).then((res) => {
         setContents(res.data.chatMessageDTOList);
-
-        // res.data.chatMessageDTOList.forEach((data: contentTypes) => {
-        //   setChatMembers([...chatMembers, data.email]);
-        // });
       });
     });
   }, []);
-
-  useEffect(() => {
-    console.log(chatMembers);
-  }, [chatMembers]);
 
   const onSendClick = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();

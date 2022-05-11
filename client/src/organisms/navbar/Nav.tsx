@@ -11,6 +11,7 @@ import {
   appThemeMode,
   channelContents,
   channelNotiList,
+  chatMember,
   DMList,
   dmMember,
   memberStatus,
@@ -27,7 +28,8 @@ import { useNavigate } from 'react-router-dom';
 import { DMInfoType } from 'types/channel/chatTypes';
 import { workspaceListType } from 'types/workspace/workspaceTypes';
 import { getWorkspaceList } from 'api/workspaceApi';
-import { userStatusInfoType } from 'types/common/userTypes';
+import { usersStatusType, userStatusInfoType } from 'types/common/userTypes';
+import { getUserStatus } from 'api/userApi';
 
 const NavContainer = styled.div`
   padding: 0px 20px;
@@ -79,6 +81,8 @@ const Nav = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const setWorkspaceList = useSetRecoilState<workspaceListType[]>(wsList);
   const [dmMemberList, setDmMemberList] = useRecoilState<string[]>(dmMember);
+  const [chatMemberList, setChatMemberList] =
+    useRecoilState<string[]>(chatMember);
 
   const navigate = useNavigate();
 
@@ -142,8 +146,18 @@ const Nav = () => {
   }, [dMList]);
 
   useEffect(() => {
-    console.log(dmMemberList);
-  }, [dmMemberList]);
+    let list = [...dmMemberList, ...chatMemberList];
+    let emailList = Array.from(new Set(list));
+    const body = {
+      emailList,
+    };
+    handleUsersStatus(body);
+  }, [dmMemberList, chatMemberList]);
+
+  const handleUsersStatus = async (body: usersStatusType) => {
+    const response = await getUserStatus(body);
+    console.log(response);
+  };
 
   // 다크모드/일반모드 설정
   const handleDarkMode = () => {
