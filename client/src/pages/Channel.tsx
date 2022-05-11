@@ -21,8 +21,9 @@ import Files from 'organisms/chat/Files';
 import { FileTypes } from 'types/common/fileTypes';
 import { user } from 'recoil/auth';
 import LoadSpinner from 'atoms/common/LoadSpinner';
-import { send } from 'services/wsconnect';
+import { getMarkdownText, send } from 'services/wsconnect';
 import { workspaceListType } from 'types/workspace/workspaceTypes';
+import SockJS from 'sockjs-client';
 
 const Container = styled.div`
   width: 100%;
@@ -46,7 +47,7 @@ const Channel = () => {
   const [chatMembers, setChatMembers] = useRecoilState<string[]>(chatMember);
   const [fileUrl, setFileUrl] = useRecoilState<string[]>(chatFileUrl);
   const [fileNames, setFileNames] = useRecoilState<string[]>(chatFileNames);
-  const { accessToken, email } = useRecoilValue(user);
+  const { email } = useRecoilValue(user);
   const [notiList, setNotiList] =
     useRecoilState<channelNotiType[]>(channelNotiList);
   const { workspaceId, channelId } = useParams<string>();
@@ -103,7 +104,6 @@ const Channel = () => {
 
   const sendMessage = () => {
     send({
-      accessToken,
       channelId,
       email,
       message,

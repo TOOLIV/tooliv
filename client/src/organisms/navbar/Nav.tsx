@@ -9,7 +9,6 @@ import { user } from 'recoil/auth';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
   appThemeMode,
-  channelContents,
   channelNotiList,
   chatMember,
   DMList,
@@ -17,8 +16,7 @@ import {
   memberStatus,
   wsList,
 } from 'recoil/atom';
-import { channelNotiType, contentTypes } from 'types/channel/contentType';
-import { connect } from 'services/wsconnect';
+import { channelNotiType } from 'types/channel/contentType';
 import Avatar from 'atoms/profile/Avatar';
 import { DarkModeSwitch } from 'react-toggle-dark-mode';
 import UserDropdown from 'organisms/modal/user/UserDropdown';
@@ -34,8 +32,6 @@ import {
   userStatusInfoType,
 } from 'types/common/userTypes';
 import { getUserStatus } from 'api/userApi';
-import SockJS from 'sockjs-client';
-import Stomp from 'stompjs';
 import { useInterval } from 'hooks/useInterval';
 
 const NavContainer = styled.div`
@@ -77,7 +73,6 @@ const DropdownWrapper = styled.div`
 `;
 const Nav = () => {
   const userInfo = useRecoilValue(user);
-  const setContents = useSetRecoilState<contentTypes[]>(channelContents);
   const [mode, setMode] = useRecoilState(appThemeMode);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [profileConfigOpen, setProfileConfigOpen] = useState(false);
@@ -137,27 +132,6 @@ const Nav = () => {
       setIsLoading(false);
     });
   }, []);
-
-  useEffect(() => {
-    if (!isLoading) {
-      let sockJS = new SockJS(
-        `${process.env.REACT_APP_BASE_SERVER_URL}/chatting`
-      );
-      let client: Stomp.Client = Stomp.over(sockJS);
-      client.connect(
-        {
-          Authorization: `Bearer ${userInfo.accessToken}`,
-        },
-        (frame) => {
-          console.log('Connect success');
-        },
-        (frame) => {
-          console.log('connect error');
-        }
-      );
-      // connect(userInfo.accessToken, setContents, userInfo.userId);
-    }
-  }, [isLoading]);
 
   useEffect(() => {
     // dm 리스트에서 유저 이메일 뽑아서 저장
