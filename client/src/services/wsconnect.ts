@@ -1,6 +1,4 @@
-import { url } from 'inspector';
 import { marked } from 'marked';
-import { SetterOrUpdater } from 'recoil';
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { SendDMProps, SendMessageProps } from 'types/channel/chatTypes';
@@ -18,64 +16,35 @@ export let client: Stomp.Client = Stomp.over(sockJS);
 let subscribe: Stomp.Subscription;
 
 const userInfo = getRecoil(user);
-const contents = getRecoil(channelContents);
 
-// console.log(client);
-export const connect = (
-  accessToken: string,
-  setContents: SetterOrUpdater<contentTypes[]>,
-  userId: string
-) => {
-  // console.log('connect start', accessToken);
-  // client.connect(
-  //   {
-  //     Authorization: `Bearer ${accessToken}`,
-  //   },
-  //   (frame) => {
-  //     sub(setContents, userId);
-  //   },
-  //   (frame) => {
-  //     console.log('connect error');
-  //   }
-  // );
+export const deleteDM = (channelId: string, chatId: string) => {
+  client.send(
+    '/pub/chat/directMessage',
+    {
+      Authorization: `Bearer ${userInfo.accessToken}`,
+    },
+    JSON.stringify({
+      channelId: channelId,
+      chatId: chatId,
+      type: 'DELETE',
+      deleted: true,
+    })
+  );
 };
 
-export const deleteDM = (
-  accessToken: string,
-  channelId: string,
-  chatId: string
-) => {
-  // client.send(
-  //   '/pub/chat/directMessage',
-  //   {
-  //     Authorization: `Bearer ${accessToken}`,
-  //   },
-  //   JSON.stringify({
-  //     channelId: channelId,
-  //     chatId: chatId,
-  //     type: 'DELETE',
-  //     deleted: true,
-  //   })
-  // );
-};
-
-export const deleteChat = (
-  accessToken: string,
-  channelId: string,
-  chatId: string
-) => {
-  // client.send(
-  //   '/pub/chat/message',
-  //   {
-  //     Authorization: `Bearer ${accessToken}`,
-  //   },
-  //   JSON.stringify({
-  //     channelId: channelId,
-  //     chatId: chatId,
-  //     type: 'DELETE',
-  //     deleted: true,
-  //   })
-  // );
+export const deleteChat = (channelId: string, chatId: string) => {
+  client.send(
+    '/pub/chat/message',
+    {
+      Authorization: `Bearer ${userInfo.accessToken}`,
+    },
+    JSON.stringify({
+      channelId: channelId,
+      chatId: chatId,
+      type: 'DELETE',
+      deleted: true,
+    })
+  );
 };
 
 export const updateChat = ({
@@ -86,23 +55,23 @@ export const updateChat = ({
   fileUrl,
   fileNames,
 }: SendMessageProps) => {
-  // client.send(
-  //   '/pub/chat/message',
-  //   {
-  //     Authorization: `Bearer ${accessToken}`,
-  //   },
-  //   JSON.stringify({
-  //     channelId: channelId,
-  //     chatId: chatId,
-  //     email: email,
-  //     sendTime: new Date(),
-  //     contents: getMarkdownText(message),
-  //     type: 'UPDATE',
-  //     files: fileUrl ? fileUrl : null,
-  //     originFiles: fileNames ? fileNames : null,
-  //     updated: true,
-  //   })
-  // );
+  client.send(
+    '/pub/chat/message',
+    {
+      Authorization: `Bearer ${userInfo.accessToken}`,
+    },
+    JSON.stringify({
+      channelId: channelId,
+      chatId: chatId,
+      email: email,
+      sendTime: new Date(),
+      contents: getMarkdownText(message),
+      type: 'UPDATE',
+      files: fileUrl ? fileUrl : null,
+      originFiles: fileNames ? fileNames : null,
+      updated: true,
+    })
+  );
 };
 
 export const updateDM = ({
@@ -113,23 +82,23 @@ export const updateDM = ({
   fileUrl,
   fileNames,
 }: SendMessageProps) => {
-  // client.send(
-  //   '/pub/chat/directMessage',
-  //   {
-  //     Authorization: `Bearer ${accessToken}`,
-  //   },
-  //   JSON.stringify({
-  //     channelId: channelId,
-  //     chatId: chatId,
-  //     email: email,
-  //     sendTime: new Date(),
-  //     contents: getMarkdownText(message),
-  //     type: 'UPDATE',
-  //     files: fileUrl ? fileUrl : null,
-  //     originFiles: fileNames ? fileNames : null,
-  //     updated: true,
-  //   })
-  // );
+  client.send(
+    '/pub/chat/directMessage',
+    {
+      Authorization: `Bearer ${userInfo.accessToken}`,
+    },
+    JSON.stringify({
+      channelId: channelId,
+      chatId: chatId,
+      email: email,
+      sendTime: new Date(),
+      contents: getMarkdownText(message),
+      type: 'UPDATE',
+      files: fileUrl ? fileUrl : null,
+      originFiles: fileNames ? fileNames : null,
+      updated: true,
+    })
+  );
 };
 
 export const send = ({
@@ -157,28 +126,27 @@ export const send = ({
 };
 
 export const sendDM = ({
-  accessToken,
   channelId,
   email,
   message,
   fileUrl,
   fileNames,
 }: SendDMProps) => {
-  // client.send(
-  //   '/pub/chat/directMessage',
-  //   {
-  //     Authorization: `Bearer ${accessToken}`,
-  //   },
-  //   JSON.stringify({
-  //     channelId,
-  //     email,
-  //     sendTime: new Date(),
-  //     contents: getMarkdownText(message),
-  //     type: 'TALK',
-  //     files: fileUrl ? fileUrl : null,
-  //     originFiles: fileNames ? fileNames : null,
-  //   })
-  // );
+  client.send(
+    '/pub/chat/directMessage',
+    {
+      Authorization: `Bearer ${userInfo.accessToken}`,
+    },
+    JSON.stringify({
+      channelId,
+      email,
+      sendTime: new Date(),
+      contents: getMarkdownText(message),
+      type: 'TALK',
+      files: fileUrl ? fileUrl : null,
+      originFiles: fileNames ? fileNames : null,
+    })
+  );
 };
 
 export const getMarkdownText = (message: string) => {
@@ -250,7 +218,7 @@ export const sub = () => {
 };
 
 export const unsub = () => {
-  // subscribe.unsubscribe();
+  subscribe.unsubscribe();
 };
 
 client.connect(
