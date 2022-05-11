@@ -6,6 +6,7 @@ import Avatar from 'atoms/profile/Avatar';
 import Text from 'atoms/text/Text';
 import { forwardRef, useEffect } from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
+import { memberStatus } from 'recoil/atom';
 import { user } from 'recoil/auth';
 import { userDropdownType } from 'types/common/userTypes';
 
@@ -62,6 +63,7 @@ const IconItem = styled.div`
 const UserDropdown = forwardRef<HTMLDivElement, userDropdownType>(
   ({ isOpen, onClose, openProfileConfig }, ref) => {
     const [userInfo, setUserInfo] = useRecoilState(user);
+    const [membersStatus, setMembersStatus] = useRecoilState(memberStatus);
 
     const logout = () => {
       localStorage.removeItem('user');
@@ -92,6 +94,13 @@ const UserDropdown = forwardRef<HTMLDivElement, userDropdownType>(
       openProfileConfig();
       onClose();
     };
+
+    useEffect(() => {
+      setMembersStatus({
+        ...membersStatus,
+        [userInfo.email]: userInfo.statusCode,
+      });
+    }, [userInfo]);
 
     return (
       <Modal isOpen={isOpen} ref={ref}>

@@ -23,6 +23,8 @@ export type DMInfoType = {
   channelId: string;
   statusCode: string;
   notificationRead: boolean;
+  receiverEmail: string;
+  senderEmail: string;
 };
 
 export type UpdateChatType = {

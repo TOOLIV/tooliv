@@ -111,7 +111,17 @@ export const dmName = atom<string>({
   default: '홈',
 });
 
-export const memberStatus = atom<userStatusInfoType[]>({
-  key: 'memberStatus',
+export const chatMember = atom<string[]>({
+  key: 'chatMember',
   default: [],
+});
+
+export const dmMember = atom<string[]>({
+  key: 'dmMember',
+  default: [],
+});
+
+export const memberStatus = atom<userStatusInfoType>({
+  key: 'memberStatus',
+  default: {},
 });
