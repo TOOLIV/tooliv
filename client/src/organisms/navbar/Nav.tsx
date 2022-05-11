@@ -169,6 +169,7 @@ const Nav = () => {
     const body = {
       emailList,
     };
+    console.log(body);
     handleUsersStatus(body);
   }, 30000);
 

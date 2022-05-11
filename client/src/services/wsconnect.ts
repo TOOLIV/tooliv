@@ -4,7 +4,12 @@ import Stomp from 'stompjs';
 import { SendDMProps, SendMessageProps } from 'types/channel/chatTypes';
 import { channelNotiType, contentTypes } from 'types/channel/contentType';
 import { workspaceListType } from 'types/workspace/workspaceTypes';
-import { channelContents, channelNotiList, wsList } from 'recoil/atom';
+import {
+  channelContents,
+  channelNotiList,
+  chatMember,
+  wsList,
+} from 'recoil/atom';
 import { getRecoil, setRecoil } from 'recoil-nexus';
 import { user } from 'recoil/auth';
 const baseURL = localStorage.getItem('baseURL');
@@ -163,6 +168,8 @@ export const sub = () => {
   subscribe = client.subscribe(`/sub/chat/${userInfo.userId}`, (response) => {
     const notiList = getRecoil(channelNotiList);
     const workspaceList = getRecoil(wsList);
+    // const chatMebers = getRecoil(chatMember);
+
     const link = window.location.href.split('/');
     // 현재 채널, 워크스페이스 아이디
     const channelId = link[link.length - 1];
@@ -183,6 +190,7 @@ export const sub = () => {
       if (channelId === recChannelId) {
         // 현재 채널 아이디와 도착한 메시지의 채널 아이디가 같으면
         setRecoil(channelContents, (prev) => [...prev, content]);
+        setRecoil(chatMember, (prev) => [...prev, content.email]);
       } else {
         // 현재 채널 아이디와 도착한 메시지의 채널 아이디가 다르면
         const newList: channelNotiType[] = notiList.map((noti) => {

@@ -2,18 +2,15 @@ import styled from '@emotion/styled';
 import { workspacesType } from 'types/workspace/workspaceTypes';
 import WorkSpace from '../../atoms/sidemenu/WorkSpace';
 import mainSrc from '../../assets/img/logo.svg';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useRef } from 'react';
-import ScrollHorizontal from 'react-scroll-horizontal';
+import { useNavigate } from 'react-router-dom';
 
 const WorkSpaceContainer = styled.div`
   display: flex;
-  /* justify-content: ; */
   align-items: flex-start;
   overflow-x: scroll;
   overflow-y: hidden;
   height: 90px;
-  -ms-overflow-style: none;
+  /* -ms-overflow-style: none;
 
   &::-webkit-scrollbar {
     display: none;
@@ -22,7 +19,7 @@ const WorkSpaceContainer = styled.div`
     &::-webkit-scrollbar {
       width: 10px;
     }
-  }
+  } */
 `;
 
 const WorkSpaces = ({ workspaceList, onClick }: workspacesType) => {
@@ -30,11 +27,6 @@ const WorkSpaces = ({ workspaceList, onClick }: workspacesType) => {
   const handleClickMain = (id: string) => {
     navigate(id);
   };
-  // const scrollRef = useRef<HTMLDivElement>(null);
-  // scrollContainer.addEventListener('wheel', (evt) => {
-  //   evt.preventDefault();
-  //   scrollContainer.scrollLeft += evt.deltaY;
-  // });
 
   return (
     <WorkSpaceContainer>
