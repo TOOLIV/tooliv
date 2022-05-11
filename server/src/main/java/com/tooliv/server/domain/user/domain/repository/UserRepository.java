@@ -26,6 +26,9 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     Optional<List<User>> findAllByUserCodeNotAndDeletedAtAndNameContainingOrderByNameAsc(UserCode userCode, LocalDateTime localDateTime, String keyword);
 
+    @Query("select u.status_code from user u where u.email in :emailList")
+    List<String> findStatusCodeIn(String[] emailList);
+
     @Query(value="SELECT * \n"
         + "FROM user u\n"
         + "WHERE u.deleted_at IS NULL  AND u.name LIKE %:keyword% AND u.id NOT IN (\n"
