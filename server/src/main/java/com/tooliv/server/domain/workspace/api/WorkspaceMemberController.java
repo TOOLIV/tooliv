@@ -52,7 +52,7 @@ public class WorkspaceMemberController {
     @DeleteMapping
     @ApiOperation(value = "워크스페이스 멤버 삭제")
     @ApiResponses({
-        @ApiResponse(code = 201, message = "워크스페이스 멤버 삭제 완료"),
+        @ApiResponse(code = 200, message = "워크스페이스 멤버 삭제 완료"),
         @ApiResponse(code = 409, message = "워크스페이스 멤버 삭제 실패"),
     })
     public ResponseEntity<? extends BaseResponseDTO> deleteWorkspaceMember(
@@ -63,7 +63,7 @@ public class WorkspaceMemberController {
         } catch (Exception e) {
             return ResponseEntity.status(409).body(BaseResponseDTO.of("워크스페이스 멤버 삭제 실패"));
         }
-        return ResponseEntity.status(201).body(BaseResponseDTO.of("워크스페이스 멤버 삭제 완료"));
+        return ResponseEntity.status(200).body(BaseResponseDTO.of("워크스페이스 멤버 삭제 완료"));
     }
 
     @GetMapping("/list")
