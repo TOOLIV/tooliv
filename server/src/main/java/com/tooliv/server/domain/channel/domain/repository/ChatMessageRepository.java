@@ -13,8 +13,10 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, String
 
     @Query(value="SELECT * "
         + "FROM chat_message c "
-        + "WHERE c.content LIKE %:searchContent%", nativeQuery = true)
-    Optional<List<ChatMessage>> findByContents(@Param("searchContent") String searchContent);
+        + "WHERE c.content LIKE %:searchContent% "
+        + "AND c.channel_id = :channelId"
+        , nativeQuery = true)
+    Optional<List<ChatMessage>> findByContents(@Param("searchContent") String searchContent,String channelId);
 
     Optional<ChatMessage> findByChatChatIdAndChatChannelId(long chatId,String channelId);
 }

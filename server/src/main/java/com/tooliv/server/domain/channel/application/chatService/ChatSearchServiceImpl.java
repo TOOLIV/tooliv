@@ -16,9 +16,9 @@ public class ChatSearchServiceImpl implements ChatSearchService {
     private final ChatMessageRepository chatMessageRepository;
 
     @Override
-    public ChatSearchInfoListResponseDTO getChatList(String searchContent) {
+    public ChatSearchInfoListResponseDTO getChatList(String searchContent,String channelId) {
         // 검색 결과가 없는 경우 null
-        List<ChatMessage> chatMessageList = chatMessageRepository.findByContents(searchContent).orElse(new ArrayList<>());
+        List<ChatMessage> chatMessageList = chatMessageRepository.findByContents(searchContent,channelId).orElse(new ArrayList<>());
         List<ChatSearchInfoDTO> chatSearchInfoDTOList = new ArrayList<>();
         for (ChatMessage chatMessage : chatMessageList) {
             chatSearchInfoDTOList.add(new ChatSearchInfoDTO(chatMessage.getChat().getChatId(),chatMessage.getChat().getChannelId(),chatMessage.getContent()));
