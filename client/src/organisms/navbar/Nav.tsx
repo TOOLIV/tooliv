@@ -97,11 +97,8 @@ const Nav = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [profileConfigOpen, setProfileConfigOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const [notiList, setNotiList] =
-    useRecoilState<channelNotiType[]>(channelNotiList);
   const [dMList, setDmList] = useRecoilState<DMInfoType[]>(DMList);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const setWorkspaceList = useSetRecoilState<workspaceListType[]>(wsList);
   const [dmMemberList, setDmMemberList] = useRecoilState<string[]>(dmMember);
   const [chatMemberList, setChatMemberList] =
     useRecoilState<string[]>(chatMember);
@@ -118,50 +115,11 @@ const Nav = () => {
   const [keyword, setKeyword] = useState('');
   const debouncedValue = useDebounce<string>(keyword, 500);
 
-  const getSideInfo = async () => {
-    const chaRes = await getChannels(userInfo.email);
-    const dmRes = await getDMList(userInfo.email);
-    const wsRes = await getWorkspaceList();
-
-    const {
-      data: { notificationChannelList },
-    } = chaRes;
-    const {
-      data: { directInfoDTOList },
-    } = dmRes;
-    // const {
-    //   data: { workspaceGetResponseDTOList },
-    // } = wsRes;
-    console.log(notificationChannelList);
-    setDmList(directInfoDTOList);
-    setNotiList([...notificationChannelList, ...directInfoDTOList]);
-
-    // const notiWorkspace = notiList.filter((noti) => {
-    //   if (!noti.notificationRead) {
-    //     return noti;
-    //   }
-    //   return null;
-    // });
-
-    // const map = new Map(notiWorkspace.map((el) => [el.workspaceId, el]));
-    // const newWSList = workspaceGetResponseDTOList.map((dto: any) => {
-    //   if (map.get(dto.id)) {
-    //     return { ...dto, noti: true };
-    //   } else {
-    //     return { ...dto, noti: false };
-    //   }
-    // });
-    // console.log(newWSList);
-    // setWorkspaceList(newWSList);
-  };
-
   useEffect(() => {
     setIsLoading(true);
     setSearchList([]);
     setSearchedIndex(contents.length - 1);
-    getSideInfo().then(() => {
-      setIsLoading(false);
-    });
+    setIsLoading(false);
   }, []);
 
   useEffect(() => {
