@@ -2,6 +2,7 @@ package com.tooliv.server.domain.user.application.service;
 
 import com.tooliv.server.domain.user.application.dto.request.SignUpRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.UserCodeUpdateRequestDTO;
+import com.tooliv.server.domain.user.application.dto.response.TotalUsersResponseDTO;
 import com.tooliv.server.domain.user.application.dto.response.UserInfoResponseDTO;
 import com.tooliv.server.domain.user.application.dto.response.UserListResponseDTO;
 import com.tooliv.server.domain.user.domain.User;
@@ -58,6 +59,11 @@ public class AdminServiceImpl implements AdminService {
         }
 
         return new UserListResponseDTO(userInfoResponseDTOList, userInfoResponseDTOList.size());
+    }
+
+    @Override
+    public TotalUsersResponseDTO getTotalUsers() {
+
     }
 
     @Override
