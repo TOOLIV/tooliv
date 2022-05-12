@@ -2,6 +2,7 @@ package com.tooliv.server.domain.user.application.service;
 
 import com.tooliv.server.domain.user.application.dto.request.LogInRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.NicknameUpdateRequestDTO;
+import com.tooliv.server.domain.user.application.dto.request.PasswordUpdateRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.SignUpRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.StatusRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.StatusUpdateRequestDTO;
@@ -15,8 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface UserService {
 
-    void signUp(SignUpRequestDTO signUpRequestDTO);
-
     LogInResponseDTO logIn(LogInRequestDTO logInRequestDTO);
 
     ProfileInfoResponseDTO getProfileInfo(String email);
@@ -25,9 +24,9 @@ public interface UserService {
 
     void updateStatus(StatusUpdateRequestDTO statusUpdateRequestDTO);
 
-    void uploadProfileImage(MultipartFile multipartFile);
+    void updatePassword(PasswordUpdateRequestDTO passwordUpdateRequestDTO);
 
-    void checkEmail(String email);
+    void uploadProfileImage(MultipartFile multipartFile);
 
     UserListResponseDTO getUserList(String keyword, int sequence);
 

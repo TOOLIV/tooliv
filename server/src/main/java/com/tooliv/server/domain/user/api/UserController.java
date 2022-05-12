@@ -1,5 +1,6 @@
 package com.tooliv.server.domain.user.api;
 
+import com.tooliv.server.domain.user.application.dto.request.PasswordUpdateRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.SignUpRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.StatusRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.StatusUpdateRequestDTO;
@@ -47,19 +48,6 @@ public class UserController {
     private final UserService userService;
 
     private final String[] MIME_TYPE = {"image/gif", "image/jpeg", "image/jpg", "image/png", "image/bmp"};
-
-    @PostMapping()
-    @ApiOperation(value = "회원가입")
-    public ResponseEntity<? extends BaseResponseDTO> signUp(
-        @RequestBody @Valid @ApiParam(value = "회원가입 정보", required = true) SignUpRequestDTO signUpRequestDTO) {
-        try {
-            userService.signUp(signUpRequestDTO);
-        } catch (DuplicateEmailException e) {
-            return ResponseEntity.status(409).body(BaseResponseDTO.of(e.getMessage()));
-        }
-
-        return ResponseEntity.status(201).body(BaseResponseDTO.of("회원가입 완료"));
-    }
 
     @PostMapping("/login")
     @ApiOperation(value = "로그인")
@@ -126,20 +114,6 @@ public class UserController {
         return ResponseEntity.status(200).body(ProfileInfoResponseDTO.of("프로필 정보 조회 완료", profileInfoResponseDTO));
     }
 
-
-    @GetMapping("/check/{email}")
-    @ApiOperation(value = "이메일 중복 체크")
-    public ResponseEntity<? extends BaseResponseDTO> checkEmail(
-        @PathVariable("email") @ApiParam(value = "이메일", required = true) String email) {
-        try {
-            userService.checkEmail(email);
-        } catch (DuplicateEmailException e) {
-            return ResponseEntity.status(409).body(BaseResponseDTO.of("이메일 사용 불가"));
-        }
-
-        return ResponseEntity.status(200).body(BaseResponseDTO.of("이메일 사용 가능"));
-    }
-
     @GetMapping("/search")
     @ApiOperation(value = "회원 정보 목록 조회")
     public ResponseEntity<? extends BaseResponseDTO> getUserList(
@@ -182,6 +156,19 @@ public class UserController {
         }
 
         return ResponseEntity.status(204).body(BaseResponseDTO.of("상태 변경 완료"));
+    }
+
+    @PatchMapping("/password")
+    @ApiOperation(value = "비밀번호 변경")
+    public ResponseEntity<? extends BaseResponseDTO> updatePassword(
+        @RequestBody @ApiParam(value = "수정할 비밀번호", required = true) PasswordUpdateRequestDTO passwordUpdateRequestDTO) {
+        try {
+            userService.updatePassword(passwordUpdateRequestDTO);
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(409).body(BaseResponseDTO.of(e.getMessage()));
+        }
+
+        return ResponseEntity.status(204).body(BaseResponseDTO.of("비밀번호 변경 완료"));
     }
 
 }
