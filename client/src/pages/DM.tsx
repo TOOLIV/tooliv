@@ -42,7 +42,7 @@ const DM = () => {
     useRecoilState<contentTypes[]>(channelContents);
   const [fileUrl, setFileUrl] = useRecoilState<string[]>(chatFileUrl);
   const [fileNames, setFileNames] = useRecoilState<string[]>(chatFileNames);
-  const { accessToken, nickname, email } = useRecoilValue(user);
+  const { accessToken, email } = useRecoilValue(user);
   const [notiList, setNotiList] =
     useRecoilState<channelNotiType[]>(channelNotiList);
   const { channelId } = useParams<string>();
@@ -50,14 +50,13 @@ const DM = () => {
   useEffect(() => {
     const newList: channelNotiType[] = notiList.map((noti) => {
       if (noti.channelId === channelId) {
-        return { ...noti, notificationRead: true };
+        return { ...noti, notificationRead: false };
       } else return noti;
     });
     setNotiList(newList);
     setIsLoading(true);
     enterDM(channelId!).then(() => {
       subDM(channelId!).then((res) => {
-        console.log(res.data);
         setContents(res.data.directInfoDTOList);
         setIsLoading(false);
       });
