@@ -1,5 +1,6 @@
 package com.tooliv.server.domain.channel.application;
 
+import com.tooliv.server.domain.channel.application.dto.request.NotificationLoggedAtUpdateRequestDTO;
 import com.tooliv.server.domain.channel.application.dto.response.DirectInfoDTO;
 import com.tooliv.server.domain.channel.application.dto.response.DirectListResponseDTO;
 import com.tooliv.server.domain.channel.application.dto.response.NotificationInfoDTO;
@@ -9,10 +10,13 @@ import com.tooliv.server.domain.channel.domain.ChannelMembers;
 import com.tooliv.server.domain.channel.domain.DirectChatRoom;
 import com.tooliv.server.domain.channel.domain.DirectChatRoomMembers;
 import com.tooliv.server.domain.channel.domain.repository.ChannelMembersRepository;
+import com.tooliv.server.domain.channel.domain.repository.ChannelRepository;
 import com.tooliv.server.domain.channel.domain.repository.DirectChatRoomMembersRepository;
+import com.tooliv.server.domain.channel.domain.repository.DirectChatRoomRepository;
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
 import com.tooliv.server.global.common.AwsS3Service;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +31,11 @@ public class NotificationServiceImpl implements NotificationService {
 
     private final ChannelMembersRepository channelMembersRepository;
 
+    private final ChannelRepository channelRepository;
+
     private final DirectChatRoomMembersRepository directChatRoomMembersRepository;
+
+    private final DirectChatRoomRepository directChatRoomRepository;
 
     private final AwsS3Service awsS3Service;
 
@@ -66,6 +74,27 @@ public class NotificationServiceImpl implements NotificationService {
             }
         }
         return new DirectListResponseDTO(directInfoDTOList);
+    }
+
+    @Override
+    public void updateLoggedAt(NotificationLoggedAtUpdateRequestDTO notificationLoggedAtUpdateRequestDTO) {
+        User user = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
+            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+        if (notificationLoggedAtUpdateRequestDTO.getType().equals("CHANNEL")) {
+            Channel channel = channelRepository.findById(notificationLoggedAtUpdateRequestDTO.getChannelId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 Channel 채팅 방이 존재하지 않습니다."));
+            ChannelMembers channelMembers = channelMembersRepository.findByChannelAndUser(channel, user).orElseThrow(() -> new IllegalArgumentException("채널 정보가 존재하지 않습니다."));
+            channelMembers.updateLoggedAt();
+            channelMembersRepository.save(channelMembers);
+        } else if (notificationLoggedAtUpdateRequestDTO.getType().equals("DM")) {
+            DirectChatRoom directChatRoom = directChatRoomRepository.findById(notificationLoggedAtUpdateRequestDTO.getChannelId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 Direct 채팅 방이 존재하지 않습니다."));
+            DirectChatRoomMembers directChatRoomMembers = directChatRoomMembersRepository.findByDirectChatRoomAndUser(directChatRoom, user)
+                .orElseThrow(() -> new IllegalArgumentException("해당 멤버가 존재하지 않습니다."));
+            directChatRoomMembers.updateLoggedAt();
+            System.out.println(LocalDateTime.now());
+            directChatRoomMembersRepository.save(directChatRoomMembers);
+        }
     }
 
     boolean checkNotification(ChannelMembers channelMembers, Channel channel) {
