@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
 
-    boolean existsByEmailAndDeletedAt(String email, LocalDateTime localDateTime);
+    boolean existsByEmail(String email);
 
     Optional<User> findByEmailAndDeletedAt(String email, LocalDateTime localDateTime);
 
