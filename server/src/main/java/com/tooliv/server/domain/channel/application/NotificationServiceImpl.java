@@ -82,7 +82,8 @@ public class NotificationServiceImpl implements NotificationService {
             .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
         if (notificationLoggedAtUpdateRequestDTO.getType().equals("CHANNEL")) {
             System.out.println("------------------Channel--------------notification----------");
-            Channel channel = channelRepository.getById(notificationLoggedAtUpdateRequestDTO.getChannelId());
+            Channel channel = channelRepository.findById(notificationLoggedAtUpdateRequestDTO.getChannelId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 Channel 채팅 방이 존재하지 않습니다."));
             ChannelMembers channelMembers = channelMembersRepository.findByChannelAndUser(channel, user).orElseThrow(() -> new IllegalArgumentException("채널 정보가 존재하지 않습니다."));
             channelMembers.updateLoggedAt();
             channelMembersRepository.save(channelMembers);
