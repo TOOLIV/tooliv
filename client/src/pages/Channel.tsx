@@ -1,7 +1,6 @@
 import styled from '@emotion/styled';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import Stomp from 'stompjs';
 import Editor from '../molecules/chat/Editor';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
@@ -23,7 +22,6 @@ import { user } from 'recoil/auth';
 import LoadSpinner from 'atoms/common/LoadSpinner';
 import { send } from 'services/wsconnect';
 import { workspaceListType } from 'types/workspace/workspaceTypes';
-import { useBeforeunload } from 'react-beforeunload';
 
 const Container = styled.div`
   width: 100%;

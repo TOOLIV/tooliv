@@ -1,7 +1,6 @@
 import styled from '@emotion/styled';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import Stomp from 'stompjs';
 import Editor from '../molecules/chat/Editor';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
@@ -14,18 +13,12 @@ import {
 } from '../recoil/atom';
 import { channelNotiType, contentTypes } from '../types/channel/contentType';
 import Messages from '../organisms/chat/Messages';
-import {
-  enterChannel,
-  enterDM,
-  subChannel,
-  subDM,
-  updateLoggedTime,
-} from 'api/chatApi';
+import { enterDM, subDM, updateLoggedTime } from 'api/chatApi';
 import Files from 'organisms/chat/Files';
 import { FileTypes } from 'types/common/fileTypes';
 import { user } from 'recoil/auth';
 import LoadSpinner from 'atoms/common/LoadSpinner';
-import { send, sendDM } from 'services/wsconnect';
+import { sendDM } from 'services/wsconnect';
 
 const Container = styled.div`
   width: 100%;

@@ -1,8 +1,5 @@
-import { useRecoilValue, useRecoilState } from 'recoil';
-import { createBrowserHistory } from 'history';
 import axios, { AxiosInstance } from 'axios';
 import isElectron from 'is-electron';
-import { user } from 'recoil/auth';
 
 let instance: AxiosInstance;
 const baseURL = localStorage.getItem('baseURL');
@@ -20,7 +17,7 @@ if (isElectron() && baseURL) {
   });
 } else {
   instance = axios.create({
-    baseURL: process.env.REACT_APP_TEST_API_URL,
+    baseURL: process.env.REACT_APP_API_URL,
     // TODO timeout 설정
     timeout: 30000,
     headers: {
