@@ -8,6 +8,7 @@ import {
   Route,
   Routes,
 } from 'react-router-dom';
+import Error from './Error';
 
 const Login = lazy(() => import('./Login'));
 const Home = lazy(() => import('./Home'));
@@ -60,6 +61,7 @@ const AppRouter = () => {
               <Route path="/admin" element={<Navigate replace to="./auth" />} />
               <Route path="/admin/auth" element={<UserAuthPage />} />
               <Route path="/admin/manage" element={<UserManagePage />} />
+              <Route path="/*" element={<Error />} />
             </Route>
           </Routes>
         </Suspense>
