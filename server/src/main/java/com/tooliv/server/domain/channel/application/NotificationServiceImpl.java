@@ -70,29 +70,29 @@ public class NotificationServiceImpl implements NotificationService {
 
     boolean checkNotification(ChannelMembers channelMembers, Channel channel) {
         if (channelMembers.getLoggedAt() == null) {// 멤버가 로그인한적 없는 경우
-            return false;
+            return true;
         }
         if (channel.getWroteAt() == null) {// 채널에 글이 써진적이 없는 경우
-            return true;
+            return false;
         }
         if (channelMembers.getLoggedAt().isBefore(channel.getWroteAt())) {// 멤버가 로그인한 시간이 채널 업데이트시간보다 이전인 경우
-            return false;
-        } else {
             return true;
+        } else {
+            return false;
         }
     }
 
     boolean checkDirectNotification(DirectChatRoomMembers directChatRoomMembers, DirectChatRoom directChatRoom) {
         if (directChatRoomMembers.getLoggedAt() == null) {// 멤버가 로그인한적 없는 경우
-            return false;
+            return true;
         }
         if (directChatRoom.getWroteAt() == null) {// 채널에 글이 써진적이 없는 경우
-            return true;
+            return false;
         }
         if (directChatRoomMembers.getLoggedAt().isBefore(directChatRoom.getWroteAt())) {// 멤버가 로그인한 시간이 채널 업데이트시간보다 이전인 경우
-            return false;
-        } else {
             return true;
+        } else {
+            return false;
         }
     }
 }

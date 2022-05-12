@@ -29,3 +29,16 @@ export function fDateDash(date: string) {
 export function fDateChange(date: string) {
   return String(new Date(date).getTime());
 }
+
+export function korDate() {
+  const curr = new Date();
+
+  // 2. UTC 시간 계산
+  const utc = curr.getTime() + curr.getTimezoneOffset() * 60 * 1000;
+
+  // 3. UTC to KST (UTC + 9시간)
+  const KR_TIME_DIFF = 9 * 60 * 60 * 1000;
+  const kr_curr = new Date(utc + KR_TIME_DIFF);
+  console.log(kr_curr);
+  return kr_curr;
+}

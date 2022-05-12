@@ -19,14 +19,15 @@ import {
 import { channelListTypes } from 'types/channel/contentType';
 
 const Container = styled.div<{ isOpen: boolean }>`
-  /* position: relative; */
+  display: ${(props) => (props.isOpen ? 'block' : 'none')};
 `;
 
-const Header = styled.div`
+export const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding-bottom: 16px;
+  padding-right: 16px;
 `;
 
 const ChannelSection = () => {

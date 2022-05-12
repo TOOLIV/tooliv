@@ -76,9 +76,9 @@ const WorkspaceName = styled.div`
 `;
 const Noti = styled.div`
   font-size: 10px;
-  color: ${colors.gray500};
+  color: ${(props) => props.theme.pointColor};
   position: absolute;
-  top: 10px;
+  top: 0;
   right: 10px;
   /* padding-left: 10px; */
 `;

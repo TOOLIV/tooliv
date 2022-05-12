@@ -4,9 +4,15 @@ import Stomp from 'stompjs';
 import { SendDMProps, SendMessageProps } from 'types/channel/chatTypes';
 import { channelNotiType, contentTypes } from 'types/channel/contentType';
 import { workspaceListType } from 'types/workspace/workspaceTypes';
-import { channelContents, channelNotiList, wsList } from 'recoil/atom';
+import {
+  channelContents,
+  channelNotiList,
+  chatMember,
+  wsList,
+} from 'recoil/atom';
 import { getRecoil, setRecoil } from 'recoil-nexus';
 import { user } from 'recoil/auth';
+import { korDate } from 'utils/formatTime';
 const baseURL = localStorage.getItem('baseURL');
 let sockJS = baseURL
   ? new SockJS(`${JSON.parse(baseURL).url}/chatting`)
@@ -27,6 +33,7 @@ export const deleteDM = (channelId: string, chatId: string) => {
       channelId: channelId,
       chatId: chatId,
       type: 'DELETE',
+      email: userInfo.email,
       deleted: true,
     })
   );
@@ -42,6 +49,7 @@ export const deleteChat = (channelId: string, chatId: string) => {
       channelId: channelId,
       chatId: chatId,
       type: 'DELETE',
+      email: userInfo.email,
       deleted: true,
     })
   );
@@ -64,7 +72,7 @@ export const updateChat = ({
       channelId: channelId,
       chatId: chatId,
       email: email,
-      sendTime: new Date(),
+      sendTime: korDate(),
       contents: getMarkdownText(message),
       type: 'UPDATE',
       files: fileUrl ? fileUrl : null,
@@ -91,7 +99,7 @@ export const updateDM = ({
       channelId: channelId,
       chatId: chatId,
       email: email,
-      sendTime: new Date(),
+      sendTime: korDate(),
       contents: getMarkdownText(message),
       type: 'UPDATE',
       files: fileUrl ? fileUrl : null,
@@ -116,7 +124,7 @@ export const send = ({
     JSON.stringify({
       channelId: channelId,
       email: email,
-      sendTime: new Date(),
+      sendTime: korDate(),
       contents: getMarkdownText(message),
       type: 'TALK',
       files: fileUrl ? fileUrl : null,
@@ -140,7 +148,7 @@ export const sendDM = ({
     JSON.stringify({
       channelId,
       email,
-      sendTime: new Date(),
+      sendTime: korDate(),
       contents: getMarkdownText(message),
       type: 'TALK',
       files: fileUrl ? fileUrl : null,
@@ -163,6 +171,8 @@ export const sub = () => {
   subscribe = client.subscribe(`/sub/chat/${userInfo.userId}`, (response) => {
     const notiList = getRecoil(channelNotiList);
     const workspaceList = getRecoil(wsList);
+    // const chatMebers = getRecoil(chatMember);
+
     const link = window.location.href.split('/');
     // 현재 채널, 워크스페이스 아이디
     const channelId = link[link.length - 1];
@@ -183,6 +193,7 @@ export const sub = () => {
       if (channelId === recChannelId) {
         // 현재 채널 아이디와 도착한 메시지의 채널 아이디가 같으면
         setRecoil(channelContents, (prev) => [...prev, content]);
+        setRecoil(chatMember, (prev) => [...prev, content.email]);
       } else {
         // 현재 채널 아이디와 도착한 메시지의 채널 아이디가 다르면
         const newList: channelNotiType[] = notiList.map((noti) => {

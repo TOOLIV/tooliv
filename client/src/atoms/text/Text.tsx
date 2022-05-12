@@ -11,7 +11,7 @@ const Container = styled.p<{
   onClick?: () => void;
 }>`
   font-size: ${(props) => props.size}px;
-  font-weight: ${(props) => (props.weight === 'medium' ? 600 : 700)};
+  font-weight: ${(props) => (props.weight === 'bold' ? 700 : 500)};
   word-break: keep-all;
   color: ${(props) =>
     props.color ? colors[props.color] : props.theme.textColor};

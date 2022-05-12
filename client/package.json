@@ -1,7 +1,7 @@
 {
   "name": "client",
   "main": "public/electron.js",
-  "homepage": "./",
+  "homepage": ".",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

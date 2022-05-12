@@ -108,6 +108,7 @@ const ChannelHeader = () => {
   }, [memberListOpen]);
 
   useEffect(() => {
+    console.log(channelId);
     if (channelId) {
       if (location.pathname.includes('/direct')) {
         setChannelName(directName);
@@ -172,7 +173,9 @@ const ChannelHeader = () => {
           }
         >
           <Text size={18}>{channelName}</Text>
-          {userCode === 'CADMIN' ? <Icons icon="dropdown" /> : null}
+          {userCode === 'CADMIN' && !location.pathname.includes('/direct') ? (
+            <Icons icon="dropdown" />
+          ) : null}
         </Title>
         <ChannelHeaderDropdown
           isOpen={dropdownOpen}
@@ -181,7 +184,8 @@ const ChannelHeader = () => {
         />
       </DropdownWrapper>
 
-      {currentWorkspaceId !== 'main' ? (
+      {currentWorkspaceId !== 'main' &&
+      !location.pathname.includes('/direct') ? (
         <MemberListWrapper ref={memberListRef}>
           <Members
             onClick={() => {

@@ -65,7 +65,8 @@ const UserDropdown = forwardRef<HTMLDivElement, userDropdownType>(
     const [userInfo, setUserInfo] = useRecoilState(user);
     const [membersStatus, setMembersStatus] = useRecoilState(memberStatus);
 
-    const logout = () => {
+    const logout = async () => {
+      await changeStatus('OFFLINE');
       localStorage.removeItem('user');
       setUserInfo({
         accessToken: '',
@@ -76,7 +77,6 @@ const UserDropdown = forwardRef<HTMLDivElement, userDropdownType>(
         profileImage: '',
         statusCode: '',
       });
-      changeStatus('OFFLINE');
     };
 
     const changeStatus = async (statusCode: string) => {

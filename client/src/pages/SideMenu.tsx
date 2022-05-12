@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import DirectMessage from 'molecules/sidemenu/DirectMessage';
 import SideHeader from 'organisms/header/SideHeader';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import Friends from '../molecules/sidemenu/Friends';
 import { currentChannel, currentWorkspace, isOpenSide } from '../recoil/atom';
 import ChannelSection from '../organisms/sidemenu/channel/ChannelSection';
 import WorkSpaceSection from '../organisms/sidemenu/workspace/WorkSpaceSection';
@@ -19,7 +18,8 @@ const Container = styled(motion.div)`
   padding: 16px 18px;
 `;
 const Contents = styled.div`
-  height: calc(100vh - 265px);
+  width: 264px;
+  height: calc(100vh - 275px);
   overflow-y: scroll;
   overflow-x: hidden;
   -ms-overflow-style: none;
@@ -56,12 +56,10 @@ const SideMenu = () => {
     >
       <SideHeader />
       <WorkSpaceSection />
-      {isOpen && currentWorkspaceId !== 'main' ? (
-        <Contents>
-          <ChannelSection />
-          <DirectMessage />
-        </Contents>
-      ) : null}
+      <Contents>
+        {isOpen && currentWorkspaceId !== 'main' ? <ChannelSection /> : null}
+        <DirectMessage />
+      </Contents>
     </Container>
   );
 };

@@ -126,3 +126,13 @@ export const memberStatus = atom<userStatusInfoType>({
   key: 'memberStatus',
   default: {},
 });
+
+export const searchResults = atom<number[]>({
+  key: 'searchResults',
+  default: [],
+});
+
+export const searchIndex = atom<number>({
+  key: 'searchIndex',
+  default: 0,
+});
