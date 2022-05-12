@@ -107,9 +107,3 @@ task integrationTest(type: Test) {
 test {
     useJUnitPlatform()
 }
-
-integrationTest {
-    useJUnitPlatform()
-}
-
-check.dependsOn integrationTest

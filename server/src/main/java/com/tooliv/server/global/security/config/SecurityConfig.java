@@ -75,11 +75,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             // authorizeRequests() : HttpServletRequests 를 사용하는 요청들에 대한 접근 제한을 설정
             .authorizeRequests()
             .antMatchers("/api/user/login").permitAll()
+            .antMatchers("/api/admin/**").hasAnyRole("ADMIN", "MANAGER")
             .antMatchers(HttpMethod.PATCH, "/api/user").authenticated()
-            .antMatchers(HttpMethod.DELETE, "/api/admin").hasRole("ADMIN")
             .antMatchers(HttpMethod.POST, "/api/user").permitAll()
-            .antMatchers(HttpMethod.GET, "/api/admin/**").hasAnyRole("ADMIN", "MANAGER")
-            .antMatchers(HttpMethod.PATCH, "/api/admin/code").hasRole("ADMIN")
             .antMatchers("/api/user/image", "/api/user/search/**").hasAnyRole("ADMIN", "MANAGER", "USER")
             .antMatchers("/api/v3/**", "/swagger-ui/**", "/swagger/**", "/swagger-resources/**", "/v3/api-docs").permitAll()
             .antMatchers("/chatting/**").permitAll()

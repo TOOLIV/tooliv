@@ -1,0 +1,119 @@
+{
+  "name": "client",
+  "main": "public/electron.js",
+  "homepage": ".",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@emotion/react": "^11.9.0",
+    "@emotion/styled": "^11.8.1",
+    "@stomp/stompjs": "^6.1.2",
+    "@testing-library/jest-dom": "^5.14.1",
+    "@testing-library/react": "^12.0.0",
+    "@testing-library/user-event": "^13.2.1",
+    "@types/jest": "^27.4.1",
+    "@types/marked": "^4.0.3",
+    "@types/node": "^16.11.27",
+    "@types/react": "^17.0.20",
+    "@types/react-dom": "^17.0.9",
+    "axios": "^0.26.1",
+    "electron-is-dev": "^2.0.0",
+    "framer-motion": "^6.3.0",
+    "is-electron": "^2.2.1",
+    "lodash": "^4.17.21",
+    "marked": "^4.0.14",
+    "net": "^1.0.2",
+    "openvidu-browser": "^2.21.0",
+    "path-browserify": "^1.0.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-router-dom": "^6.3.0",
+    "react-scripts": "5.0.1",
+    "react-select": "^5.3.0",
+    "react-spinners": "^0.11.0",
+    "react-toggle-dark-mode": "^1.0.4",
+    "recoil": "^0.6.1",
+    "recoil-nexus": "^0.3.15",
+    "recoil-persist": "^4.1.0",
+    "sockjs-client": "^1.6.0",
+    "stompjs": "^2.3.3",
+    "styled-components": "^5.3.5",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "react-start": "react-scripts start",
+    "react-build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "start": "tsc ./public/electron.ts && concurrently \"cross-env npm run react-start\" \"wait-on http://localhost:3000 && electron .\"",
+    "build": "npm run react-build && electron-builder",
+    "release": "npm run react-build && electron-builder --publish=always",
+    "lint": "eslint './src**/*.{ts,tsx}'",
+    "electron": "electron ."
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@types/sockjs-client": "^1.5.1",
+    "@types/stompjs": "^2.3.5",
+    "concurrently": "^7.1.0",
+    "cra-bundle-analyzer": "^0.1.1",
+    "cross-env": "^7.0.3",
+    "electron": "^18.1.0",
+    "electron-builder": "^23.0.3",
+    "typescript": "^4.6.3",
+    "wait-on": "^6.0.1"
+  },
+  "build": {
+    "productName": "Tooliv",
+    "appId": "com.tooliv.electron",
+    "asar": true,
+    "mac": {
+      "target": [
+        "default"
+      ],
+      "icon": "build/icons/Tooliv.icns"
+    },
+    "dmg": {
+      "title": "Tooliv",
+      "icon": "build/icons/Tooliv.icns"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "build/icons/Tooliv.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": false,
+      "createDesktopShortcut": true,
+      "perMachine": true,
+      "language": 1042,
+      "installerIcon": "build/icons/Tooliv.ico",
+      "shortcutName": "Tooliv",
+      "uninstallDisplayName": "Tooliv"
+    },
+    "directories": {
+      "buildResources": "./build/",
+      "output": "./dist/"
+    }
+  },
+  "proxy": "http://localhost:8080"
+}

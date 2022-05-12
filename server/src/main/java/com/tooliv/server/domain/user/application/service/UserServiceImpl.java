@@ -2,7 +2,7 @@ package com.tooliv.server.domain.user.application.service;
 
 import com.tooliv.server.domain.user.application.dto.request.LogInRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.NicknameUpdateRequestDTO;
-import com.tooliv.server.domain.user.application.dto.request.SignUpRequestDTO;
+import com.tooliv.server.domain.user.application.dto.request.PasswordUpdateRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.StatusRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.StatusUpdateRequestDTO;
 import com.tooliv.server.domain.user.application.dto.response.LogInResponseDTO;
@@ -14,9 +14,7 @@ import com.tooliv.server.domain.user.application.dto.response.UserInfoResponseDT
 import com.tooliv.server.domain.user.application.dto.response.UserListResponseDTO;
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.enums.StatusCode;
-import com.tooliv.server.domain.user.domain.enums.UserCode;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
-import com.tooliv.server.global.exception.DuplicateEmailException;
 import com.tooliv.server.global.common.AwsS3Service;
 import com.tooliv.server.global.exception.UserNotFoundException;
 import com.tooliv.server.global.security.util.JwtAuthenticationProvider;
@@ -48,21 +46,6 @@ public class UserServiceImpl implements UserService {
 
     private final PasswordEncoder passwordEncoder;
 
-    @Override
-    public void signUp(SignUpRequestDTO signUpRequestDTO) {
-        checkEmail(signUpRequestDTO.getEmail());
-
-        User user = User.builder()
-            .email(signUpRequestDTO.getEmail())
-            .name(signUpRequestDTO.getName())
-            .nickname(signUpRequestDTO.getName())
-            .password(passwordEncoder.encode(signUpRequestDTO.getPassword()))
-            .userCode(UserCode.USER)
-            .statusCode(StatusCode.OFFLINE)
-            .createdAt(LocalDateTime.now()).build();
-
-        userRepository.save(user);
-    }
 
     @Override
     public LogInResponseDTO logIn(LogInRequestDTO logInRequestDTO) {
@@ -126,6 +109,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void updatePassword(PasswordUpdateRequestDTO passwordUpdateRequestDTO) {
+        User user = getCurrentUser();
+        user.updatePassword(passwordEncoder.encode(passwordUpdateRequestDTO.getPassword()));
+
+        userRepository.save(user);
+    }
+
+    @Override
     public void uploadProfileImage(MultipartFile multipartFile) {
         String fileName = awsS3Service.uploadFile(multipartFile);
 
@@ -133,15 +124,6 @@ public class UserServiceImpl implements UserService {
         user.updateProfileImage(fileName);
 
         userRepository.save(user);
-    }
-
-    @Override
-    public void checkEmail(String email) {
-        boolean emailExists = userRepository.existsByEmailAndDeletedAt(email, null);
-
-        if (emailExists) {
-            throw new DuplicateEmailException("해당 이메일은 중복임");
-        }
     }
 
     @Override
