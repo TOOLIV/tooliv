@@ -1,0 +1,17 @@
+@font-face {
+  font-family: 'SUIT';
+  font-style: bold;
+  font-weight: 700;
+  src: url('assets/fonts/SUIT-Bold.woff2') format('woff2'),
+    url('assets/fonts/SUIT-Bold.ttf') format('truetype'),
+    url('assets/fonts/SUIT-Bold.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'SUIT';
+  font-style: medium;
+  font-weight: 600;
+  src: url('assets/fonts/SUIT-Medium.woff2') format('woff2'),
+    url('assets/fonts/SUIT-Medium.ttf') format('truetype'),
+    url('assets/fonts/SUIT-Medium.otf') format('opentype');
+}
