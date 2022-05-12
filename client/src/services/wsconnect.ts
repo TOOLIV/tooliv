@@ -198,7 +198,10 @@ export const sub = () => {
         if (window.location.pathname.includes('/direct')) {
           updateLoggedTime(channelId, 'DM');
         } else {
-          updateLoggedTime(channelId, 'CHANNEL');
+          console.log('Update');
+          updateLoggedTime(channelId, 'CHANNEL').then((res) => {
+            console.log(res);
+          });
         }
       } else {
         // 현재 채널 아이디와 도착한 메시지의 채널 아이디가 다르면
