@@ -55,7 +55,26 @@ const WorkSpaceSection = () => {
 
   const handleWorkspace = async () => {
     const response = await getWorkspaceList();
-    setWorkspaceList(response.data.workspaceGetResponseDTOList);
+    const notiWorkspace = notiList.filter((noti) => {
+      if (noti.notificationRead) {
+        return noti;
+      }
+      return null;
+    });
+
+    const map = new Map(notiWorkspace.map((el) => [el.workspaceId, el]));
+    console.log(map);
+    const newWSList = response.data.workspaceGetResponseDTOList.map(
+      (dto: any) => {
+        if (map.get(dto.id)) {
+          return { ...dto, noti: true };
+        } else {
+          return { ...dto, noti: false };
+        }
+      }
+    );
+    console.log(newWSList);
+    setWorkspaceList(newWSList);
   };
 
   const getNextChannelId = async (workspaceId: string) => {
@@ -80,14 +99,14 @@ const WorkSpaceSection = () => {
         [id]: channelId,
       });
       setCurrentChannel(channelId);
-      setWorkspaceList(
-        workspaceList.map((dto: any) => {
-          console.log(dto.id, id);
-          if (id === dto.id) {
-            return { ...dto, noti: true };
-          } else return dto;
-        })
-      );
+      // setWorkspaceList(
+      //   workspaceList.map((dto: any) => {
+      //     console.log(dto.id, id);
+      //     if (id === dto.id) {
+      //       return { ...dto, noti: false };
+      //     } else return dto;
+      //   })
+      // );
       navigate(`${id}/${channelId}`);
     }
   };

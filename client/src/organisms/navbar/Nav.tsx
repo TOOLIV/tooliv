@@ -129,30 +129,30 @@ const Nav = () => {
     const {
       data: { directInfoDTOList },
     } = dmRes;
-    const {
-      data: { workspaceGetResponseDTOList },
-    } = wsRes;
+    // const {
+    //   data: { workspaceGetResponseDTOList },
+    // } = wsRes;
+    console.log(notificationChannelList);
     setDmList(directInfoDTOList);
-    // setStatus()
-    console.log(directInfoDTOList);
-
     setNotiList([...notificationChannelList, ...directInfoDTOList]);
 
-    const notiWorkspace = notiList.filter((noti) => {
-      if (!noti.notificationRead) {
-        return noti;
-      }
-      return null;
-    });
-    const map = new Map(notiWorkspace.map((el) => [el.workspaceId, el]));
-    const newWSList = workspaceGetResponseDTOList.map((dto: any) => {
-      if (map.get(dto.id)) {
-        return { ...dto, noti: false };
-      } else {
-        return { ...dto, noti: true };
-      }
-    });
-    setWorkspaceList(newWSList);
+    // const notiWorkspace = notiList.filter((noti) => {
+    //   if (!noti.notificationRead) {
+    //     return noti;
+    //   }
+    //   return null;
+    // });
+
+    // const map = new Map(notiWorkspace.map((el) => [el.workspaceId, el]));
+    // const newWSList = workspaceGetResponseDTOList.map((dto: any) => {
+    //   if (map.get(dto.id)) {
+    //     return { ...dto, noti: true };
+    //   } else {
+    //     return { ...dto, noti: false };
+    //   }
+    // });
+    // console.log(newWSList);
+    // setWorkspaceList(newWSList);
   };
 
   useEffect(() => {

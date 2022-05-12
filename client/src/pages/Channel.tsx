@@ -56,25 +56,26 @@ const Channel = () => {
     useRecoilState<workspaceListType[]>(wsList);
 
   useEffect(() => {
-    let flag = true;
+    let flag = false;
     const newList: channelNotiType[] = notiList.map((noti) => {
       if (
         noti.workspaceId === workspaceId &&
         noti.channelId !== channelId &&
-        !noti.notificationRead
+        noti.notificationRead
       ) {
-        flag = false;
+        flag = true;
       }
       if (noti.channelId === channelId) {
-        return { ...noti, notificationRead: true };
+        return { ...noti, notificationRead: false };
       } else return noti;
     });
 
-    if (flag) {
+    if (!flag) {
+      console.log('all channel read');
       setWorkspaceList(
         workspaceList.map((dto: any) => {
           if (workspaceId === dto.id) {
-            return { ...dto, noti: true };
+            return { ...dto, noti: false };
           } else return dto;
         })
       );
@@ -83,7 +84,6 @@ const Channel = () => {
     setIsLoading(true);
     enterChannel(channelId!).then(() => {
       subChannel(channelId!).then((res) => {
-        console.log(res);
         setContents(res.data.chatMessageDTOList);
         setIsLoading(false);
 

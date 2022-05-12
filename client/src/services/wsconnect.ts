@@ -202,7 +202,7 @@ export const sub = () => {
             noti.channelId === recChannelId
           ) {
             updateWorkspaceId = noti.workspaceId!;
-            return { ...noti, notificationRead: false };
+            return { ...noti, notificationRead: true };
           } else {
             return noti;
           }
@@ -215,7 +215,7 @@ export const sub = () => {
                 workspace.id !== workspaceId &&
                 workspace.id === updateWorkspaceId
               ) {
-                return { ...workspace, noti: false };
+                return { ...workspace, noti: true };
               } else {
                 return workspace;
               }

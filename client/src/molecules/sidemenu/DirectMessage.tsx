@@ -101,14 +101,14 @@ const DirectMessage = () => {
                 <Text
                   size={12}
                   weight={
-                    !map.get(dm.channelId)?.notificationRead ? 'bold' : 'medium'
+                    map.get(dm.channelId)?.notificationRead ? 'bold' : 'medium'
                   }
                 >
                   {dm.receiveName}
                 </Text>
                 {/* <Label id={dm.channelId} name={dm.receiveName} /> */}
               </InnerContainer>
-              {!map.get(dm.channelId)?.notificationRead && <Noti>●</Noti>}
+              {map.get(dm.channelId)?.notificationRead && <Noti>●</Noti>}
             </NotiWrapper>
           </FriendContainer>
         ))}
