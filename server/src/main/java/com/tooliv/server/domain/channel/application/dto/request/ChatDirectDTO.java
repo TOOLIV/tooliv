@@ -53,9 +53,8 @@ public class ChatDirectDTO implements Serializable {
     @ApiModelProperty(name = "파일 이름")
     private List<String> originFiles;
 
-    public void updateFiles(List<String> files,List<String> originFiles) {
-        this.files = files;
-        this.originFiles = originFiles;
+    public void createTime(LocalDateTime now) {
+        this.sendTime = now;
     }
 
     public void updateChatId(long chatId) {
