@@ -44,18 +44,27 @@ const DM = () => {
   const { accessToken, email } = useRecoilValue(user);
   const [notiList, setNotiList] =
     useRecoilState<channelNotiType[]>(channelNotiList);
-  const { channelId } = useParams<string>();
+  const { workspaceId, channelId } = useParams<string>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     window.addEventListener('beforeunload', (e: any) => {
       updateLoggedTime(channelId, 'DM');
     });
+    return () => update();
   }, []);
+
+  const update = () => {
+    console.log('dm unmount update');
+    updateLoggedTime(channelId, 'DM').then((res) => {
+      console.log(res);
+    });
+  };
 
   useEffect(() => {
     const newList: channelNotiType[] = notiList.map((noti) => {
       if (noti.channelId === channelId) {
+        console.log('HI');
         return { ...noti, notificationRead: false };
       } else return noti;
     });
@@ -67,8 +76,12 @@ const DM = () => {
         setIsLoading(false);
       });
     });
-    updateLoggedTime(channelId, 'DM');
+    // updateLoggedTime(channelId, 'DM');
   }, [channelId]);
+
+  useEffect(() => {
+    // updateLoggedTime(channelId, 'DM');
+  }, [workspaceId]);
 
   const onSendClick = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();

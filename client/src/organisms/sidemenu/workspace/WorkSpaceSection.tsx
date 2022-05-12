@@ -60,6 +60,7 @@ const WorkSpaceSection = () => {
   };
 
   const handleWorkspace = async () => {
+    console.log('get notiList');
     const chaRes = await getChannels(userInfo.email);
     const dmRes = await getDMList(userInfo.email);
     const response = await getWorkspaceList();
@@ -75,6 +76,7 @@ const WorkSpaceSection = () => {
 
     setDmList(directInfoDTOList);
     setNotiList(newNotiList);
+    console.log(notificationChannelList);
 
     const notiWorkspace = newNotiList.filter((noti) => {
       if (noti.notificationRead) {
