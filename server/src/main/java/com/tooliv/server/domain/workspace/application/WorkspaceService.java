@@ -17,8 +17,6 @@ public interface WorkspaceService {
 
     WorkspaceListGetResponseDTO getWorkspaceList();
 
-    String getImageURL(String fileName);
-
     WorkspaceNameGetResponseDTO getWorkspaceName(String workspaceId);
 
 }

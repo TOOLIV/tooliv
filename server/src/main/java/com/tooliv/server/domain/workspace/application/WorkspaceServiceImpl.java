@@ -45,9 +45,9 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     private final UserRepository userRepository;
 
-    private  final WorkspaceMemberService workspaceMemberService;
+    private final WorkspaceMemberService workspaceMemberService;
 
-    private  final ChannelService channelService;
+    private final ChannelService channelService;
 
     private final AwsS3Service awsS3Service;
 
@@ -138,7 +138,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         }
 
         List<Channel> channelList = channelRepository.findByDeletedAtAndWorkspace(null, workspace);
-        for(Channel channel : channelList){
+        for (Channel channel : channelList) {
             channelService.deleteChannel(channel.getId());
         }
 
@@ -156,10 +156,11 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         List<WorkspaceGetResponseDTO> workspaceGetResponseDTOList = new ArrayList<>();
 
         workspaceList.forEach(workspace -> {
+            String thumbnailImage = awsS3Service.getFilePath(workspace.getThumbnailImage());
             WorkspaceGetResponseDTO workspaceGetResponseDTO = WorkspaceGetResponseDTO.builder()
                 .id(workspace.getId())
                 .name(workspace.getName())
-                .thumbnailImage(getImageURL(workspace.getThumbnailImage()))
+                .thumbnailImage(thumbnailImage)
                 .build();
 
             workspaceGetResponseDTOList.add(workspaceGetResponseDTO);
@@ -168,21 +169,14 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     @Override
-    public String getImageURL(String fileName) {
-        if (fileName == null) {
-            return null;
-        }
-        return "https://tooliva402.s3.ap-northeast-2.amazonaws.com/" + fileName;
-    }
-
-    @Override
     public WorkspaceNameGetResponseDTO getWorkspaceName(String workspaceId) {
         Workspace workspace = workspaceRepository.findById(workspaceId)
             .orElseThrow(() -> new IllegalArgumentException("해당 워크스페이스를 찾을 수 없습니다."));
 
+        String thumbnailImage = awsS3Service.getFilePath(workspace.getThumbnailImage());
         WorkspaceNameGetResponseDTO workspaceNameGetResponseDTO = WorkspaceNameGetResponseDTO.builder()
             .name(workspace.getName())
-            .thumbnailImage(getImageURL(workspace.getThumbnailImage()))
+            .thumbnailImage(thumbnailImage)
             .build();
 
         return workspaceNameGetResponseDTO;
