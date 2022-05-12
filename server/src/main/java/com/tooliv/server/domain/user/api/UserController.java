@@ -1,5 +1,6 @@
 package com.tooliv.server.domain.user.api;
 
+import com.tooliv.server.domain.user.application.dto.request.PasswordUpdateRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.SignUpRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.StatusRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.StatusUpdateRequestDTO;
@@ -159,9 +160,15 @@ public class UserController {
 
     @PatchMapping("/password")
     @ApiOperation(value = "비밀번호 변경")
-    public ResponseEntity<? extends BaseResponseDTO> changePassword(
-        @RequestBody @ApiParam(value = "수정할 비밀번호", required = true) PasswordRequestDTO passwordRequestDTO) {
+    public ResponseEntity<? extends BaseResponseDTO> updatePassword(
+        @RequestBody @ApiParam(value = "수정할 비밀번호", required = true) PasswordUpdateRequestDTO passwordUpdateRequestDTO) {
+        try {
+            userService.updatePassword(passwordUpdateRequestDTO);
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(409).body(BaseResponseDTO.of(e.getMessage()));
+        }
 
+        return ResponseEntity.status(204).body(BaseResponseDTO.of("비밀번호 변경 완료"));
     }
 
 }
