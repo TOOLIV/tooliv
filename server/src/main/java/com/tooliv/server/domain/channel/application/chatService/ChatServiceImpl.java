@@ -229,7 +229,7 @@ public class ChatServiceImpl implements ChatService {
         if (value.getType().equals("TALK")) {
             value.updateChatId(idx);
             redisChannelTemplate.opsForList().rightPush(key, value);
-            chatMessage = ChatMessage.builder().chat(chat).content(value.getContents()).sendTime(LocalDateTime.now()).build();
+            chatMessage = ChatMessage.builder().chat(chat).content(value.getContents()).sendTime(value.getSendTime()).build();
             chatMessageRepository.save(chatMessage);
         } else if (value.getType().equals("UPDATE")) {
             ChatRequestDTO chatRequestDTO = redisChannelTemplate.opsForList().index(key, value.getChatId());
@@ -265,7 +265,7 @@ public class ChatServiceImpl implements ChatService {
         if (value.getType().equals("TALK")) {
             value.updateChatId(idx);
             redisDirectTemplate.opsForList().rightPush(key, value);
-            chatMessage = ChatMessage.builder().chat(chat).content(value.getContents()).sendTime(LocalDateTime.now()).build();
+            chatMessage = ChatMessage.builder().chat(chat).content(value.getContents()).sendTime(value.getSendTime()).build();
             chatMessageRepository.save(chatMessage);
         } else if (value.getType().equals("UPDATE")) {
             ChatDirectDTO chatDirectDTO = redisDirectTemplate.opsForList().index(key, value.getChatId());
