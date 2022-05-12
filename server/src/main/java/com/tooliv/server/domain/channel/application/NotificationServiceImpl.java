@@ -18,6 +18,7 @@ import com.tooliv.server.domain.user.domain.repository.UserRepository;
 import com.tooliv.server.global.common.AwsS3Service;
 import java.util.ArrayList;
 import java.util.List;
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     private final AwsS3Service awsS3Service;
 
+    @Transactional
     @Override
     public NotificationListResponseDTO getNotificationList(String email) {
         User user = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
@@ -52,7 +54,7 @@ public class NotificationServiceImpl implements NotificationService {
         }
         return new NotificationListResponseDTO(notificationInfoDTOList);
     }
-
+    @Transactional
     @Override
     public DirectListResponseDTO getDirectNotificationList(String email) {
         // 현재 나의 아이디
@@ -74,7 +76,7 @@ public class NotificationServiceImpl implements NotificationService {
         }
         return new DirectListResponseDTO(directInfoDTOList);
     }
-
+    @Transactional
     @Override
     public void updateLoggedAt(NotificationLoggedAtUpdateRequestDTO notificationLoggedAtUpdateRequestDTO) {
         User user = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
@@ -93,7 +95,7 @@ public class NotificationServiceImpl implements NotificationService {
             directChatRoomMembersRepository.save(directChatRoomMembers);
         }
     }
-
+    @Transactional
     boolean checkNotification(ChannelMembers channelMembers, Channel channel) {
         if (channelMembers.getLoggedAt() == null) {// 멤버가 로그인한적 없는 경우
             return true;
@@ -107,7 +109,7 @@ public class NotificationServiceImpl implements NotificationService {
             return false;
         }
     }
-
+    @Transactional
     boolean checkDirectNotification(DirectChatRoomMembers directChatRoomMembers, DirectChatRoom directChatRoom) {
         if (directChatRoomMembers.getLoggedAt() == null) {// 멤버가 로그인한적 없는 경우
             return true;
