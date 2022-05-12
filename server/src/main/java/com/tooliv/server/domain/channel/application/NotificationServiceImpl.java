@@ -16,6 +16,7 @@ import com.tooliv.server.domain.channel.domain.repository.DirectChatRoomReposito
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
 import com.tooliv.server.global.common.AwsS3Service;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.transaction.Transactional;
@@ -85,16 +86,18 @@ public class NotificationServiceImpl implements NotificationService {
             Channel channel = channelRepository.findById(notificationLoggedAtUpdateRequestDTO.getChannelId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 Channel 채팅 방이 존재하지 않습니다."));
             ChannelMembers channelMembers = channelMembersRepository.findByChannelAndUser(channel, user).orElseThrow(() -> new IllegalArgumentException("채널 정보가 존재하지 않습니다."));
-            channelMembers.updateLoggedAt();
-            channelMembersRepository.save(channelMembers);
+//            channelMembers.updateLoggedAt();
+            channelMembersRepository.updateLogged(channelMembers.getId(), LocalDateTime.now());
+//            channelMembersRepository.save(channelMembers);
         } else if (notificationLoggedAtUpdateRequestDTO.getType().equals("DM")) {
             System.out.println("------------------DM--------------notification----------");
             DirectChatRoom directChatRoom = directChatRoomRepository.findById(notificationLoggedAtUpdateRequestDTO.getChannelId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 Direct 채팅 방이 존재하지 않습니다."));
             DirectChatRoomMembers directChatRoomMembers = directChatRoomMembersRepository.findByDirectChatRoomAndUser(directChatRoom, user)
                 .orElseThrow(() -> new IllegalArgumentException("해당 멤버가 존재하지 않습니다."));
-            directChatRoomMembers.updateLoggedAt();
-            directChatRoomMembersRepository.save(directChatRoomMembers);
+//            directChatRoomMembers.updateLoggedAt();
+            directChatRoomMembersRepository.updateLogged(directChatRoomMembers.getId(),LocalDateTime.now());
+//            directChatRoomMembersRepository.save(directChatRoomMembers);
         }
     }
 
