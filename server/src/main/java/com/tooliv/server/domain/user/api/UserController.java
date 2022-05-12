@@ -157,4 +157,11 @@ public class UserController {
         return ResponseEntity.status(204).body(BaseResponseDTO.of("상태 변경 완료"));
     }
 
+    @PatchMapping("/password")
+    @ApiOperation(value = "비밀번호 변경")
+    public ResponseEntity<? extends BaseResponseDTO> changePassword(
+        @RequestBody @ApiParam(value = "수정할 비밀번호", required = true) PasswordRequestDTO passwordRequestDTO) {
+
+    }
+
 }
