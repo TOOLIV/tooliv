@@ -391,6 +391,70 @@ public class WorkspaceChannelIntegrationTest extends BaseIntegrationTest {
                 // Then
                 workspaceMemberDeleteResultActions.andExpect(status().isOk());
             }
+
+            @Order(5)
+            @Test
+            void itShouldNotDeleteWorkspaceMemberWhenEmailIsInvalid() throws Exception {
+                // Give
+                assertNotNull(token);
+                assertEquals(jwtAuthenticationProvider.getEmail(token), "kimssafy@test.com");
+
+                String invalidEmail = "wrongssafy@test.com";
+
+                String workspaceName = "seoul";
+                Workspace workspace = workspaceRepository.findByNameAndDeletedAt(workspaceName, null).orElse(null);
+                String workspaceId = workspace.getId();
+
+                // When
+                ResultActions workspaceMemberDeleteResultActions = mockMvc.perform(delete("/api/workspace/" + workspaceId + "/member?email=" + invalidEmail)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token));
+
+                // Then
+                workspaceMemberDeleteResultActions.andExpect(status().isConflict());
+            }
+
+            @Order(6)
+            @Test
+            void itShouldNotDeleteWorkspaceMemberWhenWorkspaceIsInvalid() throws Exception {
+                // Give
+                assertNotNull(token);
+                assertEquals(jwtAuthenticationProvider.getEmail(token), "kimssafy@test.com");
+
+                String deleteEmail = "parkssafy@test.com";
+
+                String invalidWorkspaceId = "1234-1234-1234";
+
+                // When
+                ResultActions workspaceMemberDeleteResultActions = mockMvc.perform(delete("/api/workspace/" + invalidWorkspaceId + "/member?email=" + deleteEmail)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token));
+
+                // Then
+                workspaceMemberDeleteResultActions.andExpect(status().isConflict());
+            }
+
+            @Order(7)
+            @Test
+            void itShouldGetWorkspaceMemberForRegistrationSuccessfully() throws Exception {
+                // Give
+                assertNotNull(token);
+                assertEquals(jwtAuthenticationProvider.getEmail(token), "kimssafy@test.com");
+
+                String deleteEmail = "parkssafy@test.com";
+
+                String workspaceName = "seoul";
+                Workspace workspace = workspaceRepository.findByNameAndDeletedAt(workspaceName, null).orElse(null);
+                String workspaceId = workspace.getId();
+
+                // When
+                ResultActions workspaceMemberDeleteResultActions = mockMvc.perform(delete("/api/workspace/" + workspaceId + "/member?email=" + deleteEmail)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token));
+
+                // Then
+                workspaceMemberDeleteResultActions.andExpect(status().isOk());
+            }
         }
     }
 
