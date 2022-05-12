@@ -63,7 +63,10 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public TotalUsersResponseDTO getTotalUsers() {
+        int numOfUsers = userRepository.findAllUserNotDeleted()
+            .orElseThrow(() -> new UserNotFoundException("조회 가능한 회원이 없음"));
 
+        return new TotalUsersResponseDTO(numOfUsers);
     }
 
     @Override
