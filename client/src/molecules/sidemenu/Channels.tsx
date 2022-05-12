@@ -148,7 +148,7 @@ const Channels = ({
                   noti={map.get(channel.id)?.notificationRead}
                 />
               </InnerContainer>
-              {!map.get(channel.id)?.notificationRead && <Noti>●</Noti>}
+              {map.get(channel.id)?.notificationRead && <Noti>●</Noti>}
             </NotiWrapper>
             <HoverIcon
               onClick={() => handleClickModal(channel.id, i)}
@@ -183,7 +183,7 @@ const Channels = ({
                   noti={map.get(channel.id)?.notificationRead}
                 />
               </InnerContainer>
-              {!map.get(channel.id)?.notificationRead && <Noti>●</Noti>}
+              {map.get(channel.id)?.notificationRead && <Noti>●</Noti>}
             </NotiWrapper>
             <HoverIcon
               onClick={() => handleClickModal(channel.id, i + listNum)}
