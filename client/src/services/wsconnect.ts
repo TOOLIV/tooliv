@@ -13,11 +13,12 @@ import {
 import { getRecoil, setRecoil } from 'recoil-nexus';
 import { user } from 'recoil/auth';
 import { korDate } from 'utils/formatTime';
+import { updateLoggedTime } from 'api/chatApi';
 const baseURL = localStorage.getItem('baseURL');
 let sockJS = baseURL
   ? new SockJS(`${JSON.parse(baseURL).url}/chatting`)
   : // 로컬에서 테스트시 REACT_APP_TEST_URL, server 주소는 REACT_APP_BASE_SERVER_URL
-    new SockJS(`${process.env.REACT_APP_BASE_SERVER_URL}/chatting`);
+    new SockJS(`${window.env.BASE_URL}/chatting`);
 export let client: Stomp.Client = Stomp.over(sockJS);
 let subscribe: Stomp.Subscription;
 
@@ -194,6 +195,14 @@ export const sub = () => {
         // 현재 채널 아이디와 도착한 메시지의 채널 아이디가 같으면
         setRecoil(channelContents, (prev) => [...prev, content]);
         setRecoil(chatMember, (prev) => [...prev, content.email]);
+        if (window.location.pathname.includes('/direct')) {
+          updateLoggedTime(channelId, 'DM');
+        } else {
+          console.log('Update');
+          updateLoggedTime(channelId, 'CHANNEL').then((res) => {
+            console.log(res);
+          });
+        }
       } else {
         // 현재 채널 아이디와 도착한 메시지의 채널 아이디가 다르면
         const newList: channelNotiType[] = notiList.map((noti) => {

@@ -75,6 +75,7 @@ const WorkSpaceSection = () => {
 
     setDmList(directInfoDTOList);
     setNotiList(newNotiList);
+    console.log(notificationChannelList);
 
     const notiWorkspace = newNotiList.filter((noti) => {
       if (noti.notificationRead) {

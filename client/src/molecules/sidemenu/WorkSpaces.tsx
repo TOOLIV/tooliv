@@ -27,7 +27,6 @@ const WorkSpaces = ({ workspaceList, onClick }: workspacesType) => {
   const handleClickMain = (id: string) => {
     navigate(id);
   };
-  console.log(workspaceList);
 
   return (
     <WorkSpaceContainer>

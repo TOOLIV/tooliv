@@ -16,8 +16,10 @@ import com.tooliv.server.domain.channel.domain.repository.DirectChatRoomReposito
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
 import com.tooliv.server.global.common.AwsS3Service;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -80,9 +82,11 @@ public class NotificationServiceImpl implements NotificationService {
         User user = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
             .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
         if (notificationLoggedAtUpdateRequestDTO.getType().equals("CHANNEL")) {
-            Channel channel = channelRepository.getById(notificationLoggedAtUpdateRequestDTO.getChannelId());
+            Channel channel = channelRepository.findById(notificationLoggedAtUpdateRequestDTO.getChannelId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 Channel 채팅 방이 존재하지 않습니다."));
             ChannelMembers channelMembers = channelMembersRepository.findByChannelAndUser(channel, user).orElseThrow(() -> new IllegalArgumentException("채널 정보가 존재하지 않습니다."));
             channelMembers.updateLoggedAt();
+            System.out.println(LocalDateTime.now());
             channelMembersRepository.save(channelMembers);
         } else if (notificationLoggedAtUpdateRequestDTO.getType().equals("DM")) {
             DirectChatRoom directChatRoom = directChatRoomRepository.findById(notificationLoggedAtUpdateRequestDTO.getChannelId())
@@ -90,6 +94,7 @@ public class NotificationServiceImpl implements NotificationService {
             DirectChatRoomMembers directChatRoomMembers = directChatRoomMembersRepository.findByDirectChatRoomAndUser(directChatRoom, user)
                 .orElseThrow(() -> new IllegalArgumentException("해당 멤버가 존재하지 않습니다."));
             directChatRoomMembers.updateLoggedAt();
+            System.out.println(LocalDateTime.now());
             directChatRoomMembersRepository.save(directChatRoomMembers);
         }
     }
