@@ -1,6 +1,7 @@
 package com.tooliv.server.domain.channel.api;
 
 import com.tooliv.server.domain.channel.application.NotificationService;
+import com.tooliv.server.domain.channel.application.dto.request.NotificationLoggedAtUpdateRequestDTO;
 import com.tooliv.server.domain.channel.application.dto.response.DirectListResponseDTO;
 import com.tooliv.server.domain.channel.application.dto.response.NotificationListResponseDTO;
 import com.tooliv.server.global.common.BaseResponseDTO;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,9 +39,7 @@ public class NotificationController {
             notificationListResponseDTO = notificationService.getNotificationList(email);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(409).body(BaseResponseDTO.of("알람 목록 조회 실패"));
-        } catch (Exception e) {
         }
-
         return ResponseEntity.status(200).body(NotificationListResponseDTO.of("알람 목록 조회 성공", notificationListResponseDTO));
     }
 
@@ -49,9 +49,9 @@ public class NotificationController {
         @ApiResponse(code = 200, message = "logged time update 완료"),
         @ApiResponse(code = 409, message = "logged time update 실패"),
     })
-    public ResponseEntity<? extends BaseResponseDTO> updateNotification() {
-
+    public ResponseEntity<? extends BaseResponseDTO> updateNotification(@RequestBody NotificationLoggedAtUpdateRequestDTO notificationLoggedAtUpdateRequestDTO) {
         try {
+            notificationService.updateLoggedAt(notificationLoggedAtUpdateRequestDTO);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(409).body(BaseResponseDTO.of("logged time update 실패"));
         }
