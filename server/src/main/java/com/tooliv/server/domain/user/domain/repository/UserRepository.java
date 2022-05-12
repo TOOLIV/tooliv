@@ -24,6 +24,8 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     Optional<List<User>> findAllByDeletedAtAndNameContainingOrderByNameAsc(LocalDateTime localDateTime, String keyword, Pageable pageable);
 
+    Optional<List<User>> findAllByUserCodeNotAndDeletedAtAndNameContainingOrderByNameAsc(UserCode userCode, LocalDateTime localDateTime, String keyword, Pageable pageable);
+
     Optional<List<User>> findAllByUserCodeNotAndDeletedAtAndNameContainingOrderByNameAsc(UserCode userCode, LocalDateTime localDateTime, String keyword);
 
     @Query(value = "SELECT count(*) FROM user u WHERE u.deleted_at IS NULL", nativeQuery = true)
