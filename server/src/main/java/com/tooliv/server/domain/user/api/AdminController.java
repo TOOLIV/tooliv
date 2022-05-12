@@ -84,7 +84,12 @@ public class AdminController {
         TotalUsersResponseDTO totalUserResponseDTO = null;
 
         try {
-            adminService.getTotalUsers();
+            totalUserResponseDTO = adminService.getTotalUsers();
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(404).body(BaseResponseDTO.of(e.getMessage()));
+        }
+
+        return ResponseEntity.status(200).body(TotalUsersResponseDTO.of("전체 회원 수 조회 완료", totalUserResponseDTO));
     }
 
 
@@ -97,6 +102,7 @@ public class AdminController {
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(409).body(BaseResponseDTO.of(e.getMessage()));
         }
+
         return ResponseEntity.status(200).body(BaseResponseDTO.of("권한 변경 완료"));
     }
 
