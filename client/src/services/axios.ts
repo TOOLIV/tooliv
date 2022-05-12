@@ -1,8 +1,5 @@
-import { useRecoilValue, useRecoilState } from 'recoil';
-import { createBrowserHistory } from 'history';
 import axios, { AxiosInstance } from 'axios';
 import isElectron from 'is-electron';
-import { user } from 'recoil/auth';
 
 let instance: AxiosInstance;
 const baseURL = localStorage.getItem('baseURL');

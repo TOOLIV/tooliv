@@ -36,3 +36,7 @@ export const searchChat = async (
     params: { searchContent, channelId },
   });
 };
+
+export const updateLoggedTime = async (channelId?: string, type?: string) => {
+  return instance.post(`/notification/update`, { channelId, type });
+};

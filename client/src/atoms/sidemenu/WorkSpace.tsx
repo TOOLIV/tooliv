@@ -108,7 +108,7 @@ const WorkSpace = ({
       >
         {thumbnailImage ? null : <WorkspaceName>{name}</WorkspaceName>}
       </Container>
-      {!noti && <Noti>●</Noti>}
+      {noti && <Noti>●</Noti>}
     </Wrapper>
   );
 };

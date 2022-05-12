@@ -1,7 +1,6 @@
 import styled from '@emotion/styled';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import Stomp from 'stompjs';
 import Editor from '../molecules/chat/Editor';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
@@ -14,12 +13,12 @@ import {
 } from '../recoil/atom';
 import { channelNotiType, contentTypes } from '../types/channel/contentType';
 import Messages from '../organisms/chat/Messages';
-import { enterChannel, enterDM, subChannel, subDM } from 'api/chatApi';
+import { enterDM, subDM, updateLoggedTime } from 'api/chatApi';
 import Files from 'organisms/chat/Files';
 import { FileTypes } from 'types/common/fileTypes';
 import { user } from 'recoil/auth';
 import LoadSpinner from 'atoms/common/LoadSpinner';
-import { send, sendDM } from 'services/wsconnect';
+import { sendDM } from 'services/wsconnect';
 
 const Container = styled.div`
   width: 100%;
@@ -42,26 +41,33 @@ const DM = () => {
     useRecoilState<contentTypes[]>(channelContents);
   const [fileUrl, setFileUrl] = useRecoilState<string[]>(chatFileUrl);
   const [fileNames, setFileNames] = useRecoilState<string[]>(chatFileNames);
-  const { accessToken, nickname, email } = useRecoilValue(user);
+  const { accessToken, email } = useRecoilValue(user);
   const [notiList, setNotiList] =
     useRecoilState<channelNotiType[]>(channelNotiList);
   const { channelId } = useParams<string>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    window.addEventListener('beforeunload', (e: any) => {
+      updateLoggedTime(channelId, 'DM');
+    });
+  }, []);
+
   useEffect(() => {
     const newList: channelNotiType[] = notiList.map((noti) => {
       if (noti.channelId === channelId) {
-        return { ...noti, notificationRead: true };
+        return { ...noti, notificationRead: false };
       } else return noti;
     });
     setNotiList(newList);
     setIsLoading(true);
     enterDM(channelId!).then(() => {
       subDM(channelId!).then((res) => {
-        console.log(res.data);
         setContents(res.data.directInfoDTOList);
         setIsLoading(false);
       });
     });
+    updateLoggedTime(channelId, 'DM');
   }, [channelId]);
 
   const onSendClick = (event: React.MouseEvent<HTMLElement>) => {
