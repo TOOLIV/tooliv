@@ -2,6 +2,7 @@ package com.tooliv.server.domain.user.application.service;
 
 import com.tooliv.server.domain.user.application.dto.request.LogInRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.NicknameUpdateRequestDTO;
+import com.tooliv.server.domain.user.application.dto.request.PasswordUpdateRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.SignUpRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.StatusRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.StatusUpdateRequestDTO;
@@ -122,6 +123,14 @@ public class UserServiceImpl implements UserService {
         User user = getCurrentUser();
 
         user.updateStatusCode(statusUpdateRequestDTO.getStatusCode());
+        userRepository.save(user);
+    }
+
+    @Override
+    public void updatePassword(PasswordUpdateRequestDTO passwordUpdateRequestDTO) {
+        User user = getCurrentUser();
+        user.updatePassword(passwordEncoder.encode(passwordUpdateRequestDTO.getPassword()));
+
         userRepository.save(user);
     }
 

@@ -2,6 +2,7 @@ package com.tooliv.server.domain.user.application.service;
 
 import com.tooliv.server.domain.user.application.dto.request.LogInRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.NicknameUpdateRequestDTO;
+import com.tooliv.server.domain.user.application.dto.request.PasswordUpdateRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.SignUpRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.StatusRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.StatusUpdateRequestDTO;
@@ -24,6 +25,8 @@ public interface UserService {
     NicknameResponseDTO updateNickname(NicknameUpdateRequestDTO nicknameUpdateRequestDTO);
 
     void updateStatus(StatusUpdateRequestDTO statusUpdateRequestDTO);
+
+    void updatePassword(PasswordUpdateRequestDTO passwordUpdateRequestDTO);
 
     void uploadProfileImage(MultipartFile multipartFile);
 

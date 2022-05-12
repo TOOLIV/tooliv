@@ -71,4 +71,8 @@ public class User extends BaseEntity implements Serializable {
     public void updateStatusCode(StatusCode statusCode) {
         this.statusCode = statusCode;
     }
+
+    public void updatePassword(String password) {
+        this.password = password;
+    }
 }
