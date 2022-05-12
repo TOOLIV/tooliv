@@ -125,7 +125,7 @@ const PublicChannelListModal = ({
         {
           channelId: id,
           workspaceId,
-          notificationRead: true,
+          notificationRead: false,
         },
       ]);
       navigate(`${workspaceId}/${id}`);

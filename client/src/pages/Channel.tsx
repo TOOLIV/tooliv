@@ -93,14 +93,30 @@ const Channel = () => {
         setChatMembers(result);
       });
     });
-    updateLoggedTime(channelId, 'CHANNEL');
+    // updateLoggedTime(channelId, 'CHANNEL');
   }, [channelId]);
 
   useEffect(() => {
+    // console.log('----------' + notiList);
     window.addEventListener('beforeunload', (e: any) => {
       updateLoggedTime(channelId, 'CHANNEL');
     });
-  }, []);
+    // return () => update();
+  }, [workspaceId, channelId]);
+
+  // const update = () => {
+  //   console.log('dm unmount update');
+  //   updateLoggedTime(channelId, 'CHANNEL').then((res) => {
+  //     console.log(res);
+  //   });
+  // };
+
+  // useEffect(() => {
+  //   console.log('hi');
+  //   updateLoggedTime(channelId, 'CHANNEL').then((res) => {
+  //     console.log(res);
+  //   });
+  // }, [workspaceId]);
 
   const onSendClick = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();

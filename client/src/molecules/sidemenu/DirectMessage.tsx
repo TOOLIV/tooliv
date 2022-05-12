@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Icons from '../../atoms/common/Icons';
 import Avatar from '../../atoms/profile/Avatar';
 import Label from '../../atoms/common/Label';
