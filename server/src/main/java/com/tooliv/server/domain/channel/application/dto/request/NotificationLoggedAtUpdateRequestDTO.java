@@ -10,9 +10,6 @@ import lombok.NoArgsConstructor;
 @Getter
 public class NotificationLoggedAtUpdateRequestDTO {
 
-    @ApiModelProperty(name = "메시지 ID")
-    private long chatId;
-
     @ApiModelProperty(name = "채팅방 ID")
     private String channelId;
 
