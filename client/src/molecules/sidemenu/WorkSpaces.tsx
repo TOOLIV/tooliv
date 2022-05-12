@@ -27,6 +27,7 @@ const WorkSpaces = ({ workspaceList, onClick }: workspacesType) => {
   const handleClickMain = (id: string) => {
     navigate(id);
   };
+  console.log(workspaceList);
 
   return (
     <WorkSpaceContainer>
@@ -35,7 +36,7 @@ const WorkSpaces = ({ workspaceList, onClick }: workspacesType) => {
         name="홈"
         thumbnailImage={mainSrc}
         onClick={handleClickMain}
-        noti={true}
+        noti={false}
       />
       {workspaceList.map((workspace) => (
         <WorkSpace
