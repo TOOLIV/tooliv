@@ -33,7 +33,6 @@ public class RedisUserSubscriber implements MessageListener {
             String publishMessage = (String) redisDirectTemplate.getStringSerializer()
                 .deserialize(message.getBody());
             // ChatMessage 객채로 맵핑
-            objectMapper.registerModule(new JavaTimeModule());
             ChatDirectDTO chatDirectDTO = objectMapper.readValue(publishMessage, ChatDirectDTO.class);
             // Websocket 구독자에게 채팅 메시지 Send
             User user1 = directChatRoomRepository.findById(chatDirectDTO.getChannelId()).orElseThrow(() -> new IllegalArgumentException("채팅방 정보가 존재하지 않습니다.")).getUser1();
