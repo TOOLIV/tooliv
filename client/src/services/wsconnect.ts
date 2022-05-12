@@ -17,7 +17,7 @@ const baseURL = localStorage.getItem('baseURL');
 let sockJS = baseURL
   ? new SockJS(`${JSON.parse(baseURL).url}/chatting`)
   : // 로컬에서 테스트시 REACT_APP_TEST_URL, server 주소는 REACT_APP_BASE_SERVER_URL
-    new SockJS(`${process.env.REACT_APP_BASE_SERVER_URL}/chatting`);
+    new SockJS(`${process.env.REACT_APP_TEST_URL}/chatting`);
 export let client: Stomp.Client = Stomp.over(sockJS);
 let subscribe: Stomp.Subscription;
 
@@ -172,7 +172,6 @@ export const sub = () => {
     const notiList = getRecoil(channelNotiList);
     const workspaceList = getRecoil(wsList);
     // const chatMebers = getRecoil(chatMember);
-
     const link = window.location.href.split('/');
     // 현재 채널, 워크스페이스 아이디
     const channelId = link[link.length - 1];
@@ -181,6 +180,7 @@ export const sub = () => {
     const recChannelId = content.channelId;
     let updateWorkspaceId: string = '';
     const type = content.type;
+
     if (type === 'DELETE') {
       const index = content.chatId;
       setRecoil(channelContents, (prev) => [

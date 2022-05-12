@@ -14,7 +14,13 @@ import {
 } from '../recoil/atom';
 import { channelNotiType, contentTypes } from '../types/channel/contentType';
 import Messages from '../organisms/chat/Messages';
-import { enterChannel, enterDM, subChannel, subDM } from 'api/chatApi';
+import {
+  enterChannel,
+  enterDM,
+  subChannel,
+  subDM,
+  updateLoggedTime,
+} from 'api/chatApi';
 import Files from 'organisms/chat/Files';
 import { FileTypes } from 'types/common/fileTypes';
 import { user } from 'recoil/auth';
@@ -47,6 +53,13 @@ const DM = () => {
     useRecoilState<channelNotiType[]>(channelNotiList);
   const { channelId } = useParams<string>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    window.addEventListener('beforeunload', (e: any) => {
+      updateLoggedTime(channelId, 'DM');
+    });
+  }, []);
+
   useEffect(() => {
     const newList: channelNotiType[] = notiList.map((noti) => {
       if (noti.channelId === channelId) {
@@ -61,6 +74,7 @@ const DM = () => {
         setIsLoading(false);
       });
     });
+    updateLoggedTime(channelId, 'DM');
   }, [channelId]);
 
   const onSendClick = (event: React.MouseEvent<HTMLElement>) => {

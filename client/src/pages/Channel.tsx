@@ -16,14 +16,14 @@ import {
 } from '../recoil/atom';
 import { channelNotiType, contentTypes } from '../types/channel/contentType';
 import Messages from '../organisms/chat/Messages';
-import { enterChannel, subChannel } from 'api/chatApi';
+import { enterChannel, subChannel, updateLoggedTime } from 'api/chatApi';
 import Files from 'organisms/chat/Files';
 import { FileTypes } from 'types/common/fileTypes';
 import { user } from 'recoil/auth';
 import LoadSpinner from 'atoms/common/LoadSpinner';
-import { getMarkdownText, send } from 'services/wsconnect';
+import { send } from 'services/wsconnect';
 import { workspaceListType } from 'types/workspace/workspaceTypes';
-import SockJS from 'sockjs-client';
+import { useBeforeunload } from 'react-beforeunload';
 
 const Container = styled.div`
   width: 100%;
@@ -95,7 +95,14 @@ const Channel = () => {
         setChatMembers(result);
       });
     });
+    updateLoggedTime(channelId, 'CHANNEL');
   }, [channelId]);
+
+  useEffect(() => {
+    window.addEventListener('beforeunload', (e: any) => {
+      updateLoggedTime(channelId, 'CHANNEL');
+    });
+  }, []);
 
   const onSendClick = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();

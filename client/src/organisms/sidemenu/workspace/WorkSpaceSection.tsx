@@ -93,7 +93,6 @@ const WorkSpaceSection = () => {
         }
       }
     );
-    console.log(newWSList);
     setWorkspaceList(newWSList);
   };
 
