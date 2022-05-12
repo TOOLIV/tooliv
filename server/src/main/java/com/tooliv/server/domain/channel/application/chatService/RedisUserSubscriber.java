@@ -3,9 +3,7 @@ package com.tooliv.server.domain.channel.application.chatService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.tooliv.server.domain.channel.application.dto.request.ChatDirectDTO;
-import com.tooliv.server.domain.channel.application.dto.request.ChatRequestDTO;
 import com.tooliv.server.domain.channel.domain.repository.DirectChatRoomRepository;
-import com.tooliv.server.domain.user.application.service.UserService;
 import com.tooliv.server.domain.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +31,7 @@ public class RedisUserSubscriber implements MessageListener {
             String publishMessage = (String) redisDirectTemplate.getStringSerializer()
                 .deserialize(message.getBody());
             // ChatMessage 객채로 맵핑
+            objectMapper.registerModule(new JavaTimeModule());
             ChatDirectDTO chatDirectDTO = objectMapper.readValue(publishMessage, ChatDirectDTO.class);
             // Websocket 구독자에게 채팅 메시지 Send
             User user1 = directChatRoomRepository.findById(chatDirectDTO.getChannelId()).orElseThrow(() -> new IllegalArgumentException("채팅방 정보가 존재하지 않습니다.")).getUser1();
