@@ -1,12 +1,15 @@
 package com.tooliv.server.domain.user.application.service;
 
+import com.tooliv.server.domain.user.application.dto.request.SignUpRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.UserCodeUpdateRequestDTO;
 import com.tooliv.server.domain.user.application.dto.response.UserListResponseDTO;
 import com.tooliv.server.domain.user.domain.User;
 
 public interface AdminService {
 
-    UserListResponseDTO getUserList(String searchStr);
+    void signUp(SignUpRequestDTO signUpRequestDTO);
+
+    UserListResponseDTO getUserList(String keyword, int sequence);
 
     void updateUserCode(UserCodeUpdateRequestDTO userCodeUpdateRequestDTO);
 
@@ -14,4 +17,5 @@ public interface AdminService {
 
     User getCurrentUser();
 
+    void checkEmail(String email);
 }

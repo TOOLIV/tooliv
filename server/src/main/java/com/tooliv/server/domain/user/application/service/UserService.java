@@ -15,8 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface UserService {
 
-    void signUp(SignUpRequestDTO signUpRequestDTO);
-
     LogInResponseDTO logIn(LogInRequestDTO logInRequestDTO);
 
     ProfileInfoResponseDTO getProfileInfo(String email);
@@ -26,8 +24,6 @@ public interface UserService {
     void updateStatus(StatusUpdateRequestDTO statusUpdateRequestDTO);
 
     void uploadProfileImage(MultipartFile multipartFile);
-
-    void checkEmail(String email);
 
     UserListResponseDTO getUserList(String keyword, int sequence);
 

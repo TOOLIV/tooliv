@@ -48,19 +48,6 @@ public class UserController {
 
     private final String[] MIME_TYPE = {"image/gif", "image/jpeg", "image/jpg", "image/png", "image/bmp"};
 
-    @PostMapping()
-    @ApiOperation(value = "회원가입")
-    public ResponseEntity<? extends BaseResponseDTO> signUp(
-        @RequestBody @Valid @ApiParam(value = "회원가입 정보", required = true) SignUpRequestDTO signUpRequestDTO) {
-        try {
-            userService.signUp(signUpRequestDTO);
-        } catch (DuplicateEmailException e) {
-            return ResponseEntity.status(409).body(BaseResponseDTO.of(e.getMessage()));
-        }
-
-        return ResponseEntity.status(201).body(BaseResponseDTO.of("회원가입 완료"));
-    }
-
     @PostMapping("/login")
     @ApiOperation(value = "로그인")
     public ResponseEntity<? extends BaseResponseDTO> logIn(
@@ -124,20 +111,6 @@ public class UserController {
         }
 
         return ResponseEntity.status(200).body(ProfileInfoResponseDTO.of("프로필 정보 조회 완료", profileInfoResponseDTO));
-    }
-
-
-    @GetMapping("/check/{email}")
-    @ApiOperation(value = "이메일 중복 체크")
-    public ResponseEntity<? extends BaseResponseDTO> checkEmail(
-        @PathVariable("email") @ApiParam(value = "이메일", required = true) String email) {
-        try {
-            userService.checkEmail(email);
-        } catch (DuplicateEmailException e) {
-            return ResponseEntity.status(409).body(BaseResponseDTO.of("이메일 사용 불가"));
-        }
-
-        return ResponseEntity.status(200).body(BaseResponseDTO.of("이메일 사용 가능"));
     }
 
     @GetMapping("/search")
