@@ -5,6 +5,7 @@ import Icons from 'atoms/common/Icons';
 import Avatar from 'atoms/profile/Avatar';
 import Text from 'atoms/text/Text';
 import { forwardRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { memberStatus } from 'recoil/atom';
 import { user } from 'recoil/auth';
@@ -64,6 +65,7 @@ const UserDropdown = forwardRef<HTMLDivElement, userDropdownType>(
   ({ isOpen, onClose, openProfileConfig }, ref) => {
     const [userInfo, setUserInfo] = useRecoilState(user);
     const [membersStatus, setMembersStatus] = useRecoilState(memberStatus);
+    const navigate = useNavigate();
 
     const logout = async () => {
       await changeStatus('OFFLINE');
@@ -76,6 +78,7 @@ const UserDropdown = forwardRef<HTMLDivElement, userDropdownType>(
         userId: '',
         profileImage: '',
         statusCode: '',
+        userCode: '',
       });
     };
 
@@ -92,6 +95,11 @@ const UserDropdown = forwardRef<HTMLDivElement, userDropdownType>(
 
     const handleUserConfig = () => {
       openProfileConfig();
+      onClose();
+    };
+
+    const handleAdminPage = () => {
+      navigate('admin');
       onClose();
     };
 
@@ -154,6 +162,14 @@ const UserDropdown = forwardRef<HTMLDivElement, userDropdownType>(
             </IconItem>
             <Text size={16} pointer>
               계정 설정
+            </Text>
+          </ListItem>
+          <ListItem onClick={handleAdminPage}>
+            <IconItem>
+              <Icons icon="setting" width="20" height="20" />
+            </IconItem>
+            <Text size={16} pointer>
+              관리자 설정
             </Text>
           </ListItem>
           <ListItem onClick={logout}>

@@ -29,7 +29,7 @@ export type workspaceModalType = {
 
 export type workspaceDropdownType = {
   isOpen: boolean;
-  userCode: string;
+  // userCode: string;
   openMemberList: () => void;
   openAddMemberModal: () => void;
   openModifyModal: () => void;

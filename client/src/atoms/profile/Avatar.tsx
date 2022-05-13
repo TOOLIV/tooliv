@@ -41,7 +41,7 @@ const Avatar = ({ src, size = '24', status }: avatarTypes) => {
       ) : (
         <AvatarIcon width={size} height={size} fill={colors.gray500} />
       )}
-      <Status status={status} />
+      {status ? <Status status={status} /> : null}
     </Container>
   );
 };

@@ -7,7 +7,7 @@ import WorkspaceDropDown from 'organisms/modal/workspace/WorkspaceDropDown';
 import WorkspaceMemberListModal from 'organisms/modal/workspace/WorkspaceMemberListModal';
 import WorkspaceModifyModal from 'organisms/modal/workspace/WorkspaceModifyModal';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { currentWorkspace, isOpenSide, modifyWorkspaceName } from 'recoil/atom';
 
@@ -40,6 +40,8 @@ const SideHeader = () => {
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { workspaceId } = useParams();
+  const location = useLocation();
+
   const handleClickOutside = ({ target }: any) => {
     if (dropdownOpen && !dropdownRef.current?.contains(target)) {
       setDropdownOpen(false);
@@ -67,7 +69,7 @@ const SideHeader = () => {
       setWorkspaceName('홈');
       setUserCode('');
     }
-  }, [currentWorkspaceId, handleWorkspaceInfo, modWorkspaceName]);
+  }, [currentWorkspaceId, handleWorkspaceInfo, modWorkspaceName, workspaceId]);
 
   const getUserCode = async () => {
     const { data } = await getWorkspaceUserCode(workspaceId!);
@@ -105,10 +107,26 @@ const SideHeader = () => {
   return (
     <Container isOpen={isOpen}>
       <DropdownWrapper ref={dropdownRef}>
-        <Title onClick={() => setDropdownOpen(!dropdownOpen)}>
-          <Text size={24} weight="700" pointer={currentWorkspaceId !== 'main'}>
-            {workspaceName}
-          </Text>
+        <Title
+          onClick={
+            location.pathname.includes('admin') || currentWorkspaceId === 'main'
+              ? undefined
+              : () => setDropdownOpen(!dropdownOpen)
+          }
+        >
+          {location.pathname.includes('admin') ? (
+            <Text size={21} weight="700">
+              관리자채널
+            </Text>
+          ) : (
+            <Text
+              size={21}
+              weight="700"
+              pointer={currentWorkspaceId !== 'main'}
+            >
+              {workspaceName}
+            </Text>
+          )}
           {currentWorkspaceId !== 'main' ? (
             <Icons width="24" height="24" icon="dropdown" />
           ) : null}

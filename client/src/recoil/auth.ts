@@ -14,6 +14,7 @@ export const user = atom({
     userId: '',
     profileImage: '',
     statusCode: '',
+    userCode: '',
   },
   effects_UNSTABLE: [localStorageEffect('tooliv_info')],
 });

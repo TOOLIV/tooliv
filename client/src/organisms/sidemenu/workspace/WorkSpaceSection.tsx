@@ -28,6 +28,7 @@ import { user } from 'recoil/auth';
 const Container = styled.div<{ isOpen: boolean }>`
   padding-top: 16px;
   display: ${(props) => (props.isOpen ? 'block' : 'none')};
+  margin-bottom: 10px;
 `;
 
 const Header = styled.div`

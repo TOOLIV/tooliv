@@ -37,7 +37,9 @@ import {
 import { getUserStatus } from 'api/userApi';
 import { useInterval } from 'hooks/useInterval';
 import { useDebounce } from 'hooks/useHooks';
-
+import logoSrc from 'assets/img/tooliv_logo.png';
+import { ThemeContext } from '@emotion/react';
+import { colors } from 'shared/color';
 const NavContainer = styled.div`
   padding: 0px 20px;
   background-color: ${(props) => props.theme.bgColor};
@@ -90,6 +92,9 @@ const AvatarWrapper = styled.div`
 
 const DropdownWrapper = styled.div`
   /* cursor: pointer; */
+`;
+const TextWrapper = styled.div`
+  display: flex;
 `;
 const Nav = () => {
   const userInfo = useRecoilValue(user);
@@ -227,9 +232,17 @@ const Nav = () => {
     <NavContainer>
       <LeftContainer onClick={() => navigate('/')}>
         <Logo />
-        <Text size={18} pointer>
-          TOOLIV
-        </Text>
+        <TextWrapper>
+          <Text size={18} pointer color="secondary">
+            TOO
+          </Text>
+          <Text size={18} pointer color="third">
+            L
+          </Text>
+          <Text size={18} pointer color="primary">
+            IV
+          </Text>
+        </TextWrapper>
       </LeftContainer>
       <SearchContainer>
         <MidContainer>
