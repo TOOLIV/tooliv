@@ -17,7 +17,7 @@ export const enterDM = async (roomId?: string) => {
 };
 
 export const subDM = async (roomId?: string) => {
-  return instance.get(`/dircet/chat/${roomId}`);
+  return instance.get(`/direct/chat/${roomId}`);
 };
 
 export const createDMRoom = async (receiverEmail?: string) => {
