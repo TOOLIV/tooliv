@@ -11,10 +11,13 @@ import com.tooliv.server.domain.channel.domain.ChannelMembers;
 import com.tooliv.server.domain.channel.domain.enums.ChannelMemberCode;
 import com.tooliv.server.domain.channel.domain.repository.ChannelMembersRepository;
 import com.tooliv.server.domain.channel.domain.repository.ChannelRepository;
+import com.tooliv.server.domain.channel.execption.ChannelNotFoundException;
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
 import com.tooliv.server.domain.workspace.domain.Workspace;
 import com.tooliv.server.domain.workspace.domain.repository.WorkspaceRepository;
+import com.tooliv.server.domain.workspace.exception.WorkspaceNotFoundException;
+import com.tooliv.server.global.exception.UserNotFoundException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,11 +47,11 @@ public class ChannelServiceImpl implements ChannelService {
     public RegisterChannelResponseDTO registerChannel(RegisterChannelRequestDTO registerChannelRequestDTO) {
 
         User owner = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
-            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+            .orElseThrow(() -> new UserNotFoundException("회원 정보가 존재하지 않습니다."));
 
         LocalDateTime now = LocalDateTime.now();
         Workspace workspace = workspaceRepository.findByIdAndDeletedAt(registerChannelRequestDTO.getWorkspaceId(), null)
-            .orElseThrow(() -> new IllegalArgumentException("워크스페이스 정보가 존재하지 않습니다."));
+            .orElseThrow(() -> new WorkspaceNotFoundException("워크스페이스 정보가 존재하지 않습니다."));
 
         Channel channel = Channel.builder()
             .name(registerChannelRequestDTO.getName())
@@ -80,44 +83,35 @@ public class ChannelServiceImpl implements ChannelService {
 
     @Transactional
     @Override
-    public Integer modifyChannel(ModifyChannelRequestDTO modifyChannelRequestDTO) {
+    public void modifyChannel(ModifyChannelRequestDTO modifyChannelRequestDTO) {
         Channel channel = channelRepository.findById(modifyChannelRequestDTO.getId())
-            .orElseThrow(() -> new IllegalArgumentException("채널 정보가 존재하지 않습니다."));
+            .orElseThrow(() -> new ChannelNotFoundException("채널 정보가 존재하지 않습니다."));
 
         LocalDateTime now = LocalDateTime.now();
-        try {
-            channel.modifyChannel(modifyChannelRequestDTO.getName());
-        } catch (Exception e) {
-            return 409;
-        }
+        channel.modifyChannel(modifyChannelRequestDTO.getName());
+
         channelRepository.save(channel);
-        return 200;
     }
 
     @Transactional
     @Override
-    public Integer deleteChannel(String channelId) {
+    public void deleteChannel(String channelId) {
         Channel channel = channelRepository.findById(channelId)
-            .orElseThrow(() -> new IllegalArgumentException("채널 정보가 존재하지 않습니다."));
+            .orElseThrow(() -> new ChannelNotFoundException("채널 정보가 존재하지 않습니다."));
 
-        try {
-            List<ChannelMembers> memberList = channelMembersRepository.findByChannel(channel);
-            for (ChannelMembers channelMember : memberList) {
-                channelMemberService.deleteChannelMember(channelId, channelMember.getUser().getEmail());
-            }
-            channel.deleteChannel();
-        } catch (Exception e) {
-            return 409;
+        List<ChannelMembers> memberList = channelMembersRepository.findByChannel(channel);
+        for (ChannelMembers channelMember : memberList) {
+            channelMemberService.deleteChannelMember(channelId, channelMember.getUser().getEmail());
         }
+        channel.deleteChannel();
         channelRepository.save(channel);
-        return 200;
     }
 
     @Override
     public ChannelListGetResponseDTO getChannelList(String workspaceId) {
 
         User user = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
-            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+            .orElseThrow(() -> new UserNotFoundException("회원 정보가 존재하지 않습니다."));
 
         List<Channel> channelList = channelRepository.findByWorkspaceIdAndUser(workspaceId, user.getId());
 
@@ -138,14 +132,14 @@ public class ChannelServiceImpl implements ChannelService {
     public ChannelListGetResponseDTO getPublicChannelList(String workspaceId) {
 
         User user = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
-            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+            .orElseThrow(() -> new UserNotFoundException("회원 정보가 존재하지 않습니다."));
 
         List<String> channelIdList = channelRepository.findByPublicWorkspaceId(workspaceId, user.getId());
         List<ChannelGetResponseDTO> channelGetResponseDTOList = new ArrayList<>();
 
         channelIdList.forEach(channelId -> {
             Channel channel = channelRepository.findById(channelId)
-                .orElseThrow(() -> new IllegalArgumentException("채널 정보가 존재하지 않습니다."));
+                .orElseThrow(() -> new ChannelNotFoundException("채널 정보가 존재하지 않습니다."));
             ChannelGetResponseDTO channelGetResponseDTO = ChannelGetResponseDTO.builder()
                 .id(channelId)
                 .name(channel.getName())
