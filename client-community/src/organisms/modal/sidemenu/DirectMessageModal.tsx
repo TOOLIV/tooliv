@@ -110,7 +110,7 @@ const DirectMessageModal = ({ isOpen, onClose }: userDirectMessageType) => {
         {
           receiveName: member.name,
           channelId: roomId,
-          notificationRead: true,
+          notificationRead: false,
           statusCode: member.statusCode,
           profileImage: member.profileImage,
           receiverEmail: member.email,
