@@ -102,14 +102,14 @@ public class ChatController {
     }
 
     @ApiOperation(value = "Direct 채팅방 입장")
-    @PostMapping("/api/direct/chat/{channelId}")
+    @PostMapping("/api/direct/chat/{roomId}")
     @ApiResponses({
         @ApiResponse(code = 200, message = "Direct 채팅방 입장 완료"),
         @ApiResponse(code = 409, message = "Direct 채팅방 입장 실패"),
     })
-    public ResponseEntity<? extends BaseResponseDTO> enterDirectRoom(@PathVariable @ApiParam(value = "방 정보", required = true) String channelId) {
+    public ResponseEntity<? extends BaseResponseDTO> enterDirectRoom(@PathVariable @ApiParam(value = "방 정보", required = true) String roomId) {
         try {
-            chatService.enterDirectChatRoom(channelId);
+            chatService.enterDirectChatRoom(roomId);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(409).body(BaseResponseDTO.of("채팅방 입장 실패"));
         }
@@ -117,15 +117,15 @@ public class ChatController {
     }
 
     @ApiOperation(value = "개인 채팅방 이전 채팅 데이터")
-    @GetMapping("/api/direct/chat/{channelId}")
+    @GetMapping("/api/direct/chat/{roomId}")
     @ApiResponses({
         @ApiResponse(code = 200, message = "채팅방 데이터 복구"),
         @ApiResponse(code = 409, message = "채팅방 데이터 복구 실패"),
     })
-    public ResponseEntity<? extends BaseResponseDTO> getChatListInDirectRoom(@PathVariable @ApiParam(value = "방 정보", required = true) String channelId) {
+    public ResponseEntity<? extends BaseResponseDTO> getChatListInDirectRoom(@PathVariable @ApiParam(value = "방 정보", required = true) String roomId) {
         DirectChatListResponseDTO directChatListResponseDTO;
         try {
-            directChatListResponseDTO = new DirectChatListResponseDTO(chatService.getChatDirectInfoValue(channelId));
+            directChatListResponseDTO = new DirectChatListResponseDTO(chatService.getChatDirectInfoValue(roomId));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(409).body(BaseResponseDTO.of("채팅방 데이터 복구 실패"));
         }
