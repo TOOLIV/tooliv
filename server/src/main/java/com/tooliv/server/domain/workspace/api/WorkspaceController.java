@@ -133,9 +133,9 @@ public class WorkspaceController {
         try {
             workspaceNameGetResponseDTO = workspaceService.getWorkspaceName(workspaceId);
         } catch (WorkspaceNotFoundException e) {
-            return ResponseEntity.status(404).body(WorkspaceListGetResponseDTO.of(e.getMessage(), new WorkspaceListGetResponseDTO()));
+            return ResponseEntity.status(404).body(WorkspaceNameGetResponseDTO.of(e.getMessage(), new WorkspaceNameGetResponseDTO()));
         } catch (Exception e) {
-            return ResponseEntity.status(404).body(WorkspaceListGetResponseDTO.of(e.getMessage(), new WorkspaceListGetResponseDTO()));
+            return ResponseEntity.status(404).body(WorkspaceNameGetResponseDTO.of(e.getMessage(), new WorkspaceNameGetResponseDTO()));
         }
         return ResponseEntity.status(200).body(WorkspaceNameGetResponseDTO.of("워크스페이스명 조회 완료", workspaceNameGetResponseDTO));
     }
