@@ -30,6 +30,7 @@ const Messages = () => {
   const [searchList, setSearchList] = useRecoilState<number[]>(searchResults);
   const [searchedIndex, setSearchedIndex] = useRecoilState<number>(searchIndex);
   const messageBoxRef = useRef<HTMLDivElement>(null);
+  const searchedMsgRef = useRef<HTMLDivElement>(null);
   let date = korDate().toISOString().slice(0, 10);
 
   const scrollToBottom = () => {
@@ -43,12 +44,19 @@ const Messages = () => {
   }, [contents]);
 
   useEffect(() => {
+    console.log(searchedMsgRef.current?.scrollHeight);
     const searchedChatId: number = searchList[searchedIndex];
-    if (messageBoxRef.current && searchedIndex !== -1) {
-      messageBoxRef.current.scrollTop =
-        messageBoxRef.current.scrollHeight -
-        160 * (contents.length - searchedChatId);
-      console.log(messageBoxRef.current.scrollTop);
+    if (
+      messageBoxRef.current &&
+      searchedIndex !== -1 &&
+      searchedMsgRef.current
+    ) {
+      messageBoxRef.current.scrollTo({
+        top:
+          searchedMsgRef.current.offsetTop -
+          searchedMsgRef.current?.scrollHeight -
+          150,
+      });
     }
   }, [searchedIndex]);
 
@@ -65,6 +73,11 @@ const Messages = () => {
                   일
                 </Date>
                 <Message
+                  ref={
+                    Number(content.chatId) === searchList[searchedIndex]
+                      ? searchedMsgRef
+                      : null
+                  }
                   key={content.chatId}
                   {...content}
                   isSearched={
@@ -76,6 +89,11 @@ const Messages = () => {
           } else {
             return (
               <Message
+                ref={
+                  Number(content.chatId) === searchList[searchedIndex]
+                    ? searchedMsgRef
+                    : null
+                }
                 key={content.chatId}
                 {...content}
                 isSearched={
