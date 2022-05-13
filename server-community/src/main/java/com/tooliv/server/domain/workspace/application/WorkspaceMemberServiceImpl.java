@@ -5,6 +5,7 @@ import com.tooliv.server.domain.channel.domain.ChannelMembers;
 import com.tooliv.server.domain.channel.domain.enums.ChannelMemberCode;
 import com.tooliv.server.domain.channel.domain.repository.ChannelMembersRepository;
 import com.tooliv.server.domain.channel.domain.repository.ChannelRepository;
+import com.tooliv.server.domain.channel.execption.ChannelNotFoundException;
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
 import com.tooliv.server.domain.workspace.application.dto.request.RegisterWorkspaceMemberRequestDTO;
@@ -16,7 +17,10 @@ import com.tooliv.server.domain.workspace.domain.WorkspaceMembers;
 import com.tooliv.server.domain.workspace.domain.enums.WorkspaceMemberCode;
 import com.tooliv.server.domain.workspace.domain.repository.WorkspaceMemberRepository;
 import com.tooliv.server.domain.workspace.domain.repository.WorkspaceRepository;
+import com.tooliv.server.domain.workspace.exception.WorkspaceMemberNotFoundException;
+import com.tooliv.server.domain.workspace.exception.WorkspaceNotFoundException;
 import com.tooliv.server.global.common.AwsS3Service;
+import com.tooliv.server.global.exception.UserNotFoundException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,11 +51,11 @@ public class WorkspaceMemberServiceImpl implements WorkspaceMemberService {
         List<String> emailList = registerWorkspaceMemberRequestDTO.getEmailList();
 
         Workspace workspace = workspaceRepository.findByIdAndDeletedAt(workspaceId, null)
-            .orElseThrow(() -> new IllegalArgumentException("워크스페이스 정보가 존재하지 않습니다."));
+            .orElseThrow(() -> new WorkspaceNotFoundException("워크스페이스 정보가 존재하지 않습니다."));
 
         emailList.forEach(email -> {
             User user = userRepository.findByEmailAndDeletedAt(email, null)
-                .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+                .orElseThrow(() -> new UserNotFoundException("회원 정보가 존재하지 않습니다."));
 
             WorkspaceMembers workspaceMembers = WorkspaceMembers.builder()
                 .workspace(workspace)
@@ -63,7 +67,7 @@ public class WorkspaceMemberServiceImpl implements WorkspaceMemberService {
             workspaceMemberRepository.save(workspaceMembers);
 
             Channel channel = channelRepository.findTopByDeletedAtAndWorkspaceOrderByCreatedAtAsc(null, workspace)
-                .orElseThrow(() -> new IllegalArgumentException("채널 정보가 존재하지 않습니다."));
+                .orElseThrow(() -> new ChannelNotFoundException("채널 정보가 존재하지 않습니다."));
 
             ChannelMembers channelMembers = ChannelMembers.builder()
                 .channelMemberCode(ChannelMemberCode.CMEMBER)
@@ -82,10 +86,10 @@ public class WorkspaceMemberServiceImpl implements WorkspaceMemberService {
     @Override
     public void deleteWorkspaceMember(String workspaceId, String email) {
         User user = userRepository.findByEmailAndDeletedAt(email, null)
-            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+            .orElseThrow(() -> new UserNotFoundException("회원 정보가 존재하지 않습니다."));
 
         Workspace workspace = workspaceRepository.findByIdAndDeletedAt(workspaceId, null)
-            .orElseThrow(() -> new IllegalArgumentException("워크스페이스 정보가 존재하지 않습니다."));
+            .orElseThrow(() -> new WorkspaceNotFoundException("워크스페이스 정보가 존재하지 않습니다."));
 
         workspaceMemberRepository.deleteByUserAndWorkspace(user, workspace);
     }
@@ -119,7 +123,7 @@ public class WorkspaceMemberServiceImpl implements WorkspaceMemberService {
     @Override
     public WorkspaceMemberListGetResponseDTO getWorkspaceMemberListForRegister(String workspaceId, String keyword, int sequence) {
         Workspace workspace = workspaceRepository.findByIdAndDeletedAt(workspaceId, null)
-            .orElseThrow(() -> new IllegalArgumentException("워크스페이스 정보가 존재하지 않습니다."));
+            .orElseThrow(() -> new WorkspaceNotFoundException("워크스페이스 정보가 존재하지 않습니다."));
 
         int offset = sequence <= 0 ? 0 : (sequence - 1) * 10;
         List<WorkspaceMemberGetResponseDTO> workspaceMemberGetResponseDTOList = new ArrayList<>();
@@ -167,13 +171,13 @@ public class WorkspaceMemberServiceImpl implements WorkspaceMemberService {
     public WorkspaceMemberCodeGetResponseDTO getWorkspaceMemberCode(String workspaceId) {
 
         User user = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
-            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+            .orElseThrow(() -> new UserNotFoundException("회원 정보가 존재하지 않습니다."));
 
         Workspace workspace = workspaceRepository.findByIdAndDeletedAt(workspaceId, null)
-            .orElseThrow(() -> new IllegalArgumentException("워크스페이스 정보가 존재하지 않습니다."));
+            .orElseThrow(() -> new WorkspaceNotFoundException("워크스페이스 정보가 존재하지 않습니다."));
 
         WorkspaceMembers workspaceMembers = workspaceMemberRepository.findByWorkspaceAndUser(workspace, user)
-            .orElseThrow(() -> new IllegalArgumentException("워크스페이스 멤버 정보가 존재하지 않습니다."));
+            .orElseThrow(() -> new WorkspaceMemberNotFoundException("워크스페이스 멤버 정보가 존재하지 않습니다."));
 
         return new WorkspaceMemberCodeGetResponseDTO(workspaceMembers.getWorkspaceMemberCode());
     }

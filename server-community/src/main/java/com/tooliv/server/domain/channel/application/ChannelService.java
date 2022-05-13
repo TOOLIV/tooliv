@@ -9,9 +9,9 @@ public interface ChannelService {
 
     RegisterChannelResponseDTO registerChannel(RegisterChannelRequestDTO registerChannelRequestDTO);
 
-    Integer modifyChannel(ModifyChannelRequestDTO modifyChannelRequestDTO);
+    void modifyChannel(ModifyChannelRequestDTO modifyChannelRequestDTO);
 
-    Integer deleteChannel(String channelId);
+    void deleteChannel(String channelId);
 
     ChannelListGetResponseDTO getChannelList(String workspaceId);
 

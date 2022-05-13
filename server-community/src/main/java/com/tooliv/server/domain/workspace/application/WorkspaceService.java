@@ -11,9 +11,9 @@ public interface WorkspaceService {
 
     RegisterWorkspaceResponseDTO registerWorkspace(MultipartFile multipartFile, RegisterWorkspaceRequestDTO registerWorkspaceRequestDTO);
 
-    Integer modifyWorkspace(MultipartFile multipartFile, ModifyWorkspaceRequestDTO modifyWorkspaceRequestDTO);
+    void modifyWorkspace(MultipartFile multipartFile, ModifyWorkspaceRequestDTO modifyWorkspaceRequestDTO);
 
-    Integer deleteWorkspace(String workspaceId);
+    void deleteWorkspace(String workspaceId);
 
     WorkspaceListGetResponseDTO getWorkspaceList();
 
