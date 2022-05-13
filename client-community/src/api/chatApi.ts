@@ -13,15 +13,15 @@ export const getChannels = async (email?: string) => {
 };
 
 export const enterDM = async (roomId?: string) => {
-  return instance.post(`/direct/chat/${roomId}`);
+  return instance.post(`/direct/enter/${roomId}`);
 };
 
 export const subDM = async (roomId?: string) => {
-  return instance.get(`/dircet/chat/${roomId}`);
+  return instance.get(`/direct/chat/${roomId}`);
 };
 
 export const createDMRoom = async (receiverEmail?: string) => {
-  return instance.post(`/chat/direct/chat/${receiverEmail}`);
+  return instance.post(`/direct/chat/${receiverEmail}`);
 };
 
 export const getDMList = async (email?: string) => {
