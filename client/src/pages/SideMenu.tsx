@@ -3,12 +3,12 @@ import { motion } from 'framer-motion';
 import DirectMessage from 'molecules/sidemenu/DirectMessage';
 import SideHeader from 'organisms/header/SideHeader';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import Friends from '../molecules/sidemenu/Friends';
 import { currentChannel, currentWorkspace, isOpenSide } from '../recoil/atom';
 import ChannelSection from '../organisms/sidemenu/channel/ChannelSection';
 import WorkSpaceSection from '../organisms/sidemenu/workspace/WorkSpaceSection';
 import { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import AdminSection from 'organisms/sidemenu/admin/AdminSection';
 
 const Container = styled(motion.div)`
   width: 280px;
@@ -18,7 +18,16 @@ const Container = styled(motion.div)`
   height: calc(100vh - 64px);
   padding: 16px 18px;
 `;
-
+const Contents = styled.div`
+  width: 264px;
+  height: calc(100vh - 275px);
+  overflow-y: scroll;
+  overflow-x: hidden;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`;
 const SideMenu = () => {
   const variants = {
     open: { opacity: 1, x: 0 },
@@ -30,6 +39,8 @@ const SideMenu = () => {
     useRecoilState(currentWorkspace);
   const setCurrentChannelId = useSetRecoilState(currentChannel);
   const { workspaceId, channelId } = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     if (workspaceId && channelId) {
@@ -46,16 +57,20 @@ const SideMenu = () => {
       animate={isOpen ? 'open' : 'closed'}
       variants={variants}
     >
+      {/* <div onClick={() => navigate('/admin/manage')}>이동</div> */}
+
       <SideHeader />
-      <WorkSpaceSection />
-      {isOpen && currentWorkspaceId === 'main' ? (
-        <>
-          <Friends />
-        </>
+      {location.pathname.includes('admin') ? (
+        <AdminSection />
       ) : (
         <>
-          <ChannelSection />
-          <DirectMessage />
+          <WorkSpaceSection />
+          <Contents>
+            {isOpen && currentWorkspaceId !== 'main' ? (
+              <ChannelSection />
+            ) : null}
+            <DirectMessage />
+          </Contents>
         </>
       )}
     </Container>

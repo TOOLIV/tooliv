@@ -2,16 +2,19 @@ package com.tooliv.server.domain.user.application.service;
 
 import com.tooliv.server.domain.user.application.dto.request.LogInRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.NicknameUpdateRequestDTO;
-import com.tooliv.server.domain.user.application.dto.request.SignUpRequestDTO;
+import com.tooliv.server.domain.user.application.dto.request.PasswordUpdateRequestDTO;
+import com.tooliv.server.domain.user.application.dto.request.StatusRequestDTO;
+import com.tooliv.server.domain.user.application.dto.request.StatusUpdateRequestDTO;
 import com.tooliv.server.domain.user.application.dto.response.LogInResponseDTO;
 import com.tooliv.server.domain.user.application.dto.response.NicknameResponseDTO;
 import com.tooliv.server.domain.user.application.dto.response.ProfileInfoResponseDTO;
+import com.tooliv.server.domain.user.application.dto.response.StatusListResponseDTO;
+import com.tooliv.server.domain.user.application.dto.response.StatusResponseDTO;
 import com.tooliv.server.domain.user.application.dto.response.UserInfoResponseDTO;
 import com.tooliv.server.domain.user.application.dto.response.UserListResponseDTO;
 import com.tooliv.server.domain.user.domain.User;
-import com.tooliv.server.domain.user.domain.enums.UserCode;
+import com.tooliv.server.domain.user.domain.enums.StatusCode;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
-import com.tooliv.server.global.exception.DuplicateEmailException;
 import com.tooliv.server.global.common.AwsS3Service;
 import com.tooliv.server.global.exception.UserNotFoundException;
 import com.tooliv.server.global.security.util.JwtAuthenticationProvider;
@@ -43,20 +46,6 @@ public class UserServiceImpl implements UserService {
 
     private final PasswordEncoder passwordEncoder;
 
-    @Override
-    public void signUp(SignUpRequestDTO signUpRequestDTO) {
-        checkEmail(signUpRequestDTO.getEmail());
-
-        User user = User.builder()
-            .email(signUpRequestDTO.getEmail())
-            .name(signUpRequestDTO.getName())
-            .nickname(signUpRequestDTO.getName())
-            .password(passwordEncoder.encode(signUpRequestDTO.getPassword()))
-            .userCode(UserCode.USER)
-            .createdAt(LocalDateTime.now()).build();
-
-        userRepository.save(user);
-    }
 
     @Override
     public LogInResponseDTO logIn(LogInRequestDTO logInRequestDTO) {
@@ -69,20 +58,19 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByEmailAndDeletedAt(logInRequestDTO.getEmail(), null)
             .orElseThrow(() -> new UserNotFoundException("회원 정보를 찾을 수 없음"));
 
-        LogInResponseDTO logInResponseDTO = LogInResponseDTO.builder()
+        user.updateStatusCode(StatusCode.ONLINE);
+        userRepository.save(user);
+
+        return LogInResponseDTO.builder()
             .userId(user.getId())
             .name(user.getName())
             .email(user.getEmail())
             .nickname(user.getNickname())
             .userCode(user.getUserCode())
-            .profileImage(getImageURL(user.getProfileImage()))
+            .statusCode(user.getStatusCode())
+            .profileImage(awsS3Service.getFilePath(user.getProfileImage()))
             .accessToken(jwt).build();
 
-        if(user.getProfileImage() == null) {
-            logInResponseDTO.updateProfileImage("");
-        }
-
-        return logInResponseDTO;
     }
 
     @Override
@@ -90,15 +78,11 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByEmailAndDeletedAt(email, null)
             .orElseThrow(() -> new UserNotFoundException("회원 정보 없음"));
 
-        ProfileInfoResponseDTO profileInfoResponseDTO = ProfileInfoResponseDTO.builder()
+        return ProfileInfoResponseDTO.builder()
             .nickname(user.getNickname())
-            .profileImage(user.getProfileImage()).build();
+            .statusCode(user.getStatusCode())
+            .profileImage(awsS3Service.getFilePath(user.getProfileImage())).build();
 
-        if(user.getProfileImage() == null) {
-            profileInfoResponseDTO.updateProfileImage("");
-        }
-
-        return profileInfoResponseDTO;
     }
 
     @Override
@@ -117,6 +101,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void updateStatus(StatusUpdateRequestDTO statusUpdateRequestDTO) {
+        User user = getCurrentUser();
+
+        user.updateStatusCode(statusUpdateRequestDTO.getStatusCode());
+        userRepository.save(user);
+    }
+
+    @Override
+    public void updatePassword(PasswordUpdateRequestDTO passwordUpdateRequestDTO) {
+        User user = getCurrentUser();
+        user.updatePassword(passwordEncoder.encode(passwordUpdateRequestDTO.getPassword()));
+
+        userRepository.save(user);
+    }
+
+    @Override
     public void uploadProfileImage(MultipartFile multipartFile) {
         String fileName = awsS3Service.uploadFile(multipartFile);
 
@@ -127,25 +127,31 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void checkEmail(String email) {
-        boolean emailExists = userRepository.existsByEmailAndDeletedAt(email, null);
-
-        if (emailExists) {
-            throw new DuplicateEmailException("해당 이메일은 중복임");
-        }
-    }
-
-
-    @Override
     public UserListResponseDTO getUserList(String keyword, int sequence) {
         List<UserInfoResponseDTO> userInfoResponseDTOList = new ArrayList<>();
 
         for (User user : userRepository.findAllByDeletedAtAndNameContainingOrderByNameAsc(null, keyword, PageRequest.of(sequence - 1, 15, Sort.Direction.ASC, "name"))
             .orElseThrow(() -> new UserNotFoundException("조회 가능한 회원이 없음"))) {
-            userInfoResponseDTOList.add(new UserInfoResponseDTO(user.getId(), user.getEmail(), user.getName(), user.getNickname(), user.getUserCode(), getImageURL(user.getProfileImage())));
+            userInfoResponseDTOList.add(
+                new UserInfoResponseDTO(user.getId(), user.getEmail(), user.getName(), user.getNickname(), user.getUserCode(), user.getStatusCode(), awsS3Service.getFilePath(user.getProfileImage())));
         }
 
         return new UserListResponseDTO(userInfoResponseDTOList, userInfoResponseDTOList.size());
+    }
+
+    @Override
+    public StatusListResponseDTO getStatusList(StatusRequestDTO statusRequestDTO) {
+        List<User> userList = userRepository.findUserIn(statusRequestDTO.getEmailList())
+            .orElseThrow(() -> new UserNotFoundException("조회 가능한 회원이 없음"));
+
+        List<StatusResponseDTO> statusResponseDTOList = new ArrayList<>();
+
+        userList.forEach(user -> statusResponseDTOList.add(
+            new StatusResponseDTO(user.getEmail(), user.getStatusCode())
+        ));
+
+        return new StatusListResponseDTO(statusResponseDTOList);
+
     }
 
     @Override
@@ -154,11 +160,6 @@ public class UserServiceImpl implements UserService {
             .orElseThrow(() -> new UserNotFoundException("회원 정보를 찾을 수 없음"));
 
         return user;
-    }
-
-    @Override
-    public String getImageURL(String fileName) {
-        return "https://tooliva402.s3.ap-northeast-2.amazonaws.com/" + fileName;
     }
 
     @Override

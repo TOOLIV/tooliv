@@ -2,12 +2,14 @@ package com.tooliv.server.domain.workspace.application.dto.request;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 
 @ApiModel("ModifyWorkspaceRequestDTO")
+@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 public class ModifyWorkspaceRequestDTO {

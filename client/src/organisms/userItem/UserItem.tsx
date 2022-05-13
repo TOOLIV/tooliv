@@ -10,7 +10,7 @@ const Item = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 470px;
+  width: 500px;
   padding: 8px 16px;
 `;
 
@@ -18,8 +18,7 @@ const AvatarBox = styled.div`
   margin-right: 12px;
 `;
 const UserBox = styled.div`
-  display: flex;
-  align-items: center;
+  width: 330px;
 `;
 const ControlBox = styled.div`
   display: flex;
@@ -42,6 +41,7 @@ const UserItem = ({
   nickname,
   profileImage,
   userCode,
+  statusCode,
   onDelete,
   onChange,
 }: // onChange,
@@ -57,7 +57,7 @@ userItemTypes) => {
   };
 
   const options = [
-    { value: 'MANAGER', label: '관리자' },
+    { value: 'MANAGER', label: '매니저' },
     { value: 'USER', label: '일반' },
   ];
   useEffect(() => {
@@ -73,12 +73,15 @@ userItemTypes) => {
         </AvatarBox>
         <Text size={14}>{userInfo}</Text>
       </UserBox> */}
-      <UserInfo
-        name={name}
-        email={email}
-        nickname={nickname}
-        profileImage={profileImage}
-      />
+      <UserBox>
+        <UserInfo
+          name={name}
+          email={email}
+          nickname={nickname}
+          profileImage={profileImage}
+          statusCode={statusCode}
+        />
+      </UserBox>
       <ControlBox>
         <DropdownBox>
           <Dropdown

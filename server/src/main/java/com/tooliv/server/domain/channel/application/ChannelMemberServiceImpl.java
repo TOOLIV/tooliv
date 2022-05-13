@@ -1,6 +1,5 @@
 package com.tooliv.server.domain.channel.application;
 
-import com.amazonaws.services.dynamodbv2.xspec.L;
 import com.tooliv.server.domain.channel.application.dto.request.RegisterChannelMemberRequestDTO;
 import com.tooliv.server.domain.channel.application.dto.response.ChannelInfoGetResponseDTO;
 import com.tooliv.server.domain.channel.application.dto.response.ChannelMemberCodeGetResponseDTO;
@@ -11,11 +10,14 @@ import com.tooliv.server.domain.channel.domain.ChannelMembers;
 import com.tooliv.server.domain.channel.domain.enums.ChannelMemberCode;
 import com.tooliv.server.domain.channel.domain.repository.ChannelMembersRepository;
 import com.tooliv.server.domain.channel.domain.repository.ChannelRepository;
+import com.tooliv.server.domain.channel.execption.ChannelMemberNotFoundException;
+import com.tooliv.server.domain.channel.execption.ChannelNotFoundException;
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
 import com.tooliv.server.domain.workspace.domain.WorkspaceMembers;
 import com.tooliv.server.domain.workspace.domain.repository.WorkspaceMemberRepository;
 import com.tooliv.server.global.common.AwsS3Service;
+import com.tooliv.server.global.exception.UserNotFoundException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,14 +45,14 @@ public class ChannelMemberServiceImpl implements ChannelMemberService {
     public void addChannelMember(String channelId, RegisterChannelMemberRequestDTO registerChannelMemberRequestDTO) {
 
         Channel channel = channelRepository.findByIdAndDeletedAt(channelId, null)
-            .orElseThrow(() -> new IllegalArgumentException("채널 정보가 존재하지 않습니다."));
+            .orElseThrow(() -> new ChannelNotFoundException("채널 정보가 존재하지 않습니다."));
 
         List<String> emailList = registerChannelMemberRequestDTO.getEmailList();
 
         for (String email : emailList) {
 
             User user = userRepository.findByEmailAndDeletedAt(email, null)
-                .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+                .orElseThrow(() -> new UserNotFoundException("회원 정보가 존재하지 않습니다."));
 
             if (channelMembersRepository.existsByChannelAndUser(channel, user)) {
                 continue;
@@ -72,10 +74,10 @@ public class ChannelMemberServiceImpl implements ChannelMemberService {
     @Override
     public void deleteChannelMember(String channelId, String email) {
         User user = userRepository.findByEmailAndDeletedAt(email, null)
-            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+            .orElseThrow(() -> new UserNotFoundException("회원 정보가 존재하지 않습니다."));
 
         Channel channel = channelRepository.findByIdAndDeletedAt(channelId, null)
-            .orElseThrow(() -> new IllegalArgumentException("채널 정보가 존재하지 않습니다."));
+            .orElseThrow(() -> new ChannelNotFoundException("채널 정보가 존재하지 않습니다."));
 
         channelMembersRepository.deleteByUserAndChannel(user, channel);
     }
@@ -93,6 +95,7 @@ public class ChannelMemberServiceImpl implements ChannelMemberService {
             ChannelMemberGetResponseDTO channelMemberGetResponseDTO = ChannelMemberGetResponseDTO.builder()
                 .email(member.getEmail())
                 .name(member.getName())
+                .statusCode(member.getStatusCode())
                 .nickname(member.getNickname())
                 .channelMemberCode(channelMembers.getChannelMemberCode())
                 .profileImage(profileImage)
@@ -108,7 +111,7 @@ public class ChannelMemberServiceImpl implements ChannelMemberService {
         List<ChannelMemberGetResponseDTO> channelMemberGetResponseDTOList = new ArrayList<>();
 
         Channel channel = channelRepository.findByIdAndDeletedAt(channelId, null)
-            .orElseThrow(() -> new IllegalArgumentException("채널 정보가 존재하지 않습니다."));
+            .orElseThrow(() -> new ChannelNotFoundException("채널 정보가 존재하지 않습니다."));
 
         int offset = sequence <= 0 ? 0 : (sequence - 1) * 10;
         channelMembersRepository.searchByChannelIdAndKeyword(channelId, keyword, offset).forEach(channelMember -> {
@@ -119,6 +122,7 @@ public class ChannelMemberServiceImpl implements ChannelMemberService {
                 .channelMemberCode(channelMember.getChannelMemberCode())
                 .nickname(member.getNickname())
                 .name(member.getName())
+                .statusCode(member.getStatusCode())
                 .email(member.getEmail())
                 .profileImage(profileImage)
                 .build();
@@ -132,7 +136,7 @@ public class ChannelMemberServiceImpl implements ChannelMemberService {
         List<ChannelMemberGetResponseDTO> channelMemberGetResponseDTOList = new ArrayList<>();
 
         Channel channel = channelRepository.findByIdAndDeletedAt(channelId, null)
-            .orElseThrow(() -> new IllegalArgumentException("채널 정보가 존재하지 않습니다."));
+            .orElseThrow(() -> new ChannelNotFoundException("채널 정보가 존재하지 않습니다."));
 
         int offset = sequence <= 0 ? 0 : (sequence - 1) * 10;
         List<WorkspaceMembers> searchMemberList = workspaceMemberRepository.findAllToRegisterChannelMember(channel.getWorkspace().getId(), channelId, keyword, offset);
@@ -144,6 +148,7 @@ public class ChannelMemberServiceImpl implements ChannelMemberService {
             ChannelMemberGetResponseDTO channelMemberGetResponseDTO = ChannelMemberGetResponseDTO.builder()
                 .nickname(member.getNickname())
                 .name(member.getName())
+                .statusCode(member.getStatusCode())
                 .email(member.getEmail())
                 .profileImage(profileImage)
                 .build();
@@ -157,13 +162,13 @@ public class ChannelMemberServiceImpl implements ChannelMemberService {
     public ChannelMemberCodeGetResponseDTO getChannelMemberCode(String channelId) {
 
         User user = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
-            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+            .orElseThrow(() -> new UserNotFoundException("회원 정보가 존재하지 않습니다."));
 
         Channel channel = channelRepository.findByIdAndDeletedAt(channelId, null)
-            .orElseThrow(() -> new IllegalArgumentException("채널 정보가 존재하지 않습니다."));
+            .orElseThrow(() -> new ChannelNotFoundException("채널 정보가 존재하지 않습니다."));
 
         ChannelMembers channelMember = channelMembersRepository.findByChannelAndUser(channel, user)
-            .orElseThrow(() -> new IllegalArgumentException("채널 멤버 정보가 존재하지 않습니다."));
+            .orElseThrow(() -> new ChannelMemberNotFoundException("채널 멤버 정보가 존재하지 않습니다."));
 
         return new ChannelMemberCodeGetResponseDTO(channelMember.getChannelMemberCode());
     }
@@ -171,11 +176,12 @@ public class ChannelMemberServiceImpl implements ChannelMemberService {
     @Override
     public ChannelInfoGetResponseDTO getChannelInfo(String channelId) {
         Channel channel = channelRepository.findByIdAndDeletedAt(channelId, null)
-            .orElseThrow(() -> new IllegalArgumentException("채널 정보가 존재하지 않습니다."));
+            .orElseThrow(() -> new ChannelNotFoundException("채널 정보가 존재하지 않습니다."));
 
         ChannelInfoGetResponseDTO channelInfoGetResponseDTO = ChannelInfoGetResponseDTO.builder()
             .name(channel.getName())
             .numOfPeople(channelMembersRepository.countByChannel(channel))
+            .channelCode(channel.getChannelCode())
             .build();
         return channelInfoGetResponseDTO;
     }

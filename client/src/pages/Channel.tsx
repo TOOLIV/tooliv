@@ -1,7 +1,6 @@
 import styled from '@emotion/styled';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import Stomp from 'stompjs';
 import Editor from '../molecules/chat/Editor';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
@@ -11,15 +10,18 @@ import {
   chatFileNames,
   chatFiles,
   chatFileUrl,
+  chatMember,
+  wsList,
 } from '../recoil/atom';
 import { channelNotiType, contentTypes } from '../types/channel/contentType';
 import Messages from '../organisms/chat/Messages';
-import { enterChannel, subChannel } from 'api/chatApi';
+import { enterChannel, subChannel, updateLoggedTime } from 'api/chatApi';
 import Files from 'organisms/chat/Files';
 import { FileTypes } from 'types/common/fileTypes';
 import { user } from 'recoil/auth';
 import LoadSpinner from 'atoms/common/LoadSpinner';
 import { send } from 'services/wsconnect';
+import { workspaceListType } from 'types/workspace/workspaceTypes';
 
 const Container = styled.div`
   width: 100%;
@@ -40,51 +42,89 @@ const Channel = () => {
   const [files, setFiles] = useRecoilState<FileTypes[]>(chatFiles);
   const [contents, setContents] =
     useRecoilState<contentTypes[]>(channelContents);
+  const [chatMembers, setChatMembers] = useRecoilState<string[]>(chatMember);
   const [fileUrl, setFileUrl] = useRecoilState<string[]>(chatFileUrl);
   const [fileNames, setFileNames] = useRecoilState<string[]>(chatFileNames);
-  const { accessToken, nickname, email } = useRecoilValue(user);
+  const { email } = useRecoilValue(user);
   const [notiList, setNotiList] =
     useRecoilState<channelNotiType[]>(channelNotiList);
-  const { channelId } = useParams<string>();
+  const { workspaceId, channelId } = useParams<string>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [workspaceList, setWorkspaceList] =
+    useRecoilState<workspaceListType[]>(wsList);
 
   useEffect(() => {
+    let flag = false;
     const newList: channelNotiType[] = notiList.map((noti) => {
-      if (noti.channelId === channelId)
-        return { ...noti, notificationRead: true };
-      else return noti;
+      if (
+        noti.workspaceId === workspaceId &&
+        noti.channelId !== channelId &&
+        noti.notificationRead
+      ) {
+        flag = true;
+      }
+      if (noti.channelId === channelId) {
+        return { ...noti, notificationRead: false };
+      } else return noti;
     });
-    console.log(newList);
+
+    if (!flag) {
+      console.log('all channel read');
+      setWorkspaceList(
+        workspaceList.map((dto: any) => {
+          if (workspaceId === dto.id) {
+            return { ...dto, noti: false };
+          } else return dto;
+        })
+      );
+    }
     setNotiList(newList);
     setIsLoading(true);
     enterChannel(channelId!).then(() => {
       subChannel(channelId!).then((res) => {
-        console.log(res.data);
         setContents(res.data.chatMessageDTOList);
         setIsLoading(false);
+
+        let list: string[] = [];
+        res.data.chatMessageDTOList?.forEach((data: contentTypes) => {
+          list.push(data.email);
+        });
+        let result = Array.from(new Set(list));
+        setChatMembers(result);
       });
     });
+    // updateLoggedTime(channelId, 'CHANNEL');
   }, [channelId]);
+
+  useEffect(() => {
+    // console.log('----------' + notiList);
+    window.addEventListener('beforeunload', (e: any) => {
+      updateLoggedTime(channelId, 'CHANNEL');
+    });
+    // return () => update();
+  }, [workspaceId, channelId]);
+
+  // const update = () => {
+  //   console.log('dm unmount update');
+  //   updateLoggedTime(channelId, 'CHANNEL').then((res) => {
+  //     console.log(res);
+  //   });
+  // };
+
+  // useEffect(() => {
+  //   console.log('hi');
+  //   updateLoggedTime(channelId, 'CHANNEL').then((res) => {
+  //     console.log(res);
+  //   });
+  // }, [workspaceId]);
 
   const onSendClick = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
-    send({
-      accessToken,
-      channelId,
-      email,
-      message,
-      fileUrl,
-      fileNames,
-    });
-
-    setMessage('');
-    setFiles([]);
-    setFileUrl([]);
+    sendMessage();
   };
 
   const sendMessage = () => {
     send({
-      accessToken,
       channelId,
       email,
       message,

@@ -29,6 +29,7 @@ export type workspaceModalType = {
 
 export type workspaceDropdownType = {
   isOpen: boolean;
+  // userCode: string;
   openMemberList: () => void;
   openAddMemberModal: () => void;
   openModifyModal: () => void;
@@ -51,6 +52,7 @@ export type workspaceMemberType = {
   nickname: string;
   profileImage: string;
   workspaceMemberCode: string;
+  statusCode: string;
 };
 
 export type addWorkspaceMemberType = {

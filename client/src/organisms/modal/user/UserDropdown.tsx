@@ -1,10 +1,13 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
+import { updateUserStatus } from 'api/userApi';
 import Icons from 'atoms/common/Icons';
 import Avatar from 'atoms/profile/Avatar';
 import Text from 'atoms/text/Text';
 import { forwardRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useSetRecoilState } from 'recoil';
+import { memberStatus } from 'recoil/atom';
 import { user } from 'recoil/auth';
 import { userDropdownType } from 'types/common/userTypes';
 
@@ -61,8 +64,11 @@ const IconItem = styled.div`
 const UserDropdown = forwardRef<HTMLDivElement, userDropdownType>(
   ({ isOpen, onClose, openProfileConfig }, ref) => {
     const [userInfo, setUserInfo] = useRecoilState(user);
+    const [membersStatus, setMembersStatus] = useRecoilState(memberStatus);
+    const navigate = useNavigate();
 
-    const logout = () => {
+    const logout = async () => {
+      await changeStatus('OFFLINE');
       localStorage.removeItem('user');
       setUserInfo({
         accessToken: '',
@@ -71,24 +77,54 @@ const UserDropdown = forwardRef<HTMLDivElement, userDropdownType>(
         nickname: '',
         userId: '',
         profileImage: '',
+        statusCode: '',
+        userCode: '',
       });
+    };
+
+    const changeStatus = async (statusCode: string) => {
+      const body = {
+        statusCode,
+      };
+
+      const response = await updateUserStatus(body);
+      console.log(response);
+      setUserInfo({ ...userInfo, statusCode });
+      onClose();
     };
 
     const handleUserConfig = () => {
       openProfileConfig();
       onClose();
     };
+
+    const handleAdminPage = () => {
+      navigate('admin');
+      onClose();
+    };
+
+    useEffect(() => {
+      setMembersStatus({
+        ...membersStatus,
+        [userInfo.email]: userInfo.statusCode,
+      });
+    }, [userInfo]);
+
     return (
       <Modal isOpen={isOpen} ref={ref}>
         <Container>
           <UserItem>
-            <Avatar size="36" src={userInfo.profileImage} />
+            <Avatar
+              size="36"
+              src={userInfo.profileImage}
+              status={userInfo.statusCode}
+            />
             <User>
               <Text size={16}>{userInfo.name}</Text>
               <Text size={14}>{userInfo.email}</Text>
             </User>
           </UserItem>
-          <ListItem>
+          <ListItem onClick={() => changeStatus('ONLINE')}>
             <IconItem>
               <Icons icon="online" width="20" height="20" />
             </IconItem>
@@ -96,7 +132,7 @@ const UserDropdown = forwardRef<HTMLDivElement, userDropdownType>(
               온라인
             </Text>
           </ListItem>
-          <ListItem>
+          <ListItem onClick={() => changeStatus('AWAY')}>
             <IconItem>
               <Icons icon="later" width="20" height="20" />
             </IconItem>
@@ -104,15 +140,15 @@ const UserDropdown = forwardRef<HTMLDivElement, userDropdownType>(
               다른 용무 중
             </Text>
           </ListItem>
-          <ListItem>
+          {/* <ListItem>
             <IconItem>
               <Icons icon="remove" width="20" height="20" />
             </IconItem>
             <Text size={16} pointer>
               방해 금지
             </Text>
-          </ListItem>
-          <ListItem>
+          </ListItem> */}
+          <ListItem onClick={() => changeStatus('OFFLINE')}>
             <IconItem>
               <Icons icon="offline" width="20" height="20" />
             </IconItem>
@@ -126,6 +162,14 @@ const UserDropdown = forwardRef<HTMLDivElement, userDropdownType>(
             </IconItem>
             <Text size={16} pointer>
               계정 설정
+            </Text>
+          </ListItem>
+          <ListItem onClick={handleAdminPage}>
+            <IconItem>
+              <Icons icon="setting" width="20" height="20" />
+            </IconItem>
+            <Text size={16} pointer>
+              관리자 설정
             </Text>
           </ListItem>
           <ListItem onClick={logout}>

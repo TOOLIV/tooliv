@@ -36,7 +36,6 @@ public class RedisSubscriber implements MessageListener {
             String publishMessage = (String) redisChannelTemplate.getStringSerializer()
                 .deserialize(message.getBody());
             // ChatMessage 객채로 맵핑
-            objectMapper.registerModule(new JavaTimeModule());
             ChatRequestDTO chatRequestDTO = objectMapper.readValue(publishMessage, ChatRequestDTO.class);
             List<String> channelMemberEmails = channelMemberService.getChannelMemberEmails(chatRequestDTO.getChannelId());
             for(String email: channelMemberEmails){

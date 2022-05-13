@@ -3,6 +3,7 @@ package com.tooliv.server.domain.channel.domain.repository;
 import com.tooliv.server.domain.channel.domain.Channel;
 import com.tooliv.server.domain.channel.domain.ChannelMembers;
 import com.tooliv.server.domain.user.domain.User;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -40,4 +41,9 @@ public interface ChannelMembersRepository extends JpaRepository<ChannelMembers, 
     long countByChannel(Channel channel);
 
     Optional<List<ChannelMembers>> findByUser(User user);
+
+    @Query(value="UPDATE channel_members "
+        + "SET logged_at = :time "
+        + "WHERE id = :id", nativeQuery = true)
+    void updateLogged(@Param("id")String id,@Param("time") LocalDateTime time);
 }

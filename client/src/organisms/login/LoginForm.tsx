@@ -2,13 +2,13 @@ import styled from '@emotion/styled';
 import isElectron from 'is-electron';
 import { useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useSetRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import { memberStatus } from 'recoil/atom';
 import { user } from 'recoil/auth';
 import { login } from '../../api/userApi';
 import Button from '../../atoms/common/Button';
 import Text from '../../atoms/text/Text';
 import InputBox from '../../molecules/inputBox/InputBox';
-import { colors } from '../../shared/color';
 
 const Container = styled.div`
   width: 480px;
@@ -47,6 +47,7 @@ const LoginForm = () => {
   const inputPasswordRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const setUser = useSetRecoilState(user);
+  const [membersStatus, setMembersStatus] = useRecoilState(memberStatus);
   const isEnterprise = localStorage.getItem('baseURL') ? true : false;
   const server = localStorage.getItem('baseURL');
   const serverName: string = server && JSON.parse(server).name;
@@ -75,7 +76,10 @@ const LoginForm = () => {
           nickname: data.nickname,
           userId: data.userId,
           profileImage: data.profileImage,
+          statusCode: data.statusCode,
+          userCode: data.userCode,
         });
+        setMembersStatus({ ...membersStatus, [data.email]: data.statusCode });
         navigate('/');
       }
     } catch (error) {

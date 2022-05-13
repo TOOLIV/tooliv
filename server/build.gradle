@@ -64,13 +64,17 @@ dependencies {
     // JSON
     implementation("com.google.code.gson:gson:2.8.5")
 
-    //socket
-    implementation 'org.webjars:webjars-locator-core'
-    implementation 'org.webjars:sockjs-client:1.0.2'
-    implementation 'org.webjars:stomp-websocket:2.3.3'
-    implementation 'org.webjars:bootstrap:3.3.7'
-    implementation 'org.webjars:jquery:3.1.1-1'
-    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+    // socket
+    implementation ("org.webjars:webjars-locator-core")
+    implementation ("org.webjars:sockjs-client:1.0.2")
+    implementation ("org.webjars:stomp-websocket:2.3.3")
+    implementation ("org.webjars:bootstrap:3.3.7")
+    implementation ("org.webjars:jquery:3.1.1-1")
+    implementation ("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
+
+    // mime-type=
+    implementation ("org.apache.tika:tika-parsers:2.3.0")
+    implementation ("org.apache.tika:tika-core:2.3.0")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
@@ -103,9 +107,3 @@ task integrationTest(type: Test) {
 test {
     useJUnitPlatform()
 }
-
-integrationTest {
-    useJUnitPlatform()
-}
-
-check.dependsOn integrationTest

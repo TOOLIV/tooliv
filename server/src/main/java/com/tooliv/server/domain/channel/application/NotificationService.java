@@ -1,5 +1,6 @@
 package com.tooliv.server.domain.channel.application;
 
+import com.tooliv.server.domain.channel.application.dto.request.NotificationLoggedAtUpdateRequestDTO;
 import com.tooliv.server.domain.channel.application.dto.response.DirectListResponseDTO;
 import com.tooliv.server.domain.channel.application.dto.response.NotificationListResponseDTO;
 import com.tooliv.server.domain.channel.domain.DirectChatRoom;
@@ -11,7 +12,6 @@ public interface NotificationService {
 
     DirectListResponseDTO getDirectNotificationList(String email);
 
-    void createDirectChatNotification(User user, DirectChatRoom directChatRoom);
+    void updateLoggedAt(NotificationLoggedAtUpdateRequestDTO notificationLoggedAtUpdateRequestDTO);
 
-    void readDirectChatNotification(User user, DirectChatRoom directChatRoom);
 }

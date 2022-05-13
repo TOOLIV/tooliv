@@ -1,8 +1,5 @@
-import { useRecoilValue, useRecoilState } from 'recoil';
-import { createBrowserHistory } from 'history';
 import axios, { AxiosInstance } from 'axios';
 import isElectron from 'is-electron';
-import { user } from 'recoil/auth';
 
 let instance: AxiosInstance;
 const baseURL = localStorage.getItem('baseURL');
@@ -20,7 +17,7 @@ if (isElectron() && baseURL) {
   });
 } else {
   instance = axios.create({
-    baseURL: process.env.REACT_APP_API_URL,
+    baseURL: window.env.BASE_URL + '/api',
     // TODO timeout 설정
     timeout: 30000,
     headers: {
@@ -57,9 +54,6 @@ instance.interceptors.response.use(
   },
   function (error) {
     if (error.response) {
-      const history = createBrowserHistory();
-
-      console.log(error.response);
       switch (error.response.status) {
         /* 'JWT expired' exeption */
         case 400:
@@ -68,10 +62,7 @@ instance.interceptors.response.use(
         case 401:
           console.log('401 ERROR, not authorized.');
           // history.push('/login');
-          // // // 강제로 새로고침 (임시)
-          localStorage.removeItem('user');
-          window.location.reload();
-
+          localStorage.removeItem('tooliv_info');
           break;
         case 404:
           console.log('404error!');
@@ -88,7 +79,7 @@ instance.interceptors.response.use(
 );
 
 export const multipartInstance = axios.create({
-  baseURL: process.env.REACT_APP_API_URL,
+  baseURL: window.env.BASE_URL + '/api',
   // TODO timeout 설정
   timeout: 30000,
   headers: {

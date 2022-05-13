@@ -8,9 +8,11 @@ import ChannelRadio from 'molecules/radio/channelRadio/ChannelRadio';
 import VisibilityRadio from 'molecules/radio/visibiltyRadio/VisibilityRadio';
 import React, { useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useSetRecoilState } from 'recoil';
-import { currentChannel } from 'recoil/atom';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import { channelNotiList, currentChannel } from 'recoil/atom';
+import { sub, unsub } from 'services/wsconnect';
 import { colors } from 'shared/color';
+import { channelNotiType } from 'types/channel/contentType';
 import { workspaceModalType } from 'types/workspace/workspaceTypes';
 
 const Modal = styled.div<{ isOpen: boolean }>`
@@ -63,6 +65,8 @@ const ChannelModal = ({ isOpen, onClose }: workspaceModalType) => {
   const [channelCode, setChannelCode] = useState('CHAT');
   const [privateYn, setPrivateYn] = useState(false);
   const setCurrentChannelId = useSetRecoilState(currentChannel);
+  const [notiList, setNotiList] =
+    useRecoilState<channelNotiType[]>(channelNotiList);
   const { workspaceId } = useParams();
   const navigate = useNavigate();
 
@@ -84,9 +88,16 @@ const ChannelModal = ({ isOpen, onClose }: workspaceModalType) => {
           workspaceId: workspaceId!,
         };
         const response = await createChannel(body);
-        console.log(response);
         const channelId = response.data.id;
         setCurrentChannelId(channelId);
+        setNotiList([
+          ...notiList,
+          { channelId, workspaceId, notificationRead: false },
+        ]);
+        // 구독 풀고
+        unsub();
+        // 다시 구독 (바로 메시지 전송할 수 있게)
+        sub();
         navigate(`${workspaceId}/${channelId}`);
         onClose();
       }
