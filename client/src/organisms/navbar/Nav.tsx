@@ -124,7 +124,7 @@ const Nav = () => {
 
   useEffect(() => {
     setKeyword('');
-    // inputRef.current?.value = '';
+    inputRef.current!.value = '';
   }, [channelId]);
 
   useEffect(() => {
