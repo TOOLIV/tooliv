@@ -195,7 +195,7 @@ export const sub = () => {
         // 현재 채널 아이디와 도착한 메시지의 채널 아이디가 같으면
         setRecoil(channelContents, (prev) => [...prev, content]);
         setRecoil(chatMember, (prev) => [...prev, content.email]);
-        if (window.location.pathname.includes('/direct')) {
+        if (window.location.href.includes('/direct')) {
           updateLoggedTime(channelId, 'DM');
         } else {
           updateLoggedTime(channelId, 'CHANNEL');
