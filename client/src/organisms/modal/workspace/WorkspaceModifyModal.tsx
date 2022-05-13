@@ -1,25 +1,15 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { getChannelList } from 'api/channelApi';
-import { createWorkspace, modifyWorkspace } from 'api/workspaceApi';
+import { modifyWorkspace } from 'api/workspaceApi';
 import Button from 'atoms/common/Button';
 import Text from 'atoms/text/Text';
 import InputBox from 'molecules/inputBox/InputBox';
 import FileUploader from 'molecules/uploader/FileUploader';
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useRecoilState, useSetRecoilState } from 'recoil';
-import {
-  currentChannel,
-  currentWorkspace,
-  modifyWorkspaceName,
-  userLog,
-} from 'recoil/atom';
-import { colors } from 'shared/color';
-import {
-  workspaceModalType,
-  workspaceModifyModalType,
-} from 'types/workspace/workspaceTypes';
+import { useSetRecoilState } from 'recoil';
+import { modifyWorkspaceName } from 'recoil/atom';
+import { workspaceModifyModalType } from 'types/workspace/workspaceTypes';
 
 const Modal = styled.div<{ isOpen: boolean }>`
   display: none;
@@ -124,16 +114,6 @@ const WorkspaceModifyModal = ({
         const response = await modifyWorkspace(formData);
         console.log(response);
         setModifyWorkspaceName(name);
-        // const workspaceId = response.data.id;
-        // const channelList = await getChannelList(workspaceId);
-        // const channelId = channelList.data.channelGetResponseDTOList[0].id;
-        // setCurrentWorkspace(workspaceId);
-        // setCurrentChannel(channelId);
-        // setUserLogList({
-        //   ...userLogList,
-        //   [workspaceId]: channelId,
-        // });
-        // navigate(`${workspaceId}/${channelId}`);
         inputWorkspaceRef.current!.value = '';
         setFile(undefined);
         onClose();

@@ -110,7 +110,7 @@ const ChannelMemberListModal = ({
         }
       }
     },
-    [channelId, sequence]
+    [channelId]
   );
 
   const searchUserList = useCallback(() => {
