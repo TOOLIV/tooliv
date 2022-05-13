@@ -20,6 +20,8 @@ import com.tooliv.server.domain.workspace.domain.WorkspaceMembers;
 import com.tooliv.server.domain.workspace.domain.enums.WorkspaceMemberCode;
 import com.tooliv.server.domain.workspace.domain.repository.WorkspaceMemberRepository;
 import com.tooliv.server.domain.workspace.domain.repository.WorkspaceRepository;
+import com.tooliv.server.domain.workspace.exception.DuplicateWorkspaceException;
+import com.tooliv.server.domain.workspace.exception.WorkspaceNotFoundException;
 import com.tooliv.server.global.common.AwsS3Service;
 import com.tooliv.server.global.exception.UserNotFoundException;
 import java.time.LocalDateTime;
@@ -65,7 +67,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
         boolean existWorkspace = workspaceRepository.existsByNameAndDeletedAt(registerWorkspaceRequestDTO.getName(), null);
         if (existWorkspace) {
-            return null;
+            throw new DuplicateWorkspaceException("동일한 이름의 워크스페이스가 존재합니다.");
         }
         Workspace workspace = Workspace.builder()
             .name(registerWorkspaceRequestDTO.getName())
@@ -112,9 +114,9 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Transactional
     @Override
-    public Integer modifyWorkspace(MultipartFile multipartFile, ModifyWorkspaceRequestDTO modifyWorkspaceRequestDTO) {
+    public void modifyWorkspace(MultipartFile multipartFile, ModifyWorkspaceRequestDTO modifyWorkspaceRequestDTO) {
         Workspace workspace = workspaceRepository.findById(modifyWorkspaceRequestDTO.getId())
-            .orElseThrow(() -> new IllegalArgumentException("해당 워크스페이스를 찾을 수 없습니다."));
+            .orElseThrow(() -> new WorkspaceNotFoundException("해당 워크스페이스를 찾을 수 없습니다."));
 
         String fileName = null;
         if (multipartFile != null) {
@@ -123,14 +125,13 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
         workspace.modifyWorkspace(modifyWorkspaceRequestDTO.getName(), fileName);
         workspaceRepository.save(workspace);
-        return 200;
     }
 
     @Transactional
     @Override
-    public Integer deleteWorkspace(String workspaceId) {
+    public void deleteWorkspace(String workspaceId) {
         Workspace workspace = workspaceRepository.findById(workspaceId)
-            .orElseThrow(() -> new IllegalArgumentException("해당 워크스페이스를 찾을 수 없습니다."));
+            .orElseThrow(() -> new WorkspaceNotFoundException("해당 워크스페이스를 찾을 수 없습니다."));
 
         List<WorkspaceMembers> workspaceMembersList = workspaceMemberRepository.findByWorkspace(workspace);
         for (WorkspaceMembers workspaceMember : workspaceMembersList) {
@@ -144,13 +145,12 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
         workspace.deleteWorkspace();
         workspaceRepository.save(workspace);
-        return 200;
     }
 
     @Override
     public WorkspaceListGetResponseDTO getWorkspaceList() {
         User user = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
-            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+            .orElseThrow(() -> new UserNotFoundException("회원 정보가 존재하지 않습니다."));
 
         List<Workspace> workspaceList = workspaceRepository.findByUser(user.getId());
         List<WorkspaceGetResponseDTO> workspaceGetResponseDTOList = new ArrayList<>();
@@ -171,7 +171,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Override
     public WorkspaceNameGetResponseDTO getWorkspaceName(String workspaceId) {
         Workspace workspace = workspaceRepository.findById(workspaceId)
-            .orElseThrow(() -> new IllegalArgumentException("해당 워크스페이스를 찾을 수 없습니다."));
+            .orElseThrow(() -> new WorkspaceNotFoundException("해당 워크스페이스를 찾을 수 없습니다."));
 
         String thumbnailImage = awsS3Service.getFilePath(workspace.getThumbnailImage());
         WorkspaceNameGetResponseDTO workspaceNameGetResponseDTO = WorkspaceNameGetResponseDTO.builder()
