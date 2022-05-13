@@ -1,27 +1,27 @@
 import instance from 'services/axios';
 
 export const enterChannel = async (channelId?: string) => {
-  return instance.post(`/chat/channel/${channelId}`);
+  return instance.post(`/channel/chat/${channelId}`);
 };
 
 export const subChannel = async (channelId?: string) => {
-  return instance.get(`/chat/channel/${channelId}`);
+  return instance.get(`/channel/chat/${channelId}`);
 };
 
 export const getChannels = async (email?: string) => {
   return instance.get(`/notification/list/${email}`);
 };
 
-export const enterDM = async (channelId?: string) => {
-  return instance.post(`/chat/direct/${channelId}`);
+export const enterDM = async (roomId?: string) => {
+  return instance.post(`/direct/chat/${roomId}`);
 };
 
-export const subDM = async (channelId?: string) => {
-  return instance.get(`/chat/direct/${channelId}`);
+export const subDM = async (roomId?: string) => {
+  return instance.get(`/dircet/chat/${roomId}`);
 };
 
 export const createDMRoom = async (receiverEmail?: string) => {
-  return instance.post(`/chat/directChat/${receiverEmail}`);
+  return instance.post(`/chat/direct/chat/${receiverEmail}`);
 };
 
 export const getDMList = async (email?: string) => {
