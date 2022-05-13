@@ -102,7 +102,7 @@ public class ChatController {
     }
 
     @ApiOperation(value = "Direct 채팅방 입장")
-    @PostMapping("/api/direct/chat/{roomId}")
+    @PostMapping("/api/direct/enter/{roomId}")
     @ApiResponses({
         @ApiResponse(code = 200, message = "Direct 채팅방 입장 완료"),
         @ApiResponse(code = 409, message = "Direct 채팅방 입장 실패"),
