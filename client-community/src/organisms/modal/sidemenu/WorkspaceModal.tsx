@@ -131,7 +131,7 @@ const WorkspaceModal = ({ isOpen, onClose }: workspaceModalType) => {
         // 알림 state에 추가
         setNotiList([
           ...notiList,
-          { channelId, workspaceId, notificationRead: true },
+          { channelId, workspaceId, notificationRead: false },
         ]);
         // 구독 풀고
         unsub();
