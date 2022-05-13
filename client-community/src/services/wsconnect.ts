@@ -13,6 +13,7 @@ import {
 import { getRecoil, setRecoil } from 'recoil-nexus';
 import { user } from 'recoil/auth';
 import { korDate } from 'utils/formatTime';
+import { updateLoggedTime } from 'api/chatApi';
 const baseURL = localStorage.getItem('baseURL');
 let sockJS = baseURL
   ? new SockJS(`${JSON.parse(baseURL).url}/chatting`)
@@ -171,7 +172,6 @@ export const sub = () => {
   subscribe = client.subscribe(`/sub/chat/${userInfo.userId}`, (response) => {
     const notiList = getRecoil(channelNotiList);
     const workspaceList = getRecoil(wsList);
-    // const chatMebers = getRecoil(chatMember);
 
     const link = window.location.href.split('/');
     // 현재 채널, 워크스페이스 아이디
@@ -189,11 +189,17 @@ export const sub = () => {
         ...prev.slice(index + 1),
       ]);
     } else if (type === 'UPDATE') {
+      // 수정 (추후 구현)
     } else {
       if (channelId === recChannelId) {
         // 현재 채널 아이디와 도착한 메시지의 채널 아이디가 같으면
         setRecoil(channelContents, (prev) => [...prev, content]);
         setRecoil(chatMember, (prev) => [...prev, content.email]);
+        if (window.location.pathname.includes('/direct')) {
+          updateLoggedTime(channelId, 'DM');
+        } else {
+          updateLoggedTime(channelId, 'CHANNEL');
+        }
       } else {
         // 현재 채널 아이디와 도착한 메시지의 채널 아이디가 다르면
         const newList: channelNotiType[] = notiList.map((noti) => {
@@ -202,7 +208,7 @@ export const sub = () => {
             noti.channelId === recChannelId
           ) {
             updateWorkspaceId = noti.workspaceId!;
-            return { ...noti, notificationRead: false };
+            return { ...noti, notificationRead: true };
           } else {
             return noti;
           }
@@ -215,7 +221,7 @@ export const sub = () => {
                 workspace.id !== workspaceId &&
                 workspace.id === updateWorkspaceId
               ) {
-                return { ...workspace, noti: false };
+                return { ...workspace, noti: true };
               } else {
                 return workspace;
               }

@@ -143,12 +143,9 @@ const Channels = ({
                     <Icons icon="public" />
                   )}
                 </SideWrapper>
-                <Label
-                  {...channel}
-                  noti={map.get(channel.id)?.notificationRead}
-                />
+                <Label {...channel} />
               </InnerContainer>
-              {!map.get(channel.id)?.notificationRead && <Noti>●</Noti>}
+              {map.get(channel.id)?.notificationRead && <Noti>●</Noti>}
             </NotiWrapper>
             <HoverIcon
               onClick={() => handleClickModal(channel.id, i)}
@@ -178,12 +175,9 @@ const Channels = ({
                     <Icons icon="public" />
                   )}
                 </SideWrapper>
-                <Label
-                  {...channel}
-                  noti={map.get(channel.id)?.notificationRead}
-                />
+                <Label {...channel} />
               </InnerContainer>
-              {!map.get(channel.id)?.notificationRead && <Noti>●</Noti>}
+              {map.get(channel.id)?.notificationRead && <Noti>●</Noti>}
             </NotiWrapper>
             <HoverIcon
               onClick={() => handleClickModal(channel.id, i + listNum)}

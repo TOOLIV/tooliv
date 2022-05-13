@@ -35,7 +35,7 @@ const WorkSpaces = ({ workspaceList, onClick }: workspacesType) => {
         name="홈"
         thumbnailImage={mainSrc}
         onClick={handleClickMain}
-        noti={true}
+        noti={false}
       />
       {workspaceList.map((workspace) => (
         <WorkSpace

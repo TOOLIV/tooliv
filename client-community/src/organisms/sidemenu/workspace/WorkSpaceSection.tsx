@@ -3,7 +3,7 @@ import { getWorkspaceList } from 'api/workspaceApi';
 import { getChannelList } from 'api/channelApi';
 import Icons from 'atoms/common/Icons';
 import WorkSpaces from 'molecules/sidemenu/WorkSpaces';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
@@ -11,6 +11,7 @@ import {
   currentChannel,
   // currentChannel,
   currentWorkspace,
+  DMList,
   isOpenSide,
   modifyWorkspaceName,
   userLog,
@@ -20,6 +21,9 @@ import { workspaceListType } from 'types/workspace/workspaceTypes';
 import WorkspaceModal from 'organisms/modal/sidemenu/WorkspaceModal';
 import Text from 'atoms/text/Text';
 import { channelNotiType } from 'types/channel/contentType';
+import { getChannels, getDMList } from 'api/chatApi';
+import { DMInfoType } from 'types/channel/chatTypes';
+import { user } from 'recoil/auth';
 
 const Container = styled.div<{ isOpen: boolean }>`
   padding-top: 16px;
@@ -44,6 +48,8 @@ const WorkSpaceSection = () => {
   const modWorkspaceName = useRecoilValue(modifyWorkspaceName);
   const [notiList, setNotiList] =
     useRecoilState<channelNotiType[]>(channelNotiList);
+  const [dMList, setDmList] = useRecoilState<DMInfoType[]>(DMList);
+  const userInfo = useRecoilValue(user);
   const navigate = useNavigate();
 
   const handleOpenModal = () => {
@@ -54,8 +60,39 @@ const WorkSpaceSection = () => {
   };
 
   const handleWorkspace = async () => {
+    const chaRes = await getChannels(userInfo.email);
+    const dmRes = await getDMList(userInfo.email);
     const response = await getWorkspaceList();
-    setWorkspaceList(response.data.workspaceGetResponseDTOList);
+    const {
+      data: { notificationChannelList },
+    } = chaRes;
+    const {
+      data: { directInfoDTOList },
+    } = dmRes;
+
+    const newNotiList = [...notificationChannelList, ...directInfoDTOList];
+
+    setDmList(directInfoDTOList);
+    setNotiList(newNotiList);
+
+    const notiWorkspace = newNotiList.filter((noti) => {
+      if (noti.notificationRead) {
+        return noti;
+      }
+      return null;
+    });
+
+    const map = new Map(notiWorkspace.map((el) => [el.workspaceId, el]));
+    const newWSList = response.data.workspaceGetResponseDTOList.map(
+      (dto: any) => {
+        if (map.get(dto.id)) {
+          return { ...dto, noti: true };
+        } else {
+          return { ...dto, noti: false };
+        }
+      }
+    );
+    setWorkspaceList(newWSList);
   };
 
   const getNextChannelId = async (workspaceId: string) => {
@@ -80,14 +117,14 @@ const WorkSpaceSection = () => {
         [id]: channelId,
       });
       setCurrentChannel(channelId);
-      setWorkspaceList(
-        workspaceList.map((dto: any) => {
-          console.log(dto.id, id);
-          if (id === dto.id) {
-            return { ...dto, noti: true };
-          } else return dto;
-        })
-      );
+      // setWorkspaceList(
+      //   workspaceList.map((dto: any) => {
+      //     console.log(dto.id, id);
+      //     if (id === dto.id) {
+      //       return { ...dto, noti: true };
+      //     } else return dto;
+      //   })
+      // );
       navigate(`${id}/${channelId}`);
     }
   };
