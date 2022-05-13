@@ -126,6 +126,11 @@ const Nav = () => {
   }, []);
 
   useEffect(() => {
+    setKeyword('');
+    inputRef.current!.value = '';
+  }, [channelId]);
+
+  useEffect(() => {
     // dm 리스트에서 유저 이메일 뽑아서 저장
     let list: string[] = [];
     dMList.forEach((data: DMInfoType) => {
@@ -213,8 +218,6 @@ const Nav = () => {
         const {
           data: { chatSearchInfoDTOList },
         } = res;
-        console.log(res);
-        console.log(chatSearchInfoDTOList);
 
         setSearchList(
           chatSearchInfoDTOList.map((c: any) => {

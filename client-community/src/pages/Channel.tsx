@@ -11,6 +11,8 @@ import {
   chatFiles,
   chatFileUrl,
   chatMember,
+  searchIndex,
+  searchResults,
   wsList,
 } from '../recoil/atom';
 import { channelNotiType, contentTypes } from '../types/channel/contentType';
@@ -52,8 +54,13 @@ const Channel = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [workspaceList, setWorkspaceList] =
     useRecoilState<workspaceListType[]>(wsList);
+  const [searchList, setSearchList] = useRecoilState<number[]>(searchResults);
+  const [searchedIndex, setSearchedIndex] = useRecoilState<number>(searchIndex);
 
   useEffect(() => {
+    setSearchList([]);
+    setSearchedIndex(-1);
+
     let flag = false;
     const newList: channelNotiType[] = notiList.map((noti) => {
       if (

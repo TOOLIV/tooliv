@@ -11,6 +11,8 @@ import {
   chatFiles,
   chatFileUrl,
   chatMember,
+  searchIndex,
+  searchResults,
   wsList,
 } from '../recoil/atom';
 import { channelNotiType, contentTypes } from '../types/channel/contentType';
@@ -52,8 +54,13 @@ const Channel = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [workspaceList, setWorkspaceList] =
     useRecoilState<workspaceListType[]>(wsList);
+  const [searchList, setSearchList] = useRecoilState<number[]>(searchResults);
+  const [searchedIndex, setSearchedIndex] = useRecoilState<number>(searchIndex);
 
   useEffect(() => {
+    setSearchList([]);
+    setSearchedIndex(-1);
+
     let flag = false;
     const newList: channelNotiType[] = notiList.map((noti) => {
       if (
@@ -69,7 +76,6 @@ const Channel = () => {
     });
 
     if (!flag) {
-      console.log('all channel read');
       setWorkspaceList(
         workspaceList.map((dto: any) => {
           if (workspaceId === dto.id) {
@@ -82,6 +88,7 @@ const Channel = () => {
     setIsLoading(true);
     enterChannel(channelId!).then(() => {
       subChannel(channelId!).then((res) => {
+        console.log(res);
         setContents(res.data.chatMessageDTOList);
         setIsLoading(false);
 
@@ -93,30 +100,13 @@ const Channel = () => {
         setChatMembers(result);
       });
     });
-    // updateLoggedTime(channelId, 'CHANNEL');
   }, [channelId]);
 
   useEffect(() => {
-    // console.log('----------' + notiList);
     window.addEventListener('beforeunload', (e: any) => {
       updateLoggedTime(channelId, 'CHANNEL');
     });
-    // return () => update();
   }, [workspaceId, channelId]);
-
-  // const update = () => {
-  //   console.log('dm unmount update');
-  //   updateLoggedTime(channelId, 'CHANNEL').then((res) => {
-  //     console.log(res);
-  //   });
-  // };
-
-  // useEffect(() => {
-  //   console.log('hi');
-  //   updateLoggedTime(channelId, 'CHANNEL').then((res) => {
-  //     console.log(res);
-  //   });
-  // }, [workspaceId]);
 
   const onSendClick = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
