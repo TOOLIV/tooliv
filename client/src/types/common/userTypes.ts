@@ -11,6 +11,15 @@ export type userInfoType = {
   profileImage: string;
   statusCode: string;
 };
+export type userListType = {
+  name: string;
+  email: string;
+  nickname: string;
+  profileImage: string;
+  statusCode: string;
+  userCode: string;
+  id: string;
+};
 export type userItemTypes = {
   name: string;
   email: string;

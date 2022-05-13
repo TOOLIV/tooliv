@@ -9,7 +9,7 @@ const WorkSpaceContainer = styled.div`
   align-items: flex-start;
   overflow-x: scroll;
   overflow-y: hidden;
-  height: 90px;
+  /* height: 90px; */
   /* -ms-overflow-style: none;
 
   &::-webkit-scrollbar {

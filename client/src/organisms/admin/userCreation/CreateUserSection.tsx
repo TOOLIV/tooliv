@@ -1,10 +1,22 @@
-import React, { useRef, useState } from 'react';
+import styled from '@emotion/styled';
+import { useDebounce } from 'hooks/useHooks';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useSetRecoilState } from 'recoil';
 import { checkUserEmail, createUser } from '../../../api/adminApi';
 import Button from '../../../atoms/common/Button';
 import InputBox from '../../../molecules/inputBox/InputBox';
 import { userCreationList } from '../../../recoil/atom';
-import { AdminContainer } from '../userManagement/FindUserSection';
+// import { AdminContainer } from '../userManagement/FindUserSection';
+
+const AdminContainer = styled.div`
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  /* justify-content: flex-end; */
+  align-items: flex-end;
+  gap: 10px;
+  margin-bottom: 30px;
+`;
 
 const CreateUserSection = () => {
   const [emailStatus, setEmailStatus] = useState('default');
@@ -12,11 +24,18 @@ const CreateUserSection = () => {
   const setUserCreationList = useSetRecoilState(userCreationList);
   const inputEmailRef = useRef<HTMLInputElement>(null);
   const inputNameRef = useRef<HTMLInputElement>(null);
-  const emailPattern =
-    /^([0-9a-zA-Z_.-]+)@([0-9a-zA-Z_-]+)(\.[0-9a-zA-Z_-]+){1,2}$/;
+  const [keyword, setKeyword] = useState('');
+  const debouncedValue = useDebounce<string>(keyword, 500);
 
-  const checkEmailValid = () => {
-    const email = inputEmailRef.current?.value!;
+  const inputEmail = useCallback(() => {
+    const keyword = inputEmailRef.current?.value!;
+    setKeyword(keyword);
+  }, []);
+
+  const checkEmailValid = (email: string) => {
+    const emailPattern =
+      /^([0-9a-zA-Z_.-]+)@([0-9a-zA-Z_-]+)(\.[0-9a-zA-Z_-]+){1,2}$/;
+
     if (emailPattern.test(email)) {
       handleEmailCheck(email);
     } else {
@@ -36,10 +55,10 @@ const CreateUserSection = () => {
     }
   };
 
-  // const getUserName = () => {
-  //   const name = inputNameRef.current?.value!;
-  //   console.log(name);
-  // };
+  useEffect(() => {
+    // 키워드 입력시 초기화 (안할 경우 이전 데이터가 남아있어 오류)
+    checkEmailValid(debouncedValue);
+  }, [debouncedValue]);
 
   const createUserInfo = async () => {
     const email = inputEmailRef.current?.value!;
@@ -69,14 +88,20 @@ const CreateUserSection = () => {
         ref={inputEmailRef}
         status={emailStatus}
         message={inputMsg}
-        onChange={checkEmailValid}
+        onChange={inputEmail}
       />
       <InputBox
         label="회원"
         placeholder="회원 이름을 입력해주세요."
         ref={inputNameRef}
       />
-      <Button width="50" height="35" text="추가" onClick={createUserInfo} />
+      <Button
+        width="50"
+        height="35"
+        text="추가"
+        onClick={createUserInfo}
+        disabled={emailStatus === 'error'}
+      />
     </AdminContainer>
   );
 };

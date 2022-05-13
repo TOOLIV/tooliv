@@ -7,7 +7,8 @@ import { currentChannel, currentWorkspace, isOpenSide } from '../recoil/atom';
 import ChannelSection from '../organisms/sidemenu/channel/ChannelSection';
 import WorkSpaceSection from '../organisms/sidemenu/workspace/WorkSpaceSection';
 import { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import AdminSection from 'organisms/sidemenu/admin/AdminSection';
 
 const Container = styled(motion.div)`
   width: 280px;
@@ -38,6 +39,8 @@ const SideMenu = () => {
     useRecoilState(currentWorkspace);
   const setCurrentChannelId = useSetRecoilState(currentChannel);
   const { workspaceId, channelId } = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     if (workspaceId && channelId) {
@@ -54,12 +57,22 @@ const SideMenu = () => {
       animate={isOpen ? 'open' : 'closed'}
       variants={variants}
     >
+      {/* <div onClick={() => navigate('/admin/manage')}>이동</div> */}
+
       <SideHeader />
-      <WorkSpaceSection />
-      <Contents>
-        {isOpen && currentWorkspaceId !== 'main' ? <ChannelSection /> : null}
-        <DirectMessage />
-      </Contents>
+      {location.pathname.includes('admin') ? (
+        <AdminSection />
+      ) : (
+        <>
+          <WorkSpaceSection />
+          <Contents>
+            {isOpen && currentWorkspaceId !== 'main' ? (
+              <ChannelSection />
+            ) : null}
+            <DirectMessage />
+          </Contents>
+        </>
+      )}
     </Container>
   );
 };
