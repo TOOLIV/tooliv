@@ -1,6 +1,5 @@
 import { Head, Html, Main, NextScript } from "next/document";
 import React from "react";
-import Logo from "../public/assets/images/Tooliv.png";
 
 const MyDocument = () => {
   return (

@@ -40,8 +40,8 @@ export const contexts: DescriptionType[] = [
     title: "미팅 룸으로 이동해 화상회의를 진행해보세요.",
     description: [
       "미팅 룸에서는 화상회의를 할 수 있습니다.",
-      "팀 원들과 마주보며 소통하여 업무에 집중력을 높여보세요",
-      "공유 해야하는 내용이 있다면 화면 공유를 이용해보세요",
+      "팀 원들과 마주보며 소통하여 업무에 집중력을 높여보세요.",
+      "공유 해야하는 내용이 있다면 화면 공유를 이용해보세요.",
     ],
     mainImage: meeting,
     subImage: meetinggroup,

@@ -35,7 +35,7 @@ const InnerContainer = styled.div`
 const DescImageContainer = styled.div`
   display: flex;
   position: relative;
-  width: 100%;
+  width: 60%;
   height: 100%;
   @media screen and (max-width: 768px) {
     width: 100%;
@@ -57,7 +57,7 @@ const Desc = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
-  width: 40%;
+  width: 50%;
   padding: 0 30px;
   .title {
     font-size: 20px;
@@ -127,21 +127,21 @@ const Content = ({
           </MainContainer>
           <MotionImage
             initial={{
-              x:
-                id % 2 === 0 && isDesktopOrLaptop
-                  ? "200%"
-                  : id % 2 === 0 && isTabletOrLaptop
-                  ? "200%"
-                  : 0,
+              x: 0,
+              // id % 2 === 0 && isDesktopOrLaptop
+              //   ? "200%"
+              //   : id % 2 === 0 && isTabletOrLaptop
+              //   ? "200%"
+              //   : 0,
               scale: 0,
             }}
             whileInView={{
-              x:
-                id % 2 === 0 && isDesktopOrLaptop
-                  ? "200%"
-                  : id % 2 === 0 && isTabletOrLaptop
-                  ? "200%"
-                  : 0,
+              x: 0,
+              // id % 2 === 0 && isDesktopOrLaptop
+              //   ? "200%"
+              //   : id % 2 === 0 && isTabletOrLaptop
+              //   ? "200%"
+              //   : 0,
               scale: 1,
             }}
             transition={{
