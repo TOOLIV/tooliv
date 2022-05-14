@@ -12,7 +12,7 @@ const StyledContent = styled.div<{ c: number }>`
   @media screen and (max-width: 768px) {
     height: 600px;
   }
-  background-color: ${(props) => (props.c % 2 === 0 ? "#e4e4e4" : "")};
+  background-color: ${(props) => (props.c % 2 === 0 ? "#f8f8f8" : "")};
 `;
 
 const InnerContainer = styled.div`
