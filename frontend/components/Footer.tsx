@@ -17,7 +17,7 @@ const StyledFooter = styled.footer`
 const FooterContainer = styled.div`
   width: 70vw;
   display: flex;
-  padding: 2.5rem 0;
+  /* padding: 2.5rem 0; */
 `;
 
 const Intro = styled.div`
@@ -52,7 +52,7 @@ const Menu = styled.div`
   display: flex;
   justify-content: space-between;
   font-weight: 700;
-
+  padding: 2.5rem;
   div {
     cursor: pointer;
   }
@@ -64,8 +64,8 @@ const Footer = () => {
     <StyledFooter>
       <FooterContainer>
         <Intro>
-          <div style={{ width: "200px" }}>
-            <Image src={Thumbnail} objectFit="contain" />
+          <div style={{ width: "200px", height: "100px" }}>
+            <Image src={Thumbnail} objectFit="cover" />
           </div>
           <div className="description">
             <div className="desc">
