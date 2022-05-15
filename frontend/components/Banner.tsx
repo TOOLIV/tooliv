@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import React from "react";
 import a1 from "/public/assets/images/a1.png";
 import Wavy from "/public/assets/images/Wavy.png";
@@ -72,6 +73,14 @@ const ImageContainer = styled.div`
 `;
 
 const Banner = () => {
+  const nav = useRouter();
+
+  const onDownload = () => {
+    nav.push(
+      "https://tooliva402.s3.ap-northeast-2.amazonaws.com/tooliv-win32-ia32.zip"
+    );
+  };
+
   return (
     <StyledBanner>
       <InnerContainer>
@@ -83,7 +92,7 @@ const Banner = () => {
           <div className="title">Tooliv</div>
         </TitleContainer>
         <ButtonContainer>
-          <Button>window용 다운로드</Button>
+          <Button onClick={onDownload}>window용 다운로드</Button>
           <Button>mac용 다운로드</Button>
         </ButtonContainer>
       </InnerContainer>
