@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import Head from "next/head";
-import Banner from "../components/Banner";
+import Banner, { BannerPropsType } from "../components/Banner";
 import Content, { DescriptionType } from "../components/Content";
 const contexts = require("/data/context.ts");
 
@@ -19,14 +19,16 @@ const Contents = styled.div`
   width: 100%;
 `;
 
-const Home = () => {
+const Home = ({ OS, header }: BannerPropsType) => {
+  console.log(OS, header);
+
   return (
     <>
       <Head>
         <title>Tooliv | Home</title>
       </Head>
       <Container>
-        <Banner />
+        <Banner OS={OS} header={header} />
         <Contents>
           {contexts.contexts.map((data: DescriptionType) => (
             <Content
@@ -43,6 +45,15 @@ const Home = () => {
       </Container>
     </>
   );
+};
+
+export const getServerSideProps = ({ req }: any) => {
+  let OS = "";
+  if (req.headers["user-agent"].indexOf("Win") != -1) OS = "Windows";
+  if (req.headers["user-agent"].indexOf("Mac") != -1) OS = "MacOS";
+  if (req.headers["user-agent"].indexOf("X11") != -1) OS = "UNIX";
+  if (req.headers["user-agent"].indexOf("Linux") != -1) OS = "Linux";
+  return { props: { OS, header: req.headers } };
 };
 
 export default Home;

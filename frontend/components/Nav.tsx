@@ -15,6 +15,10 @@ const NavContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  @media screen and (max-width: 768px) {
+    padding: 0 2rem;
+    width: 100%;
+  }
 `;
 
 const LogoContainer = styled.div`
@@ -28,7 +32,7 @@ const LogoContainer = styled.div`
 `;
 const NavItems = styled.div`
   display: flex;
-  gap: 30px;
+  gap: 5rem;
 `;
 const NavItem = styled.div`
   font-size: 14px;
@@ -46,9 +50,8 @@ const Nav = () => {
           <div className="title">TOOLIV</div>
         </LogoContainer>
         <NavItems>
-          <NavItem>다운로드</NavItem>
-          <NavItem>설치형 가이드</NavItem>
-          <NavItem>소개</NavItem>
+          <NavItem>DOWNLOAD</NavItem>
+          <NavItem>DOCS</NavItem>
         </NavItems>
       </NavContainer>
     </Container>
