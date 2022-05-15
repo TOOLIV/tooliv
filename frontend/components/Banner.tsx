@@ -73,14 +73,14 @@ const ImageContainer = styled.div`
   }
 `;
 
-type BannerPageProps = {
-  userAgent: string | undefined;
-};
+// type BannerPageProps = {
+//   userAgent: string | undefined;
+// };
 
-const Banner: NextPage<BannerPageProps> = ({ userAgent }) => {
-  // const Banner = () => {
+// const Banner: NextPage<BannerPageProps> = ({ userAgent }) => {
+const Banner = () => {
   const nav = useRouter();
-  console.log(userAgent);
+  // console.log(userAgent);
 
   const onDownload = () => {
     nav.push(
@@ -107,9 +107,9 @@ const Banner: NextPage<BannerPageProps> = ({ userAgent }) => {
   );
 };
 
-Banner.getInitialProps = async ({ req }: NextPageContext) => {
-  const userAgent = req ? req.headers["user-agent"] : navigator.userAgent;
-  return { userAgent };
-};
+// Banner.getInitialProps = async ({ req }: NextPageContext) => {
+//   const userAgent = req ? req.headers["user-agent"] : navigator.userAgent;
+//   return { userAgent };
+// };
 
 export default Banner;
