@@ -7,15 +7,19 @@ const MyDocument = () => {
       <Head>
         <title>Tooliv</title>
         <meta property="og:tpye" content="website" />
-        <meta property="og:url" content="https://tooliv.io" />
+        <meta property="og:url" content="https://k6a402.p.ssafy.io" />
         <meta property="og:site_name" content="Tooliv" />
         <meta
           property="og:keywords"
           content="Tooliv, voice chat, free voice chat, video chat, free video chat, meeting, conference, 화상회의, 협업툴, 음성채팅, 화상채팅, 회의"
         />
         <meta
+          name="google-site-verification"
+          content="lM7FTbW9B1qchSUs_O5c-oRPZ0GNlmeZx0thQCNUFxw"
+        />
+        <meta
           property="og:image"
-          content="http://tooliv.io/_next/image?url=%2F_next%2Fstatic%2Fmedia%2FTooliv.937d8f3d.png&w=48&q=75"
+          content="https://k6a402.p.ssafy.io/.next/static/media/thumbnail.5a42aa14.png"
         />
         <meta property="og:locale" content="en_US, ko" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />

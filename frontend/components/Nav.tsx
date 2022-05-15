@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import React from "react";
 import Logo from "../public/assets/images/Tooliv.png";
+import Thumbnail from "/public/assets/images/thumbnail.png";
 import Image from "next/image";
 
 const Container = styled.div`
@@ -42,6 +43,7 @@ const Nav = () => {
     <Container>
       <NavContainer>
         <LogoContainer>
+          {false && <Image src={Thumbnail} alt="thumbnail" />}
           <Image src={Logo} width={36} height={36} alt="logo" />
           <div className="title">TOOLIV</div>
         </LogoContainer>

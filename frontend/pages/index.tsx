@@ -1,7 +1,4 @@
 import styled from "@emotion/styled";
-import Image from "next/image";
-import { useMediaQuery } from "react-responsive";
-import { motion } from "framer-motion";
 import Banner from "../components/Banner";
 import Content, { DescriptionType } from "../components/Content";
 const contexts = require("/data/context.ts");
@@ -23,14 +20,6 @@ const Contents = styled.div`
 `;
 
 const Home = () => {
-  const isDesktopOrLaptop = useMediaQuery({
-    query: "(min-width: 1224px)",
-  });
-  const isBigScreen = useMediaQuery({ query: "(min-width: 1824px)" });
-  const isTabletOrMobile = useMediaQuery({ query: "(max-width: 1224px)" });
-  const isPortrait = useMediaQuery({ query: "(orientation: portrait)" });
-  const isRetina = useMediaQuery({ query: "(min-resolution: 2dppx)" });
-
   return (
     <Container>
       <Banner />
