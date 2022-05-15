@@ -9,19 +9,24 @@ import Image from "next/image";
 
 const StyledFooter = styled.footer`
   background-color: #fce8e4;
-  height: 15rem;
+  height: 100%;
   display: flex;
   justify-content: center;
+  width: 100%;
 `;
 
 const FooterContainer = styled.div`
   width: 70vw;
   display: flex;
-  /* padding: 2.5rem 0; */
+  padding-bottom: 24.16px;
+  @media screen and (max-width: 950px) {
+    padding-left: 2rem;
+    width: 100%;
+  }
 `;
 
 const Intro = styled.div`
-  width: 40vw;
+  width: 50vw;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -33,6 +38,7 @@ const Intro = styled.div`
     display: flex;
     flex-direction: column;
     gap: 4px;
+    padding-left: 10px;
     .desc {
       height: 20px;
       display: flex;
@@ -42,24 +48,36 @@ const Intro = styled.div`
       font-size: 14px;
     }
   }
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: 950px) {
     width: 100%;
   }
 `;
 
 const Menu = styled.div`
-  width: 30vw;
+  width: 20vw;
   display: flex;
   justify-content: space-between;
-  font-weight: 700;
-  padding: 2.5rem;
-  div {
+  padding-top: 24.16px;
+`;
+
+const SubMenu = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  .title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    cursor: pointer;
+  }
+  .item {
+    font-size: 12px;
     cursor: pointer;
   }
 `;
 
 const Footer = () => {
-  const isTabletOrMobile = useMediaQuery({ query: "(max-width: 768px)" });
+  const isTabletOrMobile = useMediaQuery({ query: "(max-width: 950px)" });
   return (
     <StyledFooter>
       <FooterContainer>
@@ -84,9 +102,18 @@ const Footer = () => {
         </Intro>
         {!isTabletOrMobile && (
           <Menu>
-            <div>다운로드</div>
-            <div>설치형 가이드</div>
-            <div>소개</div>
+            <div>
+              <SubMenu>
+                <div className="title">DOWNLOAD</div>
+                <div className="item">COMMUNITY 다운로드</div>
+                <div className="item">ENTER PRISE 다운로드</div>
+              </SubMenu>
+            </div>
+            <div>
+              <SubMenu>
+                <div className="title">DOCS</div>
+              </SubMenu>
+            </div>
           </Menu>
         )}
       </FooterContainer>

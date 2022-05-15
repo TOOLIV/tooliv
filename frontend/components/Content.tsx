@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import { motion } from "framer-motion";
 import Image, { StaticImageData } from "next/image";
+import { abort } from "process";
 import React from "react";
 import { useMediaQuery } from "react-responsive";
 
@@ -37,7 +38,7 @@ const DescImageContainer = styled.div`
   position: relative;
   width: 60%;
   height: 100%;
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: 950px) {
     width: 100%;
     min-height: 380px;
     height: 60%;
@@ -47,10 +48,18 @@ const DescImageContainer = styled.div`
 
 const MainContainer = styled.div`
   position: absolute;
+  width: 500px;
+  height: 400px;
+  @media screen and (max-width: 950px) {
+    width: 380px;
+    height: 304px;
+  }
 `;
 
 const MotionImage = styled(motion.div)`
   position: absolute;
+  width: 150px;
+  height: 100px;
 `;
 
 const Desc = styled.div`
@@ -69,7 +78,7 @@ const Desc = styled.div`
     gap: 5px;
     font-size: 16px;
   }
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: 950px) {
     width: 100%;
   }
 `;
@@ -92,7 +101,7 @@ const Content = ({
   description,
 }: DescriptionType) => {
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 768px)" });
-  const isTabletOrLaptop = useMediaQuery({ query: "(min-width: 768px)" });
+  const isTabletOrLaptop = useMediaQuery({ query: "(min-width: 950px)" });
   const isDesktopOrLaptop = useMediaQuery({
     query: "(min-width: 1224px)",
   });
@@ -120,28 +129,18 @@ const Content = ({
             <Image
               src={mainImage}
               objectFit="contain"
-              height="400px"
-              width="500px"
               alt="mainImage"
+              width={isTabletOrMobile ? 380 : 500}
+              height={isTabletOrMobile ? 304 : 400}
             />
           </MainContainer>
           <MotionImage
             initial={{
               x: 0,
-              // id % 2 === 0 && isDesktopOrLaptop
-              //   ? "200%"
-              //   : id % 2 === 0 && isTabletOrLaptop
-              //   ? "200%"
-              //   : 0,
               scale: 0,
             }}
             whileInView={{
               x: 0,
-              // id % 2 === 0 && isDesktopOrLaptop
-              //   ? "200%"
-              //   : id % 2 === 0 && isTabletOrLaptop
-              //   ? "200%"
-              //   : 0,
               scale: 1,
             }}
             transition={{
@@ -154,13 +153,7 @@ const Content = ({
               left: 0,
             }}
           >
-            <Image
-              src={subImage}
-              objectFit="contain"
-              height="200px"
-              width="250px"
-              alt="subImage"
-            />
+            <Image src={subImage} objectFit="contain" alt="subImage" />
           </MotionImage>
           <MotionImage
             initial={{ y: 0, scale: 0 }}
@@ -170,15 +163,9 @@ const Content = ({
               stiffness: 260,
               damping: 20,
             }}
-            style={{ top: 0, left: "10%" }}
+            style={{ top: 0, left: 0 }}
           >
-            <Image
-              src={imoImage}
-              objectFit="contain"
-              height="130px"
-              width="130px"
-              alt="imoImage"
-            />
+            <Image src={imoImage} objectFit="contain" alt="imoImage" />
           </MotionImage>
         </DescImageContainer>
         {(id % 2 !== 0 || isTabletOrMobile) && (
