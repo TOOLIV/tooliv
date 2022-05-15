@@ -4,6 +4,8 @@ import Github from "/public/assets/images/github.svg";
 import Email from "/public/assets/images/email.svg";
 import Tel from "/public/assets/images/tel.svg";
 import { useMediaQuery } from "react-responsive";
+import Thumbnail from "/public/assets/images/thumbnail.png";
+import Image from "next/image";
 
 const StyledFooter = styled.footer`
   background-color: #fce8e4;
@@ -62,7 +64,9 @@ const Footer = () => {
     <StyledFooter>
       <FooterContainer>
         <Intro>
-          <div className="company">Tooliv</div>
+          <div style={{ width: "200px" }}>
+            <Image src={Thumbnail} objectFit="contain" />
+          </div>
           <div className="description">
             <div className="desc">
               <Tel width="14" />
