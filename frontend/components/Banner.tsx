@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { NextPage, NextPageContext } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import React from "react";
@@ -72,8 +73,14 @@ const ImageContainer = styled.div`
   }
 `;
 
-const Banner = () => {
+type BannerPageProps = {
+  userAgent: string | undefined;
+};
+
+const Banner: NextPage<BannerPageProps> = ({ userAgent }) => {
+  // const Banner = () => {
   const nav = useRouter();
+  console.log(userAgent);
 
   const onDownload = () => {
     nav.push(
@@ -98,6 +105,11 @@ const Banner = () => {
       </InnerContainer>
     </StyledBanner>
   );
+};
+
+Banner.getInitialProps = async ({ req }: NextPageContext) => {
+  const userAgent = req ? req.headers["user-agent"] : navigator.userAgent;
+  return { userAgent };
 };
 
 export default Banner;
