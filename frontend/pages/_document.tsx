@@ -11,7 +11,7 @@ const MyDocument = () => {
         <meta property="og:site_name" content="Tooliv" />
         <meta
           property="og:image"
-          content="http://k6a402.p.ssafy.io/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fthumbnail.034457b6.png&w=384&q=75"
+          content="http://k6a402.p.ssafy.io//_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fthumbnail.0f144253.png&w=3840&q=75"
         />
         <meta
           property="og:keywords"
