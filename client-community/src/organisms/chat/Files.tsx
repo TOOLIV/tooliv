@@ -10,6 +10,8 @@ const FilesContainer = styled.div`
   align-items: center;
   /* justify-content: center; */
   width: 100%;
+  font-size: 14px;
+  /* margin-left: 12px; */
 `;
 
 const FileContainer = styled.div`
@@ -21,6 +23,7 @@ const FileContainer = styled.div`
   padding: 16px;
   margin: 12px 12px 12px 0;
 `;
+
 const Files = () => {
   const [files, setFiles] = useRecoilState<FileTypes[]>(chatFiles);
   const handleFilterFile = useCallback(

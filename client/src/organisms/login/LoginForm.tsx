@@ -77,6 +77,7 @@ const LoginForm = () => {
           userId: data.userId,
           profileImage: data.profileImage,
           statusCode: data.statusCode,
+          userCode: data.userCode,
         });
         setMembersStatus({ ...membersStatus, [data.email]: data.statusCode });
         navigate('/');

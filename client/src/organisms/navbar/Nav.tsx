@@ -91,6 +91,9 @@ const AvatarWrapper = styled.div`
 const DropdownWrapper = styled.div`
   /* cursor: pointer; */
 `;
+const TextWrapper = styled.div`
+  display: flex;
+`;
 const Nav = () => {
   const userInfo = useRecoilValue(user);
   const [mode, setMode] = useRecoilState(appThemeMode);
@@ -121,6 +124,11 @@ const Nav = () => {
     setSearchedIndex(contents.length - 1);
     setIsLoading(false);
   }, []);
+
+  useEffect(() => {
+    setKeyword('');
+    inputRef.current!.value = '';
+  }, [channelId]);
 
   useEffect(() => {
     // dm 리스트에서 유저 이메일 뽑아서 저장
@@ -210,8 +218,6 @@ const Nav = () => {
         const {
           data: { chatSearchInfoDTOList },
         } = res;
-        console.log(res);
-        console.log(chatSearchInfoDTOList);
 
         setSearchList(
           chatSearchInfoDTOList.map((c: any) => {
@@ -227,15 +233,23 @@ const Nav = () => {
     <NavContainer>
       <LeftContainer onClick={() => navigate('/')}>
         <Logo />
-        <Text size={18} pointer>
-          TOOLIV
-        </Text>
+        <TextWrapper>
+          <Text size={18} pointer color="secondary">
+            TOO
+          </Text>
+          <Text size={18} pointer color="third">
+            L
+          </Text>
+          <Text size={18} pointer color="primary">
+            IV
+          </Text>
+        </TextWrapper>
       </LeftContainer>
       <SearchContainer>
         <MidContainer>
           <InputBox
             label=""
-            placeholder="검색"
+            placeholder="현재 채널 내 검색"
             ref={inputRef}
             onChange={search}
           />

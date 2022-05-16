@@ -92,7 +92,6 @@ public class NotificationServiceImpl implements NotificationService {
             DirectChatRoomMembers directChatRoomMembers = directChatRoomMembersRepository.findByDirectChatRoomAndUser(directChatRoom, user)
                 .orElseThrow(() -> new IllegalArgumentException("해당 멤버가 존재하지 않습니다."));
             directChatRoomMembers.updateLoggedAt();
-            System.out.println(LocalDateTime.now());
             directChatRoomMembersRepository.save(directChatRoomMembers);
         }
     }

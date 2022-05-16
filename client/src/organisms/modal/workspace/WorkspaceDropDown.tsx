@@ -48,11 +48,10 @@ const WorkspaceDropDown = ({
   openMemberList,
   openAddMemberModal,
   openModifyModal,
-  userCode,
 }: workspaceDropdownType) => {
   const { workspaceId } = useParams();
   const setCurrentWorkspaceId = useSetRecoilState(currentWorkspace);
-  const { email } = useRecoilValue(user);
+  const { email, userCode } = useRecoilValue(user);
   const navigate = useNavigate();
   const handleMemberList = () => {
     openMemberList();
@@ -88,7 +87,7 @@ const WorkspaceDropDown = ({
             멤버 초대
           </Text>
         </ListItem>
-        {userCode === 'WADMIN' ? (
+        {userCode === 'ADMIN' || userCode === 'MANAGER' ? (
           <ListItem onClick={handleModifyModal}>
             <Text size={16} pointer>
               워크스페이스 수정

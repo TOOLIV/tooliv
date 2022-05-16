@@ -18,7 +18,7 @@ const baseURL = localStorage.getItem('baseURL');
 let sockJS = baseURL
   ? new SockJS(`${JSON.parse(baseURL).url}/chatting`)
   : // 로컬에서 테스트시 REACT_APP_TEST_URL, server 주소는 REACT_APP_BASE_SERVER_URL
-    new SockJS(`${window.env.BASE_URL}/chatting`);
+    new SockJS(`${process.env.REACT_APP_BASE_SERVER_URL}/chatting`);
 export let client: Stomp.Client = Stomp.over(sockJS);
 let subscribe: Stomp.Subscription;
 
@@ -172,7 +172,7 @@ export const sub = () => {
   subscribe = client.subscribe(`/sub/chat/${userInfo.userId}`, (response) => {
     const notiList = getRecoil(channelNotiList);
     const workspaceList = getRecoil(wsList);
-    // const chatMebers = getRecoil(chatMember);
+
     const link = window.location.href.split('/');
     // 현재 채널, 워크스페이스 아이디
     const channelId = link[link.length - 1];
@@ -181,7 +181,6 @@ export const sub = () => {
     const recChannelId = content.channelId;
     let updateWorkspaceId: string = '';
     const type = content.type;
-
     if (type === 'DELETE') {
       const index = content.chatId;
       setRecoil(channelContents, (prev) => [
@@ -190,18 +189,16 @@ export const sub = () => {
         ...prev.slice(index + 1),
       ]);
     } else if (type === 'UPDATE') {
+      // 수정 (추후 구현)
     } else {
       if (channelId === recChannelId) {
         // 현재 채널 아이디와 도착한 메시지의 채널 아이디가 같으면
         setRecoil(channelContents, (prev) => [...prev, content]);
         setRecoil(chatMember, (prev) => [...prev, content.email]);
-        if (window.location.pathname.includes('/direct')) {
+        if (window.location.href.includes('/direct')) {
           updateLoggedTime(channelId, 'DM');
         } else {
-          console.log('Update');
-          updateLoggedTime(channelId, 'CHANNEL').then((res) => {
-            console.log(res);
-          });
+          updateLoggedTime(channelId, 'CHANNEL');
         }
       } else {
         // 현재 채널 아이디와 도착한 메시지의 채널 아이디가 다르면

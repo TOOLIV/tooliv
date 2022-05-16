@@ -1,16 +1,10 @@
 import styled from '@emotion/styled';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Icons from '../../atoms/common/Icons';
 import Avatar from '../../atoms/profile/Avatar';
-import Label from '../../atoms/common/Label';
-import {
-  InnerContainer,
-  Noti,
-  NotiWrapper,
-  SideWrapper,
-  TopContainer,
-} from './Channels';
+import { InnerContainer, Noti, NotiWrapper, SideWrapper } from './Channels';
 import Text from 'atoms/text/Text';
+import mainSrc from '../../assets/img/logo.svg';
 import DirectMessageModal from 'organisms/modal/sidemenu/DirectMessageModal';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { DMInfoType } from 'types/channel/chatTypes';
@@ -19,6 +13,7 @@ import {
   DMList,
   dmName,
   isOpenSide,
+  isTutorial,
   memberStatus,
 } from 'recoil/atom';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -69,6 +64,7 @@ const DirectMessage = () => {
   const navigate = useNavigate();
   const { workspaceId, channelId } = useParams();
   const membersStatus = useRecoilValue<userStatusInfoType>(memberStatus);
+  const isTutorialOpen = useRecoilValue(isTutorial);
 
   const closeUserList = () => {
     setUserListOpen(false);
@@ -81,37 +77,57 @@ const DirectMessage = () => {
         <Icons icon="plus" onClick={() => setUserListOpen(!userListOpen)} />
       </Header>
       <FriendsContainer>
-        {dmList.map((dm) => (
-          <FriendContainer
-            key={dm.channelId}
-            onClick={() => {
-              setDirectName(dm.receiveName);
-              navigate(`/direct/${workspaceId}/${dm.channelId}`);
-            }}
-            isSelected={channelId === dm.channelId}
-          >
+        {isTutorialOpen ? (
+          <FriendContainer onClick={() => {}} isSelected={false}>
             <NotiWrapper>
               <InnerContainer>
                 <SideWrapper>
                   <Avatar
-                    src={dm.profileImage}
-                    status={membersStatus[dm.receiverEmail]}
+                    src={mainSrc}
+                    // status={membersStatus[dm.receiverEmail]}
                   />
                 </SideWrapper>
-                <Text
-                  size={12}
-                  weight={
-                    map.get(dm.channelId)?.notificationRead ? 'bold' : 'medium'
-                  }
-                >
-                  {dm.receiveName}
+                <Text size={12} weight={'medium'}>
+                  TOOLIV
                 </Text>
-                {/* <Label id={dm.channelId} name={dm.receiveName} /> */}
               </InnerContainer>
-              {map.get(dm.channelId)?.notificationRead && <Noti>●</Noti>}
             </NotiWrapper>
           </FriendContainer>
-        ))}
+        ) : (
+          dmList.map((dm) => (
+            <FriendContainer
+              key={dm.channelId}
+              onClick={() => {
+                setDirectName(dm.receiveName);
+                navigate(`/direct/${workspaceId}/${dm.channelId}`);
+              }}
+              isSelected={channelId === dm.channelId}
+            >
+              <NotiWrapper>
+                <InnerContainer>
+                  <SideWrapper>
+                    <Avatar
+                      src={dm.profileImage}
+                      status={membersStatus[dm.receiverEmail]}
+                    />
+                  </SideWrapper>
+                  <Text
+                    size={12}
+                    weight={
+                      map.get(dm.channelId)?.notificationRead
+                        ? 'bold'
+                        : 'medium'
+                    }
+                  >
+                    {dm.receiveName}
+                  </Text>
+                  {/* <Label id={dm.channelId} name={dm.receiveName} /> */}
+                </InnerContainer>
+                {map.get(dm.channelId)?.notificationRead && <Noti>●</Noti>}
+              </NotiWrapper>
+            </FriendContainer>
+          ))
+        )}
       </FriendsContainer>
       <DirectMessageModal isOpen={userListOpen} onClose={closeUserList} />
     </Container>

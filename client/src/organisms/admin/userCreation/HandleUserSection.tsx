@@ -1,8 +1,22 @@
+import styled from '@emotion/styled';
+import Label from 'atoms/label/Label';
 import { useRecoilState } from 'recoil';
 import { deleteUser } from '../../../api/adminApi';
 import UserBadge from '../../../molecules/userBadge/UserBadge';
 import { userCreationList } from '../../../recoil/atom';
 
+const Container = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
+
+const UserList = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+`;
 const HandleUserSection = () => {
   const [userList, setUserList] = useRecoilState(userCreationList);
   console.log(userList);
@@ -17,18 +31,21 @@ const HandleUserSection = () => {
   };
 
   return (
-    <>
-      {userList.map((data) => {
-        return (
-          <UserBadge
-            key={data.email}
-            name={data.name}
-            email={data.email}
-            onDelete={onDelete}
-          />
-        );
-      })}
-    </>
+    <Container>
+      <Label label="추가된 사용자" />
+      <UserList>
+        {userList.map((data) => {
+          return (
+            <UserBadge
+              key={data.email}
+              name={data.name}
+              email={data.email}
+              onDelete={onDelete}
+            />
+          );
+        })}
+      </UserList>
+    </Container>
   );
 };
 

@@ -119,15 +119,10 @@ const WorkspaceMemberListModal = ({
     setSearchKeyword(keyword);
   }, []);
 
-  // useEffect(() => {
-  //   if (isOpen) {
-  //     handleSearchUser('');
-  //   }
-  // }, [isOpen, handleSearchUser]);
-
   useEffect(() => {
     if (workspaceId && isOpen) {
       initModal();
+      console.log('init1');
       handleSearchUser(debouncedValue);
     }
   }, [debouncedValue]);
@@ -144,13 +139,13 @@ const WorkspaceMemberListModal = ({
     setWorkspaceMemberList([]);
   }, []);
 
-  useEffect(() => {
-    // 키워드 입력시 초기화 (안할 경우 이전 데이터가 남아있어 오류)
-    if (isOpen) {
-      initModal();
-      handleSearchUser(debouncedValue);
-    }
-  }, [debouncedValue]);
+  // useEffect(() => {
+  //   // 키워드 입력시 초기화 (안할 경우 이전 데이터가 남아있어 오류)
+  //   if (isOpen) {
+  //     initModal();
+  //     handleSearchUser(debouncedValue);
+  //   }
+  // }, [debouncedValue]);
 
   useEffect(() => {
     // 모달창 열리면 리스트 불러오는 api호출

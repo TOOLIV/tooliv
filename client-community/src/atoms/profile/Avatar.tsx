@@ -1,14 +1,12 @@
 import styled from '@emotion/styled';
-import React from 'react';
 import { avatarTypes } from '../../types/common/avatarTypes';
-import avatar from '../../assets/img/avatar.png';
 import { ReactComponent as AvatarIcon } from '../../assets/img/user.svg';
 import { colors } from 'shared/color';
-import { stat } from 'fs';
 
 const Container = styled.div`
   position: relative;
   height: fit-content;
+  cursor: pointer;
 `;
 const Image = styled.img<{ size?: string }>`
   border-radius: 50%;
@@ -33,15 +31,15 @@ const Status = styled.div<{ status: string }>`
   right: 0;
 `;
 
-const Avatar = ({ src, size = '24', status }: avatarTypes) => {
+const Avatar = ({ src, size = '24', status, onClick }: avatarTypes) => {
   return (
-    <Container>
+    <Container onClick={onClick && onClick}>
       {src ? (
         <Image src={src} size={size} alt="profile" />
       ) : (
         <AvatarIcon width={size} height={size} fill={colors.gray500} />
       )}
-      <Status status={status} />
+      {status ? <Status status={status} /> : null}
     </Container>
   );
 };
