@@ -3,6 +3,7 @@ import {
   userCreationTypes,
   userLoginTypes,
   userNicknameType,
+  userPwdType,
   usersStatusType,
   userStatusType,
 } from '../types/common/userTypes';
@@ -60,5 +61,10 @@ export const updateUserStatus = async (body: userStatusType) => {
 
 export const getUserStatus = async (body: usersStatusType) => {
   const response = await instance.post(`user/status`, body);
+  return response;
+};
+
+export const changeUserPwd = async (body: userPwdType) => {
+  const response = await instance.patch(`user/password`, body);
   return response;
 };

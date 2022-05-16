@@ -72,6 +72,7 @@ export type userDropdownType = {
   isOpen: boolean;
   onClose: () => void;
   openProfileConfig: () => void;
+  openResetPwd: () => void;
 };
 
 export type userConfigType = {
@@ -103,4 +104,8 @@ export type usersStatusType = {
 
 export type userStatusInfoType = {
   [key: string]: string;
+};
+
+export type userPwdType = {
+  password: string;
 };
