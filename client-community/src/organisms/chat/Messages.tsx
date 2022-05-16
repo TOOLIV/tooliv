@@ -67,7 +67,11 @@ const Messages = () => {
     <Container isFile={files.length > 0 ? true : false} ref={messageBoxRef}>
       {contents &&
         contents.map((content) => {
-          if (content.contents === '' && content.files.length === 0) {
+          if (
+            content.contents === '' &&
+            content.files &&
+            content.files.length === 0
+          ) {
             return;
           } else {
             if (content.sendTime && content.sendTime.slice(0, 10) !== date) {

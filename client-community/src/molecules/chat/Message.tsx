@@ -38,7 +38,7 @@ const ProfileContainer = styled.div`
   justify-content: space-between;
 `;
 
-const ContentContainer = styled.div`
+export const ContentContainer = styled.div`
   padding: 16px;
   padding-left: 30px;
   line-height: 1.2;
@@ -84,8 +84,8 @@ const Message = forwardRef<HTMLDivElement, contentTypes>(
     const [nickname, setNickname] = useState('');
     const membersStatus = useRecoilValue(memberStatus);
     const userInfo = useRecoilValue(user);
-    const fileTypes = ['.bmp', '.gif', '.jpg', '.png', '.jpeg', '.jfif'];
     const location = useLocation();
+    const fileTypes = ['.bmp', '.gif', '.jpg', '.png', '.jpeg', '.jfif'];
 
     const checkType = (file: string) => {
       const fileLen = file.length;
