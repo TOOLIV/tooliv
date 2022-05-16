@@ -99,6 +99,8 @@ const ChannelMemberListModal = ({
     dmList.forEach((dm) => {
       if (dm.receiverEmail === member.email) {
         navigate(`/direct/${workspaceId}/${dm.channelId}`);
+        console.log(member);
+        setDirectName(member.nickname);
         flag = false;
       }
     });
@@ -124,7 +126,6 @@ const ChannelMemberListModal = ({
         navigate(`/direct/${workspaceId}/${roomId}`);
       });
     }
-    console.log(`${member.email}로 개인메시지 보내는 링크`);
   };
 
   const searchChannelMember = useCallback(
