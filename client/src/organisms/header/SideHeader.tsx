@@ -9,7 +9,12 @@ import WorkspaceModifyModal from 'organisms/modal/workspace/WorkspaceModifyModal
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { currentWorkspace, isOpenSide, modifyWorkspaceName } from 'recoil/atom';
+import {
+  currentWorkspace,
+  isOpenSide,
+  isTutorial,
+  modifyWorkspaceName,
+} from 'recoil/atom';
 
 const Container = styled.div<{ isOpen: boolean }>`
   display: flex;
@@ -30,6 +35,7 @@ const SideHeader = () => {
   const [modifyModalOpen, setModifyModalOpen] = useState(false);
   const currentWorkspaceId = useRecoilValue(currentWorkspace);
   const modWorkspaceName = useRecoilValue(modifyWorkspaceName);
+  const isTutorialOpen = useRecoilValue(isTutorial);
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [memberListOpen, setMemberListOpen] = useState(false);
@@ -109,7 +115,8 @@ const SideHeader = () => {
       <DropdownWrapper ref={dropdownRef}>
         <Title
           onClick={
-            location.pathname.includes('admin') || currentWorkspaceId === 'main'
+            location.pathname.includes('admin') ||
+            (currentWorkspaceId === 'main' && !isTutorialOpen)
               ? undefined
               : () => setDropdownOpen(!dropdownOpen)
           }
@@ -117,6 +124,10 @@ const SideHeader = () => {
           {location.pathname.includes('admin') ? (
             <Text size={18} weight="700">
               관리자채널
+            </Text>
+          ) : isTutorialOpen ? (
+            <Text size={21} weight="700" pointer={true}>
+              튜토리얼
             </Text>
           ) : (
             <Text
@@ -127,8 +138,8 @@ const SideHeader = () => {
               {workspaceName}
             </Text>
           )}
-          {currentWorkspaceId !== 'main' ? (
-            <Icons width="24" height="24" icon="dropdown" />
+          {currentWorkspaceId !== 'main' || isTutorialOpen ? (
+            <Icons width="21" height="21" icon="dropdown" />
           ) : null}
         </Title>
         <WorkspaceDropDown
@@ -143,7 +154,7 @@ const SideHeader = () => {
         icon={isOpen ? 'anglesLeft' : 'anglesRight'}
         onClick={onClickSide}
       />
-      {currentWorkspaceId !== 'main' ? (
+      {currentWorkspaceId !== 'main' || isTutorialOpen ? (
         <>
           <WorkspaceMemberListModal
             isOpen={memberListOpen}

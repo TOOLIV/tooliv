@@ -45,18 +45,36 @@ const ListItem = styled.div`
 const ChannelHeaderDropdown = forwardRef<
   HTMLDivElement,
   channelHeaderDropdownType
->(({ isOpen, onClick, onClose }, ref) => {
+>(({ isOpen, onClick, onClose, onMemberListOpen, onMemberAddOpen }, ref) => {
   const handleOpenModifyModal = () => {
     onClick();
+    onClose();
+  };
+
+  const handleOpenMemberList = () => {
+    onMemberListOpen();
+    onClose();
+  };
+  const handleOpenAddMember = () => {
+    onMemberAddOpen();
     onClose();
   };
   return (
     <Modal isOpen={isOpen} ref={ref}>
       <Container>
         <ListItem onClick={handleOpenModifyModal}>
-          <Icons icon="modify" />
           <Text size={14} pointer>
-            채널 수정하기
+            채널 수정
+          </Text>
+        </ListItem>
+        <ListItem onClick={handleOpenMemberList}>
+          <Text size={14} pointer>
+            멤버 목록
+          </Text>
+        </ListItem>
+        <ListItem onClick={handleOpenAddMember}>
+          <Text size={14} pointer>
+            멤버 초대
           </Text>
         </ListItem>
       </Container>

@@ -1,10 +1,11 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
+import Text from 'atoms/text/Text';
 import ChannelExitModal from 'organisms/modal/channel/sidemenu/ChannelExitModal';
 import { createRef, useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
-import { channelNotiList } from 'recoil/atom';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { channelNotiList, isTutorial } from 'recoil/atom';
 import { colors } from 'shared/color';
 import { channelNotiType, channelsType } from 'types/channel/contentType';
 import Icons from '../../atoms/common/Icons';
@@ -99,6 +100,7 @@ const Channels = ({
   const { channelId } = useParams();
   const map = new Map(notiList.map((el) => [el.channelId, el]));
   const refArray = useRef<HTMLDivElement[]>([]);
+  const isTutorialOpen = useRecoilValue(isTutorial);
 
   const handleClickOutside = ({ target }: any) => {
     if (exitModalOpen && !exitModalRef.current?.contains(target)) {
@@ -128,38 +130,55 @@ const Channels = ({
     <ChannelsContainer>
       <ChannelsWrapper>
         <ChannelLabel label="일반 채널" />
-        {normalChannelList.map((channel, i) => (
-          <ChannelContainer
-            key={channel.id}
-            isSelected={channel.id === channelId}
-            ref={exitModalRef}
-          >
-            <NotiWrapper onClick={() => onClick(channel.id)}>
+        {isTutorialOpen ? (
+          <ChannelContainer isSelected={false}>
+            <NotiWrapper onClick={() => {}}>
               <InnerContainer>
                 <SideWrapper>
-                  {channel.privateYn ? (
-                    <Icons icon="lock" />
-                  ) : (
-                    <Icons icon="public" />
-                  )}
+                  <Icons icon="public" />
                 </SideWrapper>
-                <Label
-                  {...channel}
-                  noti={map.get(channel.id)?.notificationRead}
-                />
+                <Text size={12}>일반 채팅방</Text>
+                {/* <Label {...channel} /> */}
               </InnerContainer>
-              {map.get(channel.id)?.notificationRead && <Noti>●</Noti>}
             </NotiWrapper>
-            <HoverIcon
-              onClick={() => handleClickModal(channel.id, i)}
-              ref={(ref) => {
-                if (ref !== null) refArray.current[i] = ref; // took this from your guide's example.
-              }}
-            >
+            <HoverIcon onClick={() => {}}>
               <Icons icon="menu" />
             </HoverIcon>
           </ChannelContainer>
-        ))}
+        ) : (
+          normalChannelList.map((channel, i) => (
+            <ChannelContainer
+              key={channel.id}
+              isSelected={channel.id === channelId}
+              ref={exitModalRef}
+            >
+              <NotiWrapper onClick={() => onClick(channel.id)}>
+                <InnerContainer>
+                  <SideWrapper>
+                    {channel.privateYn ? (
+                      <Icons icon="lock" />
+                    ) : (
+                      <Icons icon="public" />
+                    )}
+                  </SideWrapper>
+                  <Label
+                    {...channel}
+                    noti={map.get(channel.id)?.notificationRead}
+                  />
+                </InnerContainer>
+                {map.get(channel.id)?.notificationRead && <Noti>●</Noti>}
+              </NotiWrapper>
+              <HoverIcon
+                onClick={() => handleClickModal(channel.id, i)}
+                ref={(ref) => {
+                  if (ref !== null) refArray.current[i] = ref; // took this from your guide's example.
+                }}
+              >
+                <Icons icon="menu" />
+              </HoverIcon>
+            </ChannelContainer>
+          ))
+        )}
       </ChannelsWrapper>
       <ChannelsWrapper>
         <ChannelLabel label="화상 채널" />

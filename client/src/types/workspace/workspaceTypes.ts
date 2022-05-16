@@ -46,6 +46,13 @@ export type workspaceMemberListType = {
   onClose: () => void;
 };
 
+export type tutorialModalType = {
+  isOpen: boolean;
+  onClose: () => void;
+  onNext?: () => void;
+  progress: number;
+};
+
 export type workspaceMemberType = {
   email: string;
   name: string;
