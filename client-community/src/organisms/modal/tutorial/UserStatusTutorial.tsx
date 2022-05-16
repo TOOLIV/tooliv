@@ -23,22 +23,29 @@ const Modal = styled.div<{ isOpen: boolean }>`
       display: block;
     `}
 
-  :after,:before {
-    left: 100%;
-    top: 50%;
-    border: solid transparent;
+  :after {
+    border-top: 10px solid transparent;
+    border-left: 10px solid white;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid transparent;
     content: '';
-    height: 0;
-    width: 0;
     position: absolute;
-    pointer-events: none;
+    top: 30px;
+    right: -18px;
+    /* left: -18px; */
   }
 
-  :after {
-    border-right-color: ${(props) => props.theme.borderColor};
-    border-width: 10px;
+  :before {
+    border-top: 12px solid transparent;
+    border-left: 12px solid ${(props) => props.theme.pointColor};
+    border-right: 12px solid transparent;
+    border-bottom: 12px solid transparent;
+    content: '';
     position: absolute;
-    top: 20px;
+    top: 28px;
+    right: -23px;
+    /* left: -23px; */
+    z-index: 0;
   }
 `;
 
@@ -47,7 +54,7 @@ const Container = styled.div`
   padding: 25px;
   background-color: ${(props) => props.theme.bgColor};
   border-radius: 30px;
-  border: 1px solid ${(props) => props.theme.borderColor};
+  border: 2px solid ${(props) => props.theme.pointColor};
   box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.06);
   display: flex;
   flex-direction: column;

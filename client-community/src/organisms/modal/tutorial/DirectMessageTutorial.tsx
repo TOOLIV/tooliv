@@ -20,21 +20,27 @@ const Modal = styled.div<{ isOpen: boolean }>`
       display: block;
     `}
 
-  :after,:before {
-    right: 100%;
-    top: 50%;
-    border: solid transparent;
+  :after {
+    border-top: 10px solid transparent;
+    border-left: 10px solid transparent;
+    border-right: 10px solid white;
+    border-bottom: 10px solid transparent;
     content: '';
-    height: 0;
-    width: 0;
     position: absolute;
-    pointer-events: none;
+    top: 40px;
+    left: -18px;
   }
 
-  :after {
-    border-right-color: ${(props) => props.theme.borderColor};
-    border-width: 10px;
-    margin-top: -150px;
+  :before {
+    border-top: 12px solid transparent;
+    border-left: 12px solid transparent;
+    border-right: 12px solid ${(props) => props.theme.pointColor};
+    border-bottom: 12px solid transparent;
+    content: '';
+    position: absolute;
+    top: 38px;
+    left: -23px;
+    z-index: 0;
   }
 `;
 
@@ -43,7 +49,7 @@ const Container = styled.div`
   padding: 25px;
   background-color: ${(props) => props.theme.bgColor};
   border-radius: 30px;
-  border: 1px solid ${(props) => props.theme.borderColor};
+  border: 2px solid ${(props) => props.theme.pointColor};
   box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.06);
   display: flex;
   flex-direction: column;
@@ -104,10 +110,10 @@ const DirectMessageTutorial = ({
         <ChannelBox>
           <Cover width={150} height={170} />
           {/* <Img src={src} alt="이미지" /> */}
-          <Text size={14} weight="bold">
+          <Text size={14}>
             + 버튼을 눌러 멤버를 검색하고 개인 메시지를 보내 보세요.
           </Text>
-          <Text size={13} color="gray500">
+          <Text size={12}>
             개인적으로 보낼 메시지가 있으세요? 팀원이 필요한 정보를 일대일로
             보낼 수 있습니다.
           </Text>
