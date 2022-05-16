@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import Button from 'atoms/common/Button';
 import Icons from 'atoms/common/Icons';
 import Text from 'atoms/text/Text';
-import { ReactComponent as Cover } from 'assets/img/workspaceCreate.svg';
+import { ReactComponent as Cover } from 'assets/img/meeting.svg';
 import { tutorialModalType } from 'types/workspace/workspaceTypes';
 import ProgressBar from '@ramonak/react-progress-bar';
 import { colors } from 'shared/color';
@@ -35,7 +35,8 @@ const Modal = styled.div<{ isOpen: boolean }>`
     border-color: rgba(136, 183, 213, 0);
     border-right-color: white;
     border-width: 10px;
-    margin-top: -150px;
+    position: absolute;
+    top: 40px;
   }
 `;
 
@@ -58,7 +59,6 @@ const Header = styled.div`
 `;
 
 const ChannelBox = styled.div`
-  height: 30vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -108,9 +108,9 @@ const VideoMeetingTutorial = ({
           <Text size={14}>
             버튼을 눌러 채널에 속해있는 멤버들과 화상통화를 즐겨보세요.
           </Text>
-          <Text size={12}>
-            많아지는 멤버를 어떻게 관리할지 고민이셨나요? 멤버별로
-            워크스페이스를 생성해서 소통해보세요.
+          <Text size={13} color={'gray500'}>
+            화상채팅은 최대 8명이 함께 진행할 수 있으며, 화면 공유 및 채팅이
+            가능합니다.
           </Text>
           <Progress>
             <ProgressBar

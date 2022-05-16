@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import Button from 'atoms/common/Button';
 import Icons from 'atoms/common/Icons';
 import Text from 'atoms/text/Text';
-import { ReactComponent as Cover } from 'assets/img/workspaceCreate.svg';
+import { ReactComponent as Cover } from 'assets/img/directMessage.svg';
 import { tutorialModalType } from 'types/workspace/workspaceTypes';
 import ProgressBar from '@ramonak/react-progress-bar';
 import { colors } from 'shared/color';
@@ -104,12 +104,12 @@ const DirectMessageTutorial = ({
         <ChannelBox>
           <Cover width={150} height={170} />
           {/* <Img src={src} alt="이미지" /> */}
-          <Text size={14}>
-            + 버튼을 눌러 메시지를 보낼 상대를 선택해주세요.
+          <Text size={14} weight="bold">
+            + 버튼을 눌러 멤버를 검색하고 개인 메시지를 보내 보세요.
           </Text>
-          <Text size={12}>
-            많아지는 멤버를 어떻게 관리할지 고민이셨나요? 멤버별로
-            워크스페이스를 생성해서 소통해보세요.
+          <Text size={13} color="gray500">
+            개인적으로 보낼 메시지가 있으세요? 팀원이 필요한 정보를 일대일로
+            보낼 수 있습니다.
           </Text>
           <Progress>
             <ProgressBar

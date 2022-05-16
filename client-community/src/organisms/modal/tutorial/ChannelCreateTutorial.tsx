@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import Button from 'atoms/common/Button';
 import Icons from 'atoms/common/Icons';
 import Text from 'atoms/text/Text';
-import { ReactComponent as Cover } from 'assets/img/workspaceCreate.svg';
+import { ReactComponent as Cover } from 'assets/img/channelCreate.svg';
 import { tutorialModalType } from 'types/workspace/workspaceTypes';
 import ProgressBar from '@ramonak/react-progress-bar';
 import { colors } from 'shared/color';
@@ -11,7 +11,7 @@ import { colors } from 'shared/color';
 const Modal = styled.div<{ isOpen: boolean }>`
   display: none;
   position: absolute;
-  top: 190px;
+  top: 140px;
   left: 280px;
   z-index: 1;
   ${(props) =>
@@ -35,7 +35,8 @@ const Modal = styled.div<{ isOpen: boolean }>`
     border-color: rgba(136, 183, 213, 0);
     border-right-color: white;
     border-width: 10px;
-    margin-top: -150px;
+    position: absolute;
+    top: 90px;
   }
 `;
 
@@ -58,7 +59,7 @@ const Header = styled.div`
 `;
 
 const ChannelBox = styled.div`
-  height: 30vh;
+  height: 400px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -80,6 +81,12 @@ const Progress = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
+`;
+
+const Contents = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 `;
 const ChannelCreateTutorial = ({
   isOpen,
@@ -105,11 +112,25 @@ const ChannelCreateTutorial = ({
         <ChannelBox>
           <Cover width={150} height={170} />
           {/* <Img src={src} alt="이미지" /> */}
-          <Text size={14}>+ 버튼을 눌러 워크스페이스를 생성해보세요. </Text>
-          <Text size={12}>
-            많아지는 멤버를 어떻게 관리할지 고민이셨나요? 멤버별로
-            워크스페이스를 생성해서 소통해보세요.
+          <Text size={14} weight="bold">
+            + 버튼을 눌러 채널을 생성하세요.
           </Text>
+          <Contents>
+            <Text size={13} color="gray500">
+              채널은 일반 채널과 화상 채널로 구분됩니다.
+            </Text>
+            <Text size={13} color="gray500">
+              일반 채널은 채팅 및 파일 송·수신이 가능한 채널 공간이에요
+            </Text>
+            <Text size={13} color="gray500">
+              화상 채널은 채팅 및 파일 송·수신뿐만 아니라 사용자들간 화상 통화도
+              가능한 채널이에요.
+            </Text>
+            <Text size={13} color="gray500">
+              웹캠 및 마이크 허용이 필수적으로 요구되는 공간으로, 비대면 미팅시
+              참여자들과 소통하며 화면 공유 기능도 제공하고 있으니 이용해보세요
+            </Text>
+          </Contents>
           <Progress>
             <ProgressBar
               completed={progress}

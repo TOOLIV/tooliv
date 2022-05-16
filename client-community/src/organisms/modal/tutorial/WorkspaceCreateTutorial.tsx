@@ -41,7 +41,7 @@ const Modal = styled.div<{ isOpen: boolean }>`
 
 const Container = styled.div`
   width: 300px;
-  padding: 25px;
+  padding: 20px 25px;
   background-color: ${(props) => props.theme.bgColor};
   border-radius: 30px;
   box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.06);
@@ -58,10 +58,11 @@ const Header = styled.div`
 `;
 
 const ChannelBox = styled.div`
-  height: 30vh;
+  height: 300px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: space-between;
   gap: 10px;
 `;
 
@@ -103,12 +104,14 @@ const WorkspaceCreateTutorial = ({
         </Header>
 
         <ChannelBox>
-          <Cover width={150} height={170} />
+          <Cover width={130} height={150} />
           {/* <Img src={src} alt="이미지" /> */}
-          <Text size={14}>+ 버튼을 눌러 워크스페이스를 생성해보세요. </Text>
-          <Text size={12}>
-            많아지는 멤버를 어떻게 관리할지 고민이셨나요? 멤버별로
-            워크스페이스를 생성해서 소통해보세요.
+          <Text size={14} weight="bold">
+            + 버튼을 눌러 워크스페이스를 생성하세요.
+          </Text>
+          <Text size={13} color="gray500">
+            워크스페이스는 팀별 소통 공간이에요. 워크스페이스를 대표할 사진과
+            이름을 설정하고 동료들과 함께 하세요.
           </Text>
           <Progress>
             <ProgressBar

@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import Button from 'atoms/common/Button';
 import Icons from 'atoms/common/Icons';
 import Text from 'atoms/text/Text';
-import { ReactComponent as Cover } from 'assets/img/workspaceCreate.svg';
+import { ReactComponent as Cover } from 'assets/img/channelSetting.svg';
 import { tutorialModalType } from 'types/workspace/workspaceTypes';
 import ProgressBar from '@ramonak/react-progress-bar';
 import { colors } from 'shared/color';
@@ -35,7 +35,8 @@ const Modal = styled.div<{ isOpen: boolean }>`
     border-color: rgba(136, 183, 213, 0);
     border-right-color: white;
     border-width: 10px;
-    margin-top: -150px;
+    position: absolute;
+    top: 40px;
   }
 `;
 
@@ -58,7 +59,7 @@ const Header = styled.div`
 `;
 
 const ChannelBox = styled.div`
-  height: 30vh;
+  /* height: 30vh; */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -80,6 +81,11 @@ const Progress = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
+`;
+const Contents = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 `;
 const ChannelSettingTutorial = ({
   isOpen,
@@ -105,11 +111,18 @@ const ChannelSettingTutorial = ({
         <ChannelBox>
           <Cover width={150} height={170} />
           {/* <Img src={src} alt="이미지" /> */}
-          <Text size={14}>채널 이름을 눌러 다양한 기능을 익혀보세요.</Text>
-          <Text size={12}>
-            많아지는 멤버를 어떻게 관리할지 고민이셨나요? 멤버별로
-            워크스페이스를 생성해서 소통해보세요.
+          <Text size={14} weight="bold">
+            채널을 클릭하여 다양한 기능을 진행하세요.
           </Text>
+          <Contents>
+            <Text size={13} color="gray500">
+              워크스페이스 내의 멤버를 초대하거나 채널에 속한 멤버를 조회할 수
+              있습니다.
+            </Text>
+            <Text size={13} color="gray500">
+              채널의 주인일 경우 채널을 수정할 수 있습니다.
+            </Text>
+          </Contents>
           <Progress>
             <ProgressBar
               completed={progress}

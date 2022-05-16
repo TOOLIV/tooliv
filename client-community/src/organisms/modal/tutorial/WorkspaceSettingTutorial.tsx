@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import Button from 'atoms/common/Button';
 import Icons from 'atoms/common/Icons';
 import Text from 'atoms/text/Text';
-import { ReactComponent as Cover } from 'assets/img/workspaceCreate.svg';
+import { ReactComponent as Cover } from 'assets/img/workspaceSetting.svg';
 import { tutorialModalType } from 'types/workspace/workspaceTypes';
 import ProgressBar from '@ramonak/react-progress-bar';
 import { colors } from 'shared/color';
@@ -35,7 +35,8 @@ const Modal = styled.div<{ isOpen: boolean }>`
     border-color: rgba(136, 183, 213, 0);
     border-right-color: white;
     border-width: 10px;
-    margin-top: -150px;
+    position: absolute;
+    top: 40px;
   }
 `;
 
@@ -58,7 +59,7 @@ const Header = styled.div`
 `;
 
 const ChannelBox = styled.div`
-  height: 30vh;
+  /* height: 30vh; */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -80,6 +81,12 @@ const Progress = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
+`;
+
+const Contents = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 `;
 const WorkspaceSettingTutorial = ({
   isOpen,
@@ -105,13 +112,18 @@ const WorkspaceSettingTutorial = ({
         <ChannelBox>
           <Cover width={150} height={170} />
           {/* <Img src={src} alt="이미지" /> */}
-          <Text size={14}>
-            워크스페이스의 이름을 눌러 다양한 기능을 확인해보세요.
+          <Text size={14} weight="bold">
+            워크스페이스를 클릭하여 다양한 기능을 진행하세요.
           </Text>
-          <Text size={12}>
-            많아지는 멤버를 어떻게 관리할지 고민이셨나요? 멤버별로
-            워크스페이스를 생성해서 소통해보세요.
-          </Text>
+          <Contents>
+            <Text size={13} color="gray500">
+              워크스페이스의 구성원을 확인하거나 동료를 초대할 수 있습니다.
+            </Text>
+            <Text size={13} color="gray500">
+              더 이상 해당 워크스페이스에 남아있길 원하지 않는다면 언제든지 나갈
+              수 있습니다.
+            </Text>
+          </Contents>
           <Progress>
             <ProgressBar
               completed={progress}
@@ -121,7 +133,7 @@ const WorkspaceSettingTutorial = ({
               bgColor={colors.primary}
               baseBgColor={colors.gray200}
             />
-            <Text size={12}>{`${progress}%`}</Text>
+            <Text size={13}>{`${progress}%`}</Text>
           </Progress>
           <Button
             text="네 이해했어요!"

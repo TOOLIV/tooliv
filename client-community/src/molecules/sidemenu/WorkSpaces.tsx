@@ -11,9 +11,8 @@ const WorkSpaceContainer = styled.div`
   align-items: flex-start;
   overflow-x: auto;
   overflow-y: hidden;
-
   -ms-overflow-style: none;
-
+  padding-bottom: 5px;
   &::-webkit-scrollbar {
     display: none;
   }
