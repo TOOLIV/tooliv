@@ -42,11 +42,11 @@ const LoadContainer = styled.div`
 const Channel = () => {
   const [message, setMessage] = useRecoilState<string>(channelMessage);
   const [files, setFiles] = useRecoilState<FileTypes[]>(chatFiles);
+  const [fileUrl, setFileUrl] = useRecoilState<string[]>(chatFileUrl);
+  const [fileNames, setFileNames] = useRecoilState<string[]>(chatFileNames);
   const [contents, setContents] =
     useRecoilState<contentTypes[]>(channelContents);
   const [chatMembers, setChatMembers] = useRecoilState<string[]>(chatMember);
-  const [fileUrl, setFileUrl] = useRecoilState<string[]>(chatFileUrl);
-  const [fileNames, setFileNames] = useRecoilState<string[]>(chatFileNames);
   const { email } = useRecoilValue(user);
   const [notiList, setNotiList] =
     useRecoilState<channelNotiType[]>(channelNotiList);
@@ -100,6 +100,11 @@ const Channel = () => {
         setChatMembers(result);
       });
     });
+
+    return () => {
+      setFiles([]);
+      setFileUrl([]);
+    };
   }, [channelId]);
 
   useEffect(() => {
@@ -110,7 +115,8 @@ const Channel = () => {
 
   const onSendClick = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
-    sendMessage();
+    if (message !== '') sendMessage();
+    else if (files.length > 0) sendMessage();
   };
 
   const sendMessage = () => {

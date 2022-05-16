@@ -1,10 +1,7 @@
 import styled from '@emotion/styled';
-import React from 'react';
 import { avatarTypes } from '../../types/common/avatarTypes';
-import avatar from '../../assets/img/avatar.png';
 import { ReactComponent as AvatarIcon } from '../../assets/img/user.svg';
 import { colors } from 'shared/color';
-import { stat } from 'fs';
 
 const Container = styled.div`
   position: relative;

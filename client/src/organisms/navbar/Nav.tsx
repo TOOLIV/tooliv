@@ -37,9 +37,7 @@ import {
 import { getUserStatus } from 'api/userApi';
 import { useInterval } from 'hooks/useInterval';
 import { useDebounce } from 'hooks/useHooks';
-import logoSrc from 'assets/img/tooliv_logo.png';
-import { ThemeContext } from '@emotion/react';
-import { colors } from 'shared/color';
+
 const NavContainer = styled.div`
   padding: 0px 20px;
   background-color: ${(props) => props.theme.bgColor};
@@ -251,7 +249,7 @@ const Nav = () => {
         <MidContainer>
           <InputBox
             label=""
-            placeholder="검색"
+            placeholder="현재 채널 내 검색"
             ref={inputRef}
             onChange={search}
           />
