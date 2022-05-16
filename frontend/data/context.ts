@@ -29,7 +29,7 @@ export const contexts: DescriptionType[] = [
     description: [
       "채널에 참여한 팀 구성원과 대화를 나눌 수 있습니다.",
       "협업에 필요한 다양한 자료를 빠르게 공유하여 업무 효율을 높여보세요.",
-      "마크다운으로 다양한 스타일로 대화를 나눠보세요.",
+      "마크다운을 활용해 다양한 스타일로 대화를 나눠보세요.",
     ],
     mainImage: chat,
     subImage: chatgroup,
