@@ -122,9 +122,9 @@ public class WorkspaceController {
     }
 
     @GetMapping("/info")
-    @ApiOperation(value = "워크스페이스명 조회")
+    @ApiOperation(value = "워크스페이스 정보 조회")
     @ApiResponses({
-        @ApiResponse(code = 200, message = "워크스페이스명 조회 완료"),
+        @ApiResponse(code = 200, message = "워크스페이스 정보 조회 완료"),
         @ApiResponse(code = 404, message = "조회 가능한 워크스페이스 정보가 없음"),
     })
     public ResponseEntity<? extends BaseResponseDTO> getWorkspaceInfo(
@@ -137,7 +137,7 @@ public class WorkspaceController {
         } catch (Exception e) {
             return ResponseEntity.status(404).body(WorkspaceNameGetResponseDTO.of(e.getMessage(), new WorkspaceNameGetResponseDTO()));
         }
-        return ResponseEntity.status(200).body(WorkspaceNameGetResponseDTO.of("워크스페이스명 조회 완료", workspaceNameGetResponseDTO));
+        return ResponseEntity.status(200).body(WorkspaceNameGetResponseDTO.of("워크스페이스 정보 조회 완료", workspaceNameGetResponseDTO));
     }
 
     @PostMapping("/{workspaceId}/member")
