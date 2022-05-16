@@ -32,8 +32,7 @@ const Modal = styled.div<{ isOpen: boolean }>`
   }
 
   :after {
-    border-color: rgba(136, 183, 213, 0);
-    border-right-color: white;
+    border-right-color: ${(props) => props.theme.borderColor};
     border-width: 10px;
     position: absolute;
     top: 90px;
@@ -45,6 +44,7 @@ const Container = styled.div`
   padding: 25px;
   background-color: ${(props) => props.theme.bgColor};
   border-radius: 30px;
+  border: 1px solid ${(props) => props.theme.borderColor};
   box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.06);
   display: flex;
   flex-direction: column;
@@ -125,10 +125,6 @@ const ChannelCreateTutorial = ({
             <Text size={13} color="gray500">
               화상 채널은 채팅 및 파일 송·수신뿐만 아니라 사용자들간 화상 통화도
               가능한 채널이에요.
-            </Text>
-            <Text size={13} color="gray500">
-              웹캠 및 마이크 허용이 필수적으로 요구되는 공간으로, 비대면 미팅시
-              참여자들과 소통하며 화면 공유 기능도 제공하고 있으니 이용해보세요
             </Text>
           </Contents>
           <Progress>

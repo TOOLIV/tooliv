@@ -10,25 +10,22 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
   appThemeMode,
   channelContents,
-  channelNotiList,
   chatMember,
+  currentWorkspace,
   DMList,
   dmMember,
   memberStatus,
   searchIndex,
   searchResults,
-  wsList,
 } from 'recoil/atom';
-import { channelNotiType, contentTypes } from 'types/channel/contentType';
+import { contentTypes } from 'types/channel/contentType';
 import Avatar from 'atoms/profile/Avatar';
 import { DarkModeSwitch } from 'react-toggle-dark-mode';
 import UserDropdown from 'organisms/modal/user/UserDropdown';
 import UserConfigModal from 'organisms/modal/user/UserConfigModal';
-import { getChannels, getDMList, searchChat } from 'api/chatApi';
+import { searchChat } from 'api/chatApi';
 import { useNavigate, useParams } from 'react-router-dom';
 import { DMInfoType } from 'types/channel/chatTypes';
-import { workspaceListType } from 'types/workspace/workspaceTypes';
-import { getWorkspaceList } from 'api/workspaceApi';
 import {
   statusType,
   usersStatusType,
@@ -109,6 +106,8 @@ const Nav = () => {
     useRecoilState<userStatusInfoType>(memberStatus);
   const [searchList, setSearchList] = useRecoilState<number[]>(searchResults);
   const [searchedIndex, setSearchedIndex] = useRecoilState<number>(searchIndex);
+  const setCurrentWorkSpaceId = useSetRecoilState(currentWorkspace);
+
   const contents = useRecoilValue<contentTypes[]>(channelContents);
 
   const { channelId } = useParams();
@@ -229,9 +228,14 @@ const Nav = () => {
     }
   }, [debouncedValue]);
 
+  const handleNavigateMain = () => {
+    setCurrentWorkSpaceId('main');
+    navigate('/main');
+  };
+
   return (
     <NavContainer>
-      <LeftContainer onClick={() => navigate('/')}>
+      <LeftContainer onClick={handleNavigateMain}>
         <Logo />
         <TextWrapper>
           <Text size={18} pointer color="secondary">
