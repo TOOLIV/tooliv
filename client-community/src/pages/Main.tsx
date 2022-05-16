@@ -37,6 +37,8 @@ const Main = () => {
         channelId="1"
         type="home"
         email="aaa"
+        files={[]}
+        originFiles={[]}
       />
     </Container>
   );
