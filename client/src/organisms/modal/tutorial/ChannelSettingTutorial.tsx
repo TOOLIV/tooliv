@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import Button from 'atoms/common/Button';
 import Icons from 'atoms/common/Icons';
 import Text from 'atoms/text/Text';
-import { ReactComponent as Cover } from 'assets/img/channelMember.svg';
+import { ReactComponent as Cover } from 'assets/img/workspaceCreate.svg';
 import { tutorialModalType } from 'types/workspace/workspaceTypes';
 import ProgressBar from '@ramonak/react-progress-bar';
 import { colors } from 'shared/color';
@@ -11,8 +11,8 @@ import { colors } from 'shared/color';
 const Modal = styled.div<{ isOpen: boolean }>`
   display: none;
   position: absolute;
-  top: 65px;
-  left: 375px;
+  top: 35px;
+  left: 460px;
   z-index: 1;
   ${(props) =>
     props.isOpen &&
@@ -34,8 +34,7 @@ const Modal = styled.div<{ isOpen: boolean }>`
   :after {
     border-right-color: ${(props) => props.theme.borderColor};
     border-width: 10px;
-    position: absolute;
-    top: 40px;
+    margin-top: -150px;
   }
 `;
 
@@ -59,6 +58,7 @@ const Header = styled.div`
 `;
 
 const ChannelBox = styled.div`
+  /* height: 30vh; */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -81,7 +81,12 @@ const Progress = styled.div`
   align-items: center;
   gap: 10px;
 `;
-const ChannelMemberTutorial = ({
+const Contents = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+`;
+const ChannelSettingTutorial = ({
   isOpen,
   onClose,
   onNext,
@@ -98,18 +103,25 @@ const ChannelMemberTutorial = ({
     <Modal isOpen={isOpen}>
       <Container>
         <Header>
-          <Text size={18}>채널 멤버</Text>
+          <Text size={18}>채널 설정</Text>
           <Icons icon="xMark" width="24" height="24" onClick={exitModal} />
         </Header>
 
         <ChannelBox>
           <Cover width={150} height={170} />
           {/* <Img src={src} alt="이미지" /> */}
-          <Text size={14}>채널 멤버 조회 및 초대를 해보세요.</Text>
-          <Text size={13} color="gray500">
-            채널에 속한 멤버를 조회하거나, 워크스페이스 내의 멤버를 채널로
-            초대할 수 있습니다.
+          <Text size={14} weight="bold">
+            채널을 클릭하여 다양한 기능을 진행하세요.
           </Text>
+          <Contents>
+            <Text size={13} color="gray500">
+              워크스페이스 내의 멤버를 초대하거나 채널에 속한 멤버를 조회할 수
+              있습니다.
+            </Text>
+            <Text size={13} color="gray500">
+              채널의 주인일 경우 채널을 수정할 수 있습니다.
+            </Text>
+          </Contents>
           <Progress>
             <ProgressBar
               completed={progress}
@@ -133,4 +145,4 @@ const ChannelMemberTutorial = ({
   );
 };
 
-export default ChannelMemberTutorial;
+export default ChannelSettingTutorial;

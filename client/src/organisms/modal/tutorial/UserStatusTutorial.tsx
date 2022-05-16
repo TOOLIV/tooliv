@@ -3,16 +3,19 @@ import styled from '@emotion/styled';
 import Button from 'atoms/common/Button';
 import Icons from 'atoms/common/Icons';
 import Text from 'atoms/text/Text';
-import { ReactComponent as Cover } from 'assets/img/channelMember.svg';
+import { ReactComponent as Cover } from 'assets/img/userConfig.svg';
 import { tutorialModalType } from 'types/workspace/workspaceTypes';
 import ProgressBar from '@ramonak/react-progress-bar';
 import { colors } from 'shared/color';
+import { workspaceCreateModalOpen } from 'recoil/atom';
+import { useRecoilState } from 'recoil';
 
 const Modal = styled.div<{ isOpen: boolean }>`
   display: none;
   position: absolute;
-  top: 65px;
-  left: 375px;
+  top: 0px;
+  right: 70px;
+  /* right: 30px; */
   z-index: 1;
   ${(props) =>
     props.isOpen &&
@@ -21,7 +24,7 @@ const Modal = styled.div<{ isOpen: boolean }>`
     `}
 
   :after,:before {
-    right: 100%;
+    left: 100%;
     top: 50%;
     border: solid transparent;
     content: '';
@@ -32,10 +35,10 @@ const Modal = styled.div<{ isOpen: boolean }>`
   }
 
   :after {
-    border-right-color: ${(props) => props.theme.borderColor};
+    border-left-color: ${(props) => props.theme.borderColor};
     border-width: 10px;
     position: absolute;
-    top: 40px;
+    top: 20px;
   }
 `;
 
@@ -81,12 +84,16 @@ const Progress = styled.div`
   align-items: center;
   gap: 10px;
 `;
-const ChannelMemberTutorial = ({
+const UserStatusTutorial = ({
   isOpen,
   onClose,
   onNext,
   progress,
 }: tutorialModalType) => {
+  const [workspaceCreateOpen, setWorkspaceCreateOpen] = useRecoilState(
+    workspaceCreateModalOpen
+  );
+
   const exitModal = () => {
     onClose();
   };
@@ -94,21 +101,26 @@ const ChannelMemberTutorial = ({
   const nextModal = () => {
     onNext!();
   };
+
+  const workspaceCreate = () => {
+    onClose();
+    setWorkspaceCreateOpen(true);
+  };
   return (
     <Modal isOpen={isOpen}>
       <Container>
         <Header>
-          <Text size={18}>채널 멤버</Text>
+          <Text size={18}>내 프로필</Text>
           <Icons icon="xMark" width="24" height="24" onClick={exitModal} />
         </Header>
 
         <ChannelBox>
           <Cover width={150} height={170} />
           {/* <Img src={src} alt="이미지" /> */}
-          <Text size={14}>채널 멤버 조회 및 초대를 해보세요.</Text>
+          <Text size={14}>자신의 상태 변경 및 계정 관리를 할 수 있어요.</Text>
           <Text size={13} color="gray500">
-            채널에 속한 멤버를 조회하거나, 워크스페이스 내의 멤버를 채널로
-            초대할 수 있습니다.
+            자신의 현재 상태(온라인, 자리비움, 오프라인)를 설정할 수 있으며,
+            계정 설정이 가능합니다.
           </Text>
           <Progress>
             <ProgressBar
@@ -122,10 +134,10 @@ const ChannelMemberTutorial = ({
             <Text size={12}>{`${progress}%`}</Text>
           </Progress>
           <Button
-            text="네 이해했어요!"
-            width="120"
+            text="워크스페이스 생성하기"
+            width="230"
             height="30"
-            onClick={nextModal}
+            onClick={workspaceCreate}
           />
         </ChannelBox>
       </Container>
@@ -133,4 +145,4 @@ const ChannelMemberTutorial = ({
   );
 };
 
-export default ChannelMemberTutorial;
+export default UserStatusTutorial;

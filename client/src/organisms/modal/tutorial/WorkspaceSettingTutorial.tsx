@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import Button from 'atoms/common/Button';
 import Icons from 'atoms/common/Icons';
 import Text from 'atoms/text/Text';
-import { ReactComponent as Cover } from 'assets/img/channelMember.svg';
+import { ReactComponent as Cover } from 'assets/img/workspaceSetting.svg';
 import { tutorialModalType } from 'types/workspace/workspaceTypes';
 import ProgressBar from '@ramonak/react-progress-bar';
 import { colors } from 'shared/color';
@@ -11,8 +11,8 @@ import { colors } from 'shared/color';
 const Modal = styled.div<{ isOpen: boolean }>`
   display: none;
   position: absolute;
-  top: 65px;
-  left: 375px;
+  top: 55px;
+  left: 140px;
   z-index: 1;
   ${(props) =>
     props.isOpen &&
@@ -59,6 +59,7 @@ const Header = styled.div`
 `;
 
 const ChannelBox = styled.div`
+  /* height: 30vh; */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -81,7 +82,13 @@ const Progress = styled.div`
   align-items: center;
   gap: 10px;
 `;
-const ChannelMemberTutorial = ({
+
+const Contents = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+`;
+const WorkspaceSettingTutorial = ({
   isOpen,
   onClose,
   onNext,
@@ -98,18 +105,25 @@ const ChannelMemberTutorial = ({
     <Modal isOpen={isOpen}>
       <Container>
         <Header>
-          <Text size={18}>채널 멤버</Text>
+          <Text size={18}>워크스페이스 설정</Text>
           <Icons icon="xMark" width="24" height="24" onClick={exitModal} />
         </Header>
 
         <ChannelBox>
           <Cover width={150} height={170} />
           {/* <Img src={src} alt="이미지" /> */}
-          <Text size={14}>채널 멤버 조회 및 초대를 해보세요.</Text>
-          <Text size={13} color="gray500">
-            채널에 속한 멤버를 조회하거나, 워크스페이스 내의 멤버를 채널로
-            초대할 수 있습니다.
+          <Text size={14}>
+            워크스페이스를 클릭하여 다양한 기능을 진행하세요.
           </Text>
+          <Contents>
+            <Text size={13} color="gray500">
+              워크스페이스의 구성원을 확인하거나 동료를 초대할 수 있습니다.
+            </Text>
+            <Text size={13} color="gray500">
+              더 이상 해당 워크스페이스에 남아있길 원하지 않는다면 언제든지 나갈
+              수 있습니다.
+            </Text>
+          </Contents>
           <Progress>
             <ProgressBar
               completed={progress}
@@ -119,7 +133,7 @@ const ChannelMemberTutorial = ({
               bgColor={colors.primary}
               baseBgColor={colors.gray200}
             />
-            <Text size={12}>{`${progress}%`}</Text>
+            <Text size={13}>{`${progress}%`}</Text>
           </Progress>
           <Button
             text="네 이해했어요!"
@@ -133,4 +147,4 @@ const ChannelMemberTutorial = ({
   );
 };
 
-export default ChannelMemberTutorial;
+export default WorkspaceSettingTutorial;

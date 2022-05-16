@@ -54,6 +54,7 @@ const Container = styled.div`
   padding: 25px;
   background-color: ${(props) => props.theme.bgColor};
   border-radius: 30px;
+  border: 1px solid ${(props) => props.theme.borderColor};
   box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.06);
   display: flex;
   flex-direction: column;
@@ -78,13 +79,8 @@ const WorkspaceModal = ({ isOpen, onClose }: workspaceModalType) => {
   const setCurrentWorkspace = useSetRecoilState(currentWorkspace);
   const setCurrentChannel = useSetRecoilState(currentChannel);
   const [userLogList, setUserLogList] = useRecoilState(userLog);
-  const [contents, setContents] =
-    useRecoilState<contentTypes[]>(channelContents);
   const [notiList, setNotiList] =
     useRecoilState<channelNotiType[]>(channelNotiList);
-  const [workspaceList, setWorkspaceList] =
-    useRecoilState<workspaceListType[]>(wsList);
-  const userInfo = useRecoilValue(user);
   const handleSetImg = (file: FileList) => {
     setFile(file[0]);
   };
@@ -144,6 +140,11 @@ const WorkspaceModal = ({ isOpen, onClose }: workspaceModalType) => {
       console.log(error);
     }
   };
+
+  const exitModal = () => {
+    inputWorkspaceRef.current!.value = '';
+    onClose();
+  };
   return (
     <Modal isOpen={isOpen}>
       <Container>
@@ -162,7 +163,7 @@ const WorkspaceModal = ({ isOpen, onClose }: workspaceModalType) => {
             height="35"
             text="취소"
             bgColor="gray300"
-            onClick={onClose}
+            onClick={exitModal}
           />
           <Button
             width="125"

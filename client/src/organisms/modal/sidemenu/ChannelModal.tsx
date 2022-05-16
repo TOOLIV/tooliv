@@ -38,6 +38,7 @@ const Container = styled.div`
   width: 430px;
   padding: 25px 50px;
   background-color: ${(props) => props.theme.bgColor};
+  border: 1px solid ${(props) => props.theme.borderColor};
   border-radius: 30px;
   box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.06);
   display: flex;

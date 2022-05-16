@@ -12,6 +12,7 @@ import {
   channelContents,
   channelNotiList,
   chatMember,
+  currentWorkspace,
   DMList,
   dmMember,
   memberStatus,
@@ -109,6 +110,8 @@ const Nav = () => {
     useRecoilState<userStatusInfoType>(memberStatus);
   const [searchList, setSearchList] = useRecoilState<number[]>(searchResults);
   const [searchedIndex, setSearchedIndex] = useRecoilState<number>(searchIndex);
+  const setCurrentWorkSpaceId = useSetRecoilState(currentWorkspace);
+
   const contents = useRecoilValue<contentTypes[]>(channelContents);
 
   const { channelId } = useParams();
@@ -229,9 +232,14 @@ const Nav = () => {
     }
   }, [debouncedValue]);
 
+  const handleNavigateMain = () => {
+    setCurrentWorkSpaceId('main');
+    navigate('/main');
+  };
+
   return (
     <NavContainer>
-      <LeftContainer onClick={() => navigate('/')}>
+      <LeftContainer onClick={handleNavigateMain}>
         <Logo />
         <TextWrapper>
           <Text size={18} pointer color="secondary">

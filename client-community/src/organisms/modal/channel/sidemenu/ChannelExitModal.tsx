@@ -31,6 +31,7 @@ const Container = styled.div`
   padding: 5px 0;
   background-color: ${(props) => props.theme.bgColor};
   border-radius: 8px;
+  border: 1px solid ${(props) => props.theme.borderColor};
   box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.06);
   display: flex;
   flex-direction: column;

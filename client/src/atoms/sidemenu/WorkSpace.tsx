@@ -1,12 +1,15 @@
 import styled from '@emotion/styled';
 import Tooltip from 'atoms/tooltip/Tooltip';
 import { useParams } from 'react-router-dom';
+import { useSetRecoilState } from 'recoil';
+import { currentWorkspace } from 'recoil/atom';
 import { workspaceListType } from 'types/workspace/workspaceTypes';
 
 const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 `;
 const Container = styled.div<{
   isSelected: boolean;
@@ -61,11 +64,11 @@ const WorkSpace = ({
   onClick,
   noti,
 }: workspaceListType) => {
-  // const setCurrentWorkSpaceId = useSetRecoilState(currentWorkspace);
+  const setCurrentWorkSpaceId = useSetRecoilState(currentWorkspace);
   const { workspaceId } = useParams();
   const currentWorkSpace = workspaceId ? workspaceId : 'main';
   const handleClickWorkspace = () => {
-    // setCurrentWorkSpaceId(id);
+    setCurrentWorkSpaceId(id);
     onClick(id);
   };
 
