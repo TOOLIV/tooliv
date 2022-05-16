@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import Button from 'atoms/common/Button';
 import Icons from 'atoms/common/Icons';
 import Text from 'atoms/text/Text';
-import { ReactComponent as Cover } from 'assets/img/channelSetting.svg';
+import { ReactComponent as Cover } from 'assets/img/workspaceCreate.svg';
 import { tutorialModalType } from 'types/workspace/workspaceTypes';
 import ProgressBar from '@ramonak/react-progress-bar';
 import { colors } from 'shared/color';
@@ -20,22 +20,27 @@ const Modal = styled.div<{ isOpen: boolean }>`
       display: block;
     `}
 
-  :after,:before {
-    right: 100%;
-    top: 50%;
-    border: solid transparent;
-    content: '';
-    height: 0;
-    width: 0;
-    position: absolute;
-    pointer-events: none;
-  }
-
   :after {
-    border-right-color: ${(props) => props.theme.borderColor};
-    border-width: 10px;
+    border-top: 10px solid transparent;
+    border-left: 10px solid transparent;
+    border-right: 10px solid white;
+    border-bottom: 10px solid transparent;
+    content: '';
     position: absolute;
     top: 40px;
+    left: -18px;
+  }
+
+  :before {
+    border-top: 12px solid transparent;
+    border-left: 12px solid transparent;
+    border-right: 12px solid ${(props) => props.theme.pointColor};
+    border-bottom: 12px solid transparent;
+    content: '';
+    position: absolute;
+    top: 38px;
+    left: -23px;
+    z-index: 0;
   }
 `;
 
@@ -44,7 +49,7 @@ const Container = styled.div`
   padding: 25px;
   background-color: ${(props) => props.theme.bgColor};
   border-radius: 30px;
-  border: 1px solid ${(props) => props.theme.borderColor};
+  border: 2px solid ${(props) => props.theme.pointColor};
   box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.06);
   display: flex;
   flex-direction: column;
