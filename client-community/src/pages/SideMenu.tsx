@@ -3,7 +3,12 @@ import { motion } from 'framer-motion';
 import DirectMessage from 'molecules/sidemenu/DirectMessage';
 import SideHeader from 'organisms/header/SideHeader';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { currentChannel, currentWorkspace, isOpenSide } from '../recoil/atom';
+import {
+  currentChannel,
+  currentWorkspace,
+  isOpenSide,
+  isTutorial,
+} from '../recoil/atom';
 import ChannelSection from '../organisms/sidemenu/channel/ChannelSection';
 import WorkSpaceSection from '../organisms/sidemenu/workspace/WorkSpaceSection';
 import { useEffect } from 'react';
@@ -37,6 +42,8 @@ const SideMenu = () => {
   const [currentWorkspaceId, setCurrentWorkspaceId] =
     useRecoilState(currentWorkspace);
   const setCurrentChannelId = useSetRecoilState(currentChannel);
+  const isTutorialOpen = useRecoilValue(isTutorial);
+
   const { workspaceId, channelId } = useParams();
 
   useEffect(() => {
@@ -57,7 +64,9 @@ const SideMenu = () => {
       <SideHeader />
       <WorkSpaceSection />
       <Contents>
-        {isOpen && currentWorkspaceId !== 'main' ? <ChannelSection /> : null}
+        {currentWorkspaceId !== 'main' || isTutorialOpen ? (
+          <ChannelSection />
+        ) : null}
         <DirectMessage />
       </Contents>
     </Container>

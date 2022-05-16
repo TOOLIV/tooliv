@@ -13,6 +13,7 @@ import {
   currentChannelNum,
   currentWorkspace,
   dmName,
+  isTutorial,
   modifyChannelName,
 } from 'recoil/atom';
 
@@ -64,6 +65,7 @@ const ChannelHeader = () => {
   const [addMemeberOpen, setAddMemberOpen] = useState(false);
   const [userCode, setUserCode] = useState('');
   const [directName, setDirectName] = useRecoilState<string>(dmName);
+  const isTutorialOpen = useRecoilValue(isTutorial);
 
   const [currentChannelMemberNum, setCurrentChannelMemberNum] =
     useRecoilState(currentChannelNum);
@@ -165,27 +167,58 @@ const ChannelHeader = () => {
   return (
     <Container>
       <DropdownWrapper ref={dropdownRef}>
-        <Title
-          onClick={
-            userCode === 'CADMIN'
-              ? () => setDropdownOpen(!dropdownOpen)
-              : undefined
-          }
-        >
-          <Text size={18}>{channelName}</Text>
-          {userCode === 'CADMIN' && !location.pathname.includes('/direct') ? (
+        {isTutorialOpen ? (
+          <Title onClick={() => setDropdownOpen(!dropdownOpen)}>
+            <Text size={18}>튜토리얼 채널</Text>
             <Icons icon="dropdown" />
-          ) : null}
-        </Title>
+          </Title>
+        ) : (
+          <Title
+            onClick={
+              userCode === 'CADMIN'
+                ? () => setDropdownOpen(!dropdownOpen)
+                : undefined
+            }
+          >
+            <Text size={18}>{channelName}</Text>
+            {userCode === 'CADMIN' && !location.pathname.includes('/direct') ? (
+              <Icons icon="dropdown" />
+            ) : null}
+          </Title>
+        )}
         <ChannelHeaderDropdown
           isOpen={dropdownOpen}
           onClick={handleModifyModalOpen}
+          onMemberListOpen={() => {
+            setMemberListOpen(true);
+          }}
+          onMemberAddOpen={() => {
+            setAddMemberOpen(true);
+          }}
           onClose={closeDropdown}
         />
       </DropdownWrapper>
-
-      {currentWorkspaceId !== 'main' &&
-      !location.pathname.includes('/direct') ? (
+      {isTutorialOpen ? (
+        <MemberListWrapper>
+          <Members>
+            <Icons
+              icon="solidPerson"
+              width="28"
+              height="28"
+              color={memberListOpen ? 'blue100' : 'gray500'}
+            />
+            <Text
+              size={16}
+              color={memberListOpen ? 'blue100' : 'gray500'}
+              pointer
+            >
+              1
+            </Text>
+          </Members>
+          <Icons icon="solidVideoOn" width="28" height="28" />
+        </MemberListWrapper>
+      ) : currentWorkspaceId !== 'main' &&
+        !location.pathname.includes('/direct') ? (
         <MemberListWrapper ref={memberListRef}>
           <Members
             onClick={() => {

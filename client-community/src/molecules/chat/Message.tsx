@@ -5,7 +5,7 @@ import UpdateChatModal from 'organisms/modal/channel/chat/UpdateChatModal';
 import React, { forwardRef, useEffect, useRef, useState } from 'react';
 import { fDateTime, fToNow } from 'utils/formatTime';
 import { useLocation } from 'react-router-dom';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { user } from 'recoil/auth';
 import { deleteChat, deleteDM } from 'services/wsconnect';
 import Label from '../../atoms/common/Label';
@@ -15,7 +15,13 @@ import { contentTypes } from '../../types/channel/contentType';
 import { SideWrapper } from '../sidemenu/Channels';
 import File from './File';
 import mainSrc from '../../assets/img/logo.svg';
-import { memberStatus, searchIndex, searchResults } from 'recoil/atom';
+import {
+  isTutorial,
+  memberStatus,
+  searchIndex,
+  searchResults,
+} from 'recoil/atom';
+import Button from 'atoms/common/Button';
 
 const Container = styled.div<{ isSearched?: boolean }>`
   width: 100%;
@@ -83,6 +89,7 @@ const Message = forwardRef<HTMLDivElement, contentTypes>(
     const [isUpdatModalOpen, setIsUpdateModalOpen] = useState<boolean>(false);
     const [nickname, setNickname] = useState('');
     const membersStatus = useRecoilValue(memberStatus);
+    const [isTutorialOpen, setIsTutorialOpen] = useRecoilState(isTutorial);
     const userInfo = useRecoilValue(user);
     const fileTypes = ['.bmp', '.gif', '.jpg', '.png', '.jpeg', '.jfif'];
     const location = useLocation();
@@ -159,9 +166,19 @@ const Message = forwardRef<HTMLDivElement, contentTypes>(
           {deleted ? (
             <ContentContainer>(삭제된 메시지)</ContentContainer>
           ) : (
-            <ContentContainer
-              dangerouslySetInnerHTML={{ __html: contents }}
-            ></ContentContainer>
+            <>
+              <ContentContainer
+                dangerouslySetInnerHTML={{ __html: contents }}
+              ></ContentContainer>
+              {type === 'home' ? (
+                <Button
+                  text={
+                    isTutorialOpen ? '튜토리얼 끝내기' : '튜토리얼 시작하기'
+                  }
+                  onClick={() => setIsTutorialOpen(!isTutorialOpen)}
+                />
+              ) : null}
+            </>
           )}
           {files && originFiles && files.length > 0 && (
             <ContentContainer>
