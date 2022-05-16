@@ -57,7 +57,6 @@ const JoinForm = () => {
   const [passwordType, setPasswordType] = useState(true);
 
   const clickPwdIcon = () => {
-    console.log('hji');
     setPasswordType(!passwordType);
   };
 

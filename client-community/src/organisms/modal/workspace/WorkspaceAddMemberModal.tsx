@@ -141,7 +141,7 @@ const WorkspaceAddMemberModal = forwardRef<
 
   const userListApi = useCallback(
     async (keyword: string) => {
-      if (!endCheckRef.current) {
+      if (!endCheckRef.current && keyword) {
         const response = await searchNotWorkspaceMemberList(
           workspaceId!,
           keyword,
@@ -171,9 +171,8 @@ const WorkspaceAddMemberModal = forwardRef<
 
   useEffect(() => {
     if (workspaceId && isOpen) {
-      console.log('하이');
       initModal();
-      userListApi(debouncedValue);
+      // userListApi(debouncedValue);
     }
   }, [debouncedValue, workspaceId]);
 
