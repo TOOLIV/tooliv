@@ -15,12 +15,7 @@ import { contentTypes } from '../../types/channel/contentType';
 import { SideWrapper } from '../sidemenu/Channels';
 import File from './File';
 import mainSrc from '../../assets/img/logo.svg';
-import {
-  isTutorial,
-  memberStatus,
-  searchIndex,
-  searchResults,
-} from 'recoil/atom';
+import { isTutorial, memberStatus } from 'recoil/atom';
 import Button from 'atoms/common/Button';
 
 const Container = styled.div<{ isSearched?: boolean }>`
