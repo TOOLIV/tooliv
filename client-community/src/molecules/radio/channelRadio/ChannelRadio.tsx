@@ -64,7 +64,7 @@ const ChannelRadio = ({ value, onChange }: channelRadioTypes) => {
           />
           <ChannelLabel htmlFor="basic">
             <Icons icon="solidPerson" width="60" height="60" />
-            <Text size={16}>채팅 채널</Text>
+            <Text size={16}>일반 채널</Text>
           </ChannelLabel>
         </ChannelBtn>
         <ChannelBtn>
@@ -85,7 +85,7 @@ const ChannelRadio = ({ value, onChange }: channelRadioTypes) => {
       <InfoMsg>
         {value === 'CHAT' ? (
           <Text size={10}>
-            채팅 채널에서는 인원에 상관없이 누구나 초대하여 대화를 시작할 수
+            일반 채널에서는 인원에 상관없이 누구나 초대하여 대화를 시작할 수
             있습니다.
           </Text>
         ) : (

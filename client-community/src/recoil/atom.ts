@@ -141,3 +141,13 @@ export const loadCnt = atom<number>({
   key: 'loadCnt',
   default: 0,
 });
+
+export const isTutorial = atom<boolean>({
+  key: 'isTutorial',
+  default: false,
+});
+
+export const workspaceCreateModalOpen = atom<boolean>({
+  key: 'workspaceCreateModalOpen',
+  default: false,
+});
