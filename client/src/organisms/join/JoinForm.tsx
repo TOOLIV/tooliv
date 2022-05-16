@@ -1,11 +1,11 @@
 import styled from '@emotion/styled';
-import { useRef } from 'react';
+import Icons from 'atoms/common/Icons';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { join, login } from '../../api/userApi';
+import { join } from '../../api/userApi';
 import Button from '../../atoms/common/Button';
 import Text from '../../atoms/text/Text';
 import InputBox from '../../molecules/inputBox/InputBox';
-import { colors } from '../../shared/color';
 
 const Container = styled.div`
   width: 480px;
@@ -33,12 +33,62 @@ const SignUpBox = styled.div`
   margin-top: 7px;
   margin-left: auto;
 `;
+const PasswordInput = styled.div`
+  position: relative;
+`;
+const IconBox = styled.div`
+  position: absolute;
+  right: 13px;
+  top: 27px;
+`;
 
 const JoinForm = () => {
   const inputNameRef = useRef<HTMLInputElement>(null);
   const inputEmailRef = useRef<HTMLInputElement>(null);
   const inputPasswordRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+
+  const [emailStatus, setEmailStatus] = useState('default');
+  const [inputEmailMsg, setInputEmailMsg] = useState('');
+
+  const [pwdStatus, setPwdStatus] = useState('default');
+  const [inputPwdMsg, setInputPwdMsg] = useState('');
+
+  const [passwordType, setPasswordType] = useState(true);
+
+  const clickPwdIcon = () => {
+    setPasswordType(!passwordType);
+  };
+
+  const checkEmailValid = () => {
+    const email = inputEmailRef.current?.value!;
+    const emailRegex =
+      /^([0-9a-zA-Z_.-]+)@([0-9a-zA-Z_-]+)(\.[0-9a-zA-Z_-]+){1,2}$/;
+
+    if (emailRegex.test(email)) {
+      setEmailStatus('default');
+      setInputEmailMsg('');
+    } else {
+      setEmailStatus('error');
+      setInputEmailMsg('올바른 이메일 형식으로 입력해주세요.');
+    }
+  };
+
+  const checkPwdValid = () => {
+    const password = inputPasswordRef.current?.value!;
+    const passwordRegex =
+      /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,20}$/;
+
+    if (passwordRegex.test(password)) {
+      setPwdStatus('default');
+      setInputPwdMsg('');
+    } else {
+      setPwdStatus('error');
+      setInputPwdMsg(
+        '8 - 20자로 영어, 숫자, 특수문자가 포함된 비밀번호를 입력해주세요.'
+      );
+    }
+  };
 
   const handleJoin = async () => {
     const name = inputNameRef.current?.value!;
@@ -76,15 +126,34 @@ const JoinForm = () => {
           label="이메일"
           placeholder="사용하실 이메일을 입력해주세요."
           ref={inputEmailRef}
+          status={emailStatus}
+          message={inputEmailMsg}
+          onChange={checkEmailValid}
         />
-        <InputBox
-          label="비밀번호"
-          placeholder="비밀번호를 입력해주세요."
-          type="password"
-          ref={inputPasswordRef}
-        />
+        <PasswordInput>
+          <InputBox
+            label="비밀번호"
+            placeholder="비밀번호를 입력해주세요."
+            type={passwordType ? 'password' : 'text'}
+            ref={inputPasswordRef}
+            status={pwdStatus}
+            message={inputPwdMsg}
+            onChange={checkPwdValid}
+          />
+          <IconBox>
+            <Icons
+              icon={passwordType ? 'visibility' : 'visibilityOff'}
+              onClick={clickPwdIcon}
+            />
+          </IconBox>
+        </PasswordInput>
       </InputArea>
-      <Button width="350" text="회원가입" onClick={handleJoin} />
+      <Button
+        width="350"
+        text="회원가입"
+        onClick={handleJoin}
+        disabled={emailStatus === 'error' || pwdStatus === 'error'}
+      />
       <SignUpBox>
         <Text size={12} color={'gray400'}>
           이미 TOOLIV 회원이신가요?

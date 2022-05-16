@@ -14,10 +14,7 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { DMList, dmName } from 'recoil/atom';
 import { user } from 'recoil/auth';
 import { DMInfoType } from 'types/channel/chatTypes';
-import {
-  channelMemberListType,
-  channelMemberType,
-} from 'types/channel/contentType';
+import { channelMemberType } from 'types/channel/contentType';
 import { userDirectMessageType } from 'types/common/userTypes';
 
 const Modal = styled.div<{ isOpen: boolean }>`
@@ -136,7 +133,7 @@ const DirectMessageModal = ({ isOpen, onClose }: userDirectMessageType) => {
   };
 
   const searchChannelMember = useCallback(async (keyword: string) => {
-    if (!endCheckRef.current) {
+    if (!endCheckRef.current && keyword) {
       try {
         const response = await getUserList(keyword, sequenceRef.current);
         const data = response.data.userInfoResponseDTOList;
@@ -159,13 +156,6 @@ const DirectMessageModal = ({ isOpen, onClose }: userDirectMessageType) => {
     setSearchKeyword(keyword);
   }, []);
 
-  // useEffect(() => {
-  //   if (isOpen) {
-  //     inputRef.current!.value = '';
-  //     searchChannelMember('');
-  //   }
-  // }, [isOpen, searchChannelMember]);
-
   const initModal = useCallback(() => {
     setSequence(1);
     setEndCheck(false);
@@ -176,7 +166,6 @@ const DirectMessageModal = ({ isOpen, onClose }: userDirectMessageType) => {
     // 키워드 입력시 초기화 (안할 경우 이전 데이터가 남아있어 오류)
     if (isOpen) {
       initModal();
-      searchChannelMember(debouncedValue);
     }
   }, [debouncedValue]);
 
@@ -209,6 +198,11 @@ const DirectMessageModal = ({ isOpen, onClose }: userDirectMessageType) => {
       observer.observe(entry.target);
     }
   };
+
+  useEffect(() => {
+    console.log(channelMemberList);
+  }, [channelMemberList]);
+
   return (
     <Modal isOpen={isOpen}>
       <Container>

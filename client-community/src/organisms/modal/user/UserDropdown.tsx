@@ -35,11 +35,17 @@ const Container = styled.div`
   justify-content: center;
 `;
 
-const ListItem = styled.div`
+const ListItem = styled.div<{ divide?: boolean }>`
   padding: 10px 20px;
   cursor: pointer;
   display: flex;
   align-items: center;
+  ${(props) =>
+    props.divide &&
+    css`
+      border-bottom: 1px solid ${props.theme.borderColor};
+    `};
+
   &:hover {
     background-color: ${(props) => props.theme.dropdownHoverColor};
   }
@@ -61,7 +67,7 @@ const IconItem = styled.div`
 `;
 
 const UserDropdown = forwardRef<HTMLDivElement, userDropdownType>(
-  ({ isOpen, onClose, openProfileConfig }, ref) => {
+  ({ isOpen, onClose, openProfileConfig, openResetPwd }, ref) => {
     const [userInfo, setUserInfo] = useRecoilState(user);
     const [membersStatus, setMembersStatus] = useRecoilState(memberStatus);
 
@@ -92,6 +98,10 @@ const UserDropdown = forwardRef<HTMLDivElement, userDropdownType>(
 
     const handleUserConfig = () => {
       openProfileConfig();
+      onClose();
+    };
+    const handleResetPwd = () => {
+      openResetPwd();
       onClose();
     };
 
@@ -132,15 +142,7 @@ const UserDropdown = forwardRef<HTMLDivElement, userDropdownType>(
               다른 용무 중
             </Text>
           </ListItem>
-          {/* <ListItem>
-            <IconItem>
-              <Icons icon="remove" width="20" height="20" />
-            </IconItem>
-            <Text size={16} pointer>
-              방해 금지
-            </Text>
-          </ListItem> */}
-          <ListItem onClick={() => changeStatus('OFFLINE')}>
+          <ListItem onClick={() => changeStatus('OFFLINE')} divide>
             <IconItem>
               <Icons icon="offline" width="20" height="20" />
             </IconItem>
@@ -148,12 +150,21 @@ const UserDropdown = forwardRef<HTMLDivElement, userDropdownType>(
               오프라인
             </Text>
           </ListItem>
+
           <ListItem onClick={handleUserConfig}>
             <IconItem>
               <Icons icon="solidPerson" width="20" height="20" />
             </IconItem>
             <Text size={16} pointer>
               계정 설정
+            </Text>
+          </ListItem>
+          <ListItem onClick={handleResetPwd}>
+            <IconItem>
+              <Icons icon="modify" width="20" height="20" />
+            </IconItem>
+            <Text size={16} pointer>
+              비밀번호 변경
             </Text>
           </ListItem>
           <ListItem onClick={logout}>
