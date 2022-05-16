@@ -33,6 +33,8 @@ const Main = () => {
         channelId="1"
         type="home"
         email="aaa"
+        files={[]}
+        originFiles={[]}
       />
       {/* <InfoContainer>
         TOOLIV에 오신 것을 환영합니다. 다양한 워크스페이스를 생성하고, 동료를

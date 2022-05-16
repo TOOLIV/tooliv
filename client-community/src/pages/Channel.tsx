@@ -110,7 +110,7 @@ const Channel = () => {
 
   const onSendClick = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
-    sendMessage();
+    if (message !== '') sendMessage();
   };
 
   const sendMessage = () => {

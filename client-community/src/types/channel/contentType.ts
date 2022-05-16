@@ -7,8 +7,8 @@ export type contentTypes = {
   deleted: boolean;
   updated: boolean;
   sendTime?: string;
-  files?: string[];
-  originFiles?: string[];
+  files: string[];
+  originFiles: string[];
   isSearched?: boolean;
 };
 

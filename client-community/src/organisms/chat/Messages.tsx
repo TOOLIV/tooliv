@@ -35,7 +35,11 @@ const Messages = () => {
 
   const scrollToBottom = () => {
     if (messageBoxRef.current) {
-      messageBoxRef.current.scrollTop = messageBoxRef.current.scrollHeight;
+      console.log(messageBoxRef.current.scrollHeight);
+      // messageBoxRef.current.scrollTop = messageBoxRef.current.scrollHeight;
+      messageBoxRef.current.scrollTo({
+        top: messageBoxRef.current.scrollHeight,
+      });
     }
   };
 
@@ -44,7 +48,6 @@ const Messages = () => {
   }, [contents]);
 
   useEffect(() => {
-    console.log(searchedMsgRef.current?.scrollHeight);
     const searchedChatId: number = searchList[searchedIndex];
     if (
       messageBoxRef.current &&
@@ -64,14 +67,33 @@ const Messages = () => {
     <Container isFile={files.length > 0 ? true : false} ref={messageBoxRef}>
       {contents &&
         contents.map((content) => {
-          if (content.sendTime && content.sendTime.slice(0, 10) !== date) {
-            date = content.sendTime.slice(0, 10);
-            return (
-              <>
-                <Date>
-                  {date.slice(0, 4)}년 {date.slice(5, 7)}월 {date.slice(8, 10)}
-                  일
-                </Date>
+          if (content.contents === '' && content.files.length === 0) {
+            return;
+          } else {
+            if (content.sendTime && content.sendTime.slice(0, 10) !== date) {
+              date = content.sendTime.slice(0, 10);
+              return (
+                <>
+                  <Date>
+                    {date.slice(0, 4)}년 {date.slice(5, 7)}월{' '}
+                    {date.slice(8, 10)}일
+                  </Date>
+                  <Message
+                    ref={
+                      Number(content.chatId) === searchList[searchedIndex]
+                        ? searchedMsgRef
+                        : null
+                    }
+                    key={content.chatId}
+                    {...content}
+                    isSearched={
+                      Number(content.chatId) === searchList[searchedIndex]
+                    }
+                  />
+                </>
+              );
+            } else {
+              return (
                 <Message
                   ref={
                     Number(content.chatId) === searchList[searchedIndex]
@@ -84,23 +106,8 @@ const Messages = () => {
                     Number(content.chatId) === searchList[searchedIndex]
                   }
                 />
-              </>
-            );
-          } else {
-            return (
-              <Message
-                ref={
-                  Number(content.chatId) === searchList[searchedIndex]
-                    ? searchedMsgRef
-                    : null
-                }
-                key={content.chatId}
-                {...content}
-                isSearched={
-                  Number(content.chatId) === searchList[searchedIndex]
-                }
-              />
-            );
+              );
+            }
           }
         })}
     </Container>
