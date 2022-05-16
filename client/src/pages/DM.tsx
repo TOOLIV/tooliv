@@ -10,6 +10,7 @@ import {
   chatFileNames,
   chatFiles,
   chatFileUrl,
+  dmName,
 } from '../recoil/atom';
 import { channelNotiType, contentTypes } from '../types/channel/contentType';
 import Messages from '../organisms/chat/Messages';
@@ -34,6 +35,14 @@ const LoadContainer = styled.div`
   align-items: center;
 `;
 
+const Info = styled.div`
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: 30px;
+  line-height: 1.5;
+`;
+
 const DM = () => {
   const [message, setMessage] = useRecoilState<string>(channelMessage);
   const [files, setFiles] = useRecoilState<FileTypes[]>(chatFiles);
@@ -44,8 +53,9 @@ const DM = () => {
   const { accessToken, email } = useRecoilValue(user);
   const [notiList, setNotiList] =
     useRecoilState<channelNotiType[]>(channelNotiList);
-  const { workspaceId, channelId } = useParams<string>();
+  const { channelId } = useParams<string>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const directName = useRecoilValue<string>(dmName);
 
   useEffect(() => {
     window.addEventListener('beforeunload', (e: any) => {
@@ -55,16 +65,12 @@ const DM = () => {
   }, []);
 
   const update = () => {
-    console.log('dm unmount update');
-    updateLoggedTime(channelId, 'DM').then((res) => {
-      console.log(res);
-    });
+    updateLoggedTime(channelId, 'DM');
   };
 
   useEffect(() => {
     const newList: channelNotiType[] = notiList.map((noti) => {
       if (noti.channelId === channelId) {
-        console.log('HI');
         return { ...noti, notificationRead: false };
       } else return noti;
     });
@@ -76,16 +82,11 @@ const DM = () => {
         setIsLoading(false);
       });
     });
-    // updateLoggedTime(channelId, 'DM');
   }, [channelId]);
-
-  useEffect(() => {
-    // updateLoggedTime(channelId, 'DM');
-  }, [workspaceId]);
 
   const onSendClick = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
-    sendMessage();
+    if (message !== '') sendMessage();
   };
 
   const sendMessage = () => {
@@ -110,8 +111,13 @@ const DM = () => {
           <LoadContainer>
             <LoadSpinner />
           </LoadContainer>
-        ) : (
+        ) : contents.length > 0 ? (
           <Messages />
+        ) : (
+          <Info>
+            안녕하세요! 개인 메시지가 시작되었습니다. <br />
+            {directName} 님과 개인 메시지를 시작해 보세요.
+          </Info>
         )}
         <Files />
         <Editor type="DM" onClick={onSendClick} sendMessage={sendMessage} />

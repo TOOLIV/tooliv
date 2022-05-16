@@ -1,6 +1,10 @@
 import styled from '@emotion/styled';
+import Button from 'atoms/common/Button';
 import Message from 'molecules/chat/Message';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useSetRecoilState } from 'recoil';
+import { isTutorial } from 'recoil/atom';
 
 const Container = styled.div`
   width: 100%;
@@ -33,11 +37,9 @@ const Main = () => {
         channelId="1"
         type="home"
         email="aaa"
+        files={[]}
+        originFiles={[]}
       />
-      {/* <InfoContainer>
-        TOOLIV에 오신 것을 환영합니다. 다양한 워크스페이스를 생성하고, 동료를
-        초대해 보세요!
-      </InfoContainer> */}
     </Container>
   );
 };

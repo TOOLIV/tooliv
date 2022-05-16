@@ -94,7 +94,6 @@ const DirectMessage = () => {
             </NotiWrapper>
           </FriendContainer>
         ) : (
-          // <FriendsContainer>
           dmList.map((dm) => (
             <FriendContainer
               key={dm.channelId}

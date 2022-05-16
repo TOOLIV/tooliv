@@ -100,28 +100,40 @@ const DirectMessageModal = ({ isOpen, onClose }: userDirectMessageType) => {
   const { workspaceId } = useParams();
 
   const handleDirectMessage = (member: channelMemberType) => {
-    // console.log(`${email}로 개인메시지 보내는 링크`);
-    createDMRoom(member.email).then((res) => {
-      const {
-        data: { roomId },
-      } = res;
+    let flag = true;
 
-      setDmList([
-        ...dmList,
-        {
-          receiveName: member.name,
-          channelId: roomId,
-          notificationRead: false,
-          statusCode: member.statusCode,
-          profileImage: member.profileImage,
-          receiverEmail: member.email,
-          senderEmail: userInfo.email,
-        },
-      ]);
-      setDirectName(member.name);
-      navigate(`/direct/${workspaceId}/${roomId}`);
-      onClose();
+    dmList.forEach((dm) => {
+      if (dm.receiverEmail === member.email) {
+        navigate(`/direct/${workspaceId}/${dm.channelId}`);
+        flag = false;
+        setDirectName(member.nickname);
+        onClose();
+      }
     });
+
+    if (flag) {
+      createDMRoom(member.email).then((res) => {
+        const {
+          data: { roomId },
+        } = res;
+
+        setDmList([
+          ...dmList,
+          {
+            receiveName: member.name,
+            channelId: roomId,
+            notificationRead: false,
+            statusCode: member.statusCode,
+            profileImage: member.profileImage,
+            receiverEmail: member.email,
+            senderEmail: userInfo.email,
+          },
+        ]);
+        setDirectName(member.name);
+        navigate(`/direct/${workspaceId}/${roomId}`);
+        onClose();
+      });
+    }
   };
 
   const searchChannelMember = useCallback(async (keyword: string) => {

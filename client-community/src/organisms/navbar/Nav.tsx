@@ -253,7 +253,7 @@ const Nav = () => {
         <MidContainer>
           <InputBox
             label=""
-            placeholder="검색"
+            placeholder="현재 채널 내 검색"
             ref={inputRef}
             onChange={search}
           />

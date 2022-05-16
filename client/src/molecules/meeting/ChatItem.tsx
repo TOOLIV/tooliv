@@ -1,8 +1,9 @@
 import styled from '@emotion/styled';
 import { getUserInfo } from 'api/userApi';
+import File from 'molecules/chat/File';
+import { ContentContainer } from 'molecules/chat/Message';
 import React, { useEffect, useState } from 'react';
 import { contentTypes } from 'types/channel/contentType';
-import { chatItemPropsTypes } from '../../types/meeting/chatTypes';
 
 const ChatItemContainer = styled.div`
   padding: 8px 16px 8px 16px;
@@ -17,10 +18,14 @@ const ChatItemHeader = styled.div`
   .timestamp {
   }
 `;
+const Img = styled.img`
+  max-width: 100%;
+`;
 
 const Content = styled.div`
   margin-top: 8px;
   font-size: 16px;
+  line-height: 1.6;
 `;
 
 const ChatItem = ({
@@ -29,9 +34,23 @@ const ChatItem = ({
   contents,
   deleted,
   sendTime,
+  files,
+  originFiles,
 }: contentTypes) => {
   const [thumbnailImage, setThumbnailImage] = useState('');
   const [nickname, setNickname] = useState('');
+  const fileTypes = ['.bmp', '.gif', '.jpg', '.png', '.jpeg', '.jfif'];
+
+  const checkType = (file: string) => {
+    const fileLen = file.length;
+    const lastDot = file.lastIndexOf('.');
+    const fileExt = file.substring(lastDot, fileLen).toLowerCase();
+    if (fileTypes.includes(fileExt)) {
+      return true;
+    } else {
+      return false;
+    }
+  };
 
   const getUserProfile = async () => {
     const response = await getUserInfo(email);
@@ -47,9 +66,24 @@ const ChatItem = ({
     <ChatItemContainer>
       <ChatItemHeader>
         <div className="name">{nickname}</div>
-        <div className="timestamp">{sendTime}</div>
+        {sendTime && (
+          <div className="timestamp">
+            {sendTime.slice(11, 13)}:{sendTime.slice(14, 16)}
+          </div>
+        )}
       </ChatItemHeader>
       <Content dangerouslySetInnerHTML={{ __html: contents }}></Content>
+      {files && originFiles && files.length > 0 && (
+        <ContentContainer>
+          {files.map((file, i) =>
+            checkType(file) ? (
+              <Img key={file} src={file}></Img>
+            ) : (
+              <File key={file} name={originFiles[i]} url={file} />
+            )
+          )}
+        </ContentContainer>
+      )}
     </ChatItemContainer>
   );
 };
