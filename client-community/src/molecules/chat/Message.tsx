@@ -4,7 +4,7 @@ import Time from 'atoms/chat/Time';
 import UpdateChatModal from 'organisms/modal/channel/chat/UpdateChatModal';
 import React, { forwardRef, useEffect, useRef, useState } from 'react';
 import { fDateTime, fToNow } from 'utils/formatTime';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { user } from 'recoil/auth';
 import { deleteChat, deleteDM } from 'services/wsconnect';
@@ -15,8 +15,10 @@ import { contentTypes } from '../../types/channel/contentType';
 import { SideWrapper } from '../sidemenu/Channels';
 import File from './File';
 import mainSrc from '../../assets/img/logo.svg';
-import { isTutorial, memberStatus } from 'recoil/atom';
+import { DMList, dmName, isTutorial, memberStatus } from 'recoil/atom';
 import Button from 'atoms/common/Button';
+import { DMInfoType } from 'types/channel/chatTypes';
+import { createDMRoom } from 'api/chatApi';
 
 const Container = styled.div<{ isSearched?: boolean }>`
   width: 100%;
@@ -77,6 +79,7 @@ const Message = forwardRef<HTMLDivElement, contentTypes>(
       email,
       originFiles,
       isSearched,
+      setProfileModal,
     },
     ref
   ) => {
@@ -87,6 +90,11 @@ const Message = forwardRef<HTMLDivElement, contentTypes>(
     const [isTutorialOpen, setIsTutorialOpen] = useRecoilState(isTutorial);
     const userInfo = useRecoilValue(user);
     const location = useLocation();
+    const [dmList, setDmList] = useRecoilState<DMInfoType[]>(DMList);
+    const setDirectName = useSetRecoilState<string>(dmName);
+    const navigate = useNavigate();
+    const { workspaceId } = useParams();
+
     const fileTypes = ['.bmp', '.gif', '.jpg', '.png', '.jpeg', '.jfif'];
 
     const checkType = (file: string) => {
@@ -125,6 +133,41 @@ const Message = forwardRef<HTMLDivElement, contentTypes>(
     const handelModal = () => {
       setIsUpdateModalOpen((prev) => !prev);
     };
+
+    const handleDirectMessage = () => {
+      let flag = true;
+
+      dmList.forEach((dm) => {
+        if (dm.receiverEmail === email) {
+          navigate(`/direct/${workspaceId}/${dm.channelId}`);
+          setDirectName(nickname);
+          flag = false;
+        }
+      });
+
+      if (flag && email !== userInfo.email) {
+        createDMRoom(email).then((res) => {
+          const {
+            data: { roomId },
+          } = res;
+
+          setDmList([
+            ...dmList,
+            {
+              receiveName: nickname,
+              channelId: roomId,
+              notificationRead: false,
+              statusCode: membersStatus[email],
+              profileImage: thumbnailImage,
+              receiverEmail: email,
+              senderEmail: userInfo.email,
+            },
+          ]);
+          setDirectName(nickname);
+          navigate(`/direct/${workspaceId}/${roomId}`);
+        });
+      }
+    };
     return (
       <>
         <Container isSearched={isSearched} ref={ref}>
@@ -135,6 +178,8 @@ const Message = forwardRef<HTMLDivElement, contentTypes>(
                   src={thumbnailImage}
                   status={membersStatus[email]}
                   size="32"
+                  // setProfileModal={setProfileModal}
+                  onClick={handleDirectMessage}
                 />
               </SideWrapper>
               <SideWrapper>

@@ -10,6 +10,8 @@ export type contentTypes = {
   files: string[];
   originFiles: string[];
   isSearched?: boolean;
+  setProfileModal?: React.Dispatch<React.SetStateAction<boolean>>;
+  // handleDM:() => void;
 };
 
 export type channelRadioTypes = {

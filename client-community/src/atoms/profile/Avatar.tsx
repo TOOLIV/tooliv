@@ -9,6 +9,7 @@ import { stat } from 'fs';
 const Container = styled.div`
   position: relative;
   height: fit-content;
+  cursor: pointer;
 `;
 const Image = styled.img<{ size?: string }>`
   border-radius: 50%;
@@ -33,9 +34,9 @@ const Status = styled.div<{ status: string }>`
   right: 0;
 `;
 
-const Avatar = ({ src, size = '24', status }: avatarTypes) => {
+const Avatar = ({ src, size = '24', status, onClick }: avatarTypes) => {
   return (
-    <Container>
+    <Container onClick={onClick && onClick}>
       {src ? (
         <Image src={src} size={size} alt="profile" />
       ) : (
