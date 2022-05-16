@@ -58,8 +58,8 @@ const MainContainer = styled.div`
 
 const MotionImage = styled(motion.div)`
   position: absolute;
-  width: 150px;
-  height: 100px;
+  width: 200px;
+  height: 150px;
 `;
 
 const Desc = styled.div`
@@ -153,7 +153,13 @@ const Content = ({
               left: 0,
             }}
           >
-            <Image src={subImage} objectFit="contain" alt="subImage" />
+            <Image
+              src={subImage}
+              objectFit="contain"
+              alt="subImage"
+              width={200}
+              height={150}
+            />
           </MotionImage>
           <MotionImage
             initial={{ y: 0, scale: 0 }}
@@ -163,9 +169,15 @@ const Content = ({
               stiffness: 260,
               damping: 20,
             }}
-            style={{ top: 0, left: 0 }}
+            style={{ top: 0, left: "5%" }}
           >
-            <Image src={imoImage} objectFit="contain" alt="imoImage" />
+            <Image
+              src={imoImage}
+              objectFit="contain"
+              alt="imoImage"
+              width={120}
+              height={80}
+            />
           </MotionImage>
         </DescImageContainer>
         {(id % 2 !== 0 || isTabletOrMobile) && (

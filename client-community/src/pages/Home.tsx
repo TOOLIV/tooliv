@@ -5,8 +5,9 @@ import { Outlet } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import Nav from '../organisms/navbar/Nav';
 import Chat from '../organisms/meeting/chat/Chat';
-import { isOpenChat, isOpenSide } from '../recoil/atom';
+import { isOpenChat, isOpenSide, isTutorial } from '../recoil/atom';
 import SideMenu from './SideMenu';
+import Tutorial from './Tutorial';
 
 const Wrapper = styled.div<{ leftMargin: number; rightMargin: number }>`
   /* position: absolute; */
@@ -34,6 +35,8 @@ const InnerContainer = styled.div<{ leftMargin: number; rightMargin: number }>`
 const Home = () => {
   const isOpen = useRecoilValue<boolean>(isOpenSide);
   const isChatOpen = useRecoilValue<boolean>(isOpenChat);
+  const isTutorialOpen = useRecoilValue(isTutorial);
+
   const leftMargin = isOpen ? 280 : 42;
   const rightMargin = isChatOpen ? 280 : 0;
 
@@ -49,6 +52,7 @@ const Home = () => {
           </InnerContainer>
         </Wrapper>
         {isChatOpen && <Chat />}
+        {isTutorialOpen && <Tutorial />}
       </Container>
     </>
   );

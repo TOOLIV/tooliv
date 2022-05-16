@@ -84,6 +84,8 @@ export type channelHeaderDropdownType = {
   isOpen: boolean;
   onClose: () => void;
   onClick: () => void;
+  onMemberListOpen: () => void;
+  onMemberAddOpen: () => void;
 };
 
 export type channelModifyModalType = {
