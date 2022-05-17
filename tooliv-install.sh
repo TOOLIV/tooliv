@@ -5,8 +5,8 @@ apt-get install -y wget
 apt-get install -y unzip
 
 wget https://services.gradle.org/distributions/gradle-7.4-bin.zip -P /tmp
-unzip -d /opt/gradle /tmp/gradle-${VERSION}-bin.zip
-ln -s /opt/gradle/gradle-${VERSION} /opt/gradle/latest
+unzip -d /opt/gradle /tmp/gradle-7.4-bin.zip
+ln -s /opt/gradle/gradle-7.4 /opt/gradle/latest
 
 apt update
 apt install -y apt-transport-https
