@@ -4,16 +4,14 @@ import { updateUserStatus } from 'api/userApi';
 import Icons from 'atoms/common/Icons';
 import Avatar from 'atoms/profile/Avatar';
 import Text from 'atoms/text/Text';
-import isElectron from 'is-electron';
 import { BulrContainer } from 'organisms/meeting/video/ScreenShareModal';
 import { forwardRef, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { memberStatus } from 'recoil/atom';
 import { user } from 'recoil/auth';
 import { userDropdownType } from 'types/common/userTypes';
 import Swal from 'sweetalert2';
-import { electronAlert } from 'utils/electronAlert';
 
 const Modal = styled.div<{ isOpen: boolean }>`
   display: none;
@@ -34,7 +32,6 @@ const Container = styled.div`
   background-color: ${(props) => props.theme.bgColor};
   border-radius: 8px;
   border: 1px solid ${(props) => props.theme.borderColor};
-  /* box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.06); */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -81,34 +78,21 @@ const UserDropdown = forwardRef<HTMLDivElement, userDropdownType>(
     // 로그아웃 클릭시 이벤트
     const logoutClick = () => {
       setIsBulr(true);
-      isElectron()
-        ? electronAlert
-            .alertConfirm({
-              title: '로그아웃 확인',
-              text: '로그아웃 하시겠습니까?',
-              icon: 'warning',
-            })
-            .then((result) => {
-              if (result.isConfirmed) {
-                logout();
-              }
-              setIsBulr(false);
-            })
-        : Swal.fire({
-            title: '로그아웃 확인',
-            text: '로그아웃 하시겠습니까?',
-            icon: 'info',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: '확인',
-            cancelButtonText: '취소',
-          }).then((result) => {
-            if (result.isConfirmed) {
-              logout();
-            }
-            setIsBulr(false);
-          });
+      Swal.fire({
+        title: '로그아웃 확인',
+        text: '로그아웃 하시겠습니까?',
+        icon: 'info',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: '확인',
+        cancelButtonText: '취소',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          logout();
+        }
+        setIsBulr(false);
+      });
     };
 
     const logout = async () => {
@@ -190,14 +174,6 @@ const UserDropdown = forwardRef<HTMLDivElement, userDropdownType>(
               다른 용무 중
             </Text>
           </ListItem>
-          {/* <ListItem>
-            <IconItem>
-              <Icons icon="remove" width="20" height="20" />
-            </IconItem>
-            <Text size={16} pointer>
-              방해 금지
-            </Text>
-          </ListItem> */}
           <ListItem onClick={() => changeStatus('OFFLINE')} divide>
             <IconItem>
               <Icons icon="offline" width="20" height="20" />

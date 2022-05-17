@@ -6,7 +6,7 @@ import Button from 'atoms/common/Button';
 import Text from 'atoms/text/Text';
 import InputBox from 'molecules/inputBox/InputBox';
 import FileUploader from 'molecules/uploader/FileUploader';
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import {
@@ -18,7 +18,7 @@ import {
 import { sub, unsub } from 'services/wsconnect';
 import { channelNotiType } from 'types/channel/contentType';
 import { workspaceModalType } from 'types/workspace/workspaceTypes';
-
+import { toast } from 'react-toastify';
 const Modal = styled.div<{ isOpen: boolean }>`
   display: none;
   position: fixed;
@@ -99,11 +99,9 @@ const WorkspaceModal = ({ isOpen, onClose }: workspaceModalType) => {
     );
     try {
       if (!name) {
-        alert('워크스페이스명을 입력해주세요.');
+        toast.error('워크스페이스명을 입력해주세요.');
         inputWorkspaceRef.current?.focus();
-      }
-
-      if (name) {
+      } else {
         const response = await createWorkspace(formData);
         console.log(response);
         const workspaceId = response.data.id;
