@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { memberStatus } from 'recoil/atom';
 import { user } from 'recoil/auth';
+import { electronAlert } from 'utils/electronAlert';
 import { login } from '../../api/userApi';
 import Button from '../../atoms/common/Button';
 import Text from '../../atoms/text/Text';
@@ -62,10 +63,26 @@ const LoginForm = () => {
     };
     try {
       if (!email) {
-        alert('이메일을 입력해주세요.');
+        isElectron() ? electronAlert.alertToast({
+          title: '이메일을 입력해주세요.',
+          icon: 'warning',
+        }): 
+        /* -------------------------  */
+        /* 여기에 웹에서 쓸 alert 넣어주세요 */
+        console.log("");
+
+        /* -------------------------  */
         inputEmailRef.current?.focus();
       } else if (!password) {
-        alert('비밀번호를 입력해주세요.');
+        isElectron() ? electronAlert.alertToast({
+          title: '비밀번호를 입력해주세요.',
+          icon: 'warning',
+        }): 
+        /* -------------------------  */
+        /* 여기에 웹에서 쓸 alert 넣어주세요 */
+        console.log("");
+
+        /* -------------------------  */
         inputPasswordRef.current?.focus();
       } else {
         const { data } = await login(body);
@@ -84,6 +101,15 @@ const LoginForm = () => {
       }
     } catch (error) {
       console.log(error);
+      isElectron()?electronAlert.alertToast({
+        title: '아이디 또는 비밀번호를 확인하세요.',
+        icon: 'error',
+      }):
+      /* -------------------------  */
+      /* 여기에 웹에서 쓸 alert 넣어주세요 */
+      console.log("");
+
+      /* -------------------------  */;
     }
   };
 

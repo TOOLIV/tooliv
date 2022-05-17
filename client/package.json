@@ -18,6 +18,7 @@
     "@types/react": "^17.0.20",
     "@types/react-dom": "^17.0.9",
     "axios": "^0.26.1",
+    "electron-alert": "^0.1.20",
     "electron-is-dev": "^2.0.0",
     "framer-motion": "^6.3.0",
     "is-electron": "^2.2.1",
