@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import { createChannel } from 'api/channelApi';
 import Button from 'atoms/common/Button';
 import Text from 'atoms/text/Text';
+import isElectron from 'is-electron';
 import InputBox from 'molecules/inputBox/InputBox';
 import ChannelRadio from 'molecules/radio/channelRadio/ChannelRadio';
 import VisibilityRadio from 'molecules/radio/visibiltyRadio/VisibilityRadio';
@@ -14,6 +15,7 @@ import { sub, unsub } from 'services/wsconnect';
 import { colors } from 'shared/color';
 import { channelNotiType } from 'types/channel/contentType';
 import { workspaceModalType } from 'types/workspace/workspaceTypes';
+import { electronAlert } from 'utils/electronAlert';
 
 const Modal = styled.div<{ isOpen: boolean }>`
   display: none;
@@ -76,7 +78,16 @@ const ChannelModal = ({ isOpen, onClose }: workspaceModalType) => {
 
     try {
       if (!name) {
-        alert('채널명을 입력해주세요.');
+        isElectron()
+          ? electronAlert.alertToast({
+              title: '채널명을 입력해주세요.',
+              icon: 'warning',
+            })
+          : /* -------------------------  */
+            /* 여기에 웹에서 쓸 alert 넣어주세요 */
+            console.log('');
+
+        /* -------------------------  */
         inputChannelRef.current?.focus();
       }
 

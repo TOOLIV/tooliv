@@ -19,6 +19,9 @@ import { DMList, dmName, isTutorial, memberStatus } from 'recoil/atom';
 import Button from 'atoms/common/Button';
 import { DMInfoType } from 'types/channel/chatTypes';
 import { createDMRoom } from 'api/chatApi';
+import isElectron from 'is-electron';
+import { electronAlert } from 'utils/electronAlert';
+import { BulrContainer } from 'organisms/meeting/video/ScreenShareModal';
 
 const Container = styled.div<{ isSearched?: boolean }>`
   width: 100%;
@@ -63,6 +66,7 @@ const RightWrapper = styled.div`
   justify-content: center;
   align-items: center;
   width: 12px;
+  cursor: pointer;
 `;
 
 const Message = forwardRef<HTMLDivElement, contentTypes>(
@@ -94,6 +98,7 @@ const Message = forwardRef<HTMLDivElement, contentTypes>(
     const setDirectName = useSetRecoilState<string>(dmName);
     const navigate = useNavigate();
     const { workspaceId } = useParams();
+    const [isBulr, setIsBulr] = useState(false);
 
     const fileTypes = ['.bmp', '.gif', '.jpg', '.png', '.jpeg', '.jfif'];
 
@@ -124,11 +129,28 @@ const Message = forwardRef<HTMLDivElement, contentTypes>(
     };
 
     const deleteMessage = () => {
-      if (location.pathname.includes('/direct')) {
-        deleteDM(channelId, chatId);
-      } else {
-        deleteChat(channelId, chatId);
-      }
+      setIsBulr(true);
+      isElectron()
+        ? electronAlert
+            .alertConfirm({
+              title: '메세지 삭제 확인.',
+              text: '정말 메세지를 삭제하시겠습니까?',
+              icon: 'warning',
+            })
+            .then((result) => {
+              if (result.isConfirmed) {
+                if (location.pathname.includes('/direct')) {
+                  deleteDM(channelId, chatId);
+                } else {
+                  deleteChat(channelId, chatId);
+                }
+              }
+              setIsBulr(false);
+            }) /* -------------------------  */
+        : /* 여기에 웹에서 쓸 alert 넣어주세요 */
+          console.log('');
+
+      /* -------------------------  */
     };
     const handelModal = () => {
       setIsUpdateModalOpen((prev) => !prev);
@@ -170,6 +192,7 @@ const Message = forwardRef<HTMLDivElement, contentTypes>(
     };
     return (
       <>
+        {isBulr && <BulrContainer />}
         <Container isSearched={isSearched} ref={ref}>
           <ProfileContainer>
             <LeftWrapper>

@@ -4,7 +4,7 @@ import { getChannelList } from 'api/channelApi';
 import Icons from 'atoms/common/Icons';
 import WorkSpaces from 'molecules/sidemenu/WorkSpaces';
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
   channelNotiList,
@@ -25,6 +25,9 @@ import { channelNotiType } from 'types/channel/contentType';
 import { getChannels, getDMList } from 'api/chatApi';
 import { DMInfoType } from 'types/channel/chatTypes';
 import { user } from 'recoil/auth';
+import isElectron from 'is-electron';
+import { electronAlert } from 'utils/electronAlert';
+import { BulrContainer } from 'organisms/meeting/video/ScreenShareModal';
 
 const Container = styled.div<{ isOpen: boolean }>`
   padding-top: 16px;
@@ -57,9 +60,33 @@ const WorkSpaceSection = () => {
   const [dMList, setDmList] = useRecoilState<DMInfoType[]>(DMList);
   const userInfo = useRecoilValue(user);
   const navigate = useNavigate();
+  const [isBulr, setIsBulr] = useState(false);
+  const location = useLocation();
 
   const handleOpenModal = () => {
-    setIsOpen(true);
+    if (location.pathname.split('/')[1] === 'meeting') {
+      setIsBulr(true);
+      isElectron()
+        ? electronAlert
+            .alertConfirm({
+              title: '현재 미팅에 참여중입니다.',
+              text: '새 워크스페이스를 생성하면 해당 워크스페이스로 이동하며 참여중인 미팅을 떠납니다. 정말 생성하시겠습니까?',
+              icon: 'warning',
+            })
+            .then((result) => {
+              if (result.isConfirmed) {
+                setIsOpen(true);
+              }
+              setIsBulr(false);
+            })
+        : /* -------------------------  */
+          /* 여기에 웹에서 쓸 alert 넣어주세요 */
+          console.log('');
+
+      /* -------------------------  */
+    } else {
+      setIsOpen(true);
+    }
   };
   const handleCloseModal = () => {
     setIsOpen(false);
@@ -149,6 +176,7 @@ const WorkSpaceSection = () => {
   }, [workspaceCreateOpen]);
   return (
     <Container isOpen={isSideOpen}>
+      {isBulr && <BulrContainer />}
       <Header>
         <Text size={14}>워크스페이스</Text>
         <Icons icon="plus" onClick={handleOpenModal} />

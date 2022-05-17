@@ -88,18 +88,18 @@ let alertToastOpt = {
   showConfirmButton: false,
 };
 
-ipcMain.handle('ALERT_TOAST', (event, opt) => {
+ipcMain.handle('ALERT_TOAST', (event, opt) =>
   Alert.fireToast({
     ...alertToastOpt,
     title: opt.title,
     icon: opt.icon,
-  });
-});
+  })
+);
 
 let alertConfirmOpt = {
   showCancelButton: true,
 };
-ipcMain.handle('ALERT_CONFIRM', (event, opt) => {
+ipcMain.handle('ALERT_CONFIRM', (event, opt) =>
   alert.fireFrameless(
     {
       ...alertConfirmOpt,
@@ -110,5 +110,5 @@ ipcMain.handle('ALERT_CONFIRM', (event, opt) => {
     null,
     true,
     false
-  );
-});
+  )
+);
