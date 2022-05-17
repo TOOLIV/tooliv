@@ -15,10 +15,12 @@ import {
   currentChannel,
   currentWorkspace,
   isOpenSide,
+  isTutorial,
   modifyChannelName,
   userLog,
 } from 'recoil/atom';
 import { channelListTypes } from 'types/channel/contentType';
+import Swal from 'sweetalert2';
 import { electronAlert } from 'utils/electronAlert';
 
 const Container = styled.div<{ isOpen: boolean }>`
@@ -35,7 +37,6 @@ export const Header = styled.div`
 
 const ChannelSection = () => {
   const [isBulr, setIsBulr] = useState(false);
-  const location = useLocation();
   const isSideOpen = useRecoilValue<boolean>(isOpenSide);
   const [isDropdownModalOpen, setIsDropdownModalOpen] = useState(false);
 
@@ -57,7 +58,8 @@ const ChannelSection = () => {
   const [currentChannelId, setCurrentChannelId] =
     useRecoilState(currentChannel);
   const [userLogList, setUserLogList] = useRecoilState(userLog);
-
+  const isTutorialOpen = useRecoilValue(isTutorial);
+  const location = useLocation();
   const navigate = useNavigate();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -108,8 +110,9 @@ const ChannelSection = () => {
     setIsPublicChannelModalOpen(false);
   };
 
-  const handleClickChannel = (id: string) => {
-    if (location.pathname.split('/')[1] === 'meeting') {
+  // 미팅 중 채널 클릭시 이벤트
+  const clickChannel = (id: string) => {
+    if (location.pathname.includes('meeting')) {
       setIsBulr(true);
       isElectron()
         ? electronAlert
@@ -120,28 +123,36 @@ const ChannelSection = () => {
             })
             .then((result) => {
               if (result.isConfirmed) {
-                setUserLogList({
-                  ...userLogList,
-                  [currentWorkspaceId]: id,
-                });
-                setCurrentChannelId(id);
-                navigate(`${currentWorkspaceId}/${id}`);
+                handleClickChannel(id);
               }
               setIsBulr(false);
             })
-        : /* -------------------------  */
-          /* 여기에 웹에서 쓸 alert 넣어주세요 */
-          console.log('');
-
-      /* -------------------------  */
+        : Swal.fire({
+            title: '현재 미팅에 참여중입니다.',
+            text: '다른 채널 또는 워크스페이스로 이동하면 참여중인 미팅을 떠납니다. 정말 나가시겠습니까?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '확인',
+            cancelButtonText: '취소',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              handleClickChannel(id);
+            }
+          });
     } else {
-      setUserLogList({
-        ...userLogList,
-        [currentWorkspaceId]: id,
-      });
-      setCurrentChannelId(id);
-      navigate(`${currentWorkspaceId}/${id}`);
+      handleClickChannel(id);
     }
+  };
+
+  const handleClickChannel = (id: string) => {
+    setUserLogList({
+      ...userLogList,
+      [currentWorkspaceId]: id,
+    });
+    setCurrentChannelId(id);
+    navigate(`${currentWorkspaceId}/${id}`);
   };
 
   const handleClickOutside = ({ target }: any) => {
@@ -162,13 +173,16 @@ const ChannelSection = () => {
       {isBulr && <BulrContainer />}
       <Header>
         <Text size={14}>채널</Text>
-        <Icons icon="plus" onClick={openDropdownModal} />
+        <Icons
+          icon="plus"
+          onClick={isTutorialOpen ? undefined : openDropdownModal}
+        />
       </Header>
       <Channels
         normalChannelList={normalChannelList}
         videoChannelList={videoChannelList}
         listNum={listNum}
-        onClick={handleClickChannel}
+        onClick={clickChannel}
       />
       <ChannelDropDown
         isOpen={isDropdownModalOpen}

@@ -17,16 +17,10 @@ import {
   userLog,
 } from 'recoil/atom';
 import { user } from 'recoil/auth';
-import { colors } from 'shared/color';
-import {
-  channelListTypes,
-  channelNotiType,
-  publicChannelType,
-} from 'types/channel/contentType';
+import { channelNotiType, publicChannelType } from 'types/channel/contentType';
 import {
   inviteMembersType,
   workspaceMemberListType,
-  workspaceMemberType,
 } from 'types/workspace/workspaceTypes';
 
 const Modal = styled.div<{ isOpen: boolean }>`
@@ -166,7 +160,7 @@ const PublicChannelListModal = ({
               <Button
                 width="70"
                 height="35"
-                text="참가하기"
+                text="참가"
                 onClick={() => registChannel(channel.id)}
               />
             </ChannelWrapper>

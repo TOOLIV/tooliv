@@ -8,7 +8,7 @@ import { useSetRecoilState } from 'recoil';
 import { currentWorkspace } from 'recoil/atom';
 import { workspaceListType } from 'types/workspace/workspaceTypes';
 import { electronAlert } from 'utils/electronAlert';
-
+import Swal from 'sweetalert2';
 const Wrapper = styled.div`
   display: flex;
   justify-content: center;
@@ -91,11 +91,21 @@ const WorkSpace = ({
               }
               setIsBulr(false);
             })
-        : /* -------------------------  */
-          /* 여기에 웹에서 쓸 alert 넣어주세요 */
-          console.log('');
-
-      /* -------------------------  */
+        : Swal.fire({
+            title: '현재 미팅에 참여중입니다.',
+            text: '다른 채널 또는 워크스페이스로 이동하면 참여중인 미팅을 떠납니다. 정말 나가시겠습니까?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '확인',
+            cancelButtonText: '취소',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              setCurrentWorkSpaceId(id);
+              onClick(id);
+            }
+          });
     } else {
       setCurrentWorkSpaceId(id);
       onClick(id);

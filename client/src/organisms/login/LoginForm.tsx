@@ -10,6 +10,7 @@ import { login } from '../../api/userApi';
 import Button from '../../atoms/common/Button';
 import Text from '../../atoms/text/Text';
 import InputBox from '../../molecules/inputBox/InputBox';
+import Swal from 'sweetalert2';
 
 const Container = styled.div`
   width: 480px;
@@ -63,26 +64,26 @@ const LoginForm = () => {
     };
     try {
       if (!email) {
-        isElectron() ? electronAlert.alertToast({
-          title: '이메일을 입력해주세요.',
-          icon: 'warning',
-        }): 
-        /* -------------------------  */
-        /* 여기에 웹에서 쓸 alert 넣어주세요 */
-        console.log("");
-
-        /* -------------------------  */
+        isElectron()
+          ? electronAlert.alertToast({
+              title: '이메일을 입력해주세요.',
+              icon: 'warning',
+            })
+          : Swal.fire({
+              title: '이메일을 입력해주세요.',
+              icon: 'warning',
+            });
         inputEmailRef.current?.focus();
       } else if (!password) {
-        isElectron() ? electronAlert.alertToast({
-          title: '비밀번호를 입력해주세요.',
-          icon: 'warning',
-        }): 
-        /* -------------------------  */
-        /* 여기에 웹에서 쓸 alert 넣어주세요 */
-        console.log("");
-
-        /* -------------------------  */
+        isElectron()
+          ? electronAlert.alertToast({
+              title: '비밀번호를 입력해주세요.',
+              icon: 'warning',
+            })
+          : Swal.fire({
+              title: '비밀번호를 입력해주세요.',
+              icon: 'warning',
+            });
         inputPasswordRef.current?.focus();
       } else {
         const { data } = await login(body);
@@ -96,20 +97,21 @@ const LoginForm = () => {
           statusCode: data.statusCode,
           userCode: data.userCode,
         });
+
         setMembersStatus({ ...membersStatus, [data.email]: data.statusCode });
         navigate('/');
       }
     } catch (error) {
       console.log(error);
-      isElectron()?electronAlert.alertToast({
-        title: '아이디 또는 비밀번호를 확인하세요.',
-        icon: 'error',
-      }):
-      /* -------------------------  */
-      /* 여기에 웹에서 쓸 alert 넣어주세요 */
-      console.log("");
-
-      /* -------------------------  */;
+      isElectron()
+        ? electronAlert.alertToast({
+            title: '아이디 또는 비밀번호를 확인하세요.',
+            icon: 'error',
+          })
+        : Swal.fire({
+            title: '아이디 또는 비밀번호를 확인하세요.',
+            icon: 'error',
+          });
     }
   };
 

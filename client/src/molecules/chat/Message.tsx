@@ -3,7 +3,6 @@ import { getUserInfo } from 'api/userApi';
 import Time from 'atoms/chat/Time';
 import UpdateChatModal from 'organisms/modal/channel/chat/UpdateChatModal';
 import React, { forwardRef, useEffect, useRef, useState } from 'react';
-import { fDateTime, fToNow } from 'utils/formatTime';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { user } from 'recoil/auth';
@@ -19,6 +18,7 @@ import { DMList, dmName, isTutorial, memberStatus } from 'recoil/atom';
 import Button from 'atoms/common/Button';
 import { DMInfoType } from 'types/channel/chatTypes';
 import { createDMRoom } from 'api/chatApi';
+import Swal from 'sweetalert2';
 import isElectron from 'is-electron';
 import { electronAlert } from 'utils/electronAlert';
 import { BulrContainer } from 'organisms/meeting/video/ScreenShareModal';
@@ -129,29 +129,13 @@ const Message = forwardRef<HTMLDivElement, contentTypes>(
     };
 
     const deleteMessage = () => {
-      setIsBulr(true);
-      isElectron()
-        ? electronAlert
-            .alertConfirm({
-              title: '메세지 삭제 확인.',
-              text: '정말 메세지를 삭제하시겠습니까?',
-              icon: 'warning',
-            })
-            .then((result) => {
-              if (result.isConfirmed) {
-                if (location.pathname.includes('/direct')) {
-                  deleteDM(channelId, chatId);
-                } else {
-                  deleteChat(channelId, chatId);
-                }
-              }
-              setIsBulr(false);
-            }) /* -------------------------  */
-        : /* 여기에 웹에서 쓸 alert 넣어주세요 */
-          console.log('');
-
-      /* -------------------------  */
+      if (location.pathname.includes('/direct')) {
+        deleteDM(channelId, chatId);
+      } else {
+        deleteChat(channelId, chatId);
+      }
     };
+
     const handelModal = () => {
       setIsUpdateModalOpen((prev) => !prev);
     };
@@ -190,6 +174,40 @@ const Message = forwardRef<HTMLDivElement, contentTypes>(
         });
       }
     };
+
+    // 메시지 삭제 클릭시 이벤트
+    const clickDeleteMessage = () => {
+      setIsBulr(true);
+      isElectron()
+        ? electronAlert
+            .alertConfirm({
+              title: '메세지 삭제 확인.',
+              text: '정말 메세지를 삭제하시겠습니까?',
+              icon: 'warning',
+            })
+            .then((result) => {
+              if (result.isConfirmed) {
+                deleteMessage();
+              }
+              setIsBulr(false);
+            })
+        : Swal.fire({
+            title: '메세지 삭제 확인.',
+            text: '정말 메세지를 삭제하시겠습니까?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '확인',
+            cancelButtonText: '취소',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              deleteMessage();
+            }
+            setIsBulr(false);
+          });
+    };
+
     return (
       <>
         {isBulr && <BulrContainer />}
@@ -212,9 +230,7 @@ const Message = forwardRef<HTMLDivElement, contentTypes>(
             </LeftWrapper>
             {email === userInfo.email && !deleted && (
               <SideWrapper>
-                <RightWrapper onClick={deleteMessage}>
-                  {/* <div onClick={handelModal}>수정</div> */}
-                  {/* <Icons icon="delete" color="gray500" onClick={deleteMessage} /> */}
+                <RightWrapper onClick={clickDeleteMessage}>
                   <svg
                     fill={colors.gray500}
                     xmlns="http://www.w3.org/2000/svg"

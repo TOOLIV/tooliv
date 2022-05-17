@@ -6,6 +6,7 @@ import { join } from '../../api/userApi';
 import Button from '../../atoms/common/Button';
 import Text from '../../atoms/text/Text';
 import InputBox from '../../molecules/inputBox/InputBox';
+import { toast } from 'react-toastify';
 
 const Container = styled.div`
   width: 480px;
@@ -103,8 +104,10 @@ const JoinForm = () => {
     try {
       const response = await join(body);
       console.log(response);
+      toast.success('TOOLIV에 오신 것을 환영합니다.');
       navigate('/login');
     } catch (error) {
+      toast.error('회원가입에 실패했습니다.');
       console.log(error);
     }
   };

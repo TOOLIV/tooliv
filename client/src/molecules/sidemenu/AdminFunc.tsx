@@ -1,17 +1,10 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import Text from 'atoms/text/Text';
-import ChannelExitModal from 'organisms/modal/channel/sidemenu/ChannelExitModal';
-import { createRef, useEffect, useRef, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { channelNotiList } from 'recoil/atom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
 import { user } from 'recoil/auth';
-import { colors } from 'shared/color';
-import { channelNotiType, channelsType } from 'types/channel/contentType';
 import Icons from '../../atoms/common/Icons';
-import Label from '../../atoms/common/Label';
-import ChannelLabel from '../../atoms/label/Label';
 export const TopContainer = styled.div`
   display: flex;
   padding: 16px 0;

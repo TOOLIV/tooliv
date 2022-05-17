@@ -12,6 +12,7 @@ import { useRecoilState, useSetRecoilState } from 'recoil';
 import { memberStatus } from 'recoil/atom';
 import { user } from 'recoil/auth';
 import { userDropdownType } from 'types/common/userTypes';
+import Swal from 'sweetalert2';
 import { electronAlert } from 'utils/electronAlert';
 
 const Modal = styled.div<{ isOpen: boolean }>`
@@ -74,24 +75,11 @@ const UserDropdown = forwardRef<HTMLDivElement, userDropdownType>(
   ({ isOpen, onClose, openProfileConfig, openResetPwd }, ref) => {
     const [userInfo, setUserInfo] = useRecoilState(user);
     const [membersStatus, setMembersStatus] = useRecoilState(memberStatus);
-    const navigate = useNavigate();
     const [isBulr, setIsBulr] = useState(false);
+    const navigate = useNavigate();
 
-    const logout = () => {
-      const resetUserInfo = async () => {
-        await changeStatus('OFFLINE');
-        localStorage.removeItem('user');
-        setUserInfo({
-          accessToken: '',
-          email: '',
-          name: '',
-          nickname: '',
-          userId: '',
-          profileImage: '',
-          statusCode: '',
-          userCode: '',
-        });
-      };
+    // 로그아웃 클릭시 이벤트
+    const logoutClick = () => {
       setIsBulr(true);
       isElectron()
         ? electronAlert
@@ -102,14 +90,40 @@ const UserDropdown = forwardRef<HTMLDivElement, userDropdownType>(
             })
             .then((result) => {
               if (result.isConfirmed) {
-                resetUserInfo();
+                logout();
               }
               setIsBulr(false);
             })
-        : /* 여기에 웹에서 쓸 alert 넣어주세요 */
-          console.log('');
+        : Swal.fire({
+            title: '로그아웃 확인',
+            text: '로그아웃 하시겠습니까?',
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '확인',
+            cancelButtonText: '취소',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              logout();
+            }
+            setIsBulr(false);
+          });
+    };
 
-      /* -------------------------  */
+    const logout = async () => {
+      await changeStatus('OFFLINE');
+      localStorage.removeItem('user');
+      setUserInfo({
+        accessToken: '',
+        email: '',
+        name: '',
+        nickname: '',
+        userId: '',
+        profileImage: '',
+        statusCode: '',
+        userCode: '',
+      });
     };
 
     const changeStatus = async (statusCode: string) => {
@@ -208,15 +222,17 @@ const UserDropdown = forwardRef<HTMLDivElement, userDropdownType>(
               비밀번호 변경
             </Text>
           </ListItem>
-          <ListItem onClick={handleAdminPage}>
-            <IconItem>
-              <Icons icon="setting" width="20" height="20" />
-            </IconItem>
-            <Text size={16} pointer>
-              관리자 설정
-            </Text>
-          </ListItem>
-          <ListItem onClick={logout}>
+          {userInfo.userCode === 'ADMIN' || userInfo.userCode === 'MANAGER' ? (
+            <ListItem onClick={handleAdminPage}>
+              <IconItem>
+                <Icons icon="setting" width="20" height="20" />
+              </IconItem>
+              <Text size={16} pointer>
+                관리자 설정
+              </Text>
+            </ListItem>
+          ) : null}
+          <ListItem onClick={logoutClick}>
             <IconItem>
               <Icons icon="exit" width="20" height="20" />
             </IconItem>

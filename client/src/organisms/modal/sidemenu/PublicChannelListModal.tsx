@@ -166,7 +166,7 @@ const PublicChannelListModal = ({
               <Button
                 width="70"
                 height="35"
-                text="참가하기"
+                text="참가"
                 onClick={() => registChannel(channel.id)}
               />
             </ChannelWrapper>

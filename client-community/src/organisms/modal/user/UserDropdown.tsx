@@ -4,11 +4,15 @@ import { updateUserStatus } from 'api/userApi';
 import Icons from 'atoms/common/Icons';
 import Avatar from 'atoms/profile/Avatar';
 import Text from 'atoms/text/Text';
-import { forwardRef, useEffect } from 'react';
+import { forwardRef, useEffect, useState } from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { memberStatus } from 'recoil/atom';
 import { user } from 'recoil/auth';
 import { userDropdownType } from 'types/common/userTypes';
+import Swal from 'sweetalert2';
+import { electronAlert } from 'utils/electronAlert';
+import isElectron from 'is-electron';
+import { BulrContainer } from 'organisms/meeting/video/ScreenShareModal';
 
 const Modal = styled.div<{ isOpen: boolean }>`
   display: none;
@@ -70,10 +74,44 @@ const UserDropdown = forwardRef<HTMLDivElement, userDropdownType>(
   ({ isOpen, onClose, openProfileConfig, openResetPwd }, ref) => {
     const [userInfo, setUserInfo] = useRecoilState(user);
     const [membersStatus, setMembersStatus] = useRecoilState(memberStatus);
+    const [isBulr, setIsBulr] = useState(false);
+
+    // 로그아웃 클릭시 이벤트
+    const logoutClick = () => {
+      setIsBulr(true);
+      isElectron()
+        ? electronAlert
+            .alertConfirm({
+              title: '로그아웃 확인',
+              text: '로그아웃 하시겠습니까?',
+              icon: 'warning',
+            })
+            .then((result) => {
+              if (result.isConfirmed) {
+                logout();
+              }
+              setIsBulr(false);
+            })
+        : Swal.fire({
+            title: '로그아웃 확인',
+            text: '로그아웃 하시겠습니까?',
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '확인',
+            cancelButtonText: '취소',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              logout();
+            }
+            setIsBulr(false);
+          });
+    };
 
     const logout = async () => {
       await changeStatus('OFFLINE');
-      localStorage.removeItem('user');
+      localStorage.removeItem('tooliv_info');
       setUserInfo({
         accessToken: '',
         email: '',
@@ -114,6 +152,7 @@ const UserDropdown = forwardRef<HTMLDivElement, userDropdownType>(
 
     return (
       <Modal isOpen={isOpen} ref={ref}>
+        {isBulr && <BulrContainer />}
         <Container>
           <UserItem>
             <Avatar
@@ -167,7 +206,7 @@ const UserDropdown = forwardRef<HTMLDivElement, userDropdownType>(
               비밀번호 변경
             </Text>
           </ListItem>
-          <ListItem onClick={logout}>
+          <ListItem onClick={logoutClick}>
             <IconItem>
               <Icons icon="exit" width="20" height="20" />
             </IconItem>

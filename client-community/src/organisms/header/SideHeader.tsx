@@ -116,7 +116,7 @@ const SideHeader = () => {
         <Title
           onClick={
             location.pathname.includes('admin') ||
-            (currentWorkspaceId === 'main' && !isTutorialOpen)
+            (currentWorkspaceId === 'main' && isTutorialOpen)
               ? undefined
               : () => setDropdownOpen(!dropdownOpen)
           }

@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { user } from 'recoil/auth';
 import { userConfigType } from 'types/common/userTypes';
+import Swal from 'sweetalert2';
 import { electronAlert } from 'utils/electronAlert';
 
 const Modal = styled.div<{ isOpen: boolean }>`
@@ -69,7 +70,7 @@ const AvatarBox = styled.div`
 `;
 
 const InputContainer = styled.div`
-  height: 30vh;
+  height: 200px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -116,57 +117,58 @@ const UserConfigModal = ({ isOpen, onClose }: userConfigType) => {
     setImgSrc(URL.createObjectURL(file[0]));
   };
 
-  const updateprofile = () => {
-    if (!nickName) {
-      isElectron()
-        ? electronAlert.alertToast({
-            title: '닉네임을 확인해주세요.',
-            icon: 'warning',
+  // 프로필 수정 클릭시 이벤트
+  const updateProfileClick = () => {
+    setIsBulr(true);
+    isElectron()
+      ? electronAlert
+          .alertConfirm({
+            title: '프로필 수정 확인',
+            text: '프로필을 수정하시겠습니까?',
+            icon: 'info',
           })
-        : /* 여기에 웹에서 쓸 alert 넣어주세요 */
-          console.log('');
+          .then((result) => {
+            if (result.isConfirmed) {
+              updateprofile();
+            }
+            setIsBulr(false);
+          })
+      : Swal.fire({
+          title: '프로필 수정 확인',
+          text: '프로필을 수정하시겠습니까?',
+          icon: 'info',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: '확인',
+          cancelButtonText: '취소',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            updateprofile();
+          }
+          setIsBulr(false);
+        });
+  };
 
-      /* -------------------------  */
+  const updateprofile = async () => {
+    if (!nickName) {
+      inputNickNameRef.current?.focus();
     } else {
-      const update = async () => {
-        const formData = new FormData();
-        formData.append('multipartFile', imgFile);
-        const body = {
-          nickname: nickName,
-        };
-        if (imgFile !== '') {
-          await updateProfileImage(formData);
-          await updateNickname(body);
-          setUserInfo({
-            ...userInfo,
-            profileImage: imgSrc,
-            nickname: nickName,
-          });
-          exitModal();
-        } else {
-          await updateNickname(body);
-          setUserInfo({ ...userInfo, nickname: nickName });
-          exitModal();
-        }
+      const formData = new FormData();
+      formData.append('multipartFile', imgFile);
+      const body = {
+        nickname: nickName,
       };
-      setIsBulr(true);
-      isElectron()
-        ? electronAlert
-            .alertConfirm({
-              title: '프로필 수정 확인',
-              text: '프로필을 수정하시겠습니까?',
-              icon: 'warning',
-            })
-            .then((result) => {
-              if (result.isConfirmed) {
-                update();
-              }
-              setIsBulr(false);
-            })
-        : /* 여기에 웹에서 쓸 alert 넣어주세요 */
-          console.log('');
-
-      /* -------------------------  */
+      if (imgFile !== '') {
+        await updateProfileImage(formData);
+        await updateNickname(body);
+        setUserInfo({ ...userInfo, profileImage: imgSrc, nickname: nickName });
+        exitModal();
+      } else {
+        await updateNickname(body);
+        setUserInfo({ ...userInfo, nickname: nickName });
+        exitModal();
+      }
     }
   };
 
@@ -223,8 +225,8 @@ const UserConfigModal = ({ isOpen, onClose }: userConfigType) => {
             width="85"
             height="35"
             text="수정"
-            // disabled={inputRef.current?.value === ''}
-            onClick={updateprofile}
+            disabled={inputNickNameRef.current?.value === ''}
+            onClick={updateProfileClick}
           />
         </ButtonBox>
       </Container>

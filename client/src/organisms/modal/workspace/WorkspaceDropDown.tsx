@@ -10,6 +10,7 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { currentWorkspace } from 'recoil/atom';
 import { user } from 'recoil/auth';
 import { workspaceDropdownType } from 'types/workspace/workspaceTypes';
+import Swal from 'sweetalert2';
 import { electronAlert } from 'utils/electronAlert';
 
 const Modal = styled.div<{ isOpen: boolean }>`
@@ -73,13 +74,8 @@ const WorkspaceDropDown = ({
     onClose();
   };
 
-  const exitWorkspace = () => {
-    const exit = async () => {
-      await deleteWorkspaceMember(workspaceId!, email);
-      setCurrentWorkspaceId('main');
-      navigate('/main');
-      onClose();
-    };
+  // 워크스페이스 떠나기 클릭시 이벤트
+  const exitWorkspaceClick = () => {
     setIsBulr(true);
     isElectron()
       ? electronAlert
@@ -90,14 +86,32 @@ const WorkspaceDropDown = ({
           })
           .then((result) => {
             if (result.isConfirmed) {
-              exit();
+              exitWorkspace();
             }
             setIsBulr(false);
           })
-      : /* 여기에 웹에서 쓸 alert 넣어주세요 */
-        console.log('');
+      : Swal.fire({
+          title: '워크스페이스 탈퇴 확인',
+          text: '해당 워크스페이스를 떠나시겠습니까?',
+          icon: 'info',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: '확인',
+          cancelButtonText: '취소',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            exitWorkspace();
+          }
+          setIsBulr(false);
+        });
+  };
 
-    /* -------------------------  */
+  const exitWorkspace = async () => {
+    await deleteWorkspaceMember(workspaceId!, email);
+    setCurrentWorkspaceId('main');
+    navigate('/main');
+    onClose();
   };
 
   return (
@@ -121,7 +135,7 @@ const WorkspaceDropDown = ({
             </Text>
           </ListItem>
         ) : null}
-        <ListItem onClick={() => exitWorkspace()}>
+        <ListItem onClick={exitWorkspaceClick}>
           <Text color="secondary" size={16} pointer>
             워크스페이스 떠나기
           </Text>

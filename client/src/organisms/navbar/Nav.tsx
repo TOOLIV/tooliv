@@ -10,17 +10,16 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
   appThemeMode,
   channelContents,
-  channelNotiList,
   chatMember,
   currentWorkspace,
   DMList,
   dmMember,
+  isTutorial,
   memberStatus,
   searchIndex,
   searchResults,
-  wsList,
 } from 'recoil/atom';
-import { channelNotiType, contentTypes } from 'types/channel/contentType';
+import { contentTypes } from 'types/channel/contentType';
 import Avatar from 'atoms/profile/Avatar';
 import { DarkModeSwitch } from 'react-toggle-dark-mode';
 import UserDropdown from 'organisms/modal/user/UserDropdown';
@@ -28,8 +27,6 @@ import UserConfigModal from 'organisms/modal/user/UserConfigModal';
 import { getChannels, getDMList, searchChat } from 'api/chatApi';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { DMInfoType } from 'types/channel/chatTypes';
-import { workspaceListType } from 'types/workspace/workspaceTypes';
-import { getWorkspaceList } from 'api/workspaceApi';
 import {
   statusType,
   usersStatusType,
@@ -39,6 +36,7 @@ import { getUserStatus } from 'api/userApi';
 import { useInterval } from 'hooks/useInterval';
 import { useDebounce } from 'hooks/useHooks';
 import ResetPwdModal from 'organisms/modal/user/ResetPwdModal';
+import Swal from 'sweetalert2';
 import isElectron from 'is-electron';
 import { electronAlert } from 'utils/electronAlert';
 import { BulrContainer } from 'organisms/meeting/video/ScreenShareModal';
@@ -85,7 +83,7 @@ const Search = styled.div`
 const RightContainer = styled.div`
   display: flex;
   align-items: center;
-  width: 8vw;
+  width: 65px;
   justify-content: space-between;
 `;
 
@@ -116,12 +114,12 @@ const Nav = () => {
   const [searchList, setSearchList] = useRecoilState<number[]>(searchResults);
   const [searchedIndex, setSearchedIndex] = useRecoilState<number>(searchIndex);
   const setCurrentWorkSpaceId = useSetRecoilState(currentWorkspace);
+  const isTutorialOpen = useRecoilValue(isTutorial);
 
   const contents = useRecoilValue<contentTypes[]>(channelContents);
 
   const { channelId } = useParams();
   const navigate = useNavigate();
-
   const inputRef = useRef<HTMLInputElement>(null);
   const [keyword, setKeyword] = useState('');
   const debouncedValue = useDebounce<string>(keyword, 500);
@@ -246,8 +244,9 @@ const Nav = () => {
     }
   }, [debouncedValue]);
 
-  const handleNavigateMain = () => {
-    if (location.pathname.split('/')[1] === 'meeting') {
+  // 미팅 화면에서 로고 클릭시 alert 띄어줌.
+  const clickLogo = () => {
+    if (location.pathname.includes('meeting')) {
       setIsBulr(true);
       isElectron()
         ? electronAlert
@@ -258,26 +257,38 @@ const Nav = () => {
             })
             .then((result) => {
               if (result.isConfirmed) {
-                setCurrentWorkSpaceId('main');
-                navigate('/main');
+                handleNavigateMain();
               }
               setIsBulr(false);
             })
-        : /* -------------------------  */
-          /* 여기에 웹에서 쓸 alert 넣어주세요 */
-          console.log('');
-
-      /* -------------------------  */
+        : Swal.fire({
+            title: '현재 미팅에 참여중입니다.',
+            text: '홈으로 이동하면 참여중인 미팅을 떠납니다. 정말 나가시겠습니까?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '확인',
+            cancelButtonText: '취소',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              handleNavigateMain();
+            }
+          });
     } else {
-      setCurrentWorkSpaceId('main');
-      navigate('/main');
+      handleNavigateMain();
     }
+  };
+
+  const handleNavigateMain = () => {
+    setCurrentWorkSpaceId('main');
+    navigate('/main');
   };
 
   return (
     <NavContainer>
       {isBulr && <BulrContainer />}
-      <LeftContainer onClick={handleNavigateMain}>
+      <LeftContainer onClick={clickLogo}>
         <Logo />
         <TextWrapper>
           <Text size={18} pointer color="secondary">
@@ -322,7 +333,11 @@ const Nav = () => {
           size={25}
         />
         <DropdownWrapper ref={dropdownRef}>
-          <AvatarWrapper onClick={() => setDropdownOpen(!dropdownOpen)}>
+          <AvatarWrapper
+            onClick={
+              isTutorialOpen ? undefined : () => setDropdownOpen(!dropdownOpen)
+            }
+          >
             <Avatar
               size="32"
               src={userInfo.profileImage}

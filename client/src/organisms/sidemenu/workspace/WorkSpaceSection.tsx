@@ -13,6 +13,7 @@ import {
   currentWorkspace,
   DMList,
   isOpenSide,
+  isTutorial,
   modifyWorkspaceName,
   userLog,
   workspaceCreateModalOpen,
@@ -25,9 +26,6 @@ import { channelNotiType } from 'types/channel/contentType';
 import { getChannels, getDMList } from 'api/chatApi';
 import { DMInfoType } from 'types/channel/chatTypes';
 import { user } from 'recoil/auth';
-import isElectron from 'is-electron';
-import { electronAlert } from 'utils/electronAlert';
-import { BulrContainer } from 'organisms/meeting/video/ScreenShareModal';
 
 const Container = styled.div<{ isOpen: boolean }>`
   padding-top: 16px;
@@ -59,7 +57,10 @@ const WorkSpaceSection = () => {
     useRecoilState<channelNotiType[]>(channelNotiList);
   const [dMList, setDmList] = useRecoilState<DMInfoType[]>(DMList);
   const userInfo = useRecoilValue(user);
+  const isTutorialOpen = useRecoilValue(isTutorial);
+
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleOpenModal = () => {
     setIsOpen(true);
@@ -128,14 +129,6 @@ const WorkSpaceSection = () => {
         [id]: channelId,
       });
       setCurrentChannel(channelId);
-      // setWorkspaceList(
-      //   workspaceList.map((dto: any) => {
-      //     console.log(dto.id, id);
-      //     if (id === dto.id) {
-      //       return { ...dto, noti: false };
-      //     } else return dto;
-      //   })
-      // );
       navigate(`${id}/${channelId}`);
     }
   };
@@ -154,7 +147,10 @@ const WorkSpaceSection = () => {
     <Container isOpen={isSideOpen}>
       <Header>
         <Text size={14}>워크스페이스</Text>
-        <Icons icon="plus" onClick={handleOpenModal} />
+        <Icons
+          icon="plus"
+          onClick={isTutorialOpen ? undefined : handleOpenModal}
+        />
       </Header>
       <WorkSpaces
         workspaceList={workspaceList}

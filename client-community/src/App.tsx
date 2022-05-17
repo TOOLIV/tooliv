@@ -8,6 +8,8 @@ import global from './shared/global';
 import { useEffect } from 'react';
 import { updateUserStatus } from 'api/userApi';
 import { isLoginState } from 'recoil/auth';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const mode = useRecoilValue(appThemeMode);
@@ -39,6 +41,13 @@ function App() {
         <Global styles={global} />
         <AppRouter />
       </ThemeProvider>
+      <ToastContainer
+        position="top-center"
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        autoClose={2000}
+      />
     </>
   );
 }

@@ -1,10 +1,11 @@
 import styled from '@emotion/styled';
 import isElectron from 'is-electron';
 import React, { useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { electronAlert } from 'utils/electronAlert';
+import { useNavigate, useParams } from 'react-router-dom';
 import FunctionButton from '../../molecules/meeting/FunctionButton';
 import { funcButtonPropsTypes } from '../../types/meeting/openviduTypes';
+import Swal from 'sweetalert2';
+import { electronAlert } from 'utils/electronAlert';
 import { BulrContainer } from './video/ScreenShareModal';
 
 const FucntionButtonsContainer = styled.div`
@@ -26,7 +27,6 @@ const FunctionButtons = ({
   const param = useParams();
   const navigate = useNavigate();
   const [isBlur, setIsBulr] = useState(false);
-  const location = useLocation();
 
   const onhandleAudio = () => {
     if (isAudioOn) {
@@ -55,7 +55,8 @@ const FunctionButtons = ({
     }
   };
 
-  const onleaveSession = () => {
+  // 미팅 나가기 클릭시 이벤트
+  const clickLeaveButton = () => {
     setIsBulr(true);
     isElectron()
       ? electronAlert
@@ -66,14 +67,29 @@ const FunctionButtons = ({
           })
           .then((result) => {
             if (result.isConfirmed) {
-              navigate(`/${param.workspaceId}/${param.channelId}`);
+              onleaveSession();
             }
             setIsBulr(false);
-          }) /* -------------------------  */
-      : /* 여기에 웹에서 쓸 alert 넣어주세요 */
-        console.log('');
+          })
+      : Swal.fire({
+          title: '현재 미팅에 참여중입니다.',
+          text: '참여중인 미팅을 나가시겠습니까?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: '확인',
+          cancelButtonText: '취소',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            onleaveSession();
+          }
+          setIsBulr(false);
+        });
+  };
 
-    /* -------------------------  */
+  const onleaveSession = () => {
+    navigate(`/${param.workspaceId}/${param.channelId}`);
   };
 
   return (
@@ -88,7 +104,7 @@ const FunctionButtons = ({
         onClick={onhandleVideo}
       />
       <FunctionButton icon="shareMonitor" onClick={onhandleScreenShare} />
-      <FunctionButton icon="exit" exit onClick={onleaveSession} />
+      <FunctionButton icon="exit" exit onClick={clickLeaveButton} />
     </FucntionButtonsContainer>
   );
 };

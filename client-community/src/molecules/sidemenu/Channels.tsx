@@ -102,26 +102,9 @@ const Channels = ({
   const refArray = useRef<HTMLDivElement[]>([]);
   const isTutorialOpen = useRecoilValue(isTutorial);
 
-  const handleClickOutside = ({ target }: any) => {
-    if (exitModalOpen && !exitModalRef.current?.contains(target)) {
-      setExitModalOpen(false);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [exitModalOpen]);
-
   const handleClickModal = (id: string, index: number) => {
     setClickChannelId(id);
     setExitModalOpen(true);
-    console.log(index);
-    console.log(refArray.current[index].getBoundingClientRect());
-    // console.log(e);
-    // console.log(e.getBoundingClientRect());
     setTop(refArray.current[index].getBoundingClientRect().top - 70);
     setLeft(refArray.current[index].getBoundingClientRect().left + 40);
   };
@@ -150,7 +133,6 @@ const Channels = ({
             <ChannelContainer
               key={channel.id}
               isSelected={channel.id === channelId}
-              ref={exitModalRef}
             >
               <NotiWrapper onClick={() => onClick(channel.id)}>
                 <InnerContainer>
@@ -203,7 +185,6 @@ const Channels = ({
             <ChannelContainer
               key={channel.id}
               isSelected={channel.id === channelId}
-              ref={exitModalRef}
             >
               <NotiWrapper onClick={() => onClick(channel.id)}>
                 <InnerContainer>
@@ -232,6 +213,7 @@ const Channels = ({
       </ChannelsWrapper>
       <ChannelExitModal
         isOpen={exitModalOpen}
+        onClose={() => setExitModalOpen(false)}
         channelId={clickChannelId}
         top={top}
         left={left}
