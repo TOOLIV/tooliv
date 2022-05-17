@@ -19,7 +19,6 @@ const UserAuthPage = lazy(() => import('./UserAuthPage'));
 const Join = lazy(() => import('./Join'));
 const PrivateRoute = lazy(() => import('router/PrivateRoute'));
 const Main = lazy(() => import('./Main'));
-const EnterPriseTest = lazy(() => import('./EnterPriseTest'));
 const DM = lazy(() => import('./DM'));
 
 const Container = styled.div`
@@ -45,7 +44,6 @@ const AppRouter = () => {
             {/* <Route path="/" element={<Main />} /> */}
             <Route path="/login" element={<Login />} />
             <Route path="/join" element={<Join />} />
-            <Route path="/enterprisetest" element={<EnterPriseTest />} />
             <Route
               path="/"
               element={<PrivateRoute outlet={<Home />} fallback={'login'} />}
