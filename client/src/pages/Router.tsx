@@ -56,7 +56,9 @@ const AppRouter = () => {
             ) : (
               <Route path="/login" element={<Login />} />
             )}
-            <Route path="/enterprisetest" element={<EnterPriseTest />} />
+            {isElectron() && (
+              <Route path="/enterprisetest" element={<EnterPriseTest />} />
+            )}
             <Route
               path="/"
               element={<PrivateRoute outlet={<Home />} fallback={'login'} />}
