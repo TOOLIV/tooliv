@@ -10,8 +10,9 @@ import { videosTypes } from '../../../types/meeting/openviduTypes';
 const VideoContainer = styled.div<{
   isChat: boolean;
   isScreenSharing: boolean;
+  isHideCam: boolean;
 }>`
-  display: flex;
+  display: ${(props) => (props.isHideCam ? 'none' : 'flex')};
   flex-wrap: ${(props) => (props.isScreenSharing ? '' : 'wrap')};
   place-items: center;
   justify-content: ${(props) => (props.isScreenSharing ? '' : 'center')};
@@ -28,6 +29,7 @@ const Videos = ({
   subscribers,
   isScreenSharing,
   isSpeakList,
+  isHideCam,
 }: videosTypes) => {
   const isChat = useRecoilValue(isOpenChat);
   const isSide = useRecoilValue(isOpenSide);
@@ -54,7 +56,11 @@ const Videos = ({
   }, [publisher, subscribers, isChat, isSide]);
 
   return (
-    <VideoContainer isChat={isChat} isScreenSharing={isScreenSharing}>
+    <VideoContainer
+      isChat={isChat}
+      isScreenSharing={isScreenSharing}
+      isHideCam={isHideCam}
+    >
       <PublisherVideo
         publisher={publisher}
         rowCnt={rowCnt}
