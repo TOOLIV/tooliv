@@ -4,6 +4,7 @@ import File from 'molecules/chat/File';
 import { ContentContainer } from 'molecules/chat/Message';
 import React, { useEffect, useState } from 'react';
 import { contentTypes } from 'types/channel/contentType';
+import { colors } from 'shared/color';
 
 const ChatItemContainer = styled.div`
   padding: 8px 16px 8px 16px;
@@ -14,8 +15,10 @@ const ChatItemHeader = styled.div`
   font-size: 12px;
   .name {
     font-weight: 700;
+    color: ${(props) => props.theme.textColor};
   }
   .timestamp {
+    color: ${colors.gray400};
   }
 `;
 const Img = styled.img`
@@ -26,6 +29,7 @@ const Content = styled.div`
   margin-top: 8px;
   font-size: 16px;
   line-height: 1.6;
+  color: ${(props) => props.theme.textColor};
 `;
 
 const ChatItem = ({
