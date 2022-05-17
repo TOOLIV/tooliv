@@ -5,12 +5,15 @@ import Button from 'atoms/common/Button';
 import Icons from 'atoms/common/Icons';
 import Avatar from 'atoms/profile/Avatar';
 import Text from 'atoms/text/Text';
+import isElectron from 'is-electron';
 import InputBox from 'molecules/inputBox/InputBox';
+import { BulrContainer } from 'organisms/meeting/video/ScreenShareModal';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { user } from 'recoil/auth';
 import { userConfigType } from 'types/common/userTypes';
+import { electronAlert } from 'utils/electronAlert';
 
 const Modal = styled.div<{ isOpen: boolean }>`
   display: none;
@@ -80,6 +83,7 @@ const UserConfigModal = ({ isOpen, onClose }: userConfigType) => {
   const inputNickNameRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [userInfo, setUserInfo] = useRecoilState(user);
+  const [isBulr, setIsBulr] = useState(false);
   // const localUserInfo = localStorage.getItem('user');
   // const Juser = JSON.parse(localUserInfo!);
 
@@ -112,30 +116,63 @@ const UserConfigModal = ({ isOpen, onClose }: userConfigType) => {
     setImgSrc(URL.createObjectURL(file[0]));
   };
 
-  const updateprofile = async () => {
+  const updateprofile = () => {
     if (!nickName) {
-      alert('닉네임을 확인해주세요.');
+      isElectron()
+        ? electronAlert.alertToast({
+            title: '닉네임을 확인해주세요.',
+            icon: 'warning',
+          })
+        : /* 여기에 웹에서 쓸 alert 넣어주세요 */
+          console.log('');
+
+      /* -------------------------  */
     } else {
-      const formData = new FormData();
-      formData.append('multipartFile', imgFile);
-      const body = {
-        nickname: nickName,
+      const update = async () => {
+        const formData = new FormData();
+        formData.append('multipartFile', imgFile);
+        const body = {
+          nickname: nickName,
+        };
+        if (imgFile !== '') {
+          await updateProfileImage(formData);
+          await updateNickname(body);
+          setUserInfo({
+            ...userInfo,
+            profileImage: imgSrc,
+            nickname: nickName,
+          });
+          exitModal();
+        } else {
+          await updateNickname(body);
+          setUserInfo({ ...userInfo, nickname: nickName });
+          exitModal();
+        }
       };
-      if (imgFile !== '') {
-        await updateProfileImage(formData);
-        await updateNickname(body);
-        setUserInfo({ ...userInfo, profileImage: imgSrc, nickname: nickName });
-        exitModal();
-      } else {
-        await updateNickname(body);
-        setUserInfo({ ...userInfo, nickname: nickName });
-        exitModal();
-      }
+      setIsBulr(true);
+      isElectron()
+        ? electronAlert
+            .alertConfirm({
+              title: '프로필 수정 확인',
+              text: '프로필을 수정하시겠습니까?',
+              icon: 'warning',
+            })
+            .then((result) => {
+              if (result.isConfirmed) {
+                update();
+              }
+              setIsBulr(false);
+            })
+        : /* 여기에 웹에서 쓸 alert 넣어주세요 */
+          console.log('');
+
+      /* -------------------------  */
     }
   };
 
   return (
     <Modal isOpen={isOpen}>
+      {isBulr && <BulrContainer />}
       <Container>
         <Header>
           <Text size={18}>회원 정보 수정</Text>

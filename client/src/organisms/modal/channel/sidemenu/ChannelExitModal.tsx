@@ -3,13 +3,16 @@ import styled from '@emotion/styled';
 import { deleteChannelMember } from 'api/channelApi';
 import Icons from 'atoms/common/Icons';
 import Text from 'atoms/text/Text';
-import { forwardRef } from 'react';
+import isElectron from 'is-electron';
+import { BulrContainer } from 'organisms/meeting/video/ScreenShareModal';
+import { forwardRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { currentChannelNum, currentWorkspace, userLog } from 'recoil/atom';
 import { user } from 'recoil/auth';
 import { colors } from 'shared/color';
 import { exitChannelModalType } from 'types/channel/contentType';
+import { electronAlert } from 'utils/electronAlert';
 
 const Modal = styled.div<{ isOpen: boolean; top: number; left: number }>`
   display: none;
@@ -61,21 +64,44 @@ const ChannelExitModal = ({
   const setCurrentWorkspaceId = useSetRecoilState(currentWorkspace);
   const setCurrentChannelMemberNum = useSetRecoilState(currentChannelNum);
   const [userLogList, setUserLogList] = useRecoilState(userLog);
+  const [isBulr, setIsBulr] = useState(false);
   const navigate = useNavigate();
-  const exitChannel = async () => {
-    await deleteChannelMember(channelId!, email);
-    setCurrentChannelMemberNum((prev) => prev - 1);
-    setCurrentWorkspaceId('main');
+  const exitChannel = () => {
+    const exit = async () => {
+      await deleteChannelMember(channelId!, email);
+      setCurrentChannelMemberNum((prev) => prev - 1);
+      setCurrentWorkspaceId('main');
 
-    if (workspaceId) {
-      let log = JSON.parse(JSON.stringify(userLogList));
-      setUserLogList(log);
-    }
-    navigate('/main');
+      if (workspaceId) {
+        let log = JSON.parse(JSON.stringify(userLogList));
+        setUserLogList(log);
+      }
+      navigate('/main');
+    };
+
+    setIsBulr(true);
+    isElectron()
+      ? electronAlert
+          .alertConfirm({
+            title: '채널 탈퇴 확인',
+            text: '해당 채널을 떠나시겠습니까?',
+            icon: 'warning',
+          })
+          .then((result) => {
+            if (result.isConfirmed) {
+              exit();
+            }
+            setIsBulr(false);
+          })
+      : /* 여기에 웹에서 쓸 alert 넣어주세요 */
+        console.log('');
+
+    /* -------------------------  */
   };
 
   return (
     <Modal isOpen={isOpen} top={top} left={left}>
+      {isBulr && <BulrContainer />}
       <Container>
         <ListItem onClick={() => exitChannel()}>
           <Icons color="secondary" icon="xMark" />

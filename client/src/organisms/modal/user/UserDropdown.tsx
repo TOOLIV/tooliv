@@ -4,12 +4,15 @@ import { updateUserStatus } from 'api/userApi';
 import Icons from 'atoms/common/Icons';
 import Avatar from 'atoms/profile/Avatar';
 import Text from 'atoms/text/Text';
-import { forwardRef, useEffect } from 'react';
+import isElectron from 'is-electron';
+import { BulrContainer } from 'organisms/meeting/video/ScreenShareModal';
+import { forwardRef, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { memberStatus } from 'recoil/atom';
 import { user } from 'recoil/auth';
 import { userDropdownType } from 'types/common/userTypes';
+import { electronAlert } from 'utils/electronAlert';
 
 const Modal = styled.div<{ isOpen: boolean }>`
   display: none;
@@ -72,20 +75,41 @@ const UserDropdown = forwardRef<HTMLDivElement, userDropdownType>(
     const [userInfo, setUserInfo] = useRecoilState(user);
     const [membersStatus, setMembersStatus] = useRecoilState(memberStatus);
     const navigate = useNavigate();
+    const [isBulr, setIsBulr] = useState(false);
 
-    const logout = async () => {
-      await changeStatus('OFFLINE');
-      localStorage.removeItem('user');
-      setUserInfo({
-        accessToken: '',
-        email: '',
-        name: '',
-        nickname: '',
-        userId: '',
-        profileImage: '',
-        statusCode: '',
-        userCode: '',
-      });
+    const logout = () => {
+      const resetUserInfo = async () => {
+        await changeStatus('OFFLINE');
+        localStorage.removeItem('user');
+        setUserInfo({
+          accessToken: '',
+          email: '',
+          name: '',
+          nickname: '',
+          userId: '',
+          profileImage: '',
+          statusCode: '',
+          userCode: '',
+        });
+      };
+      setIsBulr(true);
+      isElectron()
+        ? electronAlert
+            .alertConfirm({
+              title: '로그아웃 확인',
+              text: '로그아웃 하시겠습니까?',
+              icon: 'warning',
+            })
+            .then((result) => {
+              if (result.isConfirmed) {
+                resetUserInfo();
+              }
+              setIsBulr(false);
+            })
+        : /* 여기에 웹에서 쓸 alert 넣어주세요 */
+          console.log('');
+
+      /* -------------------------  */
     };
 
     const changeStatus = async (statusCode: string) => {
@@ -123,6 +147,7 @@ const UserDropdown = forwardRef<HTMLDivElement, userDropdownType>(
 
     return (
       <Modal isOpen={isOpen} ref={ref}>
+        {isBulr && <BulrContainer />}
         <Container>
           <UserItem>
             <Avatar
