@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import isElectron from 'is-electron';
 import React, { useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import FunctionButton from '../../molecules/meeting/FunctionButton';
 import { funcButtonPropsTypes } from '../../types/meeting/openviduTypes';
 import Swal from 'sweetalert2';
@@ -27,7 +27,6 @@ const FunctionButtons = ({
   const param = useParams();
   const navigate = useNavigate();
   const [isBlur, setIsBulr] = useState(false);
-  const location = useLocation();
 
   const onhandleAudio = () => {
     if (isAudioOn) {
@@ -67,12 +66,14 @@ const FunctionButtons = ({
             icon: 'warning',
           })
           .then((result) => {
-            onleaveSession();
+            if (result.isConfirmed) {
+              onleaveSession();
+            }
             setIsBulr(false);
           })
       : Swal.fire({
-          title: '미팅을 종료하시겠습니까?',
-          text: '확인 버튼 클릭 시 화상미팅이 종료됩니다.',
+          title: '현재 미팅에 참여중입니다.',
+          text: '참여중인 미팅을 나가시겠습니까?',
           icon: 'warning',
           showCancelButton: true,
           confirmButtonColor: '#3085d6',
@@ -83,6 +84,7 @@ const FunctionButtons = ({
           if (result.isConfirmed) {
             onleaveSession();
           }
+          setIsBulr(false);
         });
   };
 

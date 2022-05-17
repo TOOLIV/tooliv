@@ -3,7 +3,6 @@ import { getUserInfo } from 'api/userApi';
 import Time from 'atoms/chat/Time';
 import UpdateChatModal from 'organisms/modal/channel/chat/UpdateChatModal';
 import React, { forwardRef, useEffect, useRef, useState } from 'react';
-import { fDateTime, fToNow } from 'utils/formatTime';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { user } from 'recoil/auth';
@@ -193,8 +192,8 @@ const Message = forwardRef<HTMLDivElement, contentTypes>(
               setIsBulr(false);
             })
         : Swal.fire({
-            title: '메시지를 삭제하시겠습니까?',
-            text: '확인 버튼 클릭 시 메시지가 삭제됩니다.',
+            title: '메세지 삭제 확인.',
+            text: '정말 메세지를 삭제하시겠습니까?',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -205,6 +204,7 @@ const Message = forwardRef<HTMLDivElement, contentTypes>(
             if (result.isConfirmed) {
               deleteMessage();
             }
+            setIsBulr(false);
           });
     };
 

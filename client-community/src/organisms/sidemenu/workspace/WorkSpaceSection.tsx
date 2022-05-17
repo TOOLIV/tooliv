@@ -114,7 +114,6 @@ const WorkSpaceSection = () => {
   };
 
   // 미팅 중 워크스페이스 클릭시 이벤트
-
   const clickWorkspace = (id: string) => {
     if (location.pathname.includes('meeting')) {
       Swal.fire({

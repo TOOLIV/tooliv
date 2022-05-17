@@ -1,9 +1,12 @@
 import styled from '@emotion/styled';
+import isElectron from 'is-electron';
 import React, { useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import FunctionButton from '../../molecules/meeting/FunctionButton';
 import { funcButtonPropsTypes } from '../../types/meeting/openviduTypes';
 import Swal from 'sweetalert2';
+import { electronAlert } from 'utils/electronAlert';
+import { BulrContainer } from './video/ScreenShareModal';
 
 const FucntionButtonsContainer = styled.div`
   display: flex;
@@ -23,7 +26,7 @@ const FunctionButtons = ({
 }: funcButtonPropsTypes) => {
   const param = useParams();
   const navigate = useNavigate();
-  const location = useLocation();
+  const [isBlur, setIsBulr] = useState(false);
 
   const onhandleAudio = () => {
     if (isAudioOn) {
@@ -54,24 +57,35 @@ const FunctionButtons = ({
 
   // 미팅 나가기 클릭시 이벤트
   const clickLeaveButton = () => {
-    if (location.pathname.includes('meeting')) {
-      Swal.fire({
-        title: '미팅을 종료하시겠습니까?',
-        text: '확인 버튼 클릭 시 화상미팅이 종료됩니다.',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: '확인',
-        cancelButtonText: '취소',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          onleaveSession();
-        }
-      });
-    } else {
-      onleaveSession();
-    }
+    setIsBulr(true);
+    isElectron()
+      ? electronAlert
+          .alertConfirm({
+            title: '현재 미팅에 참여중입니다.',
+            text: '참여중인 미팅을 나가시겠습니까?',
+            icon: 'warning',
+          })
+          .then((result) => {
+            if (result.isConfirmed) {
+              onleaveSession();
+            }
+            setIsBulr(false);
+          })
+      : Swal.fire({
+          title: '현재 미팅에 참여중입니다.',
+          text: '참여중인 미팅을 나가시겠습니까?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: '확인',
+          cancelButtonText: '취소',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            onleaveSession();
+          }
+          setIsBulr(false);
+        });
   };
 
   const onleaveSession = () => {
@@ -80,6 +94,7 @@ const FunctionButtons = ({
 
   return (
     <FucntionButtonsContainer>
+      {isBlur && <BulrContainer />}
       <FunctionButton
         icon={isAudioOn ? 'audioOn' : 'audioOff'}
         onClick={onhandleAudio}

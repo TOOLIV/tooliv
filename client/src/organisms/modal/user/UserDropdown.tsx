@@ -95,8 +95,8 @@ const UserDropdown = forwardRef<HTMLDivElement, userDropdownType>(
               setIsBulr(false);
             })
         : Swal.fire({
-            title: '로그아웃 하시겠습니까?',
-            // text: '확인 버튼 클릭 시 화상미팅이 자동으로 종료됩니다.',
+            title: '로그아웃 확인',
+            text: '로그아웃 하시겠습니까?',
             icon: 'info',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -107,6 +107,7 @@ const UserDropdown = forwardRef<HTMLDivElement, userDropdownType>(
             if (result.isConfirmed) {
               logout();
             }
+            setIsBulr(false);
           });
     };
 

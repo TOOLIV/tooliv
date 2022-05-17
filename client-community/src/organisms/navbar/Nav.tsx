@@ -37,6 +37,9 @@ import { useInterval } from 'hooks/useInterval';
 import { useDebounce } from 'hooks/useHooks';
 import ResetPwdModal from 'organisms/modal/user/ResetPwdModal';
 import Swal from 'sweetalert2';
+import isElectron from 'is-electron';
+import { electronAlert } from 'utils/electronAlert';
+import { BulrContainer } from 'organisms/meeting/video/ScreenShareModal';
 
 const NavContainer = styled.div`
   padding: 0px 20px;
@@ -121,6 +124,7 @@ const Nav = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [keyword, setKeyword] = useState('');
   const debouncedValue = useDebounce<string>(keyword, 500);
+  const [isBulr, setIsBulr] = useState(false);
 
   useEffect(() => {
     setIsLoading(true);
@@ -244,25 +248,39 @@ const Nav = () => {
   // 미팅 화면에서 로고 클릭시 alert 띄어줌.
   const clickLogo = () => {
     if (location.pathname.includes('meeting')) {
-      Swal.fire({
-        title: '정말 이동하시겠습니까?',
-        text: '확인 버튼 클릭 시 화상미팅이 자동으로 종료됩니다.',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: '확인',
-        cancelButtonText: '취소',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          handleNavigateMain();
-        }
-      });
+      setIsBulr(true);
+      isElectron()
+        ? electronAlert
+            .alertConfirm({
+              title: '현재 미팅에 참여중입니다.',
+              text: '홈으로 이동하면 참여중인 미팅을 떠납니다. 정말 나가시겠습니까?',
+              icon: 'warning',
+            })
+            .then((result) => {
+              if (result.isConfirmed) {
+                handleNavigateMain();
+              }
+              setIsBulr(false);
+            })
+        : Swal.fire({
+            title: '현재 미팅에 참여중입니다.',
+            text: '홈으로 이동하면 참여중인 미팅을 떠납니다. 정말 나가시겠습니까?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '확인',
+            cancelButtonText: '취소',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              handleNavigateMain();
+            }
+            setIsBulr(false);
+          });
     } else {
       handleNavigateMain();
     }
   };
-
   const handleNavigateMain = () => {
     setCurrentWorkSpaceId('main');
     navigate('/main');
@@ -270,6 +288,7 @@ const Nav = () => {
 
   return (
     <NavContainer>
+      {isBulr && <BulrContainer />}
       <LeftContainer onClick={clickLogo}>
         <Logo />
         <TextWrapper>

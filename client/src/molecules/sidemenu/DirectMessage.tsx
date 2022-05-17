@@ -94,8 +94,8 @@ const DirectMessage = () => {
               setIsBulr(false);
             })
         : Swal.fire({
-            title: '정말 이동하시겠습니까?',
-            text: '확인 버튼 클릭 시 화상미팅이 자동으로 종료됩니다.',
+            title: '현재 미팅에 참여중입니다.',
+            text: '개인 메세지로 이동하면 참여중인 미팅을 떠납니다. 정말 나가시겠습니까?',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',

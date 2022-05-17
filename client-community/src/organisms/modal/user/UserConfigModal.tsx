@@ -5,13 +5,16 @@ import Button from 'atoms/common/Button';
 import Icons from 'atoms/common/Icons';
 import Avatar from 'atoms/profile/Avatar';
 import Text from 'atoms/text/Text';
+import isElectron from 'is-electron';
 import InputBox from 'molecules/inputBox/InputBox';
+import { BulrContainer } from 'organisms/meeting/video/ScreenShareModal';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { user } from 'recoil/auth';
 import { userConfigType } from 'types/common/userTypes';
 import Swal from 'sweetalert2';
+import { electronAlert } from 'utils/electronAlert';
 
 const Modal = styled.div<{ isOpen: boolean }>`
   display: none;
@@ -81,6 +84,7 @@ const UserConfigModal = ({ isOpen, onClose }: userConfigType) => {
   const inputNickNameRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [userInfo, setUserInfo] = useRecoilState(user);
+  const [isBulr, setIsBulr] = useState(false);
   // const localUserInfo = localStorage.getItem('user');
   // const Juser = JSON.parse(localUserInfo!);
 
@@ -115,20 +119,35 @@ const UserConfigModal = ({ isOpen, onClose }: userConfigType) => {
 
   // 프로필 수정 클릭시 이벤트
   const updateProfileClick = () => {
-    Swal.fire({
-      title: '수정하시겠습니까?',
-      // text: '확인 버튼 클릭 시 화상미팅이 자동으로 종료됩니다.',
-      icon: 'info',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: '확인',
-      cancelButtonText: '취소',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        updateprofile();
-      }
-    });
+    setIsBulr(true);
+    isElectron()
+      ? electronAlert
+          .alertConfirm({
+            title: '프로필 수정 확인',
+            text: '프로필을 수정하시겠습니까?',
+            icon: 'info',
+          })
+          .then((result) => {
+            if (result.isConfirmed) {
+              updateprofile();
+            }
+            setIsBulr(false);
+          })
+      : Swal.fire({
+          title: '프로필 수정 확인',
+          text: '프로필을 수정하시겠습니까?',
+          icon: 'info',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: '확인',
+          cancelButtonText: '취소',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            updateprofile();
+          }
+          setIsBulr(false);
+        });
   };
 
   const updateprofile = async () => {
@@ -155,6 +174,7 @@ const UserConfigModal = ({ isOpen, onClose }: userConfigType) => {
 
   return (
     <Modal isOpen={isOpen}>
+      {isBulr && <BulrContainer />}
       <Container>
         <Header>
           <Text size={18}>회원 정보 수정</Text>

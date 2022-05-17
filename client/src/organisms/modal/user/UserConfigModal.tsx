@@ -146,6 +146,7 @@ const UserConfigModal = ({ isOpen, onClose }: userConfigType) => {
           if (result.isConfirmed) {
             updateprofile();
           }
+          setIsBulr(false);
         });
   };
 

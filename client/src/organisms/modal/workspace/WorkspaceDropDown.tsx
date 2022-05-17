@@ -91,8 +91,8 @@ const WorkspaceDropDown = ({
             setIsBulr(false);
           })
       : Swal.fire({
-          title: '워크스페이스에서 나가시겠습니까?',
-          // text: '확인 버튼 클릭 시 화상미팅이 자동으로 종료됩니다.',
+          title: '워크스페이스 탈퇴 확인',
+          text: '해당 워크스페이스를 떠나시겠습니까?',
           icon: 'info',
           showCancelButton: true,
           confirmButtonColor: '#3085d6',
@@ -103,6 +103,7 @@ const WorkspaceDropDown = ({
           if (result.isConfirmed) {
             exitWorkspace();
           }
+          setIsBulr(false);
         });
   };
 
