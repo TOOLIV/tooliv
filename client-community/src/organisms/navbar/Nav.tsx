@@ -14,6 +14,7 @@ import {
   currentWorkspace,
   DMList,
   dmMember,
+  isTutorial,
   memberStatus,
   searchIndex,
   searchResults,
@@ -24,7 +25,7 @@ import { DarkModeSwitch } from 'react-toggle-dark-mode';
 import UserDropdown from 'organisms/modal/user/UserDropdown';
 import UserConfigModal from 'organisms/modal/user/UserConfigModal';
 import { searchChat } from 'api/chatApi';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { DMInfoType } from 'types/channel/chatTypes';
 import {
   statusType,
@@ -35,6 +36,7 @@ import { getUserStatus } from 'api/userApi';
 import { useInterval } from 'hooks/useInterval';
 import { useDebounce } from 'hooks/useHooks';
 import ResetPwdModal from 'organisms/modal/user/ResetPwdModal';
+import Swal from 'sweetalert2';
 
 const NavContainer = styled.div`
   padding: 0px 20px;
@@ -78,7 +80,7 @@ const Search = styled.div`
 const RightContainer = styled.div`
   display: flex;
   align-items: center;
-  width: 8vw;
+  width: 65px;
   justify-content: space-between;
 `;
 
@@ -109,12 +111,13 @@ const Nav = () => {
   const [searchList, setSearchList] = useRecoilState<number[]>(searchResults);
   const [searchedIndex, setSearchedIndex] = useRecoilState<number>(searchIndex);
   const setCurrentWorkSpaceId = useSetRecoilState(currentWorkspace);
+  const isTutorialOpen = useRecoilValue(isTutorial);
 
   const contents = useRecoilValue<contentTypes[]>(channelContents);
 
   const { channelId } = useParams();
   const navigate = useNavigate();
-
+  const location = useLocation();
   const inputRef = useRef<HTMLInputElement>(null);
   const [keyword, setKeyword] = useState('');
   const debouncedValue = useDebounce<string>(keyword, 500);
@@ -152,6 +155,7 @@ const Nav = () => {
   const handleUsersStatus = async (body: usersStatusType) => {
     const response = await getUserStatus(body);
     const data = response.data.statusResponseDTOList;
+
     let status: userStatusInfoType = {};
 
     data.forEach((value: statusType) => {
@@ -237,6 +241,28 @@ const Nav = () => {
     }
   }, [debouncedValue]);
 
+  // 미팅 화면에서 로고 클릭시 alert 띄어줌.
+  const clickLogo = () => {
+    if (location.pathname.includes('meeting')) {
+      Swal.fire({
+        title: '정말 이동하시겠습니까?',
+        text: '확인 버튼 클릭 시 화상미팅이 자동으로 종료됩니다.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: '확인',
+        cancelButtonText: '취소',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          handleNavigateMain();
+        }
+      });
+    } else {
+      handleNavigateMain();
+    }
+  };
+
   const handleNavigateMain = () => {
     setCurrentWorkSpaceId('main');
     navigate('/main');
@@ -244,7 +270,7 @@ const Nav = () => {
 
   return (
     <NavContainer>
-      <LeftContainer onClick={handleNavigateMain}>
+      <LeftContainer onClick={clickLogo}>
         <Logo />
         <TextWrapper>
           <Text size={18} pointer color="secondary">
@@ -289,7 +315,11 @@ const Nav = () => {
           size={25}
         />
         <DropdownWrapper ref={dropdownRef}>
-          <AvatarWrapper onClick={() => setDropdownOpen(!dropdownOpen)}>
+          <AvatarWrapper
+            onClick={
+              isTutorialOpen ? undefined : () => setDropdownOpen(!dropdownOpen)
+            }
+          >
             <Avatar
               size="32"
               src={userInfo.profileImage}

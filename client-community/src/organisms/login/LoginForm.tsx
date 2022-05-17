@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import isElectron from 'is-electron';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { memberStatus } from 'recoil/atom';
@@ -9,7 +9,7 @@ import { login } from '../../api/userApi';
 import Button from '../../atoms/common/Button';
 import Text from '../../atoms/text/Text';
 import InputBox from '../../molecules/inputBox/InputBox';
-
+import { toast } from 'react-toastify';
 const Container = styled.div`
   width: 480px;
   padding: 65px;
@@ -62,10 +62,8 @@ const LoginForm = () => {
     };
     try {
       if (!email) {
-        alert('이메일을 입력해주세요.');
         inputEmailRef.current?.focus();
       } else if (!password) {
-        alert('비밀번호를 입력해주세요.');
         inputPasswordRef.current?.focus();
       } else {
         const { data } = await login(body);
@@ -78,10 +76,12 @@ const LoginForm = () => {
           profileImage: data.profileImage,
           statusCode: data.statusCode,
         });
+        toast.success('성공적으로 로그인되었습니다.');
         setMembersStatus({ ...membersStatus, [data.email]: data.statusCode });
         navigate('/');
       }
     } catch (error) {
+      toast.error('로그인에 실패했습니다.');
       console.log(error);
     }
   };

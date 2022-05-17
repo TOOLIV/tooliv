@@ -9,6 +9,7 @@ import { useRecoilState, useSetRecoilState } from 'recoil';
 import { memberStatus } from 'recoil/atom';
 import { user } from 'recoil/auth';
 import { userDropdownType } from 'types/common/userTypes';
+import Swal from 'sweetalert2';
 
 const Modal = styled.div<{ isOpen: boolean }>`
   display: none;
@@ -71,9 +72,27 @@ const UserDropdown = forwardRef<HTMLDivElement, userDropdownType>(
     const [userInfo, setUserInfo] = useRecoilState(user);
     const [membersStatus, setMembersStatus] = useRecoilState(memberStatus);
 
+    // 로그아웃 클릭시 이벤트
+    const logoutClick = () => {
+      Swal.fire({
+        title: '로그아웃 하시겠습니까?',
+        // text: '확인 버튼 클릭 시 화상미팅이 자동으로 종료됩니다.',
+        icon: 'info',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: '확인',
+        cancelButtonText: '취소',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          logout();
+        }
+      });
+    };
+
     const logout = async () => {
       await changeStatus('OFFLINE');
-      localStorage.removeItem('user');
+      localStorage.removeItem('tooliv_info');
       setUserInfo({
         accessToken: '',
         email: '',
@@ -167,7 +186,7 @@ const UserDropdown = forwardRef<HTMLDivElement, userDropdownType>(
               비밀번호 변경
             </Text>
           </ListItem>
-          <ListItem onClick={logout}>
+          <ListItem onClick={logoutClick}>
             <IconItem>
               <Icons icon="exit" width="20" height="20" />
             </IconItem>
