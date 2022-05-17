@@ -3,20 +3,17 @@ import styled from '@emotion/styled';
 import { createChannel } from 'api/channelApi';
 import Button from 'atoms/common/Button';
 import Text from 'atoms/text/Text';
-import isElectron from 'is-electron';
 import InputBox from 'molecules/inputBox/InputBox';
 import ChannelRadio from 'molecules/radio/channelRadio/ChannelRadio';
 import VisibilityRadio from 'molecules/radio/visibiltyRadio/VisibilityRadio';
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { channelNotiList, currentChannel } from 'recoil/atom';
 import { sub, unsub } from 'services/wsconnect';
-import { colors } from 'shared/color';
 import { channelNotiType } from 'types/channel/contentType';
 import { workspaceModalType } from 'types/workspace/workspaceTypes';
-import { electronAlert } from 'utils/electronAlert';
-
+import { toast } from 'react-toastify';
 const Modal = styled.div<{ isOpen: boolean }>`
   display: none;
   position: fixed;
@@ -78,20 +75,9 @@ const ChannelModal = ({ isOpen, onClose }: workspaceModalType) => {
 
     try {
       if (!name) {
-        isElectron()
-          ? electronAlert.alertToast({
-              title: '채널명을 입력해주세요.',
-              icon: 'warning',
-            })
-          : /* -------------------------  */
-            /* 여기에 웹에서 쓸 alert 넣어주세요 */
-            console.log('');
-
-        /* -------------------------  */
+        toast.error('채널명을 입력해주세요.');
         inputChannelRef.current?.focus();
-      }
-
-      if (name) {
+      } else {
         const body = {
           name,
           privateYn,
@@ -125,6 +111,10 @@ const ChannelModal = ({ isOpen, onClose }: workspaceModalType) => {
     setPrivateYn(value);
   };
 
+  const exitModal = () => {
+    inputChannelRef.current!.value = '';
+    onClose();
+  };
   return (
     <Modal isOpen={isOpen}>
       <Container>
@@ -148,7 +138,7 @@ const ChannelModal = ({ isOpen, onClose }: workspaceModalType) => {
             height="35"
             text="취소"
             bgColor="gray300"
-            onClick={onClose}
+            onClick={exitModal}
           />
           <Button width="160" height="35" text="생성" onClick={registChannel} />
         </ButtonBox>

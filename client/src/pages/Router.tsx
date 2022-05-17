@@ -43,7 +43,6 @@ const AppRouter = () => {
           }
         >
           <Routes>
-            {/* <Route path="/" element={<Main />} /> */}
             {isElectron() ? (
               <Route
                 path="/login"

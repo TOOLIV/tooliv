@@ -1,13 +1,11 @@
 import styled from '@emotion/styled';
 import Tooltip from 'atoms/tooltip/Tooltip';
-import isElectron from 'is-electron';
 import { BulrContainer } from 'organisms/meeting/video/ScreenShareModal';
 import { useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 import { currentWorkspace } from 'recoil/atom';
 import { workspaceListType } from 'types/workspace/workspaceTypes';
-import { electronAlert } from 'utils/electronAlert';
 import Swal from 'sweetalert2';
 const Wrapper = styled.div`
   display: flex;
@@ -77,35 +75,21 @@ const WorkSpace = ({
   const handleClickWorkspace = () => {
     if (location.pathname.split('/')[1] === 'meeting') {
       setIsBulr(true);
-      isElectron()
-        ? electronAlert
-            .alertConfirm({
-              title: '현재 미팅에 참여중입니다.',
-              text: '다른 채널 또는 워크스페이스로 이동하면 참여중인 미팅을 떠납니다. 정말 나가시겠습니까?',
-              icon: 'warning',
-            })
-            .then((result) => {
-              if (result.isConfirmed) {
-                setCurrentWorkSpaceId(id);
-                onClick(id);
-              }
-              setIsBulr(false);
-            })
-        : Swal.fire({
-            title: '현재 미팅에 참여중입니다.',
-            text: '다른 채널 또는 워크스페이스로 이동하면 참여중인 미팅을 떠납니다. 정말 나가시겠습니까?',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: '확인',
-            cancelButtonText: '취소',
-          }).then((result) => {
-            if (result.isConfirmed) {
-              setCurrentWorkSpaceId(id);
-              onClick(id);
-            }
-          });
+      Swal.fire({
+        title: '현재 미팅에 참여중입니다.',
+        text: '다른 채널 또는 워크스페이스로 이동하면 참여중인 미팅을 떠납니다. 정말 나가시겠습니까?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: '확인',
+        cancelButtonText: '취소',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          setCurrentWorkSpaceId(id);
+          onClick(id);
+        }
+      });
     } else {
       setCurrentWorkSpaceId(id);
       onClick(id);

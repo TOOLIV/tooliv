@@ -2,7 +2,6 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { deleteWorkspaceMember } from 'api/workspaceApi';
 import Text from 'atoms/text/Text';
-import isElectron from 'is-electron';
 import { BulrContainer } from 'organisms/meeting/video/ScreenShareModal';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
@@ -10,7 +9,6 @@ import { currentWorkspace } from 'recoil/atom';
 import { user } from 'recoil/auth';
 import { workspaceDropdownType } from 'types/workspace/workspaceTypes';
 import Swal from 'sweetalert2';
-import { electronAlert } from 'utils/electronAlert';
 import { useState } from 'react';
 
 const Modal = styled.div<{ isOpen: boolean }>`
@@ -77,34 +75,21 @@ const WorkspaceDropDown = ({
   // 워크스페이스 떠나기 클릭시 이벤트
   const exitWorkspaceClick = () => {
     setIsBulr(true);
-    isElectron()
-      ? electronAlert
-          .alertConfirm({
-            title: '워크스페이스 탈퇴 확인',
-            text: '해당 워크스페이스를 떠나시겠습니까?',
-            icon: 'warning',
-          })
-          .then((result) => {
-            if (result.isConfirmed) {
-              exitWorkspace();
-            }
-            setIsBulr(false);
-          })
-      : Swal.fire({
-          title: '워크스페이스 탈퇴 확인',
-          text: '해당 워크스페이스를 떠나시겠습니까?',
-          icon: 'info',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: '확인',
-          cancelButtonText: '취소',
-        }).then((result) => {
-          if (result.isConfirmed) {
-            exitWorkspace();
-          }
-          setIsBulr(false);
-        });
+    Swal.fire({
+      title: '워크스페이스 탈퇴 확인',
+      text: '해당 워크스페이스를 떠나시겠습니까?',
+      icon: 'info',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: '확인',
+      cancelButtonText: '취소',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        exitWorkspace();
+      }
+      setIsBulr(false);
+    });
   };
 
   const exitWorkspace = async () => {

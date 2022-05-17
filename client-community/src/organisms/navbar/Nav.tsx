@@ -37,8 +37,6 @@ import { useInterval } from 'hooks/useInterval';
 import { useDebounce } from 'hooks/useHooks';
 import ResetPwdModal from 'organisms/modal/user/ResetPwdModal';
 import Swal from 'sweetalert2';
-import isElectron from 'is-electron';
-import { electronAlert } from 'utils/electronAlert';
 import { BulrContainer } from 'organisms/meeting/video/ScreenShareModal';
 
 const NavContainer = styled.div`
@@ -104,13 +102,10 @@ const Nav = () => {
   const [profileConfigOpen, setProfileConfigOpen] = useState(false);
   const [resetPwdOpen, setResetPwdOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const [dMList, setDmList] = useRecoilState<DMInfoType[]>(DMList);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const dMList = useRecoilValue<DMInfoType[]>(DMList);
   const [dmMemberList, setDmMemberList] = useRecoilState<string[]>(dmMember);
-  const [chatMemberList, setChatMemberList] =
-    useRecoilState<string[]>(chatMember);
-  const [membersStatus, setMembersStatus] =
-    useRecoilState<userStatusInfoType>(memberStatus);
+  const chatMemberList = useRecoilValue<string[]>(chatMember);
+  const setMembersStatus = useSetRecoilState<userStatusInfoType>(memberStatus);
   const [searchList, setSearchList] = useRecoilState<number[]>(searchResults);
   const [searchedIndex, setSearchedIndex] = useRecoilState<number>(searchIndex);
   const setCurrentWorkSpaceId = useSetRecoilState(currentWorkspace);
@@ -120,17 +115,15 @@ const Nav = () => {
 
   const { channelId } = useParams();
   const navigate = useNavigate();
-  const location = useLocation();
   const inputRef = useRef<HTMLInputElement>(null);
   const [keyword, setKeyword] = useState('');
   const debouncedValue = useDebounce<string>(keyword, 500);
   const [isBulr, setIsBulr] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
-    setIsLoading(true);
     setSearchList([]);
     setSearchedIndex(contents.length - 1);
-    setIsLoading(false);
   }, []);
 
   useEffect(() => {
@@ -159,7 +152,6 @@ const Nav = () => {
   const handleUsersStatus = async (body: usersStatusType) => {
     const response = await getUserStatus(body);
     const data = response.data.statusResponseDTOList;
-
     let status: userStatusInfoType = {};
 
     data.forEach((value: statusType) => {
@@ -249,38 +241,25 @@ const Nav = () => {
   const clickLogo = () => {
     if (location.pathname.includes('meeting')) {
       setIsBulr(true);
-      isElectron()
-        ? electronAlert
-            .alertConfirm({
-              title: '현재 미팅에 참여중입니다.',
-              text: '홈으로 이동하면 참여중인 미팅을 떠납니다. 정말 나가시겠습니까?',
-              icon: 'warning',
-            })
-            .then((result) => {
-              if (result.isConfirmed) {
-                handleNavigateMain();
-              }
-              setIsBulr(false);
-            })
-        : Swal.fire({
-            title: '현재 미팅에 참여중입니다.',
-            text: '홈으로 이동하면 참여중인 미팅을 떠납니다. 정말 나가시겠습니까?',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: '확인',
-            cancelButtonText: '취소',
-          }).then((result) => {
-            if (result.isConfirmed) {
-              handleNavigateMain();
-            }
-            setIsBulr(false);
-          });
+      Swal.fire({
+        title: '현재 미팅에 참여중입니다.',
+        text: '홈으로 이동하면 참여중인 미팅을 떠납니다. 정말 나가시겠습니까?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: '확인',
+        cancelButtonText: '취소',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          handleNavigateMain();
+        }
+      });
     } else {
       handleNavigateMain();
     }
   };
+
   const handleNavigateMain = () => {
     setCurrentWorkSpaceId('main');
     navigate('/main');

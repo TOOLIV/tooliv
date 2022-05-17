@@ -4,30 +4,21 @@ import { getChannelList } from 'api/channelApi';
 import { createWorkspace } from 'api/workspaceApi';
 import Button from 'atoms/common/Button';
 import Text from 'atoms/text/Text';
-import isElectron from 'is-electron';
 import InputBox from 'molecules/inputBox/InputBox';
 import FileUploader from 'molecules/uploader/FileUploader';
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import {
-  channelContents,
   channelNotiList,
   currentChannel,
   currentWorkspace,
   userLog,
-  wsList,
 } from 'recoil/atom';
-import { user } from 'recoil/auth';
 import { sub, unsub } from 'services/wsconnect';
-import { colors } from 'shared/color';
-import { channelNotiType, contentTypes } from 'types/channel/contentType';
-import {
-  workspaceListType,
-  workspaceModalType,
-} from 'types/workspace/workspaceTypes';
-import { electronAlert } from 'utils/electronAlert';
-
+import { channelNotiType } from 'types/channel/contentType';
+import { workspaceModalType } from 'types/workspace/workspaceTypes';
+import { toast } from 'react-toastify';
 const Modal = styled.div<{ isOpen: boolean }>`
   display: none;
   position: fixed;
@@ -108,20 +99,9 @@ const WorkspaceModal = ({ isOpen, onClose }: workspaceModalType) => {
     );
     try {
       if (!name) {
-        isElectron()
-          ? electronAlert.alertToast({
-              title: '워크스페이스명을 입력해주세요.',
-              icon: 'warning',
-            })
-          : /* -------------------------  */
-            /* 여기에 웹에서 쓸 alert 넣어주세요 */
-            console.log('');
-
-        /* -------------------------  */
+        toast.error('워크스페이스명을 입력해주세요.');
         inputWorkspaceRef.current?.focus();
-      }
-
-      if (name) {
+      } else {
         const response = await createWorkspace(formData);
         console.log(response);
         const workspaceId = response.data.id;

@@ -2,7 +2,6 @@ import styled from '@emotion/styled';
 import { getChannelList } from 'api/channelApi';
 import Icons from 'atoms/common/Icons';
 import Text from 'atoms/text/Text';
-import isElectron from 'is-electron';
 import Channels from 'molecules/sidemenu/Channels';
 import { BulrContainer } from 'organisms/meeting/video/ScreenShareModal';
 import ChannelDropDown from 'organisms/modal/channel/sidemenu/ChannelDropDown';
@@ -21,7 +20,6 @@ import {
 } from 'recoil/atom';
 import { channelListTypes } from 'types/channel/contentType';
 import Swal from 'sweetalert2';
-import { electronAlert } from 'utils/electronAlert';
 
 const Container = styled.div<{ isOpen: boolean }>`
   display: ${(props) => (props.isOpen ? 'block' : 'none')};
@@ -114,34 +112,21 @@ const ChannelSection = () => {
   const clickChannel = (id: string) => {
     if (location.pathname.includes('meeting')) {
       setIsBulr(true);
-      isElectron()
-        ? electronAlert
-            .alertConfirm({
-              title: '현재 미팅에 참여중입니다.',
-              text: '다른 채널 또는 워크스페이스로 이동하면 참여중인 미팅을 떠납니다. 정말 나가시겠습니까?',
-              icon: 'warning',
-            })
-            .then((result) => {
-              if (result.isConfirmed) {
-                handleClickChannel(id);
-              }
-              setIsBulr(false);
-            })
-        : Swal.fire({
-            title: '현재 미팅에 참여중입니다.',
-            text: '다른 채널 또는 워크스페이스로 이동하면 참여중인 미팅을 떠납니다. 정말 나가시겠습니까?',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: '확인',
-            cancelButtonText: '취소',
-          }).then((result) => {
-            if (result.isConfirmed) {
-              handleClickChannel(id);
-            }
-            setIsBulr(false);
-          });
+      Swal.fire({
+        title: '현재 미팅에 참여중입니다.',
+        text: '다른 채널 또는 워크스페이스로 이동하면 참여중인 미팅을 떠납니다. 정말 나가시겠습니까?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: '확인',
+        cancelButtonText: '취소',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          handleClickChannel(id);
+        }
+        setIsBulr(false);
+      });
     } else {
       handleClickChannel(id);
     }
