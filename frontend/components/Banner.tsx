@@ -107,9 +107,7 @@ const Banner = ({ OS, header }: BannerPropsType) => {
 
   const onDownload = () => {
     if (OS === "Windows") {
-      nav.push(
-        "https://tooliva402.s3.ap-northeast-2.amazonaws.com/tooliv-win32-ia32.zip"
-      );
+      nav.push("https://www.microsoft.com/store/productId/9NKJZGWHDTNN");
     }
   };
 
