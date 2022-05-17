@@ -6,6 +6,7 @@ export type videosTypes = {
   subscribers: Array<StreamManager>;
   isScreenSharing: boolean;
   isSpeakList: Array<string>;
+  isHideCam: boolean;
 };
 
 export type publisherVideoPropsType = {
