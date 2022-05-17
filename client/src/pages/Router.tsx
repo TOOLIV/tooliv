@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import LoadSpinner from 'atoms/common/LoadSpinner';
+import isElectron from 'is-electron';
 import React, { Suspense, lazy } from 'react';
 import {
   BrowserRouter,
@@ -8,6 +9,7 @@ import {
   Route,
   Routes,
 } from 'react-router-dom';
+import EnterpriseRoute from 'router/EnterpriseRoute';
 import Error from './Error';
 
 const Login = lazy(() => import('./Login'));
@@ -16,7 +18,6 @@ const Channel = lazy(() => import('./Channel'));
 const Meeting = lazy(() => import('./Meeting'));
 const UserManagePage = lazy(() => import('./UserManagePage'));
 const UserAuthPage = lazy(() => import('./UserAuthPage'));
-const Join = lazy(() => import('./Join'));
 const PrivateRoute = lazy(() => import('router/PrivateRoute'));
 const Main = lazy(() => import('./Main'));
 const EnterPriseTest = lazy(() => import('./EnterPriseTest'));
@@ -43,8 +44,19 @@ const AppRouter = () => {
         >
           <Routes>
             {/* <Route path="/" element={<Main />} /> */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/join" element={<Join />} />
+            {isElectron() ? (
+              <Route
+                path="/login"
+                element={
+                  <EnterpriseRoute
+                    outlet={<Login />}
+                    fallback={'enterprisetest'}
+                  />
+                }
+              />
+            ) : (
+              <Route path="/login" element={<Login />} />
+            )}
             <Route path="/enterprisetest" element={<EnterPriseTest />} />
             <Route
               path="/"
