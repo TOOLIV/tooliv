@@ -1,6 +1,6 @@
-import { alertToastType } from "types/common/electronAlertTypes"
+import { alertConfirmType, alertToastType } from "types/common/electronAlertTypes"
 
 export const electronAlert = {
     alertToast: async (opt: alertToastType) => window.ipcRenderer.invoke('ALERT_TOAST', opt),
-    // alertFrame: async () => window.ipcRenderer.invoke('A')
+    alertConfirm: async (opt: alertConfirmType) => window.ipcRenderer.invoke('ALERT_CONFIRM', opt)
 }

@@ -15,5 +15,6 @@ declare module '@emotion/react' {
     loginFormBgColor: string;
     dropdownHoverColor: string;
     selectedItemColor: string;
+    notiColor: string;
   }
 }
