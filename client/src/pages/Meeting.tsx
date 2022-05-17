@@ -395,12 +395,13 @@ const Meeting = () => {
         </ButtonContainer>
       )}
       <MeetingInnerContainer>
-        {publisher && !isHideCam && (
+        {publisher && (
           <Videos
             publisher={publisher}
             subscribers={subscribers}
             isScreenSharing={isScreenSharing}
             isSpeakList={isSpeakList}
+            isHideCam={isHideCam}
           />
         )}
         {mainStreamManager && (
