@@ -19,8 +19,8 @@ export const light: Theme = {
 };
 
 export const dark: Theme = {
-  bgColor: '#31363B',
-  sideBgColor: '#292D32',
+  bgColor: '#53585B',
+  sideBgColor: '#3A3E43',
   pointColor: colors.secondary,
   secondPointColor: colors.lightSecondary,
   lightPointColor: colors.lightSecondary,
