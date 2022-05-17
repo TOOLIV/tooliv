@@ -26,7 +26,6 @@ import { channelNotiType } from 'types/channel/contentType';
 import { getChannels, getDMList } from 'api/chatApi';
 import { DMInfoType } from 'types/channel/chatTypes';
 import { user } from 'recoil/auth';
-import Swal from 'sweetalert2';
 
 const Container = styled.div<{ isOpen: boolean }>`
   padding-top: 16px;
@@ -114,28 +113,6 @@ const WorkSpaceSection = () => {
     return channelId;
   };
 
-  // 미팅 중 워크스페이스 클릭시 이벤트
-  const clickWorkspace = (id: string) => {
-    if (location.pathname.includes('meeting')) {
-      Swal.fire({
-        title: '정말 이동하시겠습니까?',
-        text: '확인 버튼 클릭 시 화상미팅이 자동으로 종료됩니다.',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: '확인',
-        cancelButtonText: '취소',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          handleClickWorkspace(id);
-        }
-      });
-    } else {
-      handleClickWorkspace(id);
-    }
-  };
-
   const handleClickWorkspace = async (id: string) => {
     if (userLogList[id]) {
       // 워크스페이스별 마지막으로 접속한 채널
@@ -152,14 +129,6 @@ const WorkSpaceSection = () => {
         [id]: channelId,
       });
       setCurrentChannel(channelId);
-      // setWorkspaceList(
-      //   workspaceList.map((dto: any) => {
-      //     console.log(dto.id, id);
-      //     if (id === dto.id) {
-      //       return { ...dto, noti: false };
-      //     } else return dto;
-      //   })
-      // );
       navigate(`${id}/${channelId}`);
     }
   };
@@ -183,7 +152,10 @@ const WorkSpaceSection = () => {
           onClick={isTutorialOpen ? undefined : handleOpenModal}
         />
       </Header>
-      <WorkSpaces workspaceList={workspaceList} onClick={clickWorkspace} />
+      <WorkSpaces
+        workspaceList={workspaceList}
+        onClick={handleClickWorkspace}
+      />
       <WorkspaceModal isOpen={isOpen} onClose={handleCloseModal} />
     </Container>
   );

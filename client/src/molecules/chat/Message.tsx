@@ -20,6 +20,9 @@ import Button from 'atoms/common/Button';
 import { DMInfoType } from 'types/channel/chatTypes';
 import { createDMRoom } from 'api/chatApi';
 import Swal from 'sweetalert2';
+import isElectron from 'is-electron';
+import { electronAlert } from 'utils/electronAlert';
+import { BulrContainer } from 'organisms/meeting/video/ScreenShareModal';
 
 const Container = styled.div<{ isSearched?: boolean }>`
   width: 100%;
@@ -96,6 +99,7 @@ const Message = forwardRef<HTMLDivElement, contentTypes>(
     const setDirectName = useSetRecoilState<string>(dmName);
     const navigate = useNavigate();
     const { workspaceId } = useParams();
+    const [isBulr, setIsBulr] = useState(false);
 
     const fileTypes = ['.bmp', '.gif', '.jpg', '.png', '.jpeg', '.jfif'];
 
@@ -132,6 +136,7 @@ const Message = forwardRef<HTMLDivElement, contentTypes>(
         deleteChat(channelId, chatId);
       }
     };
+
     const handelModal = () => {
       setIsUpdateModalOpen((prev) => !prev);
     };
@@ -173,24 +178,39 @@ const Message = forwardRef<HTMLDivElement, contentTypes>(
 
     // 메시지 삭제 클릭시 이벤트
     const clickDeleteMessage = () => {
-      Swal.fire({
-        title: '메시지를 삭제하시겠습니까?',
-        text: '확인 버튼 클릭 시 메시지가 삭제됩니다.',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: '확인',
-        cancelButtonText: '취소',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          deleteMessage();
-        }
-      });
+      setIsBulr(true);
+      isElectron()
+        ? electronAlert
+            .alertConfirm({
+              title: '메세지 삭제 확인.',
+              text: '정말 메세지를 삭제하시겠습니까?',
+              icon: 'warning',
+            })
+            .then((result) => {
+              if (result.isConfirmed) {
+                deleteMessage();
+              }
+              setIsBulr(false);
+            })
+        : Swal.fire({
+            title: '메시지를 삭제하시겠습니까?',
+            text: '확인 버튼 클릭 시 메시지가 삭제됩니다.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '확인',
+            cancelButtonText: '취소',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              deleteMessage();
+            }
+          });
     };
 
     return (
       <>
+        {isBulr && <BulrContainer />}
         <Container isSearched={isSearched} ref={ref}>
           <ProfileContainer>
             <LeftWrapper>

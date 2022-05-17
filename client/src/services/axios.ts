@@ -17,7 +17,7 @@ if (isElectron() && baseURL) {
   });
 } else {
   instance = axios.create({
-    baseURL: window.env.BASE_URL + '/api',
+    baseURL: '/api',
     // TODO timeout 설정
     timeout: 30000,
     headers: {
@@ -79,7 +79,7 @@ instance.interceptors.response.use(
 );
 
 export const multipartInstance = axios.create({
-  baseURL: window.env.BASE_URL + '/api',
+  baseURL: '/api',
   // TODO timeout 설정
   timeout: 30000,
   headers: {

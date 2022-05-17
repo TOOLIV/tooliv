@@ -4,13 +4,16 @@ import { updateUserStatus } from 'api/userApi';
 import Icons from 'atoms/common/Icons';
 import Avatar from 'atoms/profile/Avatar';
 import Text from 'atoms/text/Text';
-import { forwardRef, useEffect } from 'react';
+import isElectron from 'is-electron';
+import { BulrContainer } from 'organisms/meeting/video/ScreenShareModal';
+import { forwardRef, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { memberStatus } from 'recoil/atom';
 import { user } from 'recoil/auth';
 import { userDropdownType } from 'types/common/userTypes';
 import Swal from 'sweetalert2';
+import { electronAlert } from 'utils/electronAlert';
 
 const Modal = styled.div<{ isOpen: boolean }>`
   display: none;
@@ -72,24 +75,39 @@ const UserDropdown = forwardRef<HTMLDivElement, userDropdownType>(
   ({ isOpen, onClose, openProfileConfig, openResetPwd }, ref) => {
     const [userInfo, setUserInfo] = useRecoilState(user);
     const [membersStatus, setMembersStatus] = useRecoilState(memberStatus);
+    const [isBulr, setIsBulr] = useState(false);
     const navigate = useNavigate();
 
     // 로그아웃 클릭시 이벤트
     const logoutClick = () => {
-      Swal.fire({
-        title: '로그아웃 하시겠습니까?',
-        // text: '확인 버튼 클릭 시 화상미팅이 자동으로 종료됩니다.',
-        icon: 'info',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: '확인',
-        cancelButtonText: '취소',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          logout();
-        }
-      });
+      setIsBulr(true);
+      isElectron()
+        ? electronAlert
+            .alertConfirm({
+              title: '로그아웃 확인',
+              text: '로그아웃 하시겠습니까?',
+              icon: 'warning',
+            })
+            .then((result) => {
+              if (result.isConfirmed) {
+                logout();
+              }
+              setIsBulr(false);
+            })
+        : Swal.fire({
+            title: '로그아웃 하시겠습니까?',
+            // text: '확인 버튼 클릭 시 화상미팅이 자동으로 종료됩니다.',
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '확인',
+            cancelButtonText: '취소',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              logout();
+            }
+          });
     };
 
     const logout = async () => {
@@ -142,6 +160,7 @@ const UserDropdown = forwardRef<HTMLDivElement, userDropdownType>(
 
     return (
       <Modal isOpen={isOpen} ref={ref}>
+        {isBulr && <BulrContainer />}
         <Container>
           <UserItem>
             <Avatar

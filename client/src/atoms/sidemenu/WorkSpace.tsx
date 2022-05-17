@@ -1,9 +1,13 @@
 import styled from '@emotion/styled';
 import Tooltip from 'atoms/tooltip/Tooltip';
-import { useParams } from 'react-router-dom';
+import isElectron from 'is-electron';
+import { BulrContainer } from 'organisms/meeting/video/ScreenShareModal';
+import { useState } from 'react';
+import { useLocation, useParams } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 import { currentWorkspace } from 'recoil/atom';
 import { workspaceListType } from 'types/workspace/workspaceTypes';
+import { electronAlert } from 'utils/electronAlert';
 
 const Wrapper = styled.div`
   display: flex;
@@ -65,15 +69,42 @@ const WorkSpace = ({
   noti,
 }: workspaceListType) => {
   const setCurrentWorkSpaceId = useSetRecoilState(currentWorkspace);
+  const [isBulr, setIsBulr] = useState(false);
+  const location = useLocation();
+  console.log(location.pathname.split('/')[1]);
   const { workspaceId } = useParams();
   const currentWorkSpace = workspaceId ? workspaceId : 'main';
   const handleClickWorkspace = () => {
-    setCurrentWorkSpaceId(id);
-    onClick(id);
+    if (location.pathname.split('/')[1] === 'meeting') {
+      setIsBulr(true);
+      isElectron()
+        ? electronAlert
+            .alertConfirm({
+              title: '현재 미팅에 참여중입니다.',
+              text: '다른 채널 또는 워크스페이스로 이동하면 참여중인 미팅을 떠납니다. 정말 나가시겠습니까?',
+              icon: 'warning',
+            })
+            .then((result) => {
+              if (result.isConfirmed) {
+                setCurrentWorkSpaceId(id);
+                onClick(id);
+              }
+              setIsBulr(false);
+            })
+        : /* -------------------------  */
+          /* 여기에 웹에서 쓸 alert 넣어주세요 */
+          console.log('');
+
+      /* -------------------------  */
+    } else {
+      setCurrentWorkSpaceId(id);
+      onClick(id);
+    }
   };
 
   return (
     <Wrapper>
+      {isBulr && <BulrContainer />}
       <Container
         isSelected={id === currentWorkSpace}
         thumbnail={thumbnailImage}

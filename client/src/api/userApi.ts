@@ -27,11 +27,6 @@ export const login = async (body: userLoginTypes) => {
   return response;
 };
 
-export const join = async (body: userCreationTypes) => {
-  const response = await instance.post(`/user`, body);
-  return response;
-};
-
 export const updateNickname = async (body: userNicknameType) => {
   const response = await instance.patch(`/user`, body);
   return response;

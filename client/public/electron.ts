@@ -77,3 +77,38 @@ app.on(
 ipcMain.handle('DESKTOP_CAPTURER_GET_SOURCES', (event, opts) =>
   desktopCapturer.getSources(opts)
 );
+
+const Alert = require('electron-alert');
+
+const alert = new Alert();
+
+let alertToastOpt = {
+  position: 'top',
+  timer: 3000,
+  showConfirmButton: false,
+};
+
+ipcMain.handle('ALERT_TOAST', (event, opt) =>
+  Alert.fireToast({
+    ...alertToastOpt,
+    title: opt.title,
+    icon: opt.icon,
+  })
+);
+
+let alertConfirmOpt = {
+  showCancelButton: true,
+};
+ipcMain.handle('ALERT_CONFIRM', (event, opt) =>
+  alert.fireFrameless(
+    {
+      ...alertConfirmOpt,
+      title: opt.title,
+      text: opt.text,
+      icon: opt.icon,
+    },
+    null,
+    true,
+    false
+  )
+);

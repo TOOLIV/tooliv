@@ -7,7 +7,19 @@ import { ButtonBox } from 'organisms/modal/sidemenu/WorkspaceModal';
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { colors } from 'shared/color';
-import { Container } from './Join';
+import bgImage from '../assets/img/wavy.svg';
+
+const Container = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: ${colors.lightPrimary};
+  height: 100vh;
+  background-image: url(${bgImage});
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 0 70px;
+`;
 
 const FormContainer = styled.div`
   width: 480px;
@@ -37,7 +49,7 @@ const EnterPriseTest = () => {
     const url = inputServerUrlRef.current?.value!;
 
     localStorage.setItem('baseURL', JSON.stringify({ name: name, url: url }));
-    navigate(`/main`);
+    navigate(`/login`);
     window.location.reload();
   };
   return (

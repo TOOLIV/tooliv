@@ -77,7 +77,7 @@ const ChannelsWrapper = styled.div`
 
 export const Noti = styled.div`
   font-size: 10px;
-  color: ${colors.gray700};
+  color: ${props => props.theme.notiColor};
 `;
 
 export const SideWrapper = styled.div`
