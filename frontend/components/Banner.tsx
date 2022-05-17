@@ -107,7 +107,7 @@ const Banner = ({ OS, header }: BannerPropsType) => {
 
   const onDownload = () => {
     if (OS === "Windows") {
-      nav.push("https://www.microsoft.com/store/productId/9NKJZGWHDTNN");
+      window.open("https://www.microsoft.com/store/productId/9NKJZGWHDTNN");
     }
   };
 
