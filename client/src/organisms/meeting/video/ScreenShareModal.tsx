@@ -4,13 +4,14 @@ import React, { useEffect, useState } from 'react';
 import { colors } from '../../../shared/color';
 import { screenShareMadalPropsTypes } from '../../../types/meeting/openviduTypes';
 
-const Container = styled.div`
+export const BulrContainer = styled.div`
   width: 100vw;
   height: 100vh;
   position: fixed;
   top: 0;
   left: 0;
   background-color: rgba(255, 255, 255, 0.7);
+  z-index: 1;
 `;
 
 const ModalContainer = styled.div`
@@ -125,7 +126,7 @@ const ScreenShareModal = ({
   };
 
   return (
-    <Container>
+    <BulrContainer>
       <ModalContainer>
         <Header>
           <Title>화면 목록</Title>
@@ -161,7 +162,7 @@ const ScreenShareModal = ({
             ))}
         </ListContainer>
       </ModalContainer>
-    </Container>
+    </BulrContainer>
   );
 };
 

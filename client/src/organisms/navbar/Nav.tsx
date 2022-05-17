@@ -26,7 +26,7 @@ import { DarkModeSwitch } from 'react-toggle-dark-mode';
 import UserDropdown from 'organisms/modal/user/UserDropdown';
 import UserConfigModal from 'organisms/modal/user/UserConfigModal';
 import { getChannels, getDMList, searchChat } from 'api/chatApi';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { DMInfoType } from 'types/channel/chatTypes';
 import { workspaceListType } from 'types/workspace/workspaceTypes';
 import { getWorkspaceList } from 'api/workspaceApi';
@@ -39,6 +39,9 @@ import { getUserStatus } from 'api/userApi';
 import { useInterval } from 'hooks/useInterval';
 import { useDebounce } from 'hooks/useHooks';
 import ResetPwdModal from 'organisms/modal/user/ResetPwdModal';
+import isElectron from 'is-electron';
+import { electronAlert } from 'utils/electronAlert';
+import { BulrContainer } from 'organisms/meeting/video/ScreenShareModal';
 
 const NavContainer = styled.div`
   padding: 0px 20px;
@@ -122,6 +125,8 @@ const Nav = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [keyword, setKeyword] = useState('');
   const debouncedValue = useDebounce<string>(keyword, 500);
+  const [isBulr, setIsBulr] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     setIsLoading(true);
@@ -242,12 +247,36 @@ const Nav = () => {
   }, [debouncedValue]);
 
   const handleNavigateMain = () => {
-    setCurrentWorkSpaceId('main');
-    navigate('/main');
+    if (location.pathname.split('/')[1] === 'meeting') {
+      setIsBulr(true);
+      isElectron()
+        ? electronAlert
+            .alertConfirm({
+              title: '현재 미팅에 참여중입니다.',
+              text: '홈으로 이동하면 참여중인 미팅을 떠납니다. 정말 나가시겠습니까?',
+              icon: 'warning',
+            })
+            .then((result) => {
+              if (result.isConfirmed) {
+                setCurrentWorkSpaceId('main');
+                navigate('/main');
+              }
+              setIsBulr(false);
+            })
+        : /* -------------------------  */
+          /* 여기에 웹에서 쓸 alert 넣어주세요 */
+          console.log('');
+
+      /* -------------------------  */
+    } else {
+      setCurrentWorkSpaceId('main');
+      navigate('/main');
+    }
   };
 
   return (
     <NavContainer>
+      {isBulr && <BulrContainer />}
       <LeftContainer onClick={handleNavigateMain}>
         <Logo />
         <TextWrapper>

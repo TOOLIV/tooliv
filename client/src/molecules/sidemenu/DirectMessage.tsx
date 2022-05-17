@@ -16,11 +16,14 @@ import {
   isTutorial,
   memberStatus,
 } from 'recoil/atom';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { css } from '@emotion/react';
 import { channelNotiType } from 'types/channel/contentType';
 import { userStatusInfoType } from 'types/common/userTypes';
 import { Header } from 'organisms/sidemenu/channel/ChannelSection';
+import isElectron from 'is-electron';
+import { electronAlert } from 'utils/electronAlert';
+import { BulrContainer } from 'organisms/meeting/video/ScreenShareModal';
 
 const FriendsContainer = styled.div`
   padding-left: 14px;
@@ -65,6 +68,8 @@ const DirectMessage = () => {
   const { workspaceId, channelId } = useParams();
   const membersStatus = useRecoilValue<userStatusInfoType>(memberStatus);
   const isTutorialOpen = useRecoilValue(isTutorial);
+  const [isBulr, setIsBulr] = useState(false);
+  const location = useLocation();
 
   const closeUserList = () => {
     setUserListOpen(false);
@@ -72,9 +77,37 @@ const DirectMessage = () => {
 
   return (
     <Container isOpen={isSideOpen}>
+      {isBulr && <BulrContainer />}
       <Header>
         <Text size={14}>개인 메시지</Text>
-        <Icons icon="plus" onClick={() => setUserListOpen(!userListOpen)} />
+        <Icons
+          icon="plus"
+          onClick={() => {
+            if (location.pathname.split('/')[1] === 'meeting') {
+              setIsBulr(true);
+              isElectron()
+                ? electronAlert
+                    .alertConfirm({
+                      title: '현재 미팅에 참여중입니다.',
+                      text: '새 대화를 생성하면 해당 대화로 이동하며 참여중인 미팅을 떠납니다. 정말 생성하시겠습니까?',
+                      icon: 'warning',
+                    })
+                    .then((result) => {
+                      if (result.isConfirmed) {
+                        setUserListOpen(!userListOpen);
+                      }
+                      setIsBulr(false);
+                    })
+                : /* -------------------------  */
+                  /* 여기에 웹에서 쓸 alert 넣어주세요 */
+                  console.log('');
+
+              /* -------------------------  */
+            } else {
+              setUserListOpen(!userListOpen);
+            }
+          }}
+        />
       </Header>
       <FriendsContainer>
         {isTutorialOpen ? (
@@ -98,8 +131,31 @@ const DirectMessage = () => {
             <FriendContainer
               key={dm.channelId}
               onClick={() => {
-                setDirectName(dm.receiveName);
-                navigate(`/direct/${workspaceId}/${dm.channelId}`);
+                if (location.pathname.split('/')[1] === 'meeting') {
+                  setIsBulr(true);
+                  isElectron()
+                    ? electronAlert
+                        .alertConfirm({
+                          title: '현재 미팅에 참여중입니다.',
+                          text: '개인 메세지로 이동하면 참여중인 미팅을 떠납니다. 정말 나가시겠습니까?',
+                          icon: 'warning',
+                        })
+                        .then((result) => {
+                          if (result.isConfirmed) {
+                            setDirectName(dm.receiveName);
+                            navigate(`/direct/${workspaceId}/${dm.channelId}`);
+                          }
+                          setIsBulr(false);
+                        })
+                    : /* -------------------------  */
+                      /* 여기에 웹에서 쓸 alert 넣어주세요 */
+                      console.log('');
+
+                  /* -------------------------  */
+                } else {
+                  setDirectName(dm.receiveName);
+                  navigate(`/direct/${workspaceId}/${dm.channelId}`);
+                }
               }}
               isSelected={channelId === dm.channelId}
             >

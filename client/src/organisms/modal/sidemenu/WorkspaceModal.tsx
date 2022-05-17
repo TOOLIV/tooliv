@@ -4,6 +4,7 @@ import { getChannelList } from 'api/channelApi';
 import { createWorkspace } from 'api/workspaceApi';
 import Button from 'atoms/common/Button';
 import Text from 'atoms/text/Text';
+import isElectron from 'is-electron';
 import InputBox from 'molecules/inputBox/InputBox';
 import FileUploader from 'molecules/uploader/FileUploader';
 import React, { useRef, useState } from 'react';
@@ -25,6 +26,7 @@ import {
   workspaceListType,
   workspaceModalType,
 } from 'types/workspace/workspaceTypes';
+import { electronAlert } from 'utils/electronAlert';
 
 const Modal = styled.div<{ isOpen: boolean }>`
   display: none;
@@ -106,7 +108,16 @@ const WorkspaceModal = ({ isOpen, onClose }: workspaceModalType) => {
     );
     try {
       if (!name) {
-        alert('워크스페이스명을 입력해주세요.');
+        isElectron()
+          ? electronAlert.alertToast({
+              title: '워크스페이스명을 입력해주세요.',
+              icon: 'warning',
+            })
+          : /* -------------------------  */
+            /* 여기에 웹에서 쓸 alert 넣어주세요 */
+            console.log('');
+
+        /* -------------------------  */
         inputWorkspaceRef.current?.focus();
       }
 

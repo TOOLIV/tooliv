@@ -81,11 +81,11 @@ var alertToastOpt = {
     showConfirmButton: false
 };
 electron_1.ipcMain.handle('ALERT_TOAST', function (event, opt) {
-    Alert.fireToast(__assign(__assign({}, alertToastOpt), { title: opt.title, icon: opt.icon }));
+    return Alert.fireToast(__assign(__assign({}, alertToastOpt), { title: opt.title, icon: opt.icon }));
 });
 var alertConfirmOpt = {
     showCancelButton: true
 };
 electron_1.ipcMain.handle('ALERT_CONFIRM', function (event, opt) {
-    alert.fireFrameless(__assign(__assign({}, alertConfirmOpt), { title: opt.title, text: opt.text, icon: opt.icon }), null, true, false);
+    return alert.fireFrameless(__assign(__assign({}, alertConfirmOpt), { title: opt.title, text: opt.text, icon: opt.icon }), null, true, false);
 });

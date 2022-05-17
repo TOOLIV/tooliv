@@ -151,3 +151,8 @@ export const workspaceCreateModalOpen = atom<boolean>({
   key: 'workspaceCreateModalOpen',
   default: false,
 });
+
+export const isBulr = atom<boolean>({
+  key: 'isBulr',
+  default: false,
+});

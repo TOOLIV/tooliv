@@ -2,12 +2,14 @@ import styled from '@emotion/styled';
 import { getChannelList } from 'api/channelApi';
 import Icons from 'atoms/common/Icons';
 import Text from 'atoms/text/Text';
+import isElectron from 'is-electron';
 import Channels from 'molecules/sidemenu/Channels';
+import { BulrContainer } from 'organisms/meeting/video/ScreenShareModal';
 import ChannelDropDown from 'organisms/modal/channel/sidemenu/ChannelDropDown';
 import ChannelModal from 'organisms/modal/sidemenu/ChannelModal';
 import PublicChannelListModal from 'organisms/modal/sidemenu/PublicChannelListModal';
 import React, { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
   currentChannel,
@@ -17,6 +19,7 @@ import {
   userLog,
 } from 'recoil/atom';
 import { channelListTypes } from 'types/channel/contentType';
+import { electronAlert } from 'utils/electronAlert';
 
 const Container = styled.div<{ isOpen: boolean }>`
   display: ${(props) => (props.isOpen ? 'block' : 'none')};
@@ -31,6 +34,8 @@ export const Header = styled.div`
 `;
 
 const ChannelSection = () => {
+  const [isBulr, setIsBulr] = useState(false);
+  const location = useLocation();
   const isSideOpen = useRecoilValue<boolean>(isOpenSide);
   const [isDropdownModalOpen, setIsDropdownModalOpen] = useState(false);
 
@@ -88,7 +93,29 @@ const ChannelSection = () => {
   };
 
   const openCreateChannelModal = () => {
-    setIsCreateChannelModalOpen(true);
+    if (location.pathname.split('/')[1] === 'meeting') {
+      setIsBulr(true);
+      isElectron()
+        ? electronAlert
+            .alertConfirm({
+              title: '현재 미팅에 참여중입니다.',
+              text: '새 채널을 생성하면 생성된 채널로 이동되며 참여중인 미팅을 떠납니다. 정말 생성하시겠습니까?',
+              icon: 'warning',
+            })
+            .then((result) => {
+              if (result.isConfirmed) {
+                setIsCreateChannelModalOpen(true);
+              }
+              setIsBulr(false);
+            })
+        : /* -------------------------  */
+          /* 여기에 웹에서 쓸 alert 넣어주세요 */
+          console.log('');
+
+      /* -------------------------  */
+    } else {
+      setIsCreateChannelModalOpen(true);
+    }
   };
 
   const closeCreateChannelModal = () => {
@@ -96,7 +123,29 @@ const ChannelSection = () => {
   };
 
   const openPublicChannelListModal = () => {
-    setIsPublicChannelModalOpen(true);
+    if (location.pathname.split('/')[1] === 'meeting') {
+      setIsBulr(true);
+      isElectron()
+        ? electronAlert
+            .alertConfirm({
+              title: '현재 미팅에 참여중입니다.',
+              text: '공개된 채널에 참여하면 해당 채널로 이동되며 참여중인 미팅을 떠납니다. 정말 참여하시겠습니까?',
+              icon: 'warning',
+            })
+            .then((result) => {
+              if (result.isConfirmed) {
+                setIsPublicChannelModalOpen(true);
+              }
+              setIsBulr(false);
+            })
+        : /* -------------------------  */
+          /* 여기에 웹에서 쓸 alert 넣어주세요 */
+          console.log('');
+
+      /* -------------------------  */
+    } else {
+      setIsPublicChannelModalOpen(true);
+    }
   };
 
   const closePublicChannelListModal = () => {
@@ -104,12 +153,39 @@ const ChannelSection = () => {
   };
 
   const handleClickChannel = (id: string) => {
-    setUserLogList({
-      ...userLogList,
-      [currentWorkspaceId]: id,
-    });
-    setCurrentChannelId(id);
-    navigate(`${currentWorkspaceId}/${id}`);
+    if (location.pathname.split('/')[1] === 'meeting') {
+      setIsBulr(true);
+      isElectron()
+        ? electronAlert
+            .alertConfirm({
+              title: '현재 미팅에 참여중입니다.',
+              text: '다른 채널 또는 워크스페이스로 이동하면 참여중인 미팅을 떠납니다. 정말 나가시겠습니까?',
+              icon: 'warning',
+            })
+            .then((result) => {
+              if (result.isConfirmed) {
+                setUserLogList({
+                  ...userLogList,
+                  [currentWorkspaceId]: id,
+                });
+                setCurrentChannelId(id);
+                navigate(`${currentWorkspaceId}/${id}`);
+              }
+              setIsBulr(false);
+            })
+        : /* -------------------------  */
+          /* 여기에 웹에서 쓸 alert 넣어주세요 */
+          console.log('');
+
+      /* -------------------------  */
+    } else {
+      setUserLogList({
+        ...userLogList,
+        [currentWorkspaceId]: id,
+      });
+      setCurrentChannelId(id);
+      navigate(`${currentWorkspaceId}/${id}`);
+    }
   };
 
   const handleClickOutside = ({ target }: any) => {
@@ -127,6 +203,7 @@ const ChannelSection = () => {
 
   return (
     <Container isOpen={isSideOpen}>
+      {isBulr && <BulrContainer />}
       <Header>
         <Text size={14}>채널</Text>
         <Icons icon="plus" onClick={openDropdownModal} />

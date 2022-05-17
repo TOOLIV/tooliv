@@ -1,8 +1,11 @@
 import styled from '@emotion/styled';
+import isElectron from 'is-electron';
 import React, { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { electronAlert } from 'utils/electronAlert';
 import FunctionButton from '../../molecules/meeting/FunctionButton';
 import { funcButtonPropsTypes } from '../../types/meeting/openviduTypes';
+import { BulrContainer } from './video/ScreenShareModal';
 
 const FucntionButtonsContainer = styled.div`
   display: flex;
@@ -19,11 +22,11 @@ const FunctionButtons = ({
   doScreenSharing,
   setDoStartScreenSharing,
   setDoStopScreenSharing,
-}: 
-funcButtonPropsTypes) => {
-
+}: funcButtonPropsTypes) => {
   const param = useParams();
   const navigate = useNavigate();
+  const [isBlur, setIsBulr] = useState(false);
+  const location = useLocation();
 
   const onhandleAudio = () => {
     if (isAudioOn) {
@@ -53,11 +56,29 @@ funcButtonPropsTypes) => {
   };
 
   const onleaveSession = () => {
-    navigate(`/${param.workspaceId}/${param.channelId}`)
+    setIsBulr(true);
+    isElectron()
+      ? electronAlert
+          .alertConfirm({
+            title: '현재 미팅에 참여중입니다.',
+            text: '참여중인 미팅을 나가시겠습니까?',
+            icon: 'warning',
+          })
+          .then((result) => {
+            if (result.isConfirmed) {
+              navigate(`/${param.workspaceId}/${param.channelId}`);
+            }
+            setIsBulr(false);
+          }) /* -------------------------  */
+      : /* 여기에 웹에서 쓸 alert 넣어주세요 */
+        console.log('');
+
+    /* -------------------------  */
   };
 
   return (
     <FucntionButtonsContainer>
+      {isBlur && <BulrContainer />}
       <FunctionButton
         icon={isAudioOn ? 'audioOn' : 'audioOff'}
         onClick={onhandleAudio}
