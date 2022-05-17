@@ -1,5 +1,5 @@
-import instance from 'services/axios';
+import { multipartInstance } from 'services/axios';
 
 export const fileUpload = async (files: FormData) => {
-  return await instance.post(`/fileUpload`, files);
+  return await multipartInstance.post(`/fileUpload`, files);
 };
