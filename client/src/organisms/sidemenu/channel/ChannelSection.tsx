@@ -93,29 +93,7 @@ const ChannelSection = () => {
   };
 
   const openCreateChannelModal = () => {
-    if (location.pathname.split('/')[1] === 'meeting') {
-      setIsBulr(true);
-      isElectron()
-        ? electronAlert
-            .alertConfirm({
-              title: '현재 미팅에 참여중입니다.',
-              text: '새 채널을 생성하면 생성된 채널로 이동되며 참여중인 미팅을 떠납니다. 정말 생성하시겠습니까?',
-              icon: 'warning',
-            })
-            .then((result) => {
-              if (result.isConfirmed) {
-                setIsCreateChannelModalOpen(true);
-              }
-              setIsBulr(false);
-            })
-        : /* -------------------------  */
-          /* 여기에 웹에서 쓸 alert 넣어주세요 */
-          console.log('');
-
-      /* -------------------------  */
-    } else {
-      setIsCreateChannelModalOpen(true);
-    }
+    setIsCreateChannelModalOpen(true);
   };
 
   const closeCreateChannelModal = () => {
@@ -123,29 +101,7 @@ const ChannelSection = () => {
   };
 
   const openPublicChannelListModal = () => {
-    if (location.pathname.split('/')[1] === 'meeting') {
-      setIsBulr(true);
-      isElectron()
-        ? electronAlert
-            .alertConfirm({
-              title: '현재 미팅에 참여중입니다.',
-              text: '공개된 채널에 참여하면 해당 채널로 이동되며 참여중인 미팅을 떠납니다. 정말 참여하시겠습니까?',
-              icon: 'warning',
-            })
-            .then((result) => {
-              if (result.isConfirmed) {
-                setIsPublicChannelModalOpen(true);
-              }
-              setIsBulr(false);
-            })
-        : /* -------------------------  */
-          /* 여기에 웹에서 쓸 alert 넣어주세요 */
-          console.log('');
-
-      /* -------------------------  */
-    } else {
-      setIsPublicChannelModalOpen(true);
-    }
+    setIsPublicChannelModalOpen(true);
   };
 
   const closePublicChannelListModal = () => {
