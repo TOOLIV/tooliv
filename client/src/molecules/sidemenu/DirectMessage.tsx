@@ -16,11 +16,12 @@ import {
   isTutorial,
   memberStatus,
 } from 'recoil/atom';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { css } from '@emotion/react';
 import { channelNotiType } from 'types/channel/contentType';
 import { userStatusInfoType } from 'types/common/userTypes';
 import { Header } from 'organisms/sidemenu/channel/ChannelSection';
+import Swal from 'sweetalert2';
 
 const FriendsContainer = styled.div`
   padding-left: 14px;
@@ -61,6 +62,7 @@ const DirectMessage = () => {
   const setDirectName = useSetRecoilState<string>(dmName);
   const notiList = useRecoilValue<channelNotiType[]>(channelNotiList);
   const map = new Map(notiList.map((el) => [el.channelId, el]));
+  const location = useLocation();
   const navigate = useNavigate();
   const { workspaceId, channelId } = useParams();
   const membersStatus = useRecoilValue<userStatusInfoType>(memberStatus);
@@ -70,6 +72,28 @@ const DirectMessage = () => {
     setUserListOpen(false);
   };
 
+  const clickDirectMessage = (id: string, name: string) => {
+    if (location.pathname.includes('meeting')) {
+      Swal.fire({
+        title: '정말 이동하시겠습니까?',
+        text: '확인 버튼 클릭 시 화상미팅이 자동으로 종료됩니다.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: '확인',
+        cancelButtonText: '취소',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          setDirectName(name);
+          navigate(`/direct/${workspaceId}/${id}`);
+        }
+      });
+    } else {
+      setDirectName(name);
+      navigate(`/direct/${workspaceId}/${id}`);
+    }
+  };
   return (
     <Container isOpen={isSideOpen}>
       <Header>
@@ -98,8 +122,7 @@ const DirectMessage = () => {
             <FriendContainer
               key={dm.channelId}
               onClick={() => {
-                setDirectName(dm.receiveName);
-                navigate(`/direct/${workspaceId}/${dm.channelId}`);
+                clickDirectMessage(dm.channelId, dm.receiveName);
               }}
               isSelected={channelId === dm.channelId}
             >

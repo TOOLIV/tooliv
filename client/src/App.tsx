@@ -32,7 +32,6 @@ function App() {
 
   // 브라우저 종료시 상태 OFFLINE으로 변경
   window.addEventListener('beforeunload', () => handleStatus('OFFLINE'));
-
   return (
     <>
       <ThemeProvider theme={mode === 'light' ? light : dark}>

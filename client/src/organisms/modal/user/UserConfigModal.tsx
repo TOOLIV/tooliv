@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { user } from 'recoil/auth';
 import { userConfigType } from 'types/common/userTypes';
+import Swal from 'sweetalert2';
 
 const Modal = styled.div<{ isOpen: boolean }>`
   display: none;
@@ -66,7 +67,7 @@ const AvatarBox = styled.div`
 `;
 
 const InputContainer = styled.div`
-  height: 30vh;
+  height: 200px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -112,9 +113,27 @@ const UserConfigModal = ({ isOpen, onClose }: userConfigType) => {
     setImgSrc(URL.createObjectURL(file[0]));
   };
 
+  // 프로필 수정 클릭시 이벤트
+  const updateProfileClick = () => {
+    Swal.fire({
+      title: '수정하시겠습니까?',
+      // text: '확인 버튼 클릭 시 화상미팅이 자동으로 종료됩니다.',
+      icon: 'info',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: '확인',
+      cancelButtonText: '취소',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        updateprofile();
+      }
+    });
+  };
+
   const updateprofile = async () => {
     if (!nickName) {
-      alert('닉네임을 확인해주세요.');
+      inputNickNameRef.current?.focus();
     } else {
       const formData = new FormData();
       formData.append('multipartFile', imgFile);
@@ -186,8 +205,8 @@ const UserConfigModal = ({ isOpen, onClose }: userConfigType) => {
             width="85"
             height="35"
             text="수정"
-            // disabled={inputRef.current?.value === ''}
-            onClick={updateprofile}
+            disabled={inputNickNameRef.current?.value === ''}
+            onClick={updateProfileClick}
           />
         </ButtonBox>
       </Container>

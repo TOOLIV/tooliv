@@ -4,7 +4,7 @@ import { getChannelList } from 'api/channelApi';
 import Icons from 'atoms/common/Icons';
 import WorkSpaces from 'molecules/sidemenu/WorkSpaces';
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
   channelNotiList,
@@ -13,6 +13,7 @@ import {
   currentWorkspace,
   DMList,
   isOpenSide,
+  isTutorial,
   modifyWorkspaceName,
   userLog,
   workspaceCreateModalOpen,
@@ -25,6 +26,7 @@ import { channelNotiType } from 'types/channel/contentType';
 import { getChannels, getDMList } from 'api/chatApi';
 import { DMInfoType } from 'types/channel/chatTypes';
 import { user } from 'recoil/auth';
+import Swal from 'sweetalert2';
 
 const Container = styled.div<{ isOpen: boolean }>`
   padding-top: 16px;
@@ -56,7 +58,10 @@ const WorkSpaceSection = () => {
     useRecoilState<channelNotiType[]>(channelNotiList);
   const [dMList, setDmList] = useRecoilState<DMInfoType[]>(DMList);
   const userInfo = useRecoilValue(user);
+  const isTutorialOpen = useRecoilValue(isTutorial);
+
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleOpenModal = () => {
     setIsOpen(true);
@@ -109,6 +114,28 @@ const WorkSpaceSection = () => {
     return channelId;
   };
 
+  // 미팅 중 워크스페이스 클릭시 이벤트
+  const clickWorkspace = (id: string) => {
+    if (location.pathname.includes('meeting')) {
+      Swal.fire({
+        title: '정말 이동하시겠습니까?',
+        text: '확인 버튼 클릭 시 화상미팅이 자동으로 종료됩니다.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: '확인',
+        cancelButtonText: '취소',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          handleClickWorkspace(id);
+        }
+      });
+    } else {
+      handleClickWorkspace(id);
+    }
+  };
+
   const handleClickWorkspace = async (id: string) => {
     if (userLogList[id]) {
       // 워크스페이스별 마지막으로 접속한 채널
@@ -151,12 +178,12 @@ const WorkSpaceSection = () => {
     <Container isOpen={isSideOpen}>
       <Header>
         <Text size={14}>워크스페이스</Text>
-        <Icons icon="plus" onClick={handleOpenModal} />
+        <Icons
+          icon="plus"
+          onClick={isTutorialOpen ? undefined : handleOpenModal}
+        />
       </Header>
-      <WorkSpaces
-        workspaceList={workspaceList}
-        onClick={handleClickWorkspace}
-      />
+      <WorkSpaces workspaceList={workspaceList} onClick={clickWorkspace} />
       <WorkspaceModal isOpen={isOpen} onClose={handleCloseModal} />
     </Container>
   );

@@ -19,6 +19,7 @@ import { DMList, dmName, isTutorial, memberStatus } from 'recoil/atom';
 import Button from 'atoms/common/Button';
 import { DMInfoType } from 'types/channel/chatTypes';
 import { createDMRoom } from 'api/chatApi';
+import Swal from 'sweetalert2';
 
 const Container = styled.div<{ isSearched?: boolean }>`
   width: 100%;
@@ -63,6 +64,7 @@ const RightWrapper = styled.div`
   justify-content: center;
   align-items: center;
   width: 12px;
+  cursor: pointer;
 `;
 
 const Message = forwardRef<HTMLDivElement, contentTypes>(
@@ -168,6 +170,25 @@ const Message = forwardRef<HTMLDivElement, contentTypes>(
         });
       }
     };
+
+    // 메시지 삭제 클릭시 이벤트
+    const clickDeleteMessage = () => {
+      Swal.fire({
+        title: '메시지를 삭제하시겠습니까?',
+        text: '확인 버튼 클릭 시 메시지가 삭제됩니다.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: '확인',
+        cancelButtonText: '취소',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          deleteMessage();
+        }
+      });
+    };
+
     return (
       <>
         <Container isSearched={isSearched} ref={ref}>
@@ -189,9 +210,7 @@ const Message = forwardRef<HTMLDivElement, contentTypes>(
             </LeftWrapper>
             {email === userInfo.email && !deleted && (
               <SideWrapper>
-                <RightWrapper onClick={deleteMessage}>
-                  {/* <div onClick={handelModal}>수정</div> */}
-                  {/* <Icons icon="delete" color="gray500" onClick={deleteMessage} /> */}
+                <RightWrapper onClick={clickDeleteMessage}>
                   <svg
                     fill={colors.gray500}
                     xmlns="http://www.w3.org/2000/svg"
