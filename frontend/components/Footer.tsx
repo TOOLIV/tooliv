@@ -106,7 +106,7 @@ const Footer = () => {
               <SubMenu>
                 <div className="title">DOWNLOAD</div>
                 <div className="item">COMMUNITY 다운로드</div>
-                <div className="item">ENTER PRISE 다운로드</div>
+                <div className="item">ENTERPRISE 다운로드</div>
               </SubMenu>
             </div>
             <div>

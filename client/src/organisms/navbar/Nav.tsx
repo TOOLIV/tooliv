@@ -12,6 +12,7 @@ import {
   channelContents,
   channelNotiList,
   chatMember,
+  currentWorkspace,
   DMList,
   dmMember,
   memberStatus,
@@ -37,6 +38,7 @@ import {
 import { getUserStatus } from 'api/userApi';
 import { useInterval } from 'hooks/useInterval';
 import { useDebounce } from 'hooks/useHooks';
+import ResetPwdModal from 'organisms/modal/user/ResetPwdModal';
 
 const NavContainer = styled.div`
   padding: 0px 20px;
@@ -99,6 +101,7 @@ const Nav = () => {
   const [mode, setMode] = useRecoilState(appThemeMode);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [profileConfigOpen, setProfileConfigOpen] = useState(false);
+  const [resetPwdOpen, setResetPwdOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [dMList, setDmList] = useRecoilState<DMInfoType[]>(DMList);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -109,6 +112,8 @@ const Nav = () => {
     useRecoilState<userStatusInfoType>(memberStatus);
   const [searchList, setSearchList] = useRecoilState<number[]>(searchResults);
   const [searchedIndex, setSearchedIndex] = useRecoilState<number>(searchIndex);
+  const setCurrentWorkSpaceId = useSetRecoilState(currentWorkspace);
+
   const contents = useRecoilValue<contentTypes[]>(channelContents);
 
   const { channelId } = useParams();
@@ -191,6 +196,13 @@ const Nav = () => {
     setProfileConfigOpen(false);
   };
 
+  const openResetPwd = () => {
+    setResetPwdOpen(true);
+  };
+  const closeResetPwd = () => {
+    setResetPwdOpen(false);
+  };
+
   // 모달창 밖 클릭시 close
   useEffect(() => {
     // 클릭 요소 체크
@@ -229,9 +241,14 @@ const Nav = () => {
     }
   }, [debouncedValue]);
 
+  const handleNavigateMain = () => {
+    setCurrentWorkSpaceId('main');
+    navigate('/main');
+  };
+
   return (
     <NavContainer>
-      <LeftContainer onClick={() => navigate('/')}>
+      <LeftContainer onClick={handleNavigateMain}>
         <Logo />
         <TextWrapper>
           <Text size={18} pointer color="secondary">
@@ -287,6 +304,7 @@ const Nav = () => {
             isOpen={dropdownOpen}
             onClose={closeDropdown}
             openProfileConfig={openProfileConfig}
+            openResetPwd={openResetPwd}
           />
         </DropdownWrapper>
       </RightContainer>
@@ -294,6 +312,7 @@ const Nav = () => {
         isOpen={profileConfigOpen}
         onClose={closeProfileConfig}
       />
+      <ResetPwdModal isOpen={resetPwdOpen} onClose={closeResetPwd} />
     </NavContainer>
   );
 };

@@ -12,12 +12,11 @@ import { DescriptionType } from "../components/Content";
 export const contexts: DescriptionType[] = [
   {
     id: 1,
-    title: "팀 만의 작업공간을 만들어 소통해 보세요.",
+    title: "팀별 작업 공간을 만들어 소통해 보세요.",
     description: [
-      "Tooliv에는 팀 만의 작업 공간을 만들어 업무를 진행할 수 있습니다.",
+      "Tooliv에서는 팀별 작업 공간을 만들어 업무를 진행할 수 있습니다.",
       "워크스페이스 내에서 그룹별로 새로운 채널을 개설하여",
-      "대화와 화상 미팅을 할 수 있습니다.",
-      "여러분의 공간에서 업무 효율을 높여보세요.",
+      "대화 및 화상 미팅을 진행할 수 있어요.",
     ],
     mainImage: sidemenu,
     subImage: workspace,
@@ -25,10 +24,10 @@ export const contexts: DescriptionType[] = [
   },
   {
     id: 2,
-    title: "채팅을 통해 팀원들고 대화하세요.",
+    title: "채팅을 통해 팀원들과 대화하세요.",
     description: [
-      "채널에 참여한 팀 구성원과 대화를 나눌 수 있습니다.",
-      "협업에 필요한 다양한 자료를 빠르게 공유하여 업무 효율을 높여보세요.",
+      "채널에 참여한 팀 구성원들과 대화를 나눌 수 있습니다.",
+      "협업에 필요한 다양한 자료를 빠르게 전송하여 업무 효율을 높여보세요.",
       "마크다운을 활용해 다양한 스타일로 대화를 나눠보세요.",
     ],
     mainImage: chat,
@@ -37,11 +36,11 @@ export const contexts: DescriptionType[] = [
   },
   {
     id: 3,
-    title: "미팅 룸으로 이동해 화상회의를 진행해보세요.",
+    title: "미팅룸으로 이동해 화상 회의를 진행해 보세요.",
     description: [
-      "미팅 룸에서는 화상회의를 할 수 있습니다.",
-      "팀 원들과 마주보며 소통하여 업무에 집중력을 높여보세요.",
-      "공유 해야하는 내용이 있다면 화면 공유를 이용해보세요.",
+      "화상 회의 채널은 캠을 이용한 비대면 미팅 공간이에요.",
+      "팀원들과 마주 보고 소통하여 업무 집중력을 높여보세요.",
+      "화면을 공유할 내용이 있다면 화면 공유 기능도 활용하세요.",
     ],
     mainImage: meeting,
     subImage: meetinggroup,

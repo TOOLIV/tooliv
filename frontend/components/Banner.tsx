@@ -134,7 +134,7 @@ const Banner = ({ OS, header }: BannerPropsType) => {
             </Button>
             <Button>
               <Download width={16} />
-              ENTER PRISE 다운로드
+              ENTERPRISE 다운로드
             </Button>
           </ButtonContainer>
           <WebShortcutsContainer onClick={shortcutsWeb}>

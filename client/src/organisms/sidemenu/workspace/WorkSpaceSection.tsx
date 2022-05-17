@@ -15,6 +15,7 @@ import {
   isOpenSide,
   modifyWorkspaceName,
   userLog,
+  workspaceCreateModalOpen,
   wsList,
 } from 'recoil/atom';
 import { workspaceListType } from 'types/workspace/workspaceTypes';
@@ -28,6 +29,7 @@ import { user } from 'recoil/auth';
 const Container = styled.div<{ isOpen: boolean }>`
   padding-top: 16px;
   display: ${(props) => (props.isOpen ? 'block' : 'none')};
+  height: 100px;
   margin-bottom: 10px;
 `;
 
@@ -47,6 +49,9 @@ const WorkSpaceSection = () => {
   const setCurrentChannel = useSetRecoilState(currentChannel);
   const [userLogList, setUserLogList] = useRecoilState(userLog);
   const modWorkspaceName = useRecoilValue(modifyWorkspaceName);
+  const [workspaceCreateOpen, setWorkspaceCreateOpen] = useRecoilState(
+    workspaceCreateModalOpen
+  );
   const [notiList, setNotiList] =
     useRecoilState<channelNotiType[]>(channelNotiList);
   const [dMList, setDmList] = useRecoilState<DMInfoType[]>(DMList);
@@ -136,6 +141,12 @@ const WorkSpaceSection = () => {
     if (curWorkspaceId) handleWorkspace();
   }, [curWorkspaceId, modWorkspaceName]);
 
+  useEffect(() => {
+    if (workspaceCreateOpen) {
+      setIsOpen(true);
+      setWorkspaceCreateOpen(false);
+    }
+  }, [workspaceCreateOpen]);
   return (
     <Container isOpen={isSideOpen}>
       <Header>

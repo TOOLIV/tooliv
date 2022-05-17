@@ -166,7 +166,11 @@ const Channels = ({
                 {map.get(channel.id)?.notificationRead && <Noti>●</Noti>}
               </NotiWrapper>
               <HoverIcon
-                onClick={() => handleClickModal(channel.id, i)}
+                onClick={
+                  i !== 0
+                    ? () => handleClickModal(channel.id, i)
+                    : () => alert('기본으로 생성되는 채널은 나갈 수 없습니다.')
+                }
                 ref={(ref) => {
                   if (ref !== null) refArray.current[i] = ref; // took this from your guide's example.
                 }}

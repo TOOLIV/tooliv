@@ -15,7 +15,6 @@ FROM nginx:alpine
 RUN rm -rf /usr/share/nginx/html/*
 COPY --from=builder /app/build /usr/share/nginx/html/
 COPY /nginx/nginx.conf /etc/nginx/conf.d
-COPY /docker/substitute-env-variables.sh /docker-entrypoint.d/
 
 EXPOSE 3000
 

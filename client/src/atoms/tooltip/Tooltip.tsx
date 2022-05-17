@@ -9,7 +9,8 @@ const Container = styled.div`
   width: 40px;
   height: 40px;
   flex: 0 0 auto;
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color: ${(props) => props.theme.sideBgColor};
+  color: ${(props) => props.theme.textColor};
   border-radius: 10px;
   position: absolute;
   text-align: center;
