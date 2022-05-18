@@ -100,7 +100,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public void checkEmail(String email) {
-        boolean emailExists = userRepository.existsByEmail(email);
+        boolean emailExists = userRepository.existsByEmailAndDeletedAt(email, null);
 
         if (emailExists) {
             throw new DuplicateEmailException("해당 이메일은 중복임");
