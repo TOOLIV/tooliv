@@ -6,7 +6,6 @@ type privateRouteTypes = {
 };
 const EnterpriseRoute = ({ fallback, outlet }: privateRouteTypes) => {
   const isEnterprise = localStorage.getItem('baseURL') ? true : false;
-  console.log(localStorage.getItem('baseURL'));
   if (!isEnterprise) {
     return <Navigate to={`/${fallback}`} />;
   }

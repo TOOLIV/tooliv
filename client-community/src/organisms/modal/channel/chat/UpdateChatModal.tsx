@@ -65,7 +65,6 @@ const UpdateChatModal = ({
   const [message, setMessage] = useState<string>(contents);
 
   const updateMessage = () => {
-    console.log(document.getElementById('edit'));
     // if (location.pathname.includes('/direct')) {
     //   updateDM({ accessToken, channelId, chatId, email, message: contents });
     // } else {
@@ -74,9 +73,6 @@ const UpdateChatModal = ({
     // onClose();
   };
 
-  const handleMessage = (e: any) => {
-    console.log(e);
-  };
   return (
     <Modal isOpen={isOpen}>
       <Container>

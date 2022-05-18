@@ -153,7 +153,6 @@ const WorkspaceAddMemberModal = forwardRef<
           setEndCheck(true);
           return;
         }
-        console.log(data);
         if (data) {
           const list = data.filter((user: workspaceMemberType) => {
             return userBadgeList.find((badge) => badge.email === user.email)
@@ -171,7 +170,6 @@ const WorkspaceAddMemberModal = forwardRef<
 
   useEffect(() => {
     if (workspaceId && isOpen) {
-      console.log('하이');
       initModal();
       userListApi(debouncedValue);
     }
@@ -239,9 +237,7 @@ const WorkspaceAddMemberModal = forwardRef<
         const newMember = body.emailList.length;
         setCurrentChannelMemberNum((prev) => prev + newMember);
         exitModal();
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) {}
     },
     [workspaceId]
   );

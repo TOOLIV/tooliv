@@ -88,9 +88,7 @@ const WorkspaceMemberListModal = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const { workspaceId } = useParams();
 
-  const handleDirectMessage = (email: string) => {
-    console.log(`${email}로 개인메시지 보내는 링크`);
-  };
+  const handleDirectMessage = (email: string) => {};
 
   const handleSearchUser = useCallback(
     async (keyword: string) => {
@@ -123,7 +121,6 @@ const WorkspaceMemberListModal = ({
   useEffect(() => {
     if (workspaceId && isOpen) {
       initModal();
-      console.log('init1');
       handleSearchUser(debouncedValue);
     }
   }, [debouncedValue]);

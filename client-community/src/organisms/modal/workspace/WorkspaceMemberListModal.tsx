@@ -89,7 +89,7 @@ const WorkspaceMemberListModal = ({
   const { workspaceId } = useParams();
 
   const handleDirectMessage = (email: string) => {
-    console.log(`${email}로 개인메시지 보내는 링크`);
+    // console.log(`${email}로 개인메시지 보내는 링크`);
   };
 
   const handleSearchUser = useCallback(

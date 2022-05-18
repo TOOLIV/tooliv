@@ -153,7 +153,6 @@ const WorkspaceAddMemberModal = forwardRef<
           setEndCheck(true);
           return;
         }
-        console.log(data);
         if (data) {
           const list = data.filter((user: workspaceMemberType) => {
             return userBadgeList.find((badge) => badge.email === user.email)
@@ -239,7 +238,7 @@ const WorkspaceAddMemberModal = forwardRef<
         setCurrentChannelMemberNum((prev) => prev + newMember);
         exitModal();
       } catch (error) {
-        console.log(error);
+        // console.log(error);
       }
     },
     [workspaceId]

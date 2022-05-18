@@ -1,8 +1,11 @@
 {
-  "name": "client",
+  "name": "client-enterprise",
   "main": "public/electron.js",
   "homepage": ".",
-  "version": "0.1.0",
+  "version": "2.3.0",
+  "description": "ToolivEnterprise",
+  "author": "TOOLIV",
+  "license": "MIT",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.9.0",
@@ -50,7 +53,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "start": "tsc ./public/electron.ts && concurrently \"cross-env npm run react-start\" \"wait-on http://localhost:3000 && electron .\"",
-    "build": "npm run react-build && electron-builder",
+    "build": "npm run react-build && electron-builder -w appx",
     "release": "npm run react-build && electron-builder --publish=always",
     "lint": "eslint './src**/*.{ts,tsx}'",
     "electron": "electron ."
@@ -86,8 +89,8 @@
     "wait-on": "^6.0.1"
   },
   "build": {
-    "productName": "Tooliv",
-    "appId": "com.tooliv.electron",
+    "productName": "ToolivEnterprise",
+    "appId": "63378TOOLIV.32956AC8036F0",
     "asar": true,
     "mac": {
       "target": [
@@ -101,9 +104,9 @@
     },
     "win": {
       "target": [
-        "nsis"
+        "default"
       ],
-      "icon": "build/icons/Tooliv.ico"
+      "icon": "build/appx/StoreLogo.png"
     },
     "nsis": {
       "oneClick": false,
@@ -115,9 +118,20 @@
       "shortcutName": "Tooliv",
       "uninstallDisplayName": "Tooliv"
     },
+    "appx": {
+      "identityName": "63378TOOLIV.32956AC8036F0",
+      "applicationId": "ToolivEnterprise",
+      "backgroundColor": "#222222",
+      "displayName": "ToolivEnterprise",
+      "languages": [
+        "ko-KR"
+      ],
+      "publisherDisplayName": "TOOLIV",
+      "publisher": "CN=FC08CA82-2721-4A4A-8575-3F0726716C9A"
+    },
     "directories": {
-      "buildResources": "./build/",
-      "output": "./dist/"
+      "buildResources": "build",
+      "output": "build"
     }
   },
   "proxy": "http://localhost:8080"

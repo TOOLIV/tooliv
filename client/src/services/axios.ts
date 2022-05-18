@@ -5,7 +5,6 @@ let instance: AxiosInstance;
 const baseURL = localStorage.getItem('baseURL');
 
 if (isElectron() && baseURL) {
-  console.log(JSON.parse(baseURL));
   instance = axios.create({
     baseURL: JSON.parse(baseURL).url + '/api',
     // TODO timeout 설정
@@ -57,18 +56,18 @@ instance.interceptors.response.use(
       switch (error.response.status) {
         /* 'JWT expired' exeption */
         case 400:
-          console.log('400 ERROR, not authorized.');
+          // console.log('400 ERROR, not authorized.');
           break;
         case 401:
-          console.log('401 ERROR, not authorized.');
+          // console.log('401 ERROR, not authorized.');
           // history.push('/login');
           localStorage.removeItem('tooliv_info');
           break;
         case 404:
-          console.log('404error!');
+          // console.log('404error!');
           break;
         case 409:
-          console.log('409error!');
+          // console.log('409error!');
           break;
         default:
       }

@@ -3,8 +3,7 @@ import Button from 'atoms/common/Button';
 import Text from 'atoms/text/Text';
 import InputBox from 'molecules/inputBox/InputBox';
 import { InputArea, TextBox } from 'organisms/login/LoginForm';
-import { ButtonBox } from 'organisms/modal/sidemenu/WorkspaceModal';
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { colors } from 'shared/color';
 import bgImage from '../assets/img/wavy.svg';
@@ -33,17 +32,17 @@ const FormContainer = styled.div`
   /* align-items: center; */
 `;
 
+const ButtonBox = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 80%;
+  margin: 0 auto;
+`;
+
 const EnterPriseTest = () => {
-  const [url, setUrl] = useState<string>('');
   const navigate = useNavigate();
   const inputServerNameRef = useRef<HTMLInputElement>(null);
   const inputServerUrlRef = useRef<HTMLInputElement>(null);
-  const onChange = (event: React.FormEvent<HTMLInputElement>) => {
-    const {
-      currentTarget: { value },
-    } = event;
-    setUrl(value);
-  };
   const onClick = () => {
     const name = inputServerNameRef.current?.value!;
     const url = inputServerUrlRef.current?.value!;

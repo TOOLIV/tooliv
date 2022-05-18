@@ -131,9 +131,7 @@ const ChannelHeader = () => {
       setChannelMemberNum(data.numOfPeople);
       setCurrentChannelMemberNum(data.numOfPeople);
       setChannelCode(data.channelCode);
-    } catch (error) {
-      console.log(error);
-    }
+    } 
   };
 
   const getUserCode = async () => {

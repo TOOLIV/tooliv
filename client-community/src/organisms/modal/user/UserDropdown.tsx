@@ -113,7 +113,6 @@ const UserDropdown = forwardRef<HTMLDivElement, userDropdownType>(
       };
 
       const response = await updateUserStatus(body);
-      console.log(response);
       setUserInfo({ ...userInfo, statusCode });
       onClose();
     };

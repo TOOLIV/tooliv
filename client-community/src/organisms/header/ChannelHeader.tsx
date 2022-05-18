@@ -132,7 +132,7 @@ const ChannelHeader = () => {
       setCurrentChannelMemberNum(data.numOfPeople);
       setChannelCode(data.channelCode);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 

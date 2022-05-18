@@ -41,6 +41,7 @@ const Info = styled.div`
   align-items: flex-end;
   padding-bottom: 30px;
   line-height: 1.5;
+  color: ${(props) => props.theme.textColor};
 `;
 
 const DM = () => {

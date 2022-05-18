@@ -137,7 +137,6 @@ const DirectMessageModal = ({ isOpen, onClose }: userDirectMessageType) => {
       try {
         const response = await getUserList(keyword, sequenceRef.current);
         const data = response.data.userInfoResponseDTOList;
-        console.log(data);
         if (data.length === 0) {
           setIsLoaded(false);
           setEndCheck(true);
@@ -146,7 +145,7 @@ const DirectMessageModal = ({ isOpen, onClose }: userDirectMessageType) => {
         setChannelMemberList((prev) => [...prev, ...data]);
         setSequence((prev) => prev + 1);
       } catch (error) {
-        console.log(error);
+        // console.log(error);
       }
     }
   }, []);
@@ -198,10 +197,6 @@ const DirectMessageModal = ({ isOpen, onClose }: userDirectMessageType) => {
       observer.observe(entry.target);
     }
   };
-
-  useEffect(() => {
-    console.log(channelMemberList);
-  }, [channelMemberList]);
 
   return (
     <Modal isOpen={isOpen}>

@@ -86,7 +86,6 @@ const WorkspaceModifyModal = ({
   };
 
   const handleSetImg = (file: FileList) => {
-    console.log(file);
     setFile(file[0]);
   };
 
@@ -94,7 +93,6 @@ const WorkspaceModifyModal = ({
   const modWorkspace = async () => {
     const formData = new FormData();
     const id = workspaceId;
-    console.log(file);
     formData.append('multipartFile', file!);
     formData.append(
       'modifyWorkspaceRequestDTO',
@@ -118,14 +116,13 @@ const WorkspaceModifyModal = ({
 
       if (name) {
         const response = await modifyWorkspace(formData);
-        console.log(response);
         setModifyWorkspaceName(name);
         inputWorkspaceRef.current!.value = '';
         setFile(undefined);
         onClose();
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
   return (

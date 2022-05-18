@@ -107,7 +107,6 @@ const UserConfigModal = ({ isOpen, onClose }: userConfigType) => {
 
   const handleUploadFile = async (event: any) => {
     const file = event.target.files;
-    console.log(file);
     setImgFile(file[0]);
     setImgSrc(URL.createObjectURL(file[0]));
   };

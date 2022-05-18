@@ -246,6 +246,6 @@ client.connect(
     sub();
   },
   (frame) => {
-    console.log('connect error');
+    // console.log('connect error');
   }
 );
