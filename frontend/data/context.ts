@@ -7,6 +7,10 @@ import chatgroup from "/public/assets/images/chatgroup.png";
 import imomeeting from "/public/assets/images/imomeeting.png";
 import meetinggroup from "/public/assets/images/meetinggroup.png";
 import meeting from "/public/assets/images/meeting.png";
+import guide from "/public/assets/images/guide.png";
+import setting from "/public/assets/images/setting.png";
+import protect from "/public/assets/images/protect.png";
+
 import { DescriptionType } from "../components/Content";
 
 export const contexts: DescriptionType[] = [
@@ -45,5 +49,19 @@ export const contexts: DescriptionType[] = [
     mainImage: meeting,
     subImage: meetinggroup,
     imoImage: imomeeting,
+  },
+  {
+    id: 4,
+    title: "ENTERPRISE Edition으로 소중한 데이터를 보호하세요.",
+    description: [
+      "TOOLIV는 기업을 위한 ENTERPRISE Edition 구축 방법을 제공하고 있어요.",
+      "ENTERPRISE Edition은 모든 비즈니스 데이터를 안전하게 보호할 수 있어요.",
+      "TOOLIV Github Repository를 clone 받고,",
+      "TOOLIV에서 제공하는 설치형 가이드를 통해 손쉽게 서버를 구축할 수 있어요.",
+    ],
+    mainImage: guide,
+    subImage: protect,
+    imoImage: setting,
+    link: "https://tooliv.gitbook.io/copy-of-tooliv-docs/guides/deployment",
   },
 ];
