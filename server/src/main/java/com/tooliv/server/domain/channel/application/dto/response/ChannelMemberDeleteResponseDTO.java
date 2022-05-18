@@ -11,14 +11,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 @ApiModel("ChannelDeleteResponseDTO")
-public class ChannelDeleteResponseDTO extends BaseResponseDTO {
+public class ChannelMemberDeleteResponseDTO extends BaseResponseDTO {
 
     @ApiModelProperty("공지사항 채널 ID")
     private String defaultChannelId;
 
-    public static ChannelDeleteResponseDTO of(String message, ChannelDeleteResponseDTO channelDeleteResponseDTO) {
-        channelDeleteResponseDTO.setMessage(message);
+    public static ChannelMemberDeleteResponseDTO of(String message, ChannelMemberDeleteResponseDTO channelMemberDeleteResponseDTO) {
+        channelMemberDeleteResponseDTO.setMessage(message);
 
-        return channelDeleteResponseDTO;
+        return channelMemberDeleteResponseDTO;
     }
 }
