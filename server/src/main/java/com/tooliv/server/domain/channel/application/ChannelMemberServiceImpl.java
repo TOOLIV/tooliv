@@ -1,6 +1,7 @@
 package com.tooliv.server.domain.channel.application;
 
 import com.tooliv.server.domain.channel.application.dto.request.RegisterChannelMemberRequestDTO;
+import com.tooliv.server.domain.channel.application.dto.response.ChannelDeleteResponseDTO;
 import com.tooliv.server.domain.channel.application.dto.response.ChannelInfoGetResponseDTO;
 import com.tooliv.server.domain.channel.application.dto.response.ChannelMemberCodeGetResponseDTO;
 import com.tooliv.server.domain.channel.application.dto.response.ChannelMemberGetResponseDTO;
@@ -72,14 +73,21 @@ public class ChannelMemberServiceImpl implements ChannelMemberService {
 
     @Transactional
     @Override
-    public void deleteChannelMember(String channelId, String email) {
+    public ChannelDeleteResponseDTO deleteChannelMember(String channelId, String email) {
         User user = userRepository.findByEmailAndDeletedAt(email, null)
             .orElseThrow(() -> new UserNotFoundException("회원 정보가 존재하지 않습니다."));
 
         Channel channel = channelRepository.findByIdAndDeletedAt(channelId, null)
             .orElseThrow(() -> new ChannelNotFoundException("채널 정보가 존재하지 않습니다."));
 
+        String currentWorkspaceId = channel.getWorkspace().getId();
+
+        Channel defaultChannel = channelRepository.findByWorkspaceIdAndName(currentWorkspaceId, "공지사항")
+            .orElseThrow(() -> new ChannelNotFoundException("공지사항 채널을 찾을 수 없습니다."));
+
         channelMembersRepository.deleteByUserAndChannel(user, channel);
+
+        return new ChannelDeleteResponseDTO(defaultChannel.getId());
     }
 
     @Override

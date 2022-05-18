@@ -5,6 +5,7 @@ import com.tooliv.server.domain.channel.application.ChannelService;
 import com.tooliv.server.domain.channel.application.dto.request.ModifyChannelRequestDTO;
 import com.tooliv.server.domain.channel.application.dto.request.RegisterChannelMemberRequestDTO;
 import com.tooliv.server.domain.channel.application.dto.request.RegisterChannelRequestDTO;
+import com.tooliv.server.domain.channel.application.dto.response.ChannelDeleteResponseDTO;
 import com.tooliv.server.domain.channel.application.dto.response.ChannelInfoGetResponseDTO;
 import com.tooliv.server.domain.channel.application.dto.response.ChannelListGetResponseDTO;
 import com.tooliv.server.domain.channel.application.dto.response.ChannelMemberCodeGetResponseDTO;
@@ -146,12 +147,14 @@ public class ChannelController {
     public ResponseEntity<? extends BaseResponseDTO> deleteChannelMember(
         @PathVariable("channelId") @Valid @ApiParam(value = "채널 ID", required = true) String channelId,
         @RequestParam @ApiParam(value = "이메일", required = true) String email) {
+        ChannelDeleteResponseDTO channelDeleteResponseDTO = null;
+
         try {
-            channelMemberService.deleteChannelMember(channelId, email);
+            channelDeleteResponseDTO = channelMemberService.deleteChannelMember(channelId, email);
         } catch (UserNotFoundException | ChannelNotFoundException e) {
             return ResponseEntity.status(404).body(BaseResponseDTO.of(e.getMessage()));
         }
-        return ResponseEntity.status(200).body(BaseResponseDTO.of("채널멤버 삭제 완료"));
+        return ResponseEntity.status(200).body(ChannelDeleteResponseDTO.of("채널멤버 삭제 완료", channelDeleteResponseDTO));
     }
 
     @GetMapping("/{channelId}/member/search")
