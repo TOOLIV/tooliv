@@ -131,21 +131,6 @@ const LoginForm = () => {
           회원가입
         </Text>
       </SignUpBox>
-      {isElectron() && (
-        <SignUpBox>
-          <Text size={12} color={'gray400'}>
-            기업용 서버 URL 변경
-          </Text>
-          <Text
-            size={12}
-            onClick={() => {
-              navigate('/enterprisetest');
-            }}
-          >
-            서버 변경
-          </Text>
-        </SignUpBox>
-      )}
     </Container>
   );
 };
