@@ -23,7 +23,7 @@ const Modal = styled.div<{ isOpen: boolean }>`
   :after {
     border-top: 10px solid transparent;
     border-left: 10px solid transparent;
-    border-right: 10px solid white;
+    border-right: 10px solid ${(props) => props.theme.bgColor};
     border-bottom: 10px solid transparent;
     content: '';
     position: absolute;

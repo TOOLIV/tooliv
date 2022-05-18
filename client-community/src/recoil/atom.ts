@@ -1,13 +1,8 @@
-import Stomp from 'stompjs';
 import { atom } from 'recoil';
 import { DMInfoType } from 'types/channel/chatTypes';
 import { FileTypes } from 'types/common/fileTypes';
 import { workspaceListType } from 'types/workspace/workspaceTypes';
-import {
-  channelListTypes,
-  channelNotiType,
-  contentTypes,
-} from '../types/channel/contentType';
+import { channelNotiType, contentTypes } from '../types/channel/contentType';
 import { ThemeMode } from '../types/common/themeTypes';
 import {
   userCreationTypes,
@@ -75,6 +70,11 @@ export const modifyChannelName = atom<string>({
 export const currentChannelNum = atom<number>({
   key: 'currentChannelNum',
   default: 0,
+});
+
+export const exitChannelId = atom<string>({
+  key: 'exitChannelId',
+  default: '',
 });
 
 export const userLog = atom<userLogTypes>({

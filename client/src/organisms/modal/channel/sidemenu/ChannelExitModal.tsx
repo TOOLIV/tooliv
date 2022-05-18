@@ -7,7 +7,12 @@ import { BulrContainer } from 'organisms/meeting/video/ScreenShareModal';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { currentChannelNum, currentWorkspace, userLog } from 'recoil/atom';
+import {
+  currentChannel,
+  currentChannelNum,
+  exitChannelId,
+  userLog,
+} from 'recoil/atom';
 import { user } from 'recoil/auth';
 import { exitChannelModalType } from 'types/channel/contentType';
 import Swal from 'sweetalert2';
@@ -61,8 +66,8 @@ const ChannelExitModal = ({
 }: exitChannelModalType) => {
   const { workspaceId } = useParams();
   const { email } = useRecoilValue(user);
-  const setCurrentWorkspaceId = useSetRecoilState(currentWorkspace);
-  const setCurrentChannelMemberNum = useSetRecoilState(currentChannelNum);
+  const setCurrentChannelId = useSetRecoilState(currentChannel);
+  const setExitChannelId = useSetRecoilState(exitChannelId);
   const [userLogList, setUserLogList] = useRecoilState(userLog);
   const [isBulr, setIsBulr] = useState(false);
   const navigate = useNavigate();
@@ -101,15 +106,15 @@ const ChannelExitModal = ({
     });
   };
   const exitChannel = async () => {
-    await deleteChannelMember(channelId!, email);
-    setCurrentChannelMemberNum((prev) => prev - 1);
-    setCurrentWorkspaceId('main');
-
-    if (workspaceId) {
-      let log = JSON.parse(JSON.stringify(userLogList));
-      setUserLogList(log);
-    }
-    navigate('/main');
+    const response = await deleteChannelMember(channelId!, email);
+    const nextChannelId = response.data.defaultChannelId;
+    setUserLogList({
+      ...userLogList,
+      [workspaceId!]: nextChannelId,
+    });
+    setExitChannelId(channelId!);
+    setCurrentChannelId(nextChannelId);
+    navigate(`${workspaceId}/${nextChannelId}`);
   };
 
   return (

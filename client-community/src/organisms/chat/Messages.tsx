@@ -1,27 +1,17 @@
 import styled from '@emotion/styled';
-import { createDMRoom } from 'api/chatApi';
-import UserProfileModal from 'organisms/modal/user/UserProfileModal';
 import React, { useEffect, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { user } from 'recoil/auth';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { colors } from 'shared/color';
-import { DMInfoType } from 'types/channel/chatTypes';
 import { FileTypes } from 'types/common/fileTypes';
 import { korDate } from 'utils/formatTime';
 import Message from '../../molecules/chat/Message';
 import {
   channelContents,
   chatFiles,
-  DMList,
-  dmName,
   searchIndex,
   searchResults,
 } from '../../recoil/atom';
-import {
-  channelMemberType,
-  contentTypes,
-} from '../../types/channel/contentType';
+import { contentTypes } from '../../types/channel/contentType';
 
 const Container = styled.div<{ isFile: boolean }>`
   width: calc(100% + 38px);
@@ -38,6 +28,7 @@ const Date = styled.div`
   color: ${colors.gray400};
 `;
 
+const MessageWrapper = styled.div``;
 const Messages = () => {
   const contents = useRecoilValue<contentTypes[]>(channelContents);
   const [files, setFiles] = useRecoilState<FileTypes[]>(chatFiles);
@@ -92,7 +83,7 @@ const Messages = () => {
               if (content.sendTime && content.sendTime.slice(0, 10) !== date) {
                 date = content.sendTime.slice(0, 10);
                 return (
-                  <>
+                  <MessageWrapper key={content.chatId}>
                     <Date>
                       {date.slice(0, 4)}년 {date.slice(5, 7)}월{' '}
                       {date.slice(8, 10)}일
@@ -103,14 +94,14 @@ const Messages = () => {
                           ? searchedMsgRef
                           : null
                       }
-                      key={content.chatId}
+                      // key={content.chatId}
                       {...content}
                       isSearched={
                         Number(content.chatId) === searchList[searchedIndex]
                       }
                       // setProfileModal={handleDirectMessage}
                     />
-                  </>
+                  </MessageWrapper>
                 );
               } else {
                 return (

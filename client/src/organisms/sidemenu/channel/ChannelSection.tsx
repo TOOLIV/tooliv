@@ -13,6 +13,7 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import {
   currentChannel,
   currentWorkspace,
+  exitChannelId,
   isOpenSide,
   isTutorial,
   modifyChannelName,
@@ -53,6 +54,7 @@ const ChannelSection = () => {
   const [listNum, setListNum] = useState(0);
   const currentWorkspaceId = useRecoilValue(currentWorkspace);
   const modChannelName = useRecoilValue(modifyChannelName);
+  const exitChannel = useRecoilValue(exitChannelId);
   const [currentChannelId, setCurrentChannelId] =
     useRecoilState(currentChannel);
   const [userLogList, setUserLogList] = useRecoilState(userLog);
@@ -83,7 +85,7 @@ const ChannelSection = () => {
     if (currentChannelId) {
       handleChannel();
     }
-  }, [currentChannelId, modChannelName]);
+  }, [currentChannelId, modChannelName, exitChannel]);
 
   const openDropdownModal = () => {
     setIsDropdownModalOpen(true);
