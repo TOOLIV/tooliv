@@ -89,6 +89,7 @@ const WorkSpace = ({
           setCurrentWorkSpaceId(id);
           onClick(id);
         }
+        setIsBulr(false);
       });
     } else {
       setCurrentWorkSpaceId(id);

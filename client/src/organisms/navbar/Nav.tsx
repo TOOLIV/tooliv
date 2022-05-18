@@ -254,6 +254,7 @@ const Nav = () => {
         if (result.isConfirmed) {
           handleNavigateMain();
         }
+        setIsBulr(false);
       });
     } else {
       handleNavigateMain();

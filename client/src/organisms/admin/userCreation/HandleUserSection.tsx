@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import Label from 'atoms/label/Label';
+import { useEffect } from 'react';
 import { useRecoilState } from 'recoil';
 import { deleteUser } from '../../../api/adminApi';
 import UserBadge from '../../../molecules/userBadge/UserBadge';
@@ -19,16 +20,20 @@ const UserList = styled.div`
 `;
 const HandleUserSection = () => {
   const [userList, setUserList] = useRecoilState(userCreationList);
-  console.log(userList);
   const onDelete = (email: string) => {
     setUserList(userList.filter((data) => data.email !== email));
     // 회원삭제 기능 구현
     handleDeleteUser(email);
   };
   const handleDeleteUser = async (email: string) => {
-    const response = await deleteUser(email);
-    console.log(response);
+    await deleteUser(email);
   };
+
+  useEffect(() => {
+    // setUserList([]);
+    console.log('test');
+    return setUserList([]);
+  }, []);
 
   return (
     <Container>

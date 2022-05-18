@@ -6,10 +6,7 @@ import Info from '../../../molecules/info/Info';
 
 const InfoBox = styled.div`
   display: flex;
-
-  & > div {
-    margin-right: 40px;
-  }
+  gap: 30px;
 `;
 const InfoSection = () => {
   const baseURL = localStorage.getItem('baseURL');
