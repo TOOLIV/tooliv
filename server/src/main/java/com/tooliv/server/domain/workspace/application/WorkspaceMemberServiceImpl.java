@@ -92,6 +92,13 @@ public class WorkspaceMemberServiceImpl implements WorkspaceMemberService {
             .orElseThrow(() -> new WorkspaceNotFoundException("워크스페이스 정보가 존재하지 않습니다."));
 
         workspaceMemberRepository.deleteByUserAndWorkspace(user, workspace);
+
+        long countOfMembers = workspaceMemberRepository.countByWorkspace(workspace);
+
+        if(countOfMembers == 0) {
+            workspace.deleteWorkspace();
+        }
+
     }
 
     @Override

@@ -46,4 +46,6 @@ public interface WorkspaceMemberRepository extends JpaRepository<WorkspaceMember
 
     Optional<WorkspaceMembers> findByWorkspaceAndUser(Workspace workspace, User user);
 
+    long countByWorkspace(Workspace workspace);
+
 }
