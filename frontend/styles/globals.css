@@ -2,7 +2,6 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family:'SUIT';
   /* font-size: 10px; */
 }
 @media screen and (min-width: 1024px) {
@@ -30,4 +29,5 @@ a {
 
 * {
   box-sizing: border-box;
+  font-family: 'SUIT';
 }

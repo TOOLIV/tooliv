@@ -96,7 +96,10 @@ const Footer = () => {
             </div>
             <div className="desc">
               <Github width="14" />
-              Github: https://github.com/TOOLIV/tooliv
+              Github:
+              <a href="https://github.com/TOOLIV/tooliv">
+                https://github.com/TOOLIV/tooliv
+              </a>
             </div>
           </div>
         </Intro>
