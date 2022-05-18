@@ -110,7 +110,6 @@ const ChannelHeader = () => {
   }, [memberListOpen]);
 
   useEffect(() => {
-    console.log(channelId);
     if (channelId) {
       if (location.pathname.includes('/direct')) {
         setChannelName(directName);
@@ -133,7 +132,7 @@ const ChannelHeader = () => {
       setCurrentChannelMemberNum(data.numOfPeople);
       setChannelCode(data.channelCode);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 

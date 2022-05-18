@@ -78,7 +78,7 @@ const ChannelModifyModal = ({
       setModifyChannelName(name);
       exitModal();
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   }, [channelId, name]);
 

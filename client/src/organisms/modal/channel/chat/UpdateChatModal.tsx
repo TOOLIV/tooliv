@@ -73,9 +73,6 @@ const UpdateChatModal = ({
     // onClose();
   };
 
-  const handleMessage = (e: any) => {
-    console.log(e);
-  };
   return (
     <Modal isOpen={isOpen}>
       <Container>

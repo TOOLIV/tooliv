@@ -106,15 +106,12 @@ const WorkspaceModifyModal = ({
 
       if (name) {
         const response = await modifyWorkspace(formData);
-        console.log(response);
         setModifyWorkspaceName(name);
         inputWorkspaceRef.current!.value = '';
         setFile(undefined);
         onClose();
       }
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
   return (
     <Modal isOpen={isOpen}>

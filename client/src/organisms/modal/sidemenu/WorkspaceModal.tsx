@@ -128,7 +128,6 @@ const WorkspaceModal = ({ isOpen, onClose }: workspaceModalType) => {
       }
     } catch (error) {
       toast.error('워크스페이스 생성에 실패하였습니다.');
-      console.log(error);
     }
   };
 

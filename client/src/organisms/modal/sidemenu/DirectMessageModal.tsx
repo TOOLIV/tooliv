@@ -148,9 +148,7 @@ const DirectMessageModal = ({ isOpen, onClose }: userDirectMessageType) => {
         }
         setChannelMemberList((prev) => [...prev, ...data]);
         setSequence((prev) => prev + 1);
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) {}
     }
   }, []);
 

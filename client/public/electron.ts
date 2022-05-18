@@ -35,9 +35,9 @@ const createWindow = () => {
       : `file://${path.join(__dirname, '../build/index.html')}`
   );
 
-  if (isDev) {
-    mainWindow.webContents.openDevTools({ mode: 'detach' });
-  }
+  // if (isDev) {
+  mainWindow.webContents.openDevTools();
+  // }
 
   mainWindow.setResizable(true);
 

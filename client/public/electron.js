@@ -41,9 +41,9 @@ var createWindow = function () {
     mainWindow.loadURL(isDev
         ? 'http://localhost:3000'
         : "file://".concat(path.join(__dirname, '../build/index.html')));
-    if (isDev) {
-        mainWindow.webContents.openDevTools({ mode: 'detach' });
-    }
+    // if (isDev) {
+    mainWindow.webContents.openDevTools();
+    // }
     mainWindow.setResizable(true);
     // Emitted when the window is closed.
     mainWindow.on('closed', function () { return (mainWindow = undefined); });

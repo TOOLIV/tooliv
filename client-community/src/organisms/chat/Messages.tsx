@@ -50,7 +50,6 @@ const Messages = () => {
 
   const scrollToBottom = () => {
     if (messageBoxRef.current) {
-      console.log(messageBoxRef.current.scrollHeight);
       // messageBoxRef.current.scrollTop = messageBoxRef.current.scrollHeight;
       messageBoxRef.current.scrollTo({
         top: messageBoxRef.current.scrollHeight,

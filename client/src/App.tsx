@@ -24,7 +24,6 @@ function App() {
       statusCode,
     };
     const response = await updateUserStatus(body);
-    console.log(response);
   };
 
   useEffect(() => {

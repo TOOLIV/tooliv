@@ -142,7 +142,7 @@ const ResetPwdModal = ({ isOpen, onClose }: userConfigType) => {
       exitModal();
       alert('비밀번호가 변경되었습니다.');
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 

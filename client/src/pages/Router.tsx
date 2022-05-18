@@ -9,7 +9,6 @@ import {
   Route,
   Routes,
 } from 'react-router-dom';
-import EnterpriseRoute from 'router/EnterpriseRoute';
 import Error from './Error';
 
 const Login = lazy(() => import('./Login'));
@@ -21,6 +20,8 @@ const UserAuthPage = lazy(() => import('./UserAuthPage'));
 const PrivateRoute = lazy(() => import('router/PrivateRoute'));
 const Main = lazy(() => import('./Main'));
 const EnterPriseTest = lazy(() => import('./EnterPriseTest'));
+const EnterPriseRoute = lazy(() => import('router/EnterpriseRoute'));
+
 const DM = lazy(() => import('./DM'));
 
 const Container = styled.div`
@@ -47,7 +48,7 @@ const AppRouter = () => {
               <Route
                 path="/login"
                 element={
-                  <EnterpriseRoute
+                  <EnterPriseRoute
                     outlet={<Login />}
                     fallback={'enterprisetest'}
                   />
