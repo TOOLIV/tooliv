@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import Head from "next/head";
+import Image from "next/image";
 import Banner, { BannerPropsType } from "../components/Banner";
 import Content, { DescriptionType } from "../components/Content";
 const contexts = require("/data/context.ts");
@@ -20,8 +21,6 @@ const Contents = styled.div`
 `;
 
 const Home = ({ OS, header }: BannerPropsType) => {
-  console.log(OS, header);
-
   return (
     <>
       <Head>
@@ -39,6 +38,7 @@ const Home = ({ OS, header }: BannerPropsType) => {
               subImage={data.subImage}
               description={data.description}
               title={data.title}
+              link={data.link}
             />
           ))}
         </Contents>
@@ -57,4 +57,3 @@ export const getServerSideProps = ({ req }: any) => {
 };
 
 export default Home;
-
