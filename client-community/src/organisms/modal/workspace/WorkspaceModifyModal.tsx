@@ -140,7 +140,11 @@ const WorkspaceModifyModal = ({
           ref={inputWorkspaceRef}
           onChange={onChange}
         />
-        <FileUploader file={file!} onChange={handleSetImg} thumbnailImage="" />
+        <FileUploader
+          file={file!}
+          onChange={handleSetImg}
+          thumbnailImage={thumbnailImage}
+        />
         <ButtonBox>
           <Button
             width="125"
