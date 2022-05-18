@@ -108,6 +108,7 @@ const ChannelExitModal = ({
   const exitChannel = async () => {
     const response = await deleteChannelMember(channelId!, email);
     const nextChannelId = response.data.defaultChannelId;
+    console.log(response);
     setUserLogList({
       ...userLogList,
       [workspaceId!]: nextChannelId,

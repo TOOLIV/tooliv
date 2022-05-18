@@ -125,13 +125,11 @@ const ChannelHeader = () => {
   }, [channelId, modChannelName, currentChannelMemberNum]);
 
   const handleChannelInfo = async () => {
-    try {
-      const { data } = await getChannelInfo(channelId!);
-      setChannelName(data.name);
-      setChannelMemberNum(data.numOfPeople);
-      setCurrentChannelMemberNum(data.numOfPeople);
-      setChannelCode(data.channelCode);
-    } 
+    const { data } = await getChannelInfo(channelId!);
+    setChannelName(data.name);
+    setChannelMemberNum(data.numOfPeople);
+    setCurrentChannelMemberNum(data.numOfPeople);
+    setChannelCode(data.channelCode);
   };
 
   const getUserCode = async () => {

@@ -37,6 +37,8 @@ const Date = styled.div`
   color: ${colors.gray400};
 `;
 
+const MessageWrapper = styled.div``;
+
 const Messages = () => {
   const contents = useRecoilValue<contentTypes[]>(channelContents);
   const [files, setFiles] = useRecoilState<FileTypes[]>(chatFiles);
@@ -89,7 +91,7 @@ const Messages = () => {
               if (content.sendTime && content.sendTime.slice(0, 10) !== date) {
                 date = content.sendTime.slice(0, 10);
                 return (
-                  <>
+                  <MessageWrapper key={content.chatId}>
                     <Date>
                       {date.slice(0, 4)}년 {date.slice(5, 7)}월{' '}
                       {date.slice(8, 10)}일
@@ -100,14 +102,13 @@ const Messages = () => {
                           ? searchedMsgRef
                           : null
                       }
-                      key={content.chatId}
                       {...content}
                       isSearched={
                         Number(content.chatId) === searchList[searchedIndex]
                       }
                       // setProfileModal={handleDirectMessage}
                     />
-                  </>
+                  </MessageWrapper>
                 );
               } else {
                 return (
