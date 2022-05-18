@@ -217,7 +217,7 @@ const ChannelHeader = () => {
           </Members>
           <Icons icon="solidVideoOn" width="28" height="28" />
         </MemberListWrapper>
-      ) : currentWorkspaceId !== 'main' &&
+      ) : !location.pathname.includes('/main') &&
         !location.pathname.includes('/direct') ? (
         <MemberListWrapper ref={memberListRef}>
           <Members

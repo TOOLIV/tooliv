@@ -91,6 +91,7 @@ const DirectMessage = () => {
           setDirectName(name);
           navigate(`/direct/${workspaceId}/${id}`);
         }
+        setIsBulr(false);
       });
     } else {
       setDirectName(name);

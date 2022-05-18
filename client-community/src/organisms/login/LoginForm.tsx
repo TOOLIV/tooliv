@@ -118,6 +118,19 @@ const LoginForm = () => {
         />
       </InputArea>
       <Button width="350" text="로그인" onClick={handleLogin} />
+      <SignUpBox>
+        <Text size={12} color={'gray400'}>
+          TOOLIV이 처음이신가요?
+        </Text>
+        <Text
+          size={12}
+          onClick={() => {
+            navigate('/join');
+          }}
+        >
+          회원가입
+        </Text>
+      </SignUpBox>
       {isElectron() && (
         <SignUpBox>
           <Text size={12} color={'gray400'}>

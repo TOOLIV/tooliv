@@ -125,6 +125,7 @@ const ChannelSection = () => {
         if (result.isConfirmed) {
           handleClickChannel(id);
         }
+        setIsBulr(false);
       });
     } else {
       handleClickChannel(id);

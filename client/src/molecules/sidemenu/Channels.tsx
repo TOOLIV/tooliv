@@ -11,6 +11,7 @@ import { channelNotiType, channelsType } from 'types/channel/contentType';
 import Icons from '../../atoms/common/Icons';
 import Label from '../../atoms/common/Label';
 import ChannelLabel from '../../atoms/label/Label';
+import { toast } from 'react-toastify';
 export const TopContainer = styled.div`
   display: flex;
   padding: 16px 0;
@@ -77,7 +78,7 @@ const ChannelsWrapper = styled.div`
 
 export const Noti = styled.div`
   font-size: 10px;
-  color: ${props => props.theme.notiColor};
+  color: ${(props) => props.theme.notiColor};
 `;
 
 export const SideWrapper = styled.div`
@@ -105,10 +106,6 @@ const Channels = ({
   const handleClickModal = (id: string, index: number) => {
     setClickChannelId(id);
     setExitModalOpen(true);
-    console.log(index);
-    console.log(refArray.current[index].getBoundingClientRect());
-    // console.log(e);
-    // console.log(e.getBoundingClientRect());
     setTop(refArray.current[index].getBoundingClientRect().top - 70);
     setLeft(refArray.current[index].getBoundingClientRect().left + 40);
   };
@@ -158,7 +155,7 @@ const Channels = ({
                 onClick={
                   i !== 0
                     ? () => handleClickModal(channel.id, i)
-                    : () => alert('기본으로 생성되는 채널은 나갈 수 없습니다.')
+                    : () => toast.error('해당 채널은 나갈 수 없습니다.')
                 }
                 ref={(ref) => {
                   if (ref !== null) refArray.current[i] = ref; // took this from your guide's example.

@@ -147,7 +147,6 @@ const ChannelAddMemberModal = ({
           setEndCheck(true);
           return;
         }
-        console.log(data);
         if (data) {
           const list = data.filter((user: channelMemberType) => {
             return userBadgeList.find((badge) => badge.email === user.email)

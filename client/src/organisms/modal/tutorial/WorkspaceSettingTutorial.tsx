@@ -7,7 +7,7 @@ import { ReactComponent as Cover } from 'assets/img/workspaceSetting.svg';
 import { tutorialModalType } from 'types/workspace/workspaceTypes';
 import ProgressBar from '@ramonak/react-progress-bar';
 import { colors } from 'shared/color';
-
+import src from '../../../assets/gif/workspaceFunc.gif';
 const Modal = styled.div<{ isOpen: boolean }>`
   display: none;
   position: absolute;
@@ -93,6 +93,11 @@ const Contents = styled.div`
   flex-direction: column;
   gap: 5px;
 `;
+
+const Img = styled.img`
+  width: 250px;
+  height: 150px;
+`;
 const WorkspaceSettingTutorial = ({
   isOpen,
   onClose,
@@ -115,8 +120,8 @@ const WorkspaceSettingTutorial = ({
         </Header>
 
         <ChannelBox>
-          <Cover width={150} height={170} />
-          {/* <Img src={src} alt="이미지" /> */}
+          {/* <Cover width={150} height={170} /> */}
+          <Img src={src} alt="이미지" />
           <Text size={14} weight="bold">
             워크스페이스를 클릭하여 다양한 기능을 진행하세요.
           </Text>

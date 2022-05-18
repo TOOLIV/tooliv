@@ -59,15 +59,13 @@ const FindUserSection = () => {
         return;
       }
       setFlag(true);
-      console.log(userList);
       setUserList((prev) => [...prev, ...data]);
       setSequence((prev) => prev + 1);
     }
   };
 
   const userCodeApi = async (body: userCodeTypes) => {
-    const response = await changeCode(body);
-    console.log(response);
+    await changeCode(body);
   };
 
   const onDelete = (email: string) => {
@@ -75,12 +73,11 @@ const FindUserSection = () => {
   };
 
   const handleDeleteUser = async (email: string) => {
-    const response = await deleteUser(email);
+    await deleteUser(email);
     initData();
   };
 
   const initData = useCallback(() => {
-    console.log('init!');
     setSequence(1);
     setEndCheck(false);
     setUserList([]);
@@ -97,7 +94,6 @@ const FindUserSection = () => {
     let observer: any;
     // 스크롤이 마지막에 도달할 경우
     if (target) {
-      console.log('스크롤');
       observer = new IntersectionObserver(onIntersect, {
         threshold: 0.2,
       });

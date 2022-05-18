@@ -7,6 +7,7 @@ import { ReactComponent as Cover } from 'assets/img/channelMember.svg';
 import { tutorialModalType } from 'types/workspace/workspaceTypes';
 import ProgressBar from '@ramonak/react-progress-bar';
 import { colors } from 'shared/color';
+import src from '../../../assets/gif/inviteChannelMember.gif';
 
 const Modal = styled.div<{ isOpen: boolean }>`
   display: none;
@@ -86,6 +87,12 @@ const Progress = styled.div`
   align-items: center;
   gap: 10px;
 `;
+
+const Img = styled.img`
+  width: 250px;
+  height: 150px;
+`;
+
 const ChannelMemberTutorial = ({
   isOpen,
   onClose,
@@ -108,8 +115,8 @@ const ChannelMemberTutorial = ({
         </Header>
 
         <ChannelBox>
-          <Cover width={150} height={170} />
-          {/* <Img src={src} alt="이미지" /> */}
+          {/* <Cover width={150} height={170} /> */}
+          <Img src={src} alt="이미지" />
           <Text size={14}>채널 멤버 조회 및 초대를 해보세요.</Text>
           <Text size={13} color="gray500">
             채널에 속한 멤버를 조회하거나, 워크스페이스 내의 멤버를 채널로
