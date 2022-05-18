@@ -1,8 +1,11 @@
 {
-  "name": "client",
+  "name": "client-community",
   "main": "public/electron.js",
   "homepage": ".",
-  "version": "0.1.0",
+  "version": "1.3.0",
+  "author": "TOOLIV",
+  "description": "TOOLIV",
+  "license": "MIT",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.9.0",
@@ -84,8 +87,8 @@
     "wait-on": "^6.0.1"
   },
   "build": {
-    "productName": "Tooliv",
-    "appId": "com.tooliv.electron",
+    "productName": "TOOLIV",
+    "appId": "63378TOOLIV.TOOLIV",
     "asar": true,
     "mac": {
       "target": [
@@ -114,8 +117,8 @@
       "uninstallDisplayName": "Tooliv"
     },
     "directories": {
-      "buildResources": "./build/",
-      "output": "./dist/"
+      "buildResources": "build",
+      "output": "build"
     }
   },
   "proxy": "http://localhost:8080"
