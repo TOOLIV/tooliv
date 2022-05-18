@@ -114,7 +114,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         Workspace workspace = workspaceRepository.findById(modifyWorkspaceRequestDTO.getId())
             .orElseThrow(() -> new WorkspaceNotFoundException("해당 워크스페이스를 찾을 수 없습니다."));
 
-        String fileName = null;
+        String fileName = workspace.getThumbnailImage();
         if (multipartFile != null) {
             fileName = awsS3Service.uploadFile(multipartFile);
         }
