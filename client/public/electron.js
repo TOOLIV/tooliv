@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 exports.__esModule = true;
 var electron_1 = require("electron");
 var isDev = require("electron-is-dev");
@@ -61,4 +72,20 @@ electron_1.app.on('certificate-error', function (event, webContents, url, error,
 });
 electron_1.ipcMain.handle('DESKTOP_CAPTURER_GET_SOURCES', function (event, opts) {
     return electron_1.desktopCapturer.getSources(opts);
+});
+var Alert = require('electron-alert');
+var alert = new Alert();
+var alertToastOpt = {
+    position: 'top',
+    timer: 3000,
+    showConfirmButton: false
+};
+electron_1.ipcMain.handle('ALERT_TOAST', function (event, opt) {
+    return Alert.fireToast(__assign(__assign({}, alertToastOpt), { title: opt.title, icon: opt.icon }));
+});
+var alertConfirmOpt = {
+    showCancelButton: true
+};
+electron_1.ipcMain.handle('ALERT_CONFIRM', function (event, opt) {
+    return alert.fireFrameless(__assign(__assign({}, alertConfirmOpt), { title: opt.title, text: opt.text, icon: opt.icon }), null, true, false);
 });

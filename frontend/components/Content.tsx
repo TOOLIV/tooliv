@@ -4,6 +4,7 @@ import Image, { StaticImageData } from "next/image";
 import { abort } from "process";
 import React from "react";
 import { useMediaQuery } from "react-responsive";
+import Rightarrow from "/public/assets/images/arrow-right-solid.svg";
 
 const StyledContent = styled.div<{ c: number }>`
   display: flex;
@@ -11,7 +12,7 @@ const StyledContent = styled.div<{ c: number }>`
   gap: 30px;
   width: 100%;
   @media screen and (max-width: 768px) {
-    height: 600px;
+    height: 650px;
   }
   background-color: ${(props) => (props.c % 2 === 0 ? "#f8f8f8" : "")};
 `;
@@ -78,6 +79,13 @@ const Desc = styled.div`
     gap: 5px;
     font-size: 16px;
   }
+  .link {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-weight: 700;
+    font-size: 16px;
+  }
   @media screen and (max-width: 950px) {
     width: 100%;
   }
@@ -90,6 +98,7 @@ export type DescriptionType = {
   mainImage: StaticImageData;
   imoImage: StaticImageData;
   subImage: StaticImageData;
+  link?: string;
 };
 
 const Content = ({
@@ -99,6 +108,7 @@ const Content = ({
   imoImage,
   subImage,
   description,
+  link,
 }: DescriptionType) => {
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 768px)" });
   const isTabletOrLaptop = useMediaQuery({ query: "(min-width: 950px)" });
@@ -116,6 +126,11 @@ const Content = ({
                 <div key={idx}>{desc}</div>
               ))}
             </div>
+            {link && (
+              <a href={link} className="link">
+                설치형 가이드 바로가기 <Rightarrow width="16px" />
+              </a>
+            )}
           </Desc>
         )}
         <DescImageContainer>
@@ -188,6 +203,11 @@ const Content = ({
                 <div key={idx}>{desc}</div>
               ))}
             </div>
+            {link && (
+              <a href={link} className="link">
+                설치형 가이드 바로가기 <Rightarrow width="16px" />
+              </a>
+            )}
           </Desc>
         )}
       </InnerContainer>

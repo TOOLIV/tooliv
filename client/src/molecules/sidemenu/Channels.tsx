@@ -77,7 +77,7 @@ const ChannelsWrapper = styled.div`
 
 export const Noti = styled.div`
   font-size: 10px;
-  color: ${colors.gray700};
+  color: ${props => props.theme.notiColor};
 `;
 
 export const SideWrapper = styled.div`
@@ -101,19 +101,6 @@ const Channels = ({
   const map = new Map(notiList.map((el) => [el.channelId, el]));
   const refArray = useRef<HTMLDivElement[]>([]);
   const isTutorialOpen = useRecoilValue(isTutorial);
-
-  const handleClickOutside = ({ target }: any) => {
-    if (exitModalOpen && !exitModalRef.current?.contains(target)) {
-      setExitModalOpen(false);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [exitModalOpen]);
 
   const handleClickModal = (id: string, index: number) => {
     setClickChannelId(id);
@@ -150,7 +137,6 @@ const Channels = ({
             <ChannelContainer
               key={channel.id}
               isSelected={channel.id === channelId}
-              ref={exitModalRef}
             >
               <NotiWrapper onClick={() => onClick(channel.id)}>
                 <InnerContainer>
@@ -190,7 +176,6 @@ const Channels = ({
           <ChannelContainer
             key={channel.id}
             isSelected={channel.id === channelId}
-            ref={exitModalRef}
           >
             <NotiWrapper onClick={() => onClick(channel.id)}>
               <InnerContainer>
@@ -221,6 +206,7 @@ const Channels = ({
       </ChannelsWrapper>
       <ChannelExitModal
         isOpen={exitModalOpen}
+        onClose={() => setExitModalOpen(false)}
         channelId={clickChannelId}
         top={top}
         left={left}

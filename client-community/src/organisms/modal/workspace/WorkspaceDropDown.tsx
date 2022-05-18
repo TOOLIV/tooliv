@@ -2,12 +2,14 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { deleteWorkspaceMember } from 'api/workspaceApi';
 import Text from 'atoms/text/Text';
-import { useEffect } from 'react';
+import { BulrContainer } from 'organisms/meeting/video/ScreenShareModal';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { currentWorkspace } from 'recoil/atom';
 import { user } from 'recoil/auth';
 import { workspaceDropdownType } from 'types/workspace/workspaceTypes';
+import Swal from 'sweetalert2';
+import { useState } from 'react';
 
 const Modal = styled.div<{ isOpen: boolean }>`
   display: none;
@@ -51,6 +53,7 @@ const WorkspaceDropDown = ({
   openModifyModal,
   userCode,
 }: workspaceDropdownType) => {
+  const [isBulr, setIsBulr] = useState(false);
   const { workspaceId } = useParams();
   const setCurrentWorkspaceId = useSetRecoilState(currentWorkspace);
   const { email } = useRecoilValue(user);
@@ -69,6 +72,26 @@ const WorkspaceDropDown = ({
     onClose();
   };
 
+  // 워크스페이스 떠나기 클릭시 이벤트
+  const exitWorkspaceClick = () => {
+    setIsBulr(true);
+    Swal.fire({
+      title: '워크스페이스 탈퇴 확인',
+      text: '해당 워크스페이스를 떠나시겠습니까?',
+      icon: 'info',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: '확인',
+      cancelButtonText: '취소',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        exitWorkspace();
+      }
+      setIsBulr(false);
+    });
+  };
+
   const exitWorkspace = async () => {
     await deleteWorkspaceMember(workspaceId!, email);
     setCurrentWorkspaceId('main');
@@ -78,6 +101,7 @@ const WorkspaceDropDown = ({
 
   return (
     <Modal isOpen={isOpen}>
+      {isBulr && <BulrContainer />}
       <Container>
         <ListItem onClick={handleMemberList}>
           <Text size={16} pointer>
@@ -96,7 +120,7 @@ const WorkspaceDropDown = ({
             </Text>
           </ListItem>
         ) : null}
-        <ListItem onClick={() => exitWorkspace()}>
+        <ListItem onClick={exitWorkspaceClick}>
           <Text color="secondary" size={16} pointer>
             워크스페이스 떠나기
           </Text>

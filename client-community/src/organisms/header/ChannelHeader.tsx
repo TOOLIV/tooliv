@@ -168,7 +168,7 @@ const ChannelHeader = () => {
     <Container>
       <DropdownWrapper ref={dropdownRef}>
         {isTutorialOpen ? (
-          <Title onClick={() => setDropdownOpen(!dropdownOpen)}>
+          <Title onClick={() => {}}>
             <Text size={18}>튜토리얼 채널</Text>
             <Icons icon="dropdown" />
           </Title>

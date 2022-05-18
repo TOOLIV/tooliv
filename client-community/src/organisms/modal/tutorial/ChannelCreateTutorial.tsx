@@ -11,7 +11,7 @@ import { colors } from 'shared/color';
 const Modal = styled.div<{ isOpen: boolean }>`
   display: none;
   position: absolute;
-  top: 140px;
+  top: 160px;
   left: 280px;
   z-index: 1;
   ${(props) =>
@@ -27,7 +27,7 @@ const Modal = styled.div<{ isOpen: boolean }>`
     border-bottom: 10px solid transparent;
     content: '';
     position: absolute;
-    top: 40px;
+    top: 80px;
     left: -18px;
   }
 
@@ -38,7 +38,7 @@ const Modal = styled.div<{ isOpen: boolean }>`
     border-bottom: 12px solid transparent;
     content: '';
     position: absolute;
-    top: 38px;
+    top: 78px;
     left: -23px;
     z-index: 0;
   }

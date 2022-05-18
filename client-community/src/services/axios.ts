@@ -1,5 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 import isElectron from 'is-electron';
+import { setRecoil } from 'recoil-nexus';
+import { user } from 'recoil/auth';
 
 let instance: AxiosInstance;
 const baseURL = localStorage.getItem('baseURL');
@@ -62,6 +64,15 @@ instance.interceptors.response.use(
         case 401:
           console.log('401 ERROR, not authorized.');
           localStorage.removeItem('tooliv_info');
+          setRecoil(user, {
+            accessToken: '',
+            email: '',
+            name: '',
+            nickname: '',
+            userId: '',
+            profileImage: '',
+            statusCode: '',
+          });
           break;
         case 404:
           console.log('404error!');

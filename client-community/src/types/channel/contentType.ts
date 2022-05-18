@@ -77,6 +77,7 @@ export type channelDropdownType = {
 
 export type exitChannelModalType = {
   isOpen: boolean;
+  onClose: () => void;
   channelId: string;
   top: number;
   left: number;

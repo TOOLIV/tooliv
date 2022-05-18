@@ -8,6 +8,8 @@ import global from './shared/global';
 import { useEffect } from 'react';
 import { updateUserStatus } from 'api/userApi';
 import { isLoginState } from 'recoil/auth';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const mode = useRecoilValue(appThemeMode);
@@ -32,13 +34,19 @@ function App() {
 
   // 브라우저 종료시 상태 OFFLINE으로 변경
   window.addEventListener('beforeunload', () => handleStatus('OFFLINE'));
-
   return (
     <>
       <ThemeProvider theme={mode === 'light' ? light : dark}>
         <Global styles={global} />
         <AppRouter />
       </ThemeProvider>
+      <ToastContainer
+        position="top-center"
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        autoClose={2000}
+      />
     </>
   );
 }
