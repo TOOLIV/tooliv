@@ -15,6 +15,7 @@ import com.tooliv.server.domain.channel.execption.ChannelMemberNotFoundException
 import com.tooliv.server.domain.channel.execption.ChannelNotFoundException;
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
+import com.tooliv.server.domain.workspace.domain.Workspace;
 import com.tooliv.server.domain.workspace.domain.WorkspaceMembers;
 import com.tooliv.server.domain.workspace.domain.repository.WorkspaceMemberRepository;
 import com.tooliv.server.global.common.AwsS3Service;
@@ -80,9 +81,9 @@ public class ChannelMemberServiceImpl implements ChannelMemberService {
         Channel channel = channelRepository.findByIdAndDeletedAt(channelId, null)
             .orElseThrow(() -> new ChannelNotFoundException("채널 정보가 존재하지 않습니다."));
 
-        String currentWorkspaceId = channel.getWorkspace().getId();
+        Workspace currentWorkspace = channel.getWorkspace();
 
-        Channel defaultChannel = channelRepository.findByWorkspaceIdAndName(currentWorkspaceId, "공지사항")
+        Channel defaultChannel = channelRepository.findByWorkspaceAndName(currentWorkspace, "공지사항")
             .orElseThrow(() -> new ChannelNotFoundException("공지사항 채널을 찾을 수 없습니다."));
 
         channelMembersRepository.deleteByUserAndChannel(user, channel);

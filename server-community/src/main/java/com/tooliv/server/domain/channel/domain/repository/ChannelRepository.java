@@ -15,7 +15,7 @@ public interface ChannelRepository extends JpaRepository<Channel, String> {
 
     Optional<Channel> findByIdAndDeletedAt(String id, LocalDateTime deletedAt);
 
-    Optional<Channel> findByWorkspaceIdAndName(String id, String name);
+    Optional<Channel> findByWorkspaceAndName(Workspace workspace, String name);
 
     @Query(value="SELECT * "
         + "FROM channel c "
