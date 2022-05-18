@@ -12,7 +12,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
   currentChannel,
+  currentChannelNum,
   currentWorkspace,
+  exitChannelId,
   isOpenSide,
   isTutorial,
   modifyChannelName,
@@ -53,6 +55,7 @@ const ChannelSection = () => {
   const [listNum, setListNum] = useState(0);
   const currentWorkspaceId = useRecoilValue(currentWorkspace);
   const modChannelName = useRecoilValue(modifyChannelName);
+  const exitChannel = useRecoilValue(exitChannelId);
   const [currentChannelId, setCurrentChannelId] =
     useRecoilState(currentChannel);
   const [userLogList, setUserLogList] = useRecoilState(userLog);
@@ -67,6 +70,8 @@ const ChannelSection = () => {
     const normalList: channelListTypes[] = [];
     const videoList: channelListTypes[] = [];
 
+    console.log(currentWorkspaceId);
+    console.log(channelList);
     channelList.forEach((list: channelListTypes) => {
       if (list.channelCode === 'CHAT') {
         normalList.push(list);
@@ -83,7 +88,7 @@ const ChannelSection = () => {
     if (currentChannelId) {
       handleChannel();
     }
-  }, [currentChannelId, modChannelName]);
+  }, [currentChannelId, modChannelName, exitChannel]);
 
   const openDropdownModal = () => {
     setIsDropdownModalOpen(true);

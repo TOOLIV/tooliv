@@ -21,9 +21,6 @@ export const login = async (body: userLoginTypes) => {
   };
 
   localStorage.setItem('tooliv_info', JSON.stringify(user));
-  if (response.data.userCode === 'ADMIN')
-    localStorage.setItem('isAdmin', JSON.stringify(true));
-  else localStorage.removeItem('isAdmin');
   return response;
 };
 

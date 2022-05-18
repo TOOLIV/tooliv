@@ -77,6 +77,11 @@ export const currentChannelNum = atom<number>({
   default: 0,
 });
 
+export const exitChannelId = atom<string>({
+  key: 'exitChannelId',
+  default: '',
+});
+
 export const userLog = atom<userLogTypes>({
   key: 'userLog',
   default: {},

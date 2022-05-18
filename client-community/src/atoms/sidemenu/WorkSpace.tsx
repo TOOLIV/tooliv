@@ -27,7 +27,7 @@ const Container = styled.div<{
   justify-content: center;
   align-items: center;
   border: ${(props) =>
-    props.isSelected && `1px solid ${props.theme.pointColor}`};
+    props.isSelected && `2px solid ${props.theme.pointColor}`};
   background-image: url(${(props) => props.thumbnail});
   background-size: contain;
   background-repeat: no-repeat;
