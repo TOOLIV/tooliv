@@ -141,7 +141,6 @@ const DirectMessageModal = ({ isOpen, onClose }: userDirectMessageType) => {
       try {
         const response = await getUserList(keyword, sequenceRef.current);
         const data = response.data.userInfoResponseDTOList;
-        console.log(data);
         if (data.length === 0) {
           setIsLoaded(false);
           setEndCheck(true);

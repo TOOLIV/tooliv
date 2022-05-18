@@ -64,7 +64,6 @@ const Chat = () => {
     }
   };
   useEffect(() => {
-    console.log('scroll to bottom');
     scrollToBottom();
   }, [contents]);
 

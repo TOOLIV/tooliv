@@ -102,7 +102,7 @@ const ChannelModal = ({ isOpen, onClose }: workspaceModalType) => {
         onClose();
       }
     } catch (error) {
-      console.log(error);
+      toast.error('채널을 생성할 수 없습니다.');
     }
   };
 

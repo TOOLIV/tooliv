@@ -86,6 +86,7 @@ const WorkspaceModifyModal = ({
   };
 
   const handleSetImg = (file: FileList) => {
+    console.log(file);
     setFile(file[0]);
   };
 
@@ -93,6 +94,7 @@ const WorkspaceModifyModal = ({
   const modWorkspace = async () => {
     const formData = new FormData();
     const id = workspaceId;
+    console.log(file);
     formData.append('multipartFile', file!);
     formData.append(
       'modifyWorkspaceRequestDTO',
@@ -118,16 +120,6 @@ const WorkspaceModifyModal = ({
         const response = await modifyWorkspace(formData);
         console.log(response);
         setModifyWorkspaceName(name);
-        // const workspaceId = response.data.id;
-        // const channelList = await getChannelList(workspaceId);
-        // const channelId = channelList.data.channelGetResponseDTOList[0].id;
-        // setCurrentWorkspace(workspaceId);
-        // setCurrentChannel(channelId);
-        // setUserLogList({
-        //   ...userLogList,
-        //   [workspaceId]: channelId,
-        // });
-        // navigate(`${workspaceId}/${channelId}`);
         inputWorkspaceRef.current!.value = '';
         setFile(undefined);
         onClose();
@@ -148,11 +140,7 @@ const WorkspaceModifyModal = ({
           ref={inputWorkspaceRef}
           onChange={onChange}
         />
-        <FileUploader
-          file={file!}
-          onChange={handleSetImg}
-          thumbnailImage={thumbnailImage}
-        />
+        <FileUploader file={file!} onChange={handleSetImg} thumbnailImage="" />
         <ButtonBox>
           <Button
             width="125"

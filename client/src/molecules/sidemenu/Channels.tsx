@@ -106,10 +106,6 @@ const Channels = ({
   const handleClickModal = (id: string, index: number) => {
     setClickChannelId(id);
     setExitModalOpen(true);
-    console.log(index);
-    console.log(refArray.current[index].getBoundingClientRect());
-    // console.log(e);
-    // console.log(e.getBoundingClientRect());
     setTop(refArray.current[index].getBoundingClientRect().top - 70);
     setLeft(refArray.current[index].getBoundingClientRect().left + 40);
   };

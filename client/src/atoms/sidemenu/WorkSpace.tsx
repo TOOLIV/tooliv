@@ -69,7 +69,6 @@ const WorkSpace = ({
   const setCurrentWorkSpaceId = useSetRecoilState(currentWorkspace);
   const [isBulr, setIsBulr] = useState(false);
   const location = useLocation();
-  console.log(location.pathname.split('/')[1]);
   const { workspaceId } = useParams();
   const currentWorkSpace = workspaceId ? workspaceId : 'main';
   const handleClickWorkspace = () => {

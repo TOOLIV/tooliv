@@ -90,7 +90,6 @@ const LoginForm = () => {
   };
 
   const onKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    console.log('hello');
     if (event.code === 'Enter') {
       handleLogin();
     }

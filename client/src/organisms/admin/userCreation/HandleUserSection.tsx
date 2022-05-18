@@ -30,8 +30,6 @@ const HandleUserSection = () => {
   };
 
   useEffect(() => {
-    // setUserList([]);
-    console.log('test');
     return setUserList([]);
   }, []);
 

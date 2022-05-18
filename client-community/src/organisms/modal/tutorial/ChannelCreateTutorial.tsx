@@ -7,6 +7,7 @@ import { ReactComponent as Cover } from 'assets/img/channelCreate.svg';
 import { tutorialModalType } from 'types/workspace/workspaceTypes';
 import ProgressBar from '@ramonak/react-progress-bar';
 import { colors } from 'shared/color';
+import src from '../../../assets/gif/channelFunc.gif';
 
 const Modal = styled.div<{ isOpen: boolean }>`
   display: none;
@@ -64,7 +65,7 @@ const Header = styled.div`
 `;
 
 const ChannelBox = styled.div`
-  height: 400px;
+  height: 360px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -93,6 +94,12 @@ const Contents = styled.div`
   flex-direction: column;
   gap: 5px;
 `;
+
+const Img = styled.img`
+  width: 250px;
+  height: 150px;
+`;
+
 const ChannelCreateTutorial = ({
   isOpen,
   onClose,
@@ -115,8 +122,8 @@ const ChannelCreateTutorial = ({
         </Header>
 
         <ChannelBox>
-          <Cover width={150} height={170} />
-          {/* <Img src={src} alt="이미지" /> */}
+          {/* <Cover width={150} height={170} /> */}
+          <Img src={src} alt="이미지" />
           <Text size={14} weight="bold">
             + 버튼을 눌러 채널을 생성하세요.
           </Text>

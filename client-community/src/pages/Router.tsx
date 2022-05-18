@@ -14,8 +14,6 @@ const Login = lazy(() => import('./Login'));
 const Home = lazy(() => import('./Home'));
 const Channel = lazy(() => import('./Channel'));
 const Meeting = lazy(() => import('./Meeting'));
-const UserManagePage = lazy(() => import('./UserManagePage'));
-const UserAuthPage = lazy(() => import('./UserAuthPage'));
 const Join = lazy(() => import('./Join'));
 const PrivateRoute = lazy(() => import('router/PrivateRoute'));
 const Main = lazy(() => import('./Main'));
@@ -56,9 +54,6 @@ const AppRouter = () => {
                 path="/meeting/:workspaceId/:channelId"
                 element={<Meeting />}
               />
-              <Route path="/admin" element={<Navigate replace to="./auth" />} />
-              <Route path="/admin/auth" element={<UserAuthPage />} />
-              <Route path="/admin/manage" element={<UserManagePage />} />
               <Route path="/*" element={<Error />} />
             </Route>
           </Routes>

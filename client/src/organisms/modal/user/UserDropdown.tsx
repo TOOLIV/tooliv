@@ -127,7 +127,8 @@ const UserDropdown = forwardRef<HTMLDivElement, userDropdownType>(
     };
 
     const handleAdminPage = () => {
-      navigate('admin');
+      if (userInfo.userCode === 'ADMIN') navigate('admin/auth');
+      else navigate('admin/manage');
       onClose();
     };
 

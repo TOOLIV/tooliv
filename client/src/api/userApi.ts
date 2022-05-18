@@ -10,7 +10,6 @@ import {
 
 export const login = async (body: userLoginTypes) => {
   const response = await instance.post(`/user/login`, body);
-  console.log(response);
   const user = {
     name: response.data.name,
     accessToken: response.data.accessToken,

@@ -110,7 +110,6 @@ const ChannelHeader = () => {
   }, [memberListOpen]);
 
   useEffect(() => {
-    console.log(channelId);
     if (channelId) {
       if (location.pathname.includes('/direct')) {
         setChannelName(directName);
@@ -164,7 +163,6 @@ const ChannelHeader = () => {
     setModifyModalOpen(false);
   };
 
-  console.log(location.pathname);
   return (
     <Container>
       <DropdownWrapper ref={dropdownRef}>

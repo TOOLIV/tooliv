@@ -103,7 +103,6 @@ const WorkspaceModal = ({ isOpen, onClose }: workspaceModalType) => {
         inputWorkspaceRef.current?.focus();
       } else {
         const response = await createWorkspace(formData);
-        console.log(response);
         const workspaceId = response.data.id;
         const channelList = await getChannelList(workspaceId);
         const channelId = channelList.data.channelGetResponseDTOList[0].id;
