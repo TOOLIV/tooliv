@@ -156,16 +156,19 @@ const Banner = ({ OS, header }: BannerPropsType) => {
               (obj) => obj.latest === true
             )[0].link
           );
+    } else if(OS === "MacOS"){
+      alert("준비 중 입니다.");
+      // e.target.name === "com"
+      //   ? window.open(
+      //       downloadLink.mac.community.filter((obj) => obj.latest === true)[0]
+      //         .link
+      //     )
+      //   : window.open(
+      //       downloadLink.mac.enterprise.filter((obj) => obj.latest === true)[0]
+      //         .link
+      //     );
     } else {
-      e.target.name === "com"
-        ? window.open(
-            downloadLink.mac.community.filter((obj) => obj.latest === true)[0]
-              .link
-          )
-        : window.open(
-            downloadLink.mac.enterprise.filter((obj) => obj.latest === true)[0]
-              .link
-          );
+      alert("준비 중 입니다.");
     }
   };
 
