@@ -7,6 +7,7 @@ const reset = css`
 */
   * {
     box-sizing: border-box;
+    font-family: 'SUIT', sans-serif;
     /* overflow: hidden; */
   }
 
@@ -113,7 +114,6 @@ const reset = css`
   }
   body {
     line-height: 1;
-    font-family: 'SUIT', sans-serif;
     font-weight: 600;
 
     -ms-overflow-style: none;

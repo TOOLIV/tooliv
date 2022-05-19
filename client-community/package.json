@@ -2,7 +2,7 @@
   "name": "client-community",
   "main": "public/electron.js",
   "homepage": ".",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "author": "TOOLIV",
   "description": "TOOLIV",
   "license": "MIT",
@@ -52,7 +52,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "start": "tsc ./public/electron.ts && concurrently \"cross-env npm run react-start\" \"wait-on http://localhost:3000 && electron .\"",
-    "build": "npm run react-build && electron-builder -w appx",
+    "build": "npm run react-build && electron-builder",
     "release": "npm run react-build && electron-builder --publish=always",
     "lint": "eslint './src**/*.{ts,tsx}'",
     "electron": "electron ."

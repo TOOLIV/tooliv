@@ -16,6 +16,8 @@ const Container = styled.div`
   align-items: center;
   /* gap: 20px; */
   /* align-items: flex-end; */
+  overflow-y: auto;
+  overflow-x: hidden;
 `;
 
 const TextWrapper = styled.div`
