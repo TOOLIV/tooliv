@@ -224,7 +224,6 @@ const ChannelAddMemberModal = ({
 
   const initModal = useCallback(() => {
     setAllUserList([]);
-    setUserBadgeList([]);
     setInviteUserList([]);
     setUserList([]);
     setSequence(1);
@@ -235,6 +234,7 @@ const ChannelAddMemberModal = ({
     inputRef.current!.value = '';
     setKeyword('');
     initModal();
+    setUserBadgeList([]);
     onClose();
   }, [onClose, initModal]);
 
