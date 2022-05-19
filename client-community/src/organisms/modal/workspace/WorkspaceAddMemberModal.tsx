@@ -208,7 +208,6 @@ const WorkspaceAddMemberModal = forwardRef<
 
   const initModal = useCallback(() => {
     setAllUserList([]);
-    setUserBadgeList([]);
     setInviteUserList([]);
     setUserList([]);
     setSequence(1);
@@ -219,6 +218,7 @@ const WorkspaceAddMemberModal = forwardRef<
     inputRef.current!.value = '';
     setKeyword('');
     initModal();
+    setUserBadgeList([]);
     onClose();
   }, [onClose]);
 
