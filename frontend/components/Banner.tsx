@@ -8,6 +8,7 @@ import Download from "/public/assets/images/download-solid.svg";
 import Rightarrow from "/public/assets/images/arrow-right-solid.svg";
 import Question from "/public/assets/images/circle-question-solid.svg";
 import Tooltip, { Mode, Pos, TooltipType } from "./Tooltip";
+import { downloadLink } from "../data/downloadLink";
 
 const StyledBanner = styled.div`
   width: 100%;
@@ -142,16 +143,34 @@ const Banner = ({ OS, header }: BannerPropsType) => {
   });
   const [isMod, setIsMod] = useState<Mode>();
 
-  const onDownload = () => {
+  const onDownload = (e: any) => {
     if (OS === "Windows") {
-      window.open("ms-windows-store://pdp/?ProductId=9NKJZGWHDTNN");
+      e.target.name === "com"
+        ? window.open(
+            downloadLink.window.community.filter(
+              (obj) => obj.latest === true
+            )[0].link
+          )
+        : window.open(
+            downloadLink.window.enterprise.filter(
+              (obj) => obj.latest === true
+            )[0].link
+          );
     } else {
-      alert("준비 중입니다.");
+      e.target.name === "com"
+        ? window.open(
+            downloadLink.mac.community.filter((obj) => obj.latest === true)[0]
+              .link
+          )
+        : window.open(
+            downloadLink.mac.enterprise.filter((obj) => obj.latest === true)[0]
+              .link
+          );
     }
   };
 
   const shortcutsWeb = () => {
-    nav.push("https://k6a402.p.ssafy.io/app");
+    nav.push("/app");
   };
 
   const onMouseEnter = (e: any, mod: Mode) => {
@@ -185,7 +204,7 @@ const Banner = ({ OS, header }: BannerPropsType) => {
         <FunctionContainer>
           <Buttons>
             <ButtonContainer>
-              <Button onClick={onDownload}>
+              <Button onClick={onDownload} name="com">
                 <Download width={16} /> COMMUNITY 다운로드
               </Button>
               <ToolTipContainer
@@ -197,7 +216,7 @@ const Banner = ({ OS, header }: BannerPropsType) => {
               </ToolTipContainer>
             </ButtonContainer>
             <ButtonContainer>
-              <Button>
+              <Button onClick={onDownload} name="ent">
                 <Download width={16} />
                 ENTERPRISE 다운로드
               </Button>
