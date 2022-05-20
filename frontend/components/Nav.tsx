@@ -41,7 +41,11 @@ const NavItem = styled.div`
   cursor: pointer;
 `;
 
+
 const Nav = () => {
+  const onClick = () => {
+    window.open("https://team-tooliv.gitbook.io/tooliv-docs");
+  }
   return (
     <Container>
       <NavContainer>
@@ -50,8 +54,8 @@ const Nav = () => {
           <div className="title">TOOLIV</div>
         </LogoContainer>
         <NavItems>
-          <NavItem>DOWNLOAD</NavItem>
-          <NavItem>DOCS</NavItem>
+          {/* <NavItem>DOWNLOAD</NavItem> */}
+          <NavItem onClick={onClick}>DOCS</NavItem>
         </NavItems>
       </NavContainer>
     </Container>

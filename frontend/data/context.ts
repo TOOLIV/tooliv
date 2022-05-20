@@ -62,6 +62,6 @@ export const contexts: DescriptionType[] = [
     mainImage: guide,
     subImage: protect,
     imoImage: setting,
-    link: "https://tooliv.gitbook.io/copy-of-tooliv-docs/guides/deployment",
+    link: "https://team-tooliv.gitbook.io/tooliv-docs",
   },
 ];

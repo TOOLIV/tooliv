@@ -19,6 +19,7 @@ const FooterContainer = styled.div`
   width: 70vw;
   display: flex;
   padding-bottom: 24.16px;
+  justify-content: space-between;
   @media screen and (max-width: 950px) {
     padding-left: 2rem;
     width: 100%;
@@ -46,6 +47,9 @@ const Intro = styled.div`
       align-items: center;
       font-weight: 500;
       font-size: 14px;
+      .link {
+        cursor: pointer;
+      }
     }
   }
   @media screen and (max-width: 950px) {
@@ -54,9 +58,9 @@ const Intro = styled.div`
 `;
 
 const Menu = styled.div`
-  width: 20vw;
+  /* width: 20vw; */
   display: flex;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   padding-top: 24.16px;
 `;
 
@@ -78,12 +82,16 @@ const SubMenu = styled.div`
 
 const Footer = () => {
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 950px)" });
+  const onClick = () => {
+    window.open("https://team-tooliv.gitbook.io/tooliv-docs");
+  };
+
   return (
     <StyledFooter>
       <FooterContainer>
         <Intro>
           <div style={{ width: "200px", height: "100px" }}>
-            <Image src={Thumbnail} objectFit="cover" />
+            <Image src={Thumbnail} objectFit="cover" alt="thumbnail" />
           </div>
           <div className="description">
             <div className="desc">
@@ -97,24 +105,29 @@ const Footer = () => {
             <div className="desc">
               <Github width="14" />
               Github:
-              <a href="https://github.com/TOOLIV/tooliv">
+              <div
+                className="link"
+                onClick={() => window.open("https://github.com/TOOLIV/tooliv")}
+              >
                 https://github.com/TOOLIV/tooliv
-              </a>
+              </div>
             </div>
           </div>
         </Intro>
         {!isTabletOrMobile && (
           <Menu>
-            <div>
+            {/* <div>
               <SubMenu>
                 <div className="title">DOWNLOAD</div>
                 <div className="item">COMMUNITY 다운로드</div>
                 <div className="item">ENTERPRISE 다운로드</div>
               </SubMenu>
-            </div>
+            </div> */}
             <div>
               <SubMenu>
-                <div className="title">DOCS</div>
+                <div className="title" onClick={onClick}>
+                  DOCS
+                </div>
               </SubMenu>
             </div>
           </Menu>
