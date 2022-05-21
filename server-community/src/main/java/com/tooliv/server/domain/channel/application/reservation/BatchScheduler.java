@@ -48,28 +48,33 @@ public class BatchScheduler {
         } else {
             logger.info("[Reservation] : {}", "Sending reserved messages ...");
 
-            for(Reservation reservation : reservations) {
+            for (Reservation reservation : reservations) {
                 System.out.println("---------------------1--------------------");
                 List<ChatFile> chatFileList = chatFileRepository.findByReservation(reservation);
                 System.out.println("---------------------2--------------------");
                 List<String> chatFileNameList = new ArrayList<>();
                 List<String> chatFileUrlList = new ArrayList<>();
 
-                for(ChatFile chatFile : chatFileList) {
+                for (ChatFile chatFile : chatFileList) {
                     chatFileNameList.add(chatFile.getFileName());
                     chatFileUrlList.add(chatFile.getFileUrl());
                 }
                 System.out.println("---------------------3--------------------");
-                System.out.println("=========="+reservation.getUser().getId()+"=============");
-                ChatRequestDTO chatRequestDTO = ChatRequestDTO.builder()
-                    .channelId(reservation.getChannel().getId())
-                    .contents(reservation.getContent())
-                    .type("TALK")
-                    .userId(reservation.getUser().getId())
-                    .email(reservation.getUser().getEmail())
-                    .sendTime(reservation.getSendTime())
-                    .files(chatFileUrlList)
-                    .originFiles(chatFileNameList).build();
+                System.out.println("==========" + reservation.getUser().getId() + "=============");
+                ChatRequestDTO chatRequestDTO = null;
+                try {
+                    chatRequestDTO = ChatRequestDTO.builder()
+                        .channelId(reservation.getChannel().getId())
+                        .contents(reservation.getContent())
+                        .type("TALK")
+                        .userId(reservation.getUser().getId())
+                        .email(reservation.getUser().getEmail())
+                        .sendTime(reservation.getSendTime())
+                        .files(chatFileUrlList)
+                        .originFiles(chatFileNameList).build();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
                 System.out.println("---------------------4--------------------");
 
