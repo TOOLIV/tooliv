@@ -13,6 +13,7 @@ import com.tooliv.server.domain.channel.domain.ChatMessage;
 import com.tooliv.server.domain.channel.domain.ChatMessage.Chat;
 import com.tooliv.server.domain.channel.domain.DirectChatRoom;
 import com.tooliv.server.domain.channel.domain.DirectChatRoomMembers;
+import com.tooliv.server.domain.channel.domain.Reservation;
 import com.tooliv.server.domain.channel.domain.repository.ChannelMembersRepository;
 import com.tooliv.server.domain.channel.domain.repository.ChannelRepository;
 import com.tooliv.server.domain.channel.domain.repository.ChatFileRepository;
@@ -102,8 +103,7 @@ public class ChatServiceImpl implements ChatService {
         LocalDateTime now = LocalDateTime.now();
         User user1 = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
             .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
-        User user2 = userRepository.findByEmailAndDeletedAt(receiverEmail, null)
-            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+        User user2 = userRepository.findByEmailAndDeletedAt(receiverEmail, null).orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
 
         // 개인방이 존재하는경우
         if (directChatRoomRepository.findByUser1AndUser2(user1, user2).isPresent()) {
@@ -112,11 +112,7 @@ public class ChatServiceImpl implements ChatService {
             return new DirectRoomInfoResponseDTO(directChatRoomRepository.findByUser1AndUser2(user2, user1).get().getId());
         }
 
-        DirectChatRoom directChatRoom = DirectChatRoom.builder()
-            .createdAt(now)
-            .user1(user1)
-            .user2(user2)
-            .build();
+        DirectChatRoom directChatRoom = DirectChatRoom.builder().createdAt(now).user1(user1).user2(user2).build();
         String id = directChatRoom.getId();
 
         directChatRoomRepository.save(directChatRoom);
@@ -126,11 +122,7 @@ public class ChatServiceImpl implements ChatService {
         userList.add(user2);
 
         for (User user : userList) {
-            DirectChatRoomMembers directChatRoomMembers = DirectChatRoomMembers.builder()
-                .createdAt(now)
-                .directChatRoom(directChatRoom)
-                .user(user)
-                .build();
+            DirectChatRoomMembers directChatRoomMembers = DirectChatRoomMembers.builder().createdAt(now).directChatRoom(directChatRoom).user(user).build();
             directChatRoomMembersRepository.save(directChatRoomMembers);
         }
         try {
@@ -143,8 +135,7 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public void enterChatRoom(String channelId) {
-        User user = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
-            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+        User user = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null).orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
         Channel channel = channelRepository.findById(channelId).orElseThrow(() -> new IllegalArgumentException("해당 채널이 존재하지 않습니다."));
         ChannelMembers channelMembers = channelMembersRepository.findByChannelAndUser(channel, user).orElseThrow(() -> new IllegalArgumentException("해당 멤버가 존재하지 않습니다."));
 
@@ -160,8 +151,7 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public void enterDirectChatRoom(String channelId) {
-        User user = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null)
-            .orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
+        User user = userRepository.findByEmailAndDeletedAt(SecurityContextHolder.getContext().getAuthentication().getName(), null).orElseThrow(() -> new IllegalArgumentException("회원 정보가 존재하지 않습니다."));
         DirectChatRoom directChatRoom = directChatRoomRepository.findById(channelId).orElseThrow(() -> new IllegalArgumentException("해당 Direct 채팅 방이 존재하지 않습니다."));
         DirectChatRoomMembers directChatRoomMembers = directChatRoomMembersRepository.findByDirectChatRoomAndUser(directChatRoom, user)
             .orElseThrow(() -> new IllegalArgumentException("해당 멤버가 존재하지 않습니다."));
@@ -216,6 +206,26 @@ public class ChatServiceImpl implements ChatService {
             return null;
         }
     }
+
+//    @Override
+//    public void setReservationChatInfoValue(String key, ReservationChatRequestDTO value) {
+//
+//
+//        Channel channel = channelRepository.findById(value.getChannelId()).orElseThrow(() -> new IllegalArgumentException("해당 채널이 존재하지 않습니다."));
+//
+//        channel.updateWroteAt();
+//        channelRepository.save(channel);
+//
+//        long idx = redisChannelTemplate.opsForList().size(key);
+//        Chat chat = Chat.builder().chatId(idx).channelId(value.getChannelId()).build();
+//        ChatMessage chatMessage;
+//
+//        value.updateChatId(idx);
+//        redisChannelTemplate.opsForList().rightPush(key, value);
+//
+//        chatMessage = ChatMessage.builder().chat(chat).content(value.getContent()).sendTime(value.getSendTime()).build();
+//        chatMessageRepository.save(chatMessage);
+//    }
 
     @Override
     public void setChatInfoValue(String key, ChatRequestDTO value) {
@@ -294,15 +304,30 @@ public class ChatServiceImpl implements ChatService {
         List<String> originFiles = new ArrayList<>();
         multipartFiles.forEach(file -> {
             String fileName = awsS3Service.uploadFile(file);
-            ChatFile chatFile = ChatFile.builder()
-                .fileName(fileName)
-                .build();
-            files.add(awsS3Service.getFilePath(fileName));
+            String fileUrl = awsS3Service.getFilePath(fileName);
+            ChatFile chatFile = ChatFile.builder().fileName(fileName).fileUrl(fileUrl).build();
+            files.add(fileUrl);
             originFiles.add(file.getOriginalFilename());
             chatFileRepository.save(chatFile);
         });
 
         return new FileUrlListResponseDTO(files, originFiles);
+    }
+
+    @Override
+    public void getReservationFileURL(List<MultipartFile> multipartFiles, Reservation reservation) {
+        List<String> files = new ArrayList<>();
+        List<String> originFiles = new ArrayList<>();
+        multipartFiles.forEach(file -> {
+            String fileName = awsS3Service.uploadFile(file);
+            String fileUrl = awsS3Service.getFilePath(fileName);
+            ChatFile chatFile = ChatFile.builder().fileName(fileName).fileUrl(fileUrl).build();
+            files.add(fileUrl);
+            originFiles.add(file.getOriginalFilename());
+
+            chatFile.updateReservation(reservation);
+            chatFileRepository.save(chatFile);
+        });
     }
 
     @Override
