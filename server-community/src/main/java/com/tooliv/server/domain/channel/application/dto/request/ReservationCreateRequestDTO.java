@@ -35,7 +35,7 @@ public class ReservationCreateRequestDTO {
     private String content;
 
     @NotNull
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+//    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @ApiModelProperty(name = "보낼 시간")
