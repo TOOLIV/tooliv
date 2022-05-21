@@ -13,6 +13,7 @@ import com.tooliv.server.domain.channel.domain.ChatMessage;
 import com.tooliv.server.domain.channel.domain.ChatMessage.Chat;
 import com.tooliv.server.domain.channel.domain.DirectChatRoom;
 import com.tooliv.server.domain.channel.domain.DirectChatRoomMembers;
+import com.tooliv.server.domain.channel.domain.Reservation;
 import com.tooliv.server.domain.channel.domain.repository.ChannelMembersRepository;
 import com.tooliv.server.domain.channel.domain.repository.ChannelRepository;
 import com.tooliv.server.domain.channel.domain.repository.ChatFileRepository;
@@ -303,6 +304,22 @@ public class ChatServiceImpl implements ChatService {
         });
 
         return new FileUrlListResponseDTO(files, originFiles);
+    }
+
+    @Override
+    public void getReservationFileURL(List<MultipartFile> multipartFiles, Reservation reservation) {
+        List<String> files = new ArrayList<>();
+        List<String> originFiles = new ArrayList<>();
+        multipartFiles.forEach(file -> {
+            String fileName = awsS3Service.uploadFile(file);
+            String fileUrl = awsS3Service.getFilePath(fileName);
+            ChatFile chatFile = ChatFile.builder().fileName(fileName).fileUrl(fileUrl).build();
+            files.add(fileUrl);
+            originFiles.add(file.getOriginalFilename());
+
+            chatFile.updateReservation(reservation);
+            chatFileRepository.save(chatFile);
+        });
     }
 
     @Override
