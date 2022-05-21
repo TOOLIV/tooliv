@@ -41,13 +41,4 @@ public class ReservationCreateRequestDTO {
     @ApiModelProperty(name = "보낼 시간")
     private LocalDateTime sendTime;
 
-    @ApiModelProperty(name = "메시지 타입")
-    private String type;
-
-    @ApiModelProperty(name = "파일")
-    private List<String> files;
-
-    @ApiModelProperty(name = "파일 이름")
-    private List<String> originFiles;
-
 }
