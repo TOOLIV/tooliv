@@ -31,7 +31,7 @@ public class ReservationServiceImpl implements ReservationService{
     private final ChannelRepository channelRepository;
 
     private final ChatService chatService;
-    
+
     @Override
     public void createReservation(List<MultipartFile> multipartFiles, ReservationCreateRequestDTO reservationCreateRequestDTO) {
         User user = getCurrentUser();
