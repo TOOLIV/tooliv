@@ -4,16 +4,12 @@ import com.tooliv.server.domain.channel.application.chatService.ChatService;
 import com.tooliv.server.domain.channel.application.chatService.RedisPublisher;
 import com.tooliv.server.domain.channel.application.dto.request.ChatRequestDTO;
 import com.tooliv.server.domain.channel.domain.ChatFile;
-import com.tooliv.server.domain.channel.domain.ChatMessage.Chat;
 import com.tooliv.server.domain.channel.domain.Reservation;
 import com.tooliv.server.domain.channel.domain.repository.ChatFileRepository;
 import com.tooliv.server.domain.channel.domain.repository.ReservationRepository;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,9 +45,9 @@ public class BatchScheduler {
             logger.info("[Reservation] : {}", "Sending reserved messages ...");
 
             for (Reservation reservation : reservations) {
-                System.out.println("---------------------1--------------------");
+
                 List<ChatFile> chatFileList = chatFileRepository.findByReservation(reservation);
-                System.out.println("---------------------2--------------------");
+
                 List<String> chatFileNameList = new ArrayList<>();
                 List<String> chatFileUrlList = new ArrayList<>();
 
@@ -59,11 +55,7 @@ public class BatchScheduler {
                     chatFileNameList.add(chatFile.getFileName());
                     chatFileUrlList.add(chatFile.getFileUrl());
                 }
-                System.out.println("========= " + reservation.getUser() + " =================");
-                System.out.println("---------------------3--------------------");
-                System.out.println("========== " + reservation.getUser().getId() + " =============");
-                System.out.println("========== " + reservation.getUser().getEmail() + " =============");
-                System.out.println("========== " + reservation.getSendTime() + " =============");
+
                 ChatRequestDTO chatRequestDTO = null;
                 try {
                     chatRequestDTO = ChatRequestDTO.builder()
@@ -79,17 +71,13 @@ public class BatchScheduler {
                     e.printStackTrace();
                 }
 
-                System.out.println("---------------------4--------------------");
-
                 String channelId = reservation.getChannel().getId();
-
-                System.out.println("---------------------5--------------------");
 
                 chatService.setChatInfoValue(channelId, chatRequestDTO);
 
-                System.out.println("---------------------6--------------------");
-
                 redisPublisher.publish(chatService.getTopic(channelId), chatRequestDTO);
+
+                reservation.updateSendTime(reservation.getSendTime().plusDays(1));
             }
         }
     }
