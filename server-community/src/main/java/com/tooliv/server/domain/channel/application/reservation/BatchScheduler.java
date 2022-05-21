@@ -59,6 +59,7 @@ public class BatchScheduler {
                     chatFileNameList.add(chatFile.getFileName());
                     chatFileUrlList.add(chatFile.getFileUrl());
                 }
+                System.out.println("========= " + reservation.getUser() + " =================");
                 System.out.println("---------------------3--------------------");
                 System.out.println("========== " + reservation.getUser().getId() + " =============");
                 System.out.println("========== " + reservation.getUser().getEmail() + " =============");
