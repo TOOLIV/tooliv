@@ -60,7 +60,9 @@ public class BatchScheduler {
                     chatFileUrlList.add(chatFile.getFileUrl());
                 }
                 System.out.println("---------------------3--------------------");
-                System.out.println("==========" + reservation.getUser().getId() + "=============");
+                System.out.println("========== " + reservation.getUser().getId() + " =============");
+                System.out.println("========== " + reservation.getUser().getEmail() + " =============");
+                System.out.println("========== " + reservation.getSendTime() + " =============");
                 ChatRequestDTO chatRequestDTO = null;
                 try {
                     chatRequestDTO = ChatRequestDTO.builder()
