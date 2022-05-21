@@ -49,7 +49,9 @@ public class BatchScheduler {
             logger.info("[Reservation] : {}", "Sending reserved messages ...");
 
             for(Reservation reservation : reservations) {
+                System.out.println("---------------------1--------------------");
                 List<ChatFile> chatFileList = chatFileRepository.findByReservation(reservation);
+                System.out.println("---------------------2--------------------");
                 List<String> chatFileNameList = new ArrayList<>();
                 List<String> chatFileUrlList = new ArrayList<>();
 
@@ -57,7 +59,8 @@ public class BatchScheduler {
                     chatFileNameList.add(chatFile.getFileName());
                     chatFileUrlList.add(chatFile.getFileUrl());
                 }
-
+                System.out.println("---------------------3--------------------");
+                System.out.println("=========="+reservation.getUser().getId()+"=============");
                 ChatRequestDTO chatRequestDTO = ChatRequestDTO.builder()
                     .channelId(reservation.getChannel().getId())
                     .contents(reservation.getContent())
@@ -68,10 +71,15 @@ public class BatchScheduler {
                     .files(chatFileUrlList)
                     .originFiles(chatFileNameList).build();
 
+                System.out.println("---------------------4--------------------");
 
                 String channelId = reservation.getChannel().getId();
 
+                System.out.println("---------------------5--------------------");
+
                 chatService.setChatInfoValue(channelId, chatRequestDTO);
+
+                System.out.println("---------------------6--------------------");
 
                 redisPublisher.publish(chatService.getTopic(channelId), chatRequestDTO);
             }
