@@ -14,6 +14,7 @@ import com.tooliv.server.domain.user.application.dto.response.UserInfoResponseDT
 import com.tooliv.server.domain.user.application.dto.response.UserListResponseDTO;
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.enums.StatusCode;
+import com.tooliv.server.domain.user.domain.enums.UserCode;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
 import com.tooliv.server.global.common.AwsS3Service;
 import com.tooliv.server.global.exception.UserNotFoundException;
@@ -130,7 +131,7 @@ public class UserServiceImpl implements UserService {
     public UserListResponseDTO getUserList(String keyword, int sequence) {
         List<UserInfoResponseDTO> userInfoResponseDTOList = new ArrayList<>();
 
-        for (User user : userRepository.findAllByDeletedAtAndNameContainingOrderByNameAsc(null, keyword, PageRequest.of(sequence - 1, 15, Sort.Direction.ASC, "name"))
+        for (User user : userRepository.findAllByDeletedAtAndUserCodeNotAndNameContainingOrderByNameAsc(null, UserCode.BOT, keyword, PageRequest.of(sequence - 1, 15, Sort.Direction.ASC, "name"))
             .orElseThrow(() -> new UserNotFoundException("조회 가능한 회원이 없음"))) {
             userInfoResponseDTOList.add(
                 new UserInfoResponseDTO(user.getId(), user.getEmail(), user.getName(), user.getNickname(), user.getUserCode(), user.getStatusCode(), awsS3Service.getFilePath(user.getProfileImage())));
