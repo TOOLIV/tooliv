@@ -1,7 +1,7 @@
 package com.tooliv.server.domain.channel.api;
 
 import com.tooliv.server.domain.channel.application.dto.request.ReservationCreateRequestDTO;
-import com.tooliv.server.domain.channel.application.reservation.ReservationService;
+import com.tooliv.server.domain.channel.application.reservationService.ReservationService;
 import com.tooliv.server.domain.channel.execption.ChannelNotFoundException;
 import com.tooliv.server.global.common.BaseResponseDTO;
 import com.tooliv.server.global.exception.UserNotFoundException;
