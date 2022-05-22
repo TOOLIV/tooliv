@@ -1,4 +1,4 @@
-package com.tooliv.server.domain.channel.application.reservation;
+package com.tooliv.server.domain.channel.application.reservationService;
 
 import com.tooliv.server.domain.channel.application.dto.request.ReservationCreateRequestDTO;
 import com.tooliv.server.domain.user.domain.User;
