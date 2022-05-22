@@ -35,8 +35,8 @@ public class Webhook extends BaseEntity {
     @JoinColumn
     private User sender;
 
-    @Column(name = "value")
-    private String value;
+    @Column(name = "name")
+    private String name;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

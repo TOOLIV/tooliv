@@ -1,6 +1,8 @@
 package com.tooliv.server.domain.channel.api;
 
 import com.tooliv.server.domain.channel.application.dto.request.WebhookCreateRequestDTO;
+import com.tooliv.server.domain.channel.application.dto.request.WebhookMessageRequestDTO;
+import com.tooliv.server.domain.channel.application.dto.response.WebhookCreateResponseDTO;
 import com.tooliv.server.domain.channel.application.webhookService.WebhookService;
 import com.tooliv.server.domain.channel.execption.ChannelNotFoundException;
 import com.tooliv.server.domain.channel.execption.SenderNotFoundException;
@@ -28,15 +30,23 @@ public class WebhookController {
     private final WebhookService webhookService;
 
     @PostMapping
-    @ApiOperation(value = "웹훅 생성성")
-   public ResponseEntity<? extends BaseResponseDTO> createWebhook(
+    @ApiOperation(value = "웹훅 생성")
+    public ResponseEntity<? extends BaseResponseDTO> createWebhook(
         @RequestBody @Valid @ApiParam(value = "웹훅 정보", required = true) WebhookCreateRequestDTO webhookCreateRequestDTO) {
+        WebhookCreateResponseDTO webhookCreateResponseDTO = null;
         try {
-            webhookService.createWebhook(webhookCreateRequestDTO);
+            webhookCreateResponseDTO = webhookService.createWebhook(webhookCreateRequestDTO);
         } catch (UserNotFoundException | ChannelNotFoundException | SenderNotFoundException e) {
             return ResponseEntity.status(409).body(BaseResponseDTO.of(e.getMessage()));
         }
-        return ResponseEntity.status(201).body(BaseResponseDTO.of("웹훅 등록 완료"));
+        return ResponseEntity.status(201).body(WebhookCreateResponseDTO.of("웹훅 등록 완료", webhookCreateResponseDTO));
+    }
+
+    @PostMapping
+    @ApiOperation(value = "웹훅 - 메세지 전송")
+    public ResponseEntity<? extends BaseResponseDTO> sendMessageThroughWebhook(
+        @RequestBody @Valid @ApiParam(value = "웹훅 - 메세지 정보", required = true) WebhookMessageRequestDTO webhookMessageRequestDTO) {
+
     }
 
 

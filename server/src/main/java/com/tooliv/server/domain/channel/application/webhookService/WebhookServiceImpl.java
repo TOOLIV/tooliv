@@ -1,6 +1,7 @@
 package com.tooliv.server.domain.channel.application.webhookService;
 
 import com.tooliv.server.domain.channel.application.dto.request.WebhookCreateRequestDTO;
+import com.tooliv.server.domain.channel.application.dto.response.WebhookCreateResponseDTO;
 import com.tooliv.server.domain.channel.domain.Channel;
 import com.tooliv.server.domain.channel.domain.Webhook;
 import com.tooliv.server.domain.channel.domain.repository.ChannelRepository;
@@ -20,8 +21,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class WebhookServiceImpl implements WebhookService {
 
-    private final AwsS3Service awsS3Service;
-
     private final UserRepository userRepository;
 
     private final ChannelRepository channelRepository;
@@ -29,7 +28,7 @@ public class WebhookServiceImpl implements WebhookService {
     private final WebhookRepository webhookRepository;
 
     @Override
-    public void createWebhook(WebhookCreateRequestDTO webhookCreateRequestDTO) {
+    public WebhookCreateResponseDTO createWebhook(WebhookCreateRequestDTO webhookCreateRequestDTO) {
         User user = getCurrentUser();
 
         User sender = userRepository.findByIdAndDeletedAt(webhookCreateRequestDTO.getSenderId(), null)
@@ -42,10 +41,10 @@ public class WebhookServiceImpl implements WebhookService {
             .channel(channel)
             .user(user)
             .sender(sender)
-            .value(webhookCreateRequestDTO.getValue())
+            .name(webhookCreateRequestDTO.getName())
             .createdAt(LocalDateTime.now()).build();
 
-        webhookRepository.save(webhook);
+        return new WebhookCreateResponseDTO(webhookRepository.save(webhook).getId());
     }
 
     @Override

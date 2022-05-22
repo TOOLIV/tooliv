@@ -14,24 +14,21 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@ApiModel("WebhookCreateRequestDTO")
+@ApiModel("WebhookMessageRequestDTO")
 @NoArgsConstructor
 @Getter
 @Builder
 @AllArgsConstructor
-public class WebhookCreateRequestDTO {
+public class WebhookMessageRequestDTO {
 
     @NotNull
     @NotBlank
-    @ApiModelProperty(name = "채널 ID")
-    private String channelId;
+    @ApiModelProperty(name = "웹훅 ID")
+    private String webhook_id;
 
     @NotNull
-    @ApiModelProperty(name = "전송자 ID")
-    private String senderId;
-
-    @NotNull
-    @ApiModelProperty(name = "웹훅 이름")
-    private String name;
+    @NotBlank
+    @ApiModelProperty(name = "보낼 메세지 내용")
+    private String content;
 
 }
