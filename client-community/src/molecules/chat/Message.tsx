@@ -45,6 +45,7 @@ export const ContentContainer = styled.div`
   padding: 16px;
   padding-left: 30px;
   line-height: 1.2;
+  gap: 10px;
   color: ${(props) => props.theme.textColor};
   display: flex;
   flex-direction: column;

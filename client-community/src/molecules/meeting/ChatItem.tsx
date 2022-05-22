@@ -1,7 +1,6 @@
 import styled from '@emotion/styled';
 import { getUserInfo } from 'api/userApi';
 import File from 'molecules/chat/File';
-import { ContentContainer } from 'molecules/chat/Message';
 import React, { useEffect, useState } from 'react';
 import { contentTypes } from 'types/channel/contentType';
 import { colors } from 'shared/color';
@@ -30,6 +29,7 @@ const Content = styled.div`
   font-size: 16px;
   line-height: 1.6;
   color: ${(props) => props.theme.textColor};
+  word-break: break-all;
 `;
 
 const ChatItem = ({
@@ -76,9 +76,9 @@ const ChatItem = ({
           </div>
         )}
       </ChatItemHeader>
-      <Content dangerouslySetInnerHTML={{ __html: contents }}></Content>
+      <Content dangerouslySetInnerHTML={{ __html: contents }} />
       {files && originFiles && files.length > 0 && (
-        <ContentContainer>
+        <Content>
           {files.map((file, i) =>
             checkType(file) ? (
               <Img key={file} src={file}></Img>
@@ -86,7 +86,7 @@ const ChatItem = ({
               <File key={file} name={originFiles[i]} url={file} />
             )
           )}
-        </ContentContainer>
+        </Content>
       )}
     </ChatItemContainer>
   );
