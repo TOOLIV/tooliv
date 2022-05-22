@@ -6,10 +6,12 @@ import com.tooliv.server.domain.channel.domain.Webhook;
 import com.tooliv.server.domain.channel.domain.repository.ChannelRepository;
 import com.tooliv.server.domain.channel.domain.repository.WebhookRepository;
 import com.tooliv.server.domain.channel.execption.ChannelNotFoundException;
+import com.tooliv.server.domain.channel.execption.SenderNotFoundException;
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
 import com.tooliv.server.global.common.AwsS3Service;
 import com.tooliv.server.global.exception.UserNotFoundException;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -31,17 +33,19 @@ public class WebhookServiceImpl implements WebhookService {
         User user = getCurrentUser();
 
         User sender = userRepository.findByIdAndDeletedAt(webhookCreateRequestDTO.getSenderId(), null)
-            .orElseThrow();
+            .orElseThrow(() -> new SenderNotFoundException("전송자 정보를 찾을 수 없음"));
 
-        Channel channel = channelRepository.findByIdAndDeletedAt(webhookCreateRequestDTO.getChannelId())
+        Channel channel = channelRepository.findByIdAndDeletedAt(webhookCreateRequestDTO.getChannelId(), null)
             .orElseThrow(() -> new ChannelNotFoundException("해당 채널을 찾을 수 없음"));
-
-
 
         Webhook webhook = Webhook.builder()
             .channel(channel)
             .user(user)
-            .sender()
+            .sender(sender)
+            .value(webhookCreateRequestDTO.getValue())
+            .createdAt(LocalDateTime.now()).build();
+
+        webhookRepository.save(webhook);
     }
 
     @Override

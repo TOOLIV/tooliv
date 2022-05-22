@@ -35,10 +35,17 @@ public class Webhook extends BaseEntity {
     @JoinColumn
     private User sender;
 
+    @Column(name = "value")
+    private String value;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
+
+    public void deleteWebhook(LocalDateTime localDateTime) {
+        this.deletedAt = localDateTime;
+    }
 
 }
