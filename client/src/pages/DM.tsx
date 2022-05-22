@@ -35,12 +35,13 @@ const LoadContainer = styled.div`
   align-items: center;
 `;
 
-const Info = styled.div`
-  height: 100%;
+const Info = styled.div<{ isFile: boolean }>`
+  height: ${(props) => (props.isFile ? 'calc(100% - 70px)' : '100%')};
   display: flex;
   align-items: flex-end;
   padding-bottom: 30px;
   line-height: 1.5;
+  /* position: fixed; */
   color: ${(props) => props.theme.textColor};
 `;
 
@@ -62,7 +63,11 @@ const DM = () => {
     window.addEventListener('beforeunload', (e: any) => {
       updateLoggedTime(channelId, 'DM');
     });
-    return () => update();
+    return () => {
+      update();
+      setFiles([]);
+      setFileUrl([]);
+    };
   }, []);
 
   const update = () => {
@@ -88,6 +93,7 @@ const DM = () => {
   const onSendClick = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
     if (message !== '') sendMessage();
+    else if (files.length > 0) sendMessage();
   };
 
   const sendMessage = () => {
@@ -115,7 +121,7 @@ const DM = () => {
         ) : contents.length > 0 ? (
           <Messages />
         ) : (
-          <Info>
+          <Info isFile={files.length > 0 ? true : false}>
             안녕하세요! 개인 메시지가 시작되었습니다. <br />
             {directName} 님과 개인 메시지를 시작해 보세요.
           </Info>
