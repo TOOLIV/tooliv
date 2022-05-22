@@ -1,11 +1,8 @@
 package com.tooliv.server.domain.channel.api;
 
-import com.tooliv.server.domain.channel.application.dto.request.RegisterChannelRequestDTO;
 import com.tooliv.server.domain.channel.application.dto.request.ReservationCreateRequestDTO;
-import com.tooliv.server.domain.channel.application.dto.response.RegisterChannelResponseDTO;
-import com.tooliv.server.domain.channel.application.reservation.ReservationService;
+import com.tooliv.server.domain.channel.application.reservationService.ReservationService;
 import com.tooliv.server.domain.channel.execption.ChannelNotFoundException;
-import com.tooliv.server.domain.workspace.exception.WorkspaceNotFoundException;
 import com.tooliv.server.global.common.BaseResponseDTO;
 import com.tooliv.server.global.exception.UserNotFoundException;
 import io.swagger.annotations.Api;
@@ -17,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
