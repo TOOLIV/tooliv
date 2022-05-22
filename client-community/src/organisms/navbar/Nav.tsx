@@ -220,6 +220,10 @@ const Nav = () => {
   }, []);
 
   useEffect(() => {
+    if (debouncedValue === '') {
+      setSearchList([]);
+    }
+
     if (channelId && debouncedValue !== '') {
       searchChat(debouncedValue, channelId).then((res) => {
         const {
