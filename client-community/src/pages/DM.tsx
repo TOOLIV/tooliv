@@ -127,7 +127,11 @@ const DM = () => {
           </Info>
         )}
         <Files />
-        <Editor type="DM" onClick={onSendClick} sendMessage={sendMessage} />
+        <Editor
+          isButton={true}
+          onClick={onSendClick}
+          sendMessage={sendMessage}
+        />
       </Container>
     </>
   );

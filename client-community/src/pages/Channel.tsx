@@ -143,7 +143,11 @@ const Channel = () => {
           <Messages />
         )}
         <Files />
-        <Editor onClick={onSendClick} sendMessage={sendMessage} />
+        <Editor
+          isButton={true}
+          onClick={onSendClick}
+          sendMessage={sendMessage}
+        />
       </Container>
     </>
   );
