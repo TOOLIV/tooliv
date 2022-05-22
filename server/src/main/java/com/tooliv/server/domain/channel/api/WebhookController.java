@@ -42,11 +42,16 @@ public class WebhookController {
         return ResponseEntity.status(201).body(WebhookCreateResponseDTO.of("웹훅 등록 완료", webhookCreateResponseDTO));
     }
 
-    @PostMapping
+    @PostMapping("/message")
     @ApiOperation(value = "웹훅 - 메세지 전송")
     public ResponseEntity<? extends BaseResponseDTO> sendMessageThroughWebhook(
         @RequestBody @Valid @ApiParam(value = "웹훅 - 메세지 정보", required = true) WebhookMessageRequestDTO webhookMessageRequestDTO) {
-
+        try {
+            webhookService.sendMessageThroughWebhook(webhookMessageRequestDTO);
+        } catch (Exception e) {
+            return ResponseEntity.status(409).body(BaseResponseDTO.of(e.getMessage()));
+        }
+        return ResponseEntity.status(204).body(null);
     }
 
 
