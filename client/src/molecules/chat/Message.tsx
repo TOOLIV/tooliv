@@ -47,6 +47,7 @@ export const ContentContainer = styled.div`
   line-height: 1.2;
   color: ${(props) => props.theme.textColor};
   display: flex;
+  flex-direction: column;
 `;
 
 const Img = styled.img`
