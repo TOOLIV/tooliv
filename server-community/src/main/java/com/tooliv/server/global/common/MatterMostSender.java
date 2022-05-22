@@ -1,7 +1,6 @@
 package com.tooliv.server.global.common;
 
 import com.google.gson.Gson;
-import com.tooliv.server.domain.channel.application.dto.request.WebhookMessageRequestDTO;
 import com.tooliv.server.global.common.MatterMostMessageDTO.Attachment;
 import com.tooliv.server.global.common.MatterMostMessageDTO.Attachments;
 import lombok.RequiredArgsConstructor;
@@ -34,9 +33,6 @@ public class MatterMostSender {
         }
 
         try {
-            WebhookMessageRequestDTO webhookMessageRequestDTO = WebhookMessageRequestDTO.builder()
-                .webhook_id("039a1907-5ff5-406d-ba7d-e09338d59eb5").build()
-
             Attachment attachment = Attachment.builder()
                 .channel(mmProperties.getChannel())
                 .authorIcon(mmProperties.getAuthorIcon())
@@ -58,6 +54,7 @@ public class MatterMostSender {
 
             HttpEntity<String> entity = new HttpEntity<>(payload, headers);
             restTemplate.postForEntity(webhookUrl, entity, String.class);
+
 
         } catch (Exception e) {
             log.error("#### ERROR!! Notification Manager : {}", e.getMessage());

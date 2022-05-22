@@ -77,7 +77,7 @@ public class BatchScheduler {
                 redisPublisher.publish(chatService.getTopic(channelId), chatRequestDTO);
 
                 reservation.updateSendTime(reservation.getSendTime().plusDays(1));
-                
+
                 reservationRepository.save(reservation);
             }
         }
