@@ -338,7 +338,7 @@ public class ChatServiceImpl implements ChatService {
     public void getReservationFileURL(List<MultipartFile> multipartFiles, Reservation reservation) {
         List<String> files = new ArrayList<>();
         List<String> originFiles = new ArrayList<>();
-        if(multipartFiles.size() <1)
+        if(multipartFiles == null)
             return;
         multipartFiles.forEach(file -> {
             String fileName = awsS3Service.uploadFile(file);
