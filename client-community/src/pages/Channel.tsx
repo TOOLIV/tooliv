@@ -25,10 +25,12 @@ import LoadSpinner from 'atoms/common/LoadSpinner';
 import { send } from 'services/wsconnect';
 import { workspaceListType } from 'types/workspace/workspaceTypes';
 
-const Container = styled.div`
+const Container = styled.div<{ isFiles: boolean }>`
   width: 100%;
   height: 100%;
-  padding-bottom: 70px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 `;
 
 const LoadContainer = styled.div`
@@ -133,23 +135,17 @@ const Channel = () => {
   };
 
   return (
-    <>
-      <Container>
-        {isLoading ? (
-          <LoadContainer>
-            <LoadSpinner />
-          </LoadContainer>
-        ) : (
-          <Messages />
-        )}
-        <Files />
-        <Editor
-          isButton={true}
-          onClick={onSendClick}
-          sendMessage={sendMessage}
-        />
-      </Container>
-    </>
+    <Container isFiles={files.length > 0}>
+      {isLoading ? (
+        <LoadContainer>
+          <LoadSpinner />
+        </LoadContainer>
+      ) : (
+        <Messages />
+      )}
+      {files.length > 0 && <Files />}
+      <Editor isButton={true} onClick={onSendClick} sendMessage={sendMessage} />
+    </Container>
   );
 };
 
