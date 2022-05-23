@@ -31,7 +31,7 @@ public class ReservationController {
     @PostMapping
     @ApiOperation(value = "예약 메세징 등록")
     public ResponseEntity<? extends BaseResponseDTO> createReservation(
-        @ApiParam(value = "이미지", required = true) @RequestPart List<MultipartFile> multipartFiles,
+        @ApiParam(value = "이미지") @RequestPart List<MultipartFile> multipartFiles,
         @ApiParam(value = "예약 메세징 정보", required = true) @Valid @RequestPart ReservationCreateRequestDTO reservationCreateRequestDTO) {
         try {
             reservationService.createReservation(multipartFiles, reservationCreateRequestDTO);
