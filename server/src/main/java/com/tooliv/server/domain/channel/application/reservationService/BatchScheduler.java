@@ -60,7 +60,7 @@ public class BatchScheduler {
                     chatRequestDTO = ChatRequestDTO.builder()
                         .channelId(reservation.getChannel().getId())
                         .contents(reservation.getContent())
-                        .type("TALK")
+                        .type("RESERVATION")
                         .userId(reservation.getUser().getId())
                         .email(reservation.getUser().getEmail())
                         .sendTime(reservation.getSendTime())

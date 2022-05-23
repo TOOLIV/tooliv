@@ -4,6 +4,7 @@ import com.tooliv.server.domain.channel.application.dto.request.ChatDirectDTO;
 import com.tooliv.server.domain.channel.application.dto.request.ChatRequestDTO;
 import com.tooliv.server.domain.channel.application.dto.request.ChatUpdatedDTO;
 import com.tooliv.server.domain.channel.application.dto.response.DirectRoomInfoResponseDTO;
+import com.tooliv.server.domain.channel.application.dto.response.FileListGetResponseDTO;
 import com.tooliv.server.domain.channel.application.dto.response.FileUrlListResponseDTO;
 import com.tooliv.server.domain.channel.domain.Channel;
 import com.tooliv.server.domain.channel.domain.Reservation;
@@ -42,4 +43,5 @@ public interface ChatService {
 
     void updateDirectMessage(ChatUpdatedDTO chatUpdatedDTO);
 
+    FileListGetResponseDTO getFileInfoList(String channelId);
 }

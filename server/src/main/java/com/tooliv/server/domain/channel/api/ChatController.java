@@ -7,20 +7,16 @@ import com.tooliv.server.domain.channel.application.chatService.RedisPublisher;
 import com.tooliv.server.domain.channel.application.dto.request.ChatDirectDTO;
 import com.tooliv.server.domain.channel.application.dto.request.ChatRequestDTO;
 import com.tooliv.server.domain.channel.application.dto.request.NotificationLoggedAtUpdateRequestDTO;
-import com.tooliv.server.domain.channel.application.dto.response.ChatRoomChatListResponseDTO;
-import com.tooliv.server.domain.channel.application.dto.response.ChatSearchInfoListResponseDTO;
-import com.tooliv.server.domain.channel.application.dto.response.DirectChatListResponseDTO;
-import com.tooliv.server.domain.channel.application.dto.response.DirectListResponseDTO;
-import com.tooliv.server.domain.channel.application.dto.response.DirectRoomInfoResponseDTO;
-import com.tooliv.server.domain.channel.application.dto.response.FileUrlListResponseDTO;
-import com.tooliv.server.domain.channel.application.dto.response.NotificationListResponseDTO;
+import com.tooliv.server.domain.channel.application.dto.response.*;
 import com.tooliv.server.global.common.BaseResponseDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+
 import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -88,8 +84,8 @@ public class ChatController {
     @ApiOperation(value = "개인 채팅방 생성")
     @PostMapping("/api/direct/chat/{receiverEmail}")
     @ApiResponses({
-        @ApiResponse(code = 201, message = "채팅방 입장 완료"),
-        @ApiResponse(code = 409, message = "채팅방 입장 실패"),
+            @ApiResponse(code = 201, message = "채팅방 입장 완료"),
+            @ApiResponse(code = 409, message = "채팅방 입장 실패"),
     })
     public ResponseEntity<? extends BaseResponseDTO> createDirectRoom(@PathVariable @ApiParam(value = "유저 이름", required = true) String receiverEmail) {
         DirectRoomInfoResponseDTO directRoomInfoResponseDTO;
@@ -104,8 +100,8 @@ public class ChatController {
     @ApiOperation(value = "Direct 채팅방 입장")
     @PostMapping("/api/direct/enter/{roomId}")
     @ApiResponses({
-        @ApiResponse(code = 200, message = "Direct 채팅방 입장 완료"),
-        @ApiResponse(code = 409, message = "Direct 채팅방 입장 실패"),
+            @ApiResponse(code = 200, message = "Direct 채팅방 입장 완료"),
+            @ApiResponse(code = 409, message = "Direct 채팅방 입장 실패"),
     })
     public ResponseEntity<? extends BaseResponseDTO> enterDirectRoom(@PathVariable @ApiParam(value = "방 정보", required = true) String roomId) {
         try {
@@ -119,8 +115,8 @@ public class ChatController {
     @ApiOperation(value = "개인 채팅방 이전 채팅 데이터")
     @GetMapping("/api/direct/chat/{roomId}")
     @ApiResponses({
-        @ApiResponse(code = 200, message = "채팅방 데이터 복구"),
-        @ApiResponse(code = 409, message = "채팅방 데이터 복구 실패"),
+            @ApiResponse(code = 200, message = "채팅방 데이터 복구"),
+            @ApiResponse(code = 409, message = "채팅방 데이터 복구 실패"),
     })
     public ResponseEntity<? extends BaseResponseDTO> getChatListInDirectRoom(@PathVariable @ApiParam(value = "방 정보", required = true) String roomId) {
         DirectChatListResponseDTO directChatListResponseDTO;
@@ -135,8 +131,8 @@ public class ChatController {
     @GetMapping("/api/direct/{email}")
     @ApiOperation(value = "개인 메시지 정보 목록 조회")
     @ApiResponses({
-        @ApiResponse(code = 200, message = "개인 메시지 알람 목록 조회 완료"),
-        @ApiResponse(code = 409, message = "개인 메시지 알람 목록 조회 실패"),
+            @ApiResponse(code = 200, message = "개인 메시지 알람 목록 조회 완료"),
+            @ApiResponse(code = 409, message = "개인 메시지 알람 목록 조회 실패"),
     })
     public ResponseEntity<? extends BaseResponseDTO> getDirectNotificationList(@PathVariable String email) {
         DirectListResponseDTO directListResponseDTO = null;
@@ -153,8 +149,8 @@ public class ChatController {
     @ApiOperation(value = "채널 채팅방 입장")
     @PostMapping("/api/channel/chat/{channelId}")
     @ApiResponses({
-        @ApiResponse(code = 200, message = "채팅방 입장 완료"),
-        @ApiResponse(code = 409, message = "채팅방 입장 실패"),
+            @ApiResponse(code = 200, message = "채팅방 입장 완료"),
+            @ApiResponse(code = 409, message = "채팅방 입장 실패"),
     })
     public ResponseEntity<? extends BaseResponseDTO> enterRoom(@PathVariable @ApiParam(value = "채널 채팅방 ID", required = true) String channelId) {
         try {
@@ -168,8 +164,8 @@ public class ChatController {
     @ApiOperation(value = "채널 채팅방 이전 채팅 데이터")
     @GetMapping("/api/channel/chat/{channelId}")
     @ApiResponses({
-        @ApiResponse(code = 200, message = "채팅방 데이터 복구"),
-        @ApiResponse(code = 409, message = "채팅방 데이터 복구 실패"),
+            @ApiResponse(code = 200, message = "채팅방 데이터 복구"),
+            @ApiResponse(code = 409, message = "채팅방 데이터 복구 실패"),
     })
     public ResponseEntity<? extends BaseResponseDTO> getChatListInRoom(@PathVariable @ApiParam(value = "방 정보", required = true) String channelId) {
         ChatRoomChatListResponseDTO chatRoomChatListResponseDTO;
@@ -184,8 +180,8 @@ public class ChatController {
     @GetMapping("/api/notification/list/{email}")
     @ApiOperation(value = "알람 목록 조회")
     @ApiResponses({
-        @ApiResponse(code = 200, message = "알람 목록 조회 완료"),
-        @ApiResponse(code = 409, message = "알람 목록 조회 실패"),
+            @ApiResponse(code = 200, message = "알람 목록 조회 완료"),
+            @ApiResponse(code = 409, message = "알람 목록 조회 실패"),
     })
     public ResponseEntity<? extends BaseResponseDTO> getChannelNotificationList(@PathVariable String email) {
         NotificationListResponseDTO notificationListResponseDTO = null;
@@ -201,8 +197,8 @@ public class ChatController {
     @PostMapping("/api/notification/update")
     @ApiOperation(value = "알림시간 logged time update")
     @ApiResponses({
-        @ApiResponse(code = 200, message = "알림시간 logged time update 완료"),
-        @ApiResponse(code = 409, message = "알림시간 logged time update 실패"),
+            @ApiResponse(code = 200, message = "알림시간 logged time update 완료"),
+            @ApiResponse(code = 409, message = "알림시간 logged time update 실패"),
     })
     public ResponseEntity<? extends BaseResponseDTO> updateNotification(@RequestBody NotificationLoggedAtUpdateRequestDTO notificationLoggedAtUpdateRequestDTO) {
         try {
@@ -217,8 +213,8 @@ public class ChatController {
     @GetMapping("/api/search/chat/content")
     @ApiOperation(value = "채팅 내용 검색")
     @ApiResponses({
-        @ApiResponse(code = 200, message = "채팅 내용 검색 완료"),
-        @ApiResponse(code = 409, message = "채팅 내용 검색 실패"),
+            @ApiResponse(code = 200, message = "채팅 내용 검색 완료"),
+            @ApiResponse(code = 409, message = "채팅 내용 검색 실패"),
     })
     public ResponseEntity<? extends BaseResponseDTO> getChannelNotificationList(@RequestParam String searchContent, @RequestParam String channelId) {
         ChatSearchInfoListResponseDTO chatSearchInfoListResponseDTO = null;
@@ -235,18 +231,35 @@ public class ChatController {
     @PostMapping("/api/fileUpload")
     @ApiOperation(value = "파일 등록")
     @ApiResponses({
-        @ApiResponse(code = 201, message = "파일 등록 완료"),
-        @ApiResponse(code = 409, message = "파일 등록 실패"),
+            @ApiResponse(code = 201, message = "파일 등록 완료"),
+            @ApiResponse(code = 409, message = "파일 등록 실패"),
     })
-    public ResponseEntity<? extends BaseResponseDTO> uploadProfileImage(
-        @ApiParam(value = "이미지", required = true) @RequestPart List<MultipartFile> multipartFiles) {
+    public ResponseEntity<? extends BaseResponseDTO> uploadFile(
+            @ApiParam(value = "이미지", required = true) @RequestPart List<MultipartFile> multipartFiles) {
         FileUrlListResponseDTO fileUrlListResponseDTO;
         try {
             fileUrlListResponseDTO = chatService.getFileURL(multipartFiles);
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseEntity.status(409).body(BaseResponseDTO.of("파일 등록 실패"));
         }
         return ResponseEntity.status(201).body(FileUrlListResponseDTO.of("파일 등록 완료", fileUrlListResponseDTO));
+    }
+
+    @GetMapping("/api/fileList/{channelId}")
+    @ApiOperation(value = "채널 파일 리스트")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "파일 리스트 조회 성공"),
+            @ApiResponse(code = 409, message = "파일 리스트 조회 실패"),
+    })
+    public ResponseEntity<? extends BaseResponseDTO> getFileList(
+            @ApiParam(value = "채널, 채팅방 ID", required = true) @PathVariable String channelId
+    ) {
+        FileListGetResponseDTO fileListGetResponseDTO;
+        try {
+            fileListGetResponseDTO = chatService.getFileInfoList(channelId);
+        } catch (Exception e) {
+            return ResponseEntity.status(409).body(BaseResponseDTO.of("파일 등록 실패"));
+        }
+        return ResponseEntity.status(201).body(FileListGetResponseDTO.of("파일 등록 완료", fileListGetResponseDTO));
     }
 }
