@@ -22,7 +22,6 @@ import lombok.ToString;
 @AllArgsConstructor
 public class DirectChatRoom extends BaseEntity {
 
-
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
