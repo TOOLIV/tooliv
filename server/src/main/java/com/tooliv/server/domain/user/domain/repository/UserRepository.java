@@ -40,7 +40,7 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     @Query(value = "SELECT * \n"
         + "FROM user u\n"
-        + "WHERE u.deleted_at IS NULL  AND u.name LIKE %:keyword% AND u.id NOT IN (\n"
+        + "WHERE u.deleted_at IS NULL  AND u.name LIKE %:keyword% AND u.user_code != 'U04' AND u.id NOT IN (\n"
         + "SELECT DISTINCT m.user_id\n"
         + "FROM workspace_members m\n"
         + "JOIN workspace w ON m.workspace_id = w.id \n"
