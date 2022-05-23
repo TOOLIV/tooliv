@@ -1,17 +1,12 @@
 import styled from '@emotion/styled';
 import React from 'react';
 import { colors } from 'shared/color';
-import {
-  FileIcon,
-  defaultStyles,
-  FileIconProps,
-  DefaultExtensionType,
-} from 'react-file-icon';
+import { FileIcon, defaultStyles, DefaultExtensionType } from 'react-file-icon';
 import Icons from 'atoms/common/Icons';
 
 const Container = styled.div`
   display: flex;
-  width: auto;
+  /* width: auto; */
   max-width: 285px;
   border: 1px solid ${colors.gray200};
   border-radius: 10px;
@@ -27,7 +22,7 @@ const Container = styled.div`
     width: 27px;
   }
   .name {
-    max-width: 180px;
+    width: 185px;
     font-size: 12px;
     line-height: normal;
     /* white-space: nowrap; */

@@ -1,9 +1,8 @@
 import styled from '@emotion/styled';
 import FileItem from 'molecules/chat/FileItem';
-import React, { useCallback } from 'react';
-import { useRecoilState } from 'recoil';
+import React from 'react';
+import { useRecoilValue } from 'recoil';
 import { chatFiles } from 'recoil/atom';
-import { colors } from 'shared/color';
 import { FileTypes } from 'types/common/fileTypes';
 
 const FilesContainer = styled.div`
@@ -17,13 +16,7 @@ const FilesContainer = styled.div`
 `;
 
 const Files = () => {
-  const [files, setFiles] = useRecoilState<FileTypes[]>(chatFiles);
-  const handleFilterFile = useCallback(
-    (id: number): void => {
-      setFiles(files.filter((file: FileTypes) => file.id !== id));
-    },
-    [files]
-  );
+  const files = useRecoilValue<FileTypes[]>(chatFiles);
   return (
     <FilesContainer>
       {files.length > 0 &&

@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import React, { useEffect, useRef } from 'react';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import Icons from '../../../atoms/common/Icons';
 import ChatItem from '../../../molecules/meeting/ChatItem';
 import MenuTemplate from '../../../atoms/sidemenu/MenuTemplate';
@@ -48,7 +48,6 @@ const FilesContainer = styled.div`
 const Chat = () => {
   const [isChatOpen, setIsChatOpen] = useRecoilState<boolean>(isOpenChat);
   const [message, setMessage] = useRecoilState<string>(channelMessage);
-  const [chatMembers, setChatMembers] = useRecoilState<string[]>(chatMember);
   const [files, setFiles] = useRecoilState<FileTypes[]>(chatFiles);
   const [fileUrl, setFileUrl] = useRecoilState<string[]>(chatFileUrl);
   const [fileNames, setFileNames] = useRecoilState<string[]>(chatFileNames);
@@ -119,15 +118,17 @@ const Chat = () => {
                 content.files &&
                 content.files.length === 0
               ) {
-                return;
+                return <></>;
               } else {
                 return <ChatItem {...content} />;
               }
             })}
         </ContentContainer>
-        <FilesContainer>
-          <Files />
-        </FilesContainer>
+        {files.length > 0 && (
+          <FilesContainer>
+            <Files />
+          </FilesContainer>
+        )}
         <Editor onClick={onSendClick} sendMessage={sendMessage} />
       </>
     </ChatContainer>

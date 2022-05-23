@@ -34,6 +34,13 @@ const FileContainer = styled.div`
   .icon {
     width: 16px;
   }
+
+  .xmark {
+    :hover {
+      background-color: ${colors.gray200};
+      cursor: pointer;
+    }
+  }
 `;
 
 type fileItemPropsType = {
@@ -60,12 +67,14 @@ const FileItem = ({ file }: fileItemPropsType) => {
         <FileIcon extension={extension} {...defaultStyles[extension]} />
       </div>
       <div className="name">{file.object.name}</div>
-      <Icons
-        icon="xMark"
-        width="20px"
-        height="20px"
-        onClick={() => handleFilterFile(file.id)}
-      />
+      <div className="xmark">
+        <Icons
+          icon="xMark"
+          width="20px"
+          height="20px"
+          onClick={() => handleFilterFile(file.id)}
+        />
+      </div>
     </FileContainer>
   );
 };

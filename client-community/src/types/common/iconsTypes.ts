@@ -44,6 +44,7 @@ export type iconsTypes = {
     | 'delete'
     | 'visibility'
     | 'visibilityOff'
+    | 'paper'
     | 'folder';
 
   onClick?: () => void;

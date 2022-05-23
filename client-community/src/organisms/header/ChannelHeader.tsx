@@ -3,6 +3,7 @@ import { getChannelInfo, getChannelUserCode } from 'api/channelApi';
 import Icons from 'atoms/common/Icons';
 import Text from 'atoms/text/Text';
 import AutoChatModal from 'organisms/modal/channel/chat/AutoChatModal';
+import FileListModal from 'organisms/modal/channel/file/FileListModal';
 import ChannelAddMemberModal from 'organisms/modal/channel/header/ChannelAddMemberModal';
 import ChannelHeaderDropdown from 'organisms/modal/channel/header/ChannelHeaderDropdown';
 import ChannelMemberListModal from 'organisms/modal/channel/header/ChannelMemberListModal';
@@ -62,6 +63,7 @@ const ChannelHeader = () => {
   const [isMeeting, setIsMeeting] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [modifyModalOpen, setModifyModalOpen] = useState(false);
+  const [fileListModalOpen, setFileListModalOpen] = useState(false);
   const [memberListOpen, setMemberListOpen] = useState(false);
   const [addMemeberOpen, setAddMemberOpen] = useState(false);
   const [autoMessage, setAutoMessage] = useState(false);
@@ -249,13 +251,23 @@ const ChannelHeader = () => {
               {String(channelMemberNum)}
             </Text>
           </Members>
-          {channelCode === 'VIDEO' && !isMeeting ? (
+          <Members>
             <Icons
-              icon="solidVideoOn"
+              icon="paper"
               width="28"
               height="28"
-              onClick={() => navigate(`meeting/${workspaceId}/${channelId}`)}
+              onClick={() => setFileListModalOpen(!fileListModalOpen)}
             />
+          </Members>
+          {channelCode === 'VIDEO' && !isMeeting ? (
+            <Members>
+              <Icons
+                icon="solidVideoOn"
+                width="28"
+                height="28"
+                onClick={() => navigate(`meeting/${workspaceId}/${channelId}`)}
+              />
+            </Members>
           ) : null}
           <Icons icon="folder" width="24" height="24" />
           <ChannelMemberListModal
@@ -276,6 +288,12 @@ const ChannelHeader = () => {
         isOpen={modifyModalOpen}
         onClose={closeModifyModal}
         channelName={channelName}
+      />
+
+      <FileListModal
+        isOpen={fileListModalOpen}
+        onClose={setFileListModalOpen}
+        channelId={channelId!}
       />
       <AutoChatModal isOpen={autoMessage} onClose={closeAutoChatModal} />
     </Container>
