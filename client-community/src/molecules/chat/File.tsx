@@ -7,6 +7,7 @@ import {
   FileIconProps,
   DefaultExtensionType,
 } from 'react-file-icon';
+import Icons from 'atoms/common/Icons';
 
 const Container = styled.div`
   display: flex;
@@ -20,17 +21,30 @@ const Container = styled.div`
   gap: 10px;
   align-items: center;
   &:hover {
-    cursor: pointer;
-    background-color: ${colors.gray100};
+    cursor: default;
   }
   .icon {
-    width: 30px;
+    width: 27px;
   }
   .name {
     max-width: 180px;
     font-size: 12px;
     line-height: normal;
+    /* white-space: nowrap; */
     word-break: break-all;
+    height: 32px;
+    overflow: hidden;
+    display: -webkit-box;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  .download {
+    border-radius: 5px;
+    :hover {
+      cursor: pointer;
+      background-color: ${(props) => props.theme.downloadHoverColor};
+    }
   }
 `;
 
@@ -39,7 +53,7 @@ type fileType = {
   url: string;
 };
 const File = ({ name, url }: fileType) => {
-  const onClick = (e: React.MouseEvent<HTMLElement>) => {
+  const onClick = () => {
     // e.preventDefault();
     window.open(url);
   };
@@ -48,11 +62,14 @@ const File = ({ name, url }: fileType) => {
     [name.split('.').length - 1].toLowerCase() as DefaultExtensionType;
 
   return (
-    <Container onClick={onClick}>
+    <Container>
       <div className="icon">
         <FileIcon extension={extension} {...defaultStyles[extension]} />
       </div>
       <div className="name">{name}</div>
+      <div className="download">
+        <Icons icon="download" width="24px" height="24px" onClick={onClick} />
+      </div>
     </Container>
   );
 };

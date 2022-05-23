@@ -138,6 +138,7 @@ const DirectMessage = () => {
                   </SideWrapper>
                   <Text
                     size={12}
+                    pointer
                     weight={
                       map.get(dm.channelId)?.notificationRead
                         ? 'bold'

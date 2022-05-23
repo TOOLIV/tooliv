@@ -28,7 +28,6 @@ const Container = styled.div<{ isSearched?: boolean }>`
   border: ${(props) =>
     props.isSearched && `3px solid ${props.theme.pointColor}`};
   padding: 16px;
-  margin: 16px 0;
   transition: 0.3s;
   &:hover {
     background-color: ${colors.lightGray};
@@ -48,7 +47,18 @@ export const ContentContainer = styled.div`
   gap: 10px;
   color: ${(props) => props.theme.textColor};
   display: flex;
+  flex-wrap: wrap;
   flex-direction: column;
+`;
+
+const FilesContainer = styled.div`
+  padding: 16px;
+  padding-left: 30px;
+  line-height: 1.2;
+  gap: 10px;
+  color: ${(props) => props.theme.textColor};
+  display: flex;
+  flex-wrap: wrap;
 `;
 
 const Img = styled.img`
@@ -230,9 +240,11 @@ const Message = forwardRef<HTMLDivElement, contentTypes>(
             <ContentContainer>(삭제된 메시지)</ContentContainer>
           ) : (
             <>
-              <ContentContainer
-                dangerouslySetInnerHTML={{ __html: contents }}
-              ></ContentContainer>
+              {contents && (
+                <ContentContainer
+                  dangerouslySetInnerHTML={{ __html: contents }}
+                />
+              )}
               {type === 'home' ? (
                 <Button
                   text={
@@ -244,7 +256,7 @@ const Message = forwardRef<HTMLDivElement, contentTypes>(
             </>
           )}
           {files && originFiles && files.length > 0 && (
-            <ContentContainer>
+            <FilesContainer>
               {files.map((file, i) =>
                 checkType(file) ? (
                   <Img key={file} src={file}></Img>
@@ -252,7 +264,7 @@ const Message = forwardRef<HTMLDivElement, contentTypes>(
                   <File key={file} name={originFiles[i]} url={file} />
                 )
               )}
-            </ContentContainer>
+            </FilesContainer>
           )}
         </Container>
         <UpdateChatModal

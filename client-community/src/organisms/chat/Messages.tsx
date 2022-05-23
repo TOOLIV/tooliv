@@ -14,15 +14,18 @@ import {
 import { contentTypes } from '../../types/channel/contentType';
 
 const Container = styled.div<{ isFile: boolean }>`
-  width: calc(100% + 38px);
-  height: ${(props) => (props.isFile ? 'calc(100% - 70px)' : '100%')};
-  padding-right: 32px;
+  width: 100%;
+  height: ${(props) =>
+    props.isFile ? 'calc(100% - 130px)' : 'calc(100% - 72px)'};
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
 `;
 const MessageContainer = styled.div`
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 `;
 const Date = styled.div`
   color: ${colors.gray400};

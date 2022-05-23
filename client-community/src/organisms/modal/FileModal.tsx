@@ -9,6 +9,7 @@ import { FileTypes } from 'types/common/fileTypes';
 import { chatFiles } from 'recoil/atom';
 import Button from 'atoms/common/Button';
 import { fileModalType } from 'types/channel/fileModalType';
+import FileItem from 'molecules/modal/FileItem';
 
 const Modal = styled.div`
   display: none;
@@ -27,8 +28,9 @@ const Modal = styled.div`
 const Container = styled.div`
   width: 280px;
   height: 240px;
-  margin: 30px auto;
   border: 5px dashed ${colors['gray200']};
+  font-size: 14px;
+  color: ${colors.gray600};
   border-radius: 20px;
   display: flex;
   align-items: center;
@@ -41,11 +43,12 @@ const Container = styled.div`
 
 const Wrapper = styled.div`
   width: 430px;
-  padding: 25px;
+  padding: 20px;
   background-color: ${(props) => props.theme.bgColor};
   border-radius: 30px;
   box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.06);
   display: flex;
+  gap: 20px;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -54,21 +57,16 @@ const Wrapper = styled.div`
 const FilesContainer = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 90%;
-  margin-bottom: 25px;
+  width: 280px;
+  gap: 4px;
 `;
 
-const FileContainer = styled.div`
-  display: flex;
-  width: 80%;
-  justify-content: space-around;
-  border: 1px solid ${colors.gray200};
-  border-radius: 10px;
-  padding: 16px;
-  margin: 12px;
+const BlackContainer = styled.div`
+  font-size: 12px;
+  color: ${colors.gray400};
+  text-align: center;
 `;
+
 const FileModal = ({ onClick }: fileModalType) => {
   const [files, setFiles] = useRecoilState<FileTypes[]>(chatFiles);
   const handleFilterFile = useCallback(
@@ -90,25 +88,13 @@ const FileModal = ({ onClick }: fileModalType) => {
           <DragDrop />
         </Container>
         <FilesContainer>
-          {files.length > 0 &&
-            files.map((file: FileTypes) => {
-              const {
-                id,
-                object: { name },
-              } = file;
-
-              return (
-                <FileContainer key={id}>
-                  <div>{name}</div>
-                  <div
-                    className="DragDrop-Files-Filter"
-                    onClick={() => handleFilterFile(id)}
-                  >
-                    X
-                  </div>
-                </FileContainer>
-              );
-            })}
+          {files.length > 0 ? (
+            files.map((file: FileTypes) => (
+              <FileItem file={file} key={file.id} />
+            ))
+          ) : (
+            <BlackContainer>선택된 파일이 없습니다.</BlackContainer>
+          )}
         </FilesContainer>
         <ButtonBox>
           <Button
