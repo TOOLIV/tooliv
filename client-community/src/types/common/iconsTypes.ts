@@ -43,7 +43,8 @@ export type iconsTypes = {
     | 'solidVideoOn'
     | 'delete'
     | 'visibility'
-    | 'visibilityOff';
+    | 'visibilityOff'
+    | 'paper';
 
   onClick?: () => void;
   width?: string;
