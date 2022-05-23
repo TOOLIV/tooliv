@@ -1,10 +1,8 @@
-package com.tooliv.server.domain.channel.application.reservation;
+package com.tooliv.server.domain.channel.application.reservationService;
 
 import com.tooliv.server.domain.channel.application.chatService.ChatService;
 import com.tooliv.server.domain.channel.application.dto.request.ReservationCreateRequestDTO;
-import com.tooliv.server.domain.channel.application.dto.response.FileUrlListResponseDTO;
 import com.tooliv.server.domain.channel.domain.Channel;
-import com.tooliv.server.domain.channel.domain.ChatFile;
 import com.tooliv.server.domain.channel.domain.Reservation;
 import com.tooliv.server.domain.channel.domain.repository.ChannelRepository;
 import com.tooliv.server.domain.channel.domain.repository.ReservationRepository;
@@ -14,7 +12,6 @@ import com.tooliv.server.domain.user.domain.repository.UserRepository;
 import com.tooliv.server.global.exception.UserNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
-import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;

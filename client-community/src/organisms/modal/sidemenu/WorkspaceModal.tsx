@@ -61,8 +61,7 @@ export const Title = styled.div`
 
 export const ButtonBox = styled.div`
   display: flex;
-  justify-content: space-between;
-  width: 80%;
+  gap: 20px;
   margin: 0 auto;
 `;
 

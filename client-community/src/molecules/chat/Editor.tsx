@@ -2,9 +2,9 @@ import styled from '@emotion/styled';
 import Icons from 'atoms/common/Icons';
 import FileModal from 'organisms/modal/FileModal';
 import React, { useState } from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import Button from '../../atoms/common/Button';
-import { channelMessage } from '../../recoil/atom';
+import { channelMessage, isOpenChat } from '../../recoil/atom';
 import { editorProps } from '../../types/common/buttonTypes';
 
 const Container = styled.div`
@@ -14,17 +14,20 @@ const Container = styled.div`
   display: flex;
   justify-content: space-between;
   min-height: 64px;
-  padding: 0 10px;
+  padding-right: 10px;
 `;
-export const EditorInput = styled.textarea`
-  width: 85%;
-  margin: 12px;
+export const EditorInput = styled.textarea<{ isChatOpen: boolean }>`
   min-height: 50%;
+  width: 100%;
+  padding: 10px;
   border: 0;
   resize: none;
   color: ${(props) => props.theme.textColor};
   font-size: 16px;
   background-color: ${(props) => props.theme.bgColor};
+  border-radius: 10px;
+  border: ${(props) =>
+    props.isChatOpen && '1px solid ' + props.theme.hoverColor};
   &:focus {
     outline: none;
   }
@@ -36,11 +39,13 @@ const Wrapper = styled.div`
   /* top: 12px; */
   justify-content: center;
   align-items: center;
+  gap: 16px;
 `;
 
-const Editor = ({ onClick, sendMessage }: editorProps) => {
+const Editor = ({ onClick, sendMessage, isButton }: editorProps) => {
   const [message, setMessage] = useRecoilState<string>(channelMessage);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const isChatOpen = useRecoilValue(isOpenChat);
 
   const onChange = (event: React.FormEvent<HTMLTextAreaElement>) => {
     const {
@@ -70,16 +75,19 @@ const Editor = ({ onClick, sendMessage }: editorProps) => {
           value={message}
           onChange={onChange}
           onKeyPress={onKeyPress}
+          isChatOpen={isChatOpen}
         ></EditorInput>
         <Wrapper>
           <Icons
             icon="file"
             color="gray500"
             onClick={handleFileModal}
-            width="30"
-            height="30"
+            width="24"
+            height="24"
           />
-          <Button onClick={onClick} width="50" height="40" text="전송" />
+          {isButton && (
+            <Button onClick={onClick} width="50" height="40" text="전송" />
+          )}
         </Wrapper>
       </Container>
       {isModalOpen && <FileModal onClick={handleFileModal} />}

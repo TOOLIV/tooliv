@@ -16,5 +16,6 @@ declare module '@emotion/react' {
     dropdownHoverColor: string;
     selectedItemColor: string;
     notiColor: string;
+    downloadHoverColor: string;
   }
 }
