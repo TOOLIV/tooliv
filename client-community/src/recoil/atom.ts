@@ -163,11 +163,11 @@ export const autoChatFiles = atom<FileTypes[]>({
 });
 
 export const autoChatFileUrl = atom<string[]>({
-  key: 'chatFileUrl',
+  key: 'autoChatFileUrl',
   default: [],
 });
 
 export const autoChatFileNames = atom<string[]>({
-  key: 'chatFilesName',
+  key: 'autoChatFilesName',
   default: [],
 });
