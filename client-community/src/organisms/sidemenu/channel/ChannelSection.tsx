@@ -70,8 +70,6 @@ const ChannelSection = () => {
     const normalList: channelListTypes[] = [];
     const videoList: channelListTypes[] = [];
 
-    console.log(currentWorkspaceId);
-    console.log(channelList);
     channelList.forEach((list: channelListTypes) => {
       if (list.channelCode === 'CHAT') {
         normalList.push(list);

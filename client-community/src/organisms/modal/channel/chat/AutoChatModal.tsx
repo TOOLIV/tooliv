@@ -2,9 +2,17 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import Icons from 'atoms/common/Icons';
 import Text from 'atoms/text/Text';
-import { forwardRef, useCallback, useRef, useState } from 'react';
+import Editor from 'molecules/chat/Editor';
+import { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 import { addWorkspaceMemberType } from 'types/workspace/workspaceTypes';
-import TimePicker from 'react-time-picker';
+import { TimepickerUI } from 'timepicker-ui';
+import Button from 'atoms/common/Button';
+import Label from 'atoms/label/Label';
+import { useParams } from 'react-router-dom';
+import { channelMessage, chatFiles } from 'recoil/atom';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { reserveMessage } from 'api/reservationApi';
+import { FileTypes } from 'types/common/fileTypes';
 
 const Modal = styled.div<{ isOpen: boolean }>`
   display: none;
@@ -40,35 +48,180 @@ const Header = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  /* margin-bottom: 16px; */
+`;
+
+const Description = styled.div`
   margin-bottom: 16px;
 `;
 
 const Time = styled.div`
-  width: 300px;
+  width: 500px;
 `;
+
+const TimePicker = styled.input`
+  /* width: 500px; */
+  border: none;
+  width: 500px;
+  font-size: 50px;
+`;
+
+const ButtonBox = styled.div`
+  width: 50%;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 32px;
+  margin-left: auto;
+`;
+
 const AutoChatModal = forwardRef<HTMLDivElement, addWorkspaceMemberType>(
   ({ isOpen, onClose }, ref) => {
-    const [value, setValue] = useState('10:00');
-    const inputRef = useRef<HTMLInputElement>(null);
+    const { channelId } = useParams();
+    const [files, setFiles] = useRecoilState<FileTypes[]>(chatFiles);
+    const content = useRecoilValue(channelMessage);
+    const tmRef = useRef(null);
+    const [inputValue, setInputValue] = useState('10:00 PM');
+    const [timeValue, setTimeValue] = useState({
+      degreesHours: 270,
+      degreesMinutes: 0,
+      hour: '10',
+      minutes: '00',
+      type: 'PM',
+    });
+    const [returnTimeValue, setReturnTimeValue] = useState('');
 
-    const onChange = () => {
-      setValue(value);
-    };
+    const testHandler = useCallback((e: CustomEvent) => {
+      setTimeValue(e.detail);
+      setInputValue(`${e.detail.hour}:${e.detail.minutes} ${e.detail.type}`);
+    }, []);
+
+    useEffect(() => {
+      const date = new Date();
+      const time = date.toISOString().split('T')[0];
+      const initTime = time + 'T10:00:00';
+      setReturnTimeValue(initTime);
+    }, []);
+    useEffect(() => {
+      const date = new Date();
+      const year = Number(date.toISOString().split('T')[0].split('-')[0]);
+      const month = Number(date.toISOString().split('T')[0].split('-')[1]);
+      let day = Number(date.toISOString().split('T')[0].split('-')[2]);
+
+      const currentHour = Number(date.getHours());
+      const currentMinutes = Number(date.getMinutes());
+
+      const settingHour =
+        timeValue.type === 'PM'
+          ? Number(timeValue.hour) + 12
+          : Number(timeValue.hour);
+      const settingMinutes = Number(timeValue.minutes);
+
+      if (
+        currentHour > settingHour ||
+        (currentHour <= settingHour && currentMinutes >= settingMinutes)
+      ) {
+        day = day + 1;
+      }
+
+      const formatMonth = month < 10 ? '0' + month : month;
+      const formatMinutes =
+        settingMinutes < 10 ? '0' + settingMinutes : settingMinutes;
+      const returnTime =
+        year +
+        '-' +
+        formatMonth +
+        '-' +
+        day +
+        'T' +
+        settingHour +
+        ':' +
+        formatMinutes +
+        ':00';
+      console.log(returnTime);
+      setReturnTimeValue(returnTime);
+    }, [inputValue]);
+
+    useEffect(() => {
+      const tm = tmRef.current as unknown as HTMLDivElement;
+
+      const newPicker = new TimepickerUI(tm, {});
+      newPicker.create();
+
+      //@ts-ignore
+      tm.addEventListener('accept', testHandler);
+
+      return () => {
+        //@ts-ignore
+        tm.removeEventListener('accept', testHandler);
+      };
+    }, [testHandler]);
+
     const exitModal = useCallback(() => {
-      inputRef.current!.value = '';
+      // inputRef.current!.value = '';
       onClose();
     }, [onClose]);
 
+    const reserveMessageApi = async () => {
+      const formData = new FormData();
+      files.forEach((file) => {
+        formData.append('multipartFiles', file.object);
+      });
+      formData.append(
+        'reservationCreateRequestDTO',
+        new Blob(
+          [
+            JSON.stringify({
+              channelId,
+              sendTime: returnTimeValue,
+              content,
+            }),
+          ],
+          {
+            type: 'application/json',
+          }
+        )
+      );
+      console.log(returnTimeValue);
+      console.log(content);
+      console.log(formData);
+      const response = await reserveMessage(formData);
+      console.log(response);
+    };
     return (
       <Modal isOpen={isOpen}>
         <Container ref={ref}>
           <Header>
-            <Text size={18}>예약 메시지</Text>
+            <Text size={18}>자동 메시지</Text>
             <Icons icon="xMark" width="32" height="32" onClick={exitModal} />
           </Header>
-          <Time>
-            <TimePicker value={value} onChange={onChange} disableClock={true} />
+          <Description>
+            <Text size={12}>
+              설정한 시간에 매일 자동으로 메시지가 전송됩니다.
+            </Text>
+          </Description>
+          <Time ref={tmRef}>
+            <TimePicker
+              type="test"
+              className="timepicker-ui-input"
+              defaultValue={inputValue}
+            />
           </Time>
+          <Editor onClick={() => {}} />
+          <ButtonBox>
+            <Button
+              width="125"
+              height="35"
+              text="취소"
+              bgColor="gray300"
+              onClick={exitModal}
+            />
+            <Button
+              width="125"
+              height="35"
+              text="추가"
+              onClick={reserveMessageApi}
+            />
+          </ButtonBox>
         </Container>
       </Modal>
     );
