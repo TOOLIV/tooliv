@@ -89,6 +89,7 @@ export type channelHeaderDropdownType = {
   onClick: () => void;
   onMemberListOpen: () => void;
   onMemberAddOpen: () => void;
+  onAutoChatOpen: () => void;
 };
 
 export type channelModifyModalType = {
