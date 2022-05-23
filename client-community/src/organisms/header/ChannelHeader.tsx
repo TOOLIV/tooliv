@@ -253,7 +253,7 @@ const ChannelHeader = () => {
           </Members>
           <Members>
             <Icons
-              icon="paper"
+              icon="folder"
               width="28"
               height="28"
               onClick={() => setFileListModalOpen(!fileListModalOpen)}
@@ -269,7 +269,6 @@ const ChannelHeader = () => {
               />
             </Members>
           ) : null}
-          <Icons icon="folder" width="24" height="24" />
           <ChannelMemberListModal
             isOpen={memberListOpen}
             onClick={handleAddMemberModalOpen}
