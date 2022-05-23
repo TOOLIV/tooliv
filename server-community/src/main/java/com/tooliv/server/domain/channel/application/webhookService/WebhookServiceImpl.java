@@ -6,6 +6,8 @@ import com.tooliv.server.domain.channel.application.dto.request.ChatRequestDTO;
 import com.tooliv.server.domain.channel.application.dto.request.WebhookCreateRequestDTO;
 import com.tooliv.server.domain.channel.application.dto.request.WebhookMessageRequestDTO;
 import com.tooliv.server.domain.channel.application.dto.response.WebhookCreateResponseDTO;
+import com.tooliv.server.domain.channel.application.dto.response.WebhookListResponseDTO;
+import com.tooliv.server.domain.channel.application.dto.response.WebhookResponseDTO;
 import com.tooliv.server.domain.channel.domain.Channel;
 import com.tooliv.server.domain.channel.domain.Webhook;
 import com.tooliv.server.domain.channel.domain.repository.ChannelRepository;
@@ -17,6 +19,8 @@ import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
 import com.tooliv.server.global.exception.UserNotFoundException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -81,7 +85,46 @@ public class WebhookServiceImpl implements WebhookService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
 
+    @Override
+    public WebhookListResponseDTO getWebhookList(String channelId) {
+        User currentUser = getCurrentUser();
+
+        Channel channel = channelRepository.findByIdAndDeletedAt(channelId, null)
+            .orElseThrow(() -> new ChannelNotFoundException("채널 정보를 찾을 수 없음"));
+
+        List<Webhook> webhookList = webhookRepository.findByChannelAndUserAndDeletedAt(channel, currentUser, null);
+
+        List<WebhookResponseDTO> webhookResponseDTOList = new ArrayList<>();
+
+        for(Webhook webhook : webhookList) {
+            webhookResponseDTOList.add(
+                WebhookResponseDTO.builder()
+                    .userId(webhook.getUser().getId())
+                    .webhookId(webhook.getId())
+                    .created_at(webhook.getCreatedAt())
+                    .name(webhook.getName()).build()
+            );
+        }
+
+        return new WebhookListResponseDTO(webhookResponseDTOList);
+    }
+
+    @Override
+    public void deleteWebhook(String webhookId) {
+        User currentUser = getCurrentUser();
+
+        Webhook webhook = webhookRepository.findByIdAndDeletedAt(webhookId, null)
+            .orElseThrow(() -> new WebhookNotFoundException("웹훅 정보를 찾을 수 없음"));
+
+        User user = webhook.getUser();
+
+        if(currentUser.getEmail().equals(user.getEmail())) {
+            webhook.deleteWebhook(LocalDateTime.now());
+
+            webhookRepository.save(webhook);
+        }
     }
 
     @Override
