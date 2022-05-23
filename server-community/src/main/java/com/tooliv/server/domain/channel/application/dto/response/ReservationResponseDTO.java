@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Getter
 public class ReservationResponseDTO {
 
-    @ApiModelProperty("예약 ID")
+    @ApiModelProperty("예약 메세징 ID")
     private String reservationId;
 
     @ApiModelProperty("예약자 ID")

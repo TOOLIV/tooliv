@@ -5,7 +5,6 @@ import com.tooliv.server.domain.channel.application.dto.request.WebhookMessageRe
 import com.tooliv.server.domain.channel.application.dto.response.WebhookCreateResponseDTO;
 import com.tooliv.server.domain.channel.application.dto.response.WebhookListResponseDTO;
 import com.tooliv.server.domain.channel.application.webhookService.WebhookService;
-import com.tooliv.server.domain.channel.domain.Webhook;
 import com.tooliv.server.domain.channel.execption.ChannelNotFoundException;
 import com.tooliv.server.domain.channel.execption.SenderNotFoundException;
 import com.tooliv.server.domain.channel.execption.WebhookNotFoundException;
@@ -75,11 +74,10 @@ public class WebhookController {
         return ResponseEntity.status(200).body(WebhookListResponseDTO.of("웹훅 목록 조회 완료", webhookListResponseDTO));
     }
 
-
     @DeleteMapping
     @ApiOperation(value = "웹훅 삭제")
     public ResponseEntity<? extends BaseResponseDTO> deleteWebhook(
-        @ApiParam(value="삭제할 웹훅 ID", required = true) @RequestParam String webhookId) {
+        @ApiParam(value = "삭제할 웹훅 ID", required = true) @RequestParam String webhookId) {
         try {
             webhookService.deleteWebhook(webhookId);
         } catch (WebhookNotFoundException | UserNotFoundException e) {
@@ -87,6 +85,5 @@ public class WebhookController {
         }
         return ResponseEntity.status(204).body(null);
     }
-
 
 }
