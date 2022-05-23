@@ -63,7 +63,6 @@ public class WorkspaceMemberServiceImpl implements WorkspaceMemberService {
                 .workspaceMemberCode(WorkspaceMemberCode.WMEMBER)
                 .user(user)
                 .build();
-
             workspaceMemberRepository.save(workspaceMembers);
 
             Channel channel = channelRepository.findTopByDeletedAtAndWorkspaceOrderByCreatedAtAsc(null, workspace)
