@@ -52,4 +52,8 @@ public class Reservation extends BaseEntity {
         this.sendTime = localDateTime;
     }
 
+    public void deleteReservation(LocalDateTime localDateTime) {
+        this.deletedAt = localDateTime;
+    }
+
 }
