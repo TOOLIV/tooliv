@@ -124,7 +124,7 @@ const reset = css`
 
   ol,
   ul {
-    list-style: none;
+    /* list-style: none; */
   }
   blockquote,
   q {

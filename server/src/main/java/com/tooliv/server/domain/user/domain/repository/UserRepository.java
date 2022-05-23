@@ -18,13 +18,15 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     boolean existsByEmailAndDeletedAt(String email, LocalDateTime localDateTime);
 
+    Optional<User> findByIdAndDeletedAt(String id, LocalDateTime localDateTime);
+
     Optional<User> findByEmailAndDeletedAt(String email, LocalDateTime localDateTime);
 
     Optional<User> findByNickname(String nickname);
 
     Optional<List<User>> findAllByUserCodeNotAndDeletedAtOrderByNameAsc(UserCode userCode, LocalDateTime localDateTime);
 
-    Optional<List<User>> findAllByDeletedAtAndNameContainingOrderByNameAsc(LocalDateTime localDateTime, String keyword, Pageable pageable);
+    Optional<List<User>> findAllByDeletedAtAndUserCodeNotAndNameContainingOrderByNameAsc(LocalDateTime localDateTime, UserCode userCode, String keyword, Pageable pageable);
 
     Optional<List<User>> findAllByUserCodeNotAndDeletedAtAndNameContainingOrderByNameAsc(UserCode userCode, LocalDateTime localDateTime, String keyword, Pageable pageable);
 
