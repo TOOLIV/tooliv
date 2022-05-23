@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { getChannelInfo, getChannelUserCode } from 'api/channelApi';
 import Icons from 'atoms/common/Icons';
 import Text from 'atoms/text/Text';
+import AutoChatModal from 'organisms/modal/channel/chat/AutoChatModal';
 import ChannelAddMemberModal from 'organisms/modal/channel/header/ChannelAddMemberModal';
 import ChannelHeaderDropdown from 'organisms/modal/channel/header/ChannelHeaderDropdown';
 import ChannelMemberListModal from 'organisms/modal/channel/header/ChannelMemberListModal';
@@ -31,7 +32,6 @@ const Members = styled.div`
   display: flex;
   align-items: center;
   width: fit-content;
-  padding: 0 5px;
   border-radius: 8px;
   cursor: pointer;
 
@@ -50,6 +50,7 @@ const DropdownWrapper = styled.div`
 const MemberListWrapper = styled.div`
   width: fit-content;
   display: flex;
+  align-items: center;
   gap: 10px;
 `;
 const ChannelHeader = () => {
@@ -63,6 +64,7 @@ const ChannelHeader = () => {
   const [modifyModalOpen, setModifyModalOpen] = useState(false);
   const [memberListOpen, setMemberListOpen] = useState(false);
   const [addMemeberOpen, setAddMemberOpen] = useState(false);
+  const [autoMessage, setAutoMessage] = useState(false);
   const [userCode, setUserCode] = useState('');
   const [directName, setDirectName] = useRecoilState<string>(dmName);
   const isTutorialOpen = useRecoilValue(isTutorial);
@@ -147,6 +149,9 @@ const ChannelHeader = () => {
   const handleModifyModalOpen = () => {
     setModifyModalOpen(true);
   };
+  const handleAutoChatModalOpen = () => {
+    setAutoMessage(true);
+  };
 
   const closeMemberList = () => {
     setMemberListOpen(false);
@@ -161,6 +166,9 @@ const ChannelHeader = () => {
   };
   const closeModifyModal = () => {
     setModifyModalOpen(false);
+  };
+  const closeAutoChatModal = () => {
+    setAutoMessage(false);
   };
 
   return (
@@ -193,6 +201,9 @@ const ChannelHeader = () => {
           }}
           onMemberAddOpen={() => {
             setAddMemberOpen(true);
+          }}
+          onAutoChatOpen={() => {
+            setAutoMessage(true);
           }}
           onClose={closeDropdown}
         />
@@ -246,6 +257,7 @@ const ChannelHeader = () => {
               onClick={() => navigate(`meeting/${workspaceId}/${channelId}`)}
             />
           ) : null}
+          <Icons icon="folder" width="24" height="24" />
           <ChannelMemberListModal
             isOpen={memberListOpen}
             onClick={handleAddMemberModalOpen}
@@ -265,6 +277,7 @@ const ChannelHeader = () => {
         onClose={closeModifyModal}
         channelName={channelName}
       />
+      <AutoChatModal isOpen={autoMessage} onClose={closeAutoChatModal} />
     </Container>
   );
 };
