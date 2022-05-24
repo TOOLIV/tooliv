@@ -191,7 +191,7 @@ const AutoChatModal = forwardRef<HTMLDivElement, addWorkspaceMemberType>(
         )
       );
       const response = await reserveMessage(formData);
-
+      console.log(response);
       setFiles([]);
       setContent('');
     };
