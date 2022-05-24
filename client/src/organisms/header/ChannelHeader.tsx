@@ -11,7 +11,6 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
   currentChannelNum,
-  currentWorkspace,
   dmName,
   isTutorial,
   modifyChannelName,
@@ -54,7 +53,6 @@ const MemberListWrapper = styled.div`
 `;
 const ChannelHeader = () => {
   const { workspaceId, channelId } = useParams();
-  const currentWorkspaceId = useRecoilValue(currentWorkspace);
   const [channelName, setChannelName] = useState('');
   const [channelMemberNum, setChannelMemberNum] = useState(0);
   const [channelCode, setChannelCode] = useState('');
@@ -176,20 +174,17 @@ const ChannelHeader = () => {
             )}
           </Title>
         ) : (
-          <Title
-            onClick={
-              userCode === 'CADMIN'
-                ? () => setDropdownOpen(!dropdownOpen)
-                : undefined
-            }
-          >
-            <Text size={18}>{channelName}</Text>
-            {userCode === 'CADMIN' && !location.pathname.includes('/direct') ? (
+          <Title onClick={() => setDropdownOpen(!dropdownOpen)}>
+            <Text size={18} pointer>
+              {channelName}
+            </Text>
+            {!location.pathname.includes('/direct') ? (
               <Icons icon="dropdown" />
             ) : null}
           </Title>
         )}
         <ChannelHeaderDropdown
+          userCode={userCode}
           isOpen={dropdownOpen}
           onClick={handleModifyModalOpen}
           onMemberListOpen={() => {

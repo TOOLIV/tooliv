@@ -3,6 +3,9 @@ import { fileList } from 'api/fileApi';
 import Button from 'atoms/common/Button';
 import { BulrContainer } from 'organisms/meeting/video/ScreenShareModal';
 import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
+import { currentChannel } from 'recoil/atom';
 import { fileListModalPropsType } from 'types/channel/fileModalType';
 import { FileDTO } from 'types/common/fileTypes';
 import FileItem from './FileItem';
@@ -50,18 +53,14 @@ const FilesContainer = styled.div`
 const FileListModal = ({
   isOpen,
   onClose,
-  channelId,
-}: fileListModalPropsType) => {
+}: // channelId,
+fileListModalPropsType) => {
   const [files, setFiles] = useState<FileDTO[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const { channelId } = useParams();
   useEffect(() => {
-    if (!isLoading) {
-      fileList(channelId).then((res) => {
-        console.log(res);
-        setFiles(res.data.fileInfoDTOList);
-        setIsLoading(true);
-      });
-    }
+    fileList(channelId!).then((res) => {
+      setFiles(res.data.fileInfoDTOList);
+    });
   }, [channelId]);
 
   if (!isOpen) return <></>;
@@ -80,7 +79,7 @@ const FileListModal = ({
             />
           </ButtonContainer>
         </ModalHeader>
-        {isLoading && files && (
+        {files && (
           <FilesContainer>
             {files.map((file, idx) => (
               <FileItem file={file} key={idx} />

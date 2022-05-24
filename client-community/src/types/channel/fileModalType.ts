@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction } from 'react';
 
 export type fileModalType = {
   onClick: () => void;
@@ -7,5 +7,5 @@ export type fileModalType = {
 export type fileListModalPropsType = {
   isOpen: boolean;
   onClose: Dispatch<SetStateAction<boolean>>;
-  channelId: string;
-}
+  channelId?: string;
+};

@@ -2,20 +2,13 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import Icons from 'atoms/common/Icons';
 import Text from 'atoms/text/Text';
-import Editor from 'molecules/chat/Editor';
 import { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 import { addWorkspaceMemberType } from 'types/workspace/workspaceTypes';
 import { TimepickerUI } from 'timepicker-ui';
 import Button from 'atoms/common/Button';
-import Label from 'atoms/label/Label';
 import { useParams } from 'react-router-dom';
-import {
-  autoChatFiles,
-  autoChatMessage,
-  channelMessage,
-  chatFiles,
-} from 'recoil/atom';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { autoChatFiles, autoChatMessage } from 'recoil/atom';
+import { useRecoilState } from 'recoil';
 import { reserveMessage } from 'api/reservationApi';
 import { FileTypes } from 'types/common/fileTypes';
 import AutoChatEditor from 'molecules/chat/AutoChatEditor';
@@ -197,11 +190,7 @@ const AutoChatModal = forwardRef<HTMLDivElement, addWorkspaceMemberType>(
           }
         )
       );
-      console.log(returnTimeValue);
-      console.log(content);
-      console.log(formData);
       const response = await reserveMessage(formData);
-      console.log(response);
 
       setFiles([]);
       setContent('');
