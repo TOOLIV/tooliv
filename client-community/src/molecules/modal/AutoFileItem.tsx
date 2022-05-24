@@ -3,28 +3,27 @@ import Icons from 'atoms/common/Icons';
 import React, { Dispatch, SetStateAction, useCallback } from 'react';
 import { DefaultExtensionType, defaultStyles, FileIcon } from 'react-file-icon';
 import { useRecoilState } from 'recoil';
-import { chatFiles } from 'recoil/atom';
+import { autoChatFiles, chatFiles } from 'recoil/atom';
 import { colors } from 'shared/color';
 import { FileTypes } from 'types/common/fileTypes';
 
 const FileContainer = styled.div`
-  width: 200px;
-  height: 44px;
+  width: 280px;
   font-size: 12px;
   display: flex;
   border: 1px solid ${colors.gray200};
   border-radius: 10px;
-  padding: 4px 8px;
+  padding: 8px;
   align-items: center;
   gap: 8px;
 
   .name {
-    width: 130px;
-    font-size: 11px;
+    width: 202px;
+    font-size: 12px;
     line-height: normal;
     /* white-space: nowrap; */
     word-break: break-all;
-    height: 28px;
+    height: 32px;
     overflow: hidden;
     display: -webkit-box;
     text-overflow: ellipsis;
@@ -32,14 +31,7 @@ const FileContainer = styled.div`
     -webkit-box-orient: vertical;
   }
   .icon {
-    width: 16px;
-  }
-
-  .xmark {
-    :hover {
-      background-color: ${colors.gray200};
-      cursor: pointer;
-    }
+    width: 20px;
   }
 `;
 
@@ -47,10 +39,11 @@ type fileItemPropsType = {
   file: FileTypes;
 };
 
-const FileItem = ({ file }: fileItemPropsType) => {
-  const [files, setFiles] = useRecoilState<FileTypes[]>(chatFiles);
+const AutoFileItem = ({ file }: fileItemPropsType) => {
+  const [files, setFiles] = useRecoilState<FileTypes[]>(autoChatFiles);
   const handleFilterFile = useCallback(
     (id: number): void => {
+      console.log(id);
       setFiles(files.filter((file: FileTypes) => file.id !== id));
     },
     [files]
@@ -67,16 +60,14 @@ const FileItem = ({ file }: fileItemPropsType) => {
         <FileIcon extension={extension} {...defaultStyles[extension]} />
       </div>
       <div className="name">{file.object.name}</div>
-      <div className="xmark">
-        <Icons
-          icon="xMark"
-          width="20px"
-          height="20px"
-          onClick={() => handleFilterFile(file.id)}
-        />
-      </div>
+      <Icons
+        icon="xMark"
+        width="24px"
+        height="24px"
+        onClick={() => handleFilterFile(file.id)}
+      />
     </FileContainer>
   );
 };
 
-export default FileItem;
+export default AutoFileItem;

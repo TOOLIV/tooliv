@@ -151,3 +151,23 @@ export const workspaceCreateModalOpen = atom<boolean>({
   key: 'workspaceCreateModalOpen',
   default: false,
 });
+
+export const autoChatMessage = atom<string>({
+  key: 'autoChatMessage',
+  default: '',
+});
+
+export const autoChatFiles = atom<FileTypes[]>({
+  key: 'autoChatFiles',
+  default: [],
+});
+
+export const autoChatFileUrl = atom<string[]>({
+  key: 'autoChatFileUrl',
+  default: [],
+});
+
+export const autoChatFileNames = atom<string[]>({
+  key: 'autoChatFilesName',
+  default: [],
+});

@@ -9,10 +9,17 @@ import { TimepickerUI } from 'timepicker-ui';
 import Button from 'atoms/common/Button';
 import Label from 'atoms/label/Label';
 import { useParams } from 'react-router-dom';
-import { channelMessage, chatFiles } from 'recoil/atom';
+import {
+  autoChatFiles,
+  autoChatMessage,
+  channelMessage,
+  chatFiles,
+} from 'recoil/atom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { reserveMessage } from 'api/reservationApi';
 import { FileTypes } from 'types/common/fileTypes';
+import AutoChatEditor from 'molecules/chat/AutoChatEditor';
+import AutoFiles from 'organisms/chat/AutoFiles';
 
 const Modal = styled.div<{ isOpen: boolean }>`
   display: none;
@@ -77,8 +84,8 @@ const ButtonBox = styled.div`
 const AutoChatModal = forwardRef<HTMLDivElement, addWorkspaceMemberType>(
   ({ isOpen, onClose }, ref) => {
     const { channelId } = useParams();
-    const [files, setFiles] = useRecoilState<FileTypes[]>(chatFiles);
-    const content = useRecoilValue(channelMessage);
+    const [files, setFiles] = useRecoilState<FileTypes[]>(autoChatFiles);
+    const [content, setContent] = useRecoilState<string>(autoChatMessage);
     const tmRef = useRef(null);
     const [inputValue, setInputValue] = useState('10:00 PM');
     const [timeValue, setTimeValue] = useState({
@@ -100,6 +107,10 @@ const AutoChatModal = forwardRef<HTMLDivElement, addWorkspaceMemberType>(
       const time = date.toISOString().split('T')[0];
       const initTime = time + 'T10:00:00';
       setReturnTimeValue(initTime);
+      // return () => {
+      //   setFiles([]);
+      //   setContent('');
+      // };
     }, []);
     useEffect(() => {
       const date = new Date();
@@ -158,11 +169,16 @@ const AutoChatModal = forwardRef<HTMLDivElement, addWorkspaceMemberType>(
 
     const exitModal = useCallback(() => {
       // inputRef.current!.value = '';
+
+      setFiles([]);
+      setContent('');
+
       onClose();
     }, [onClose]);
 
     const reserveMessageApi = async () => {
       const formData = new FormData();
+      console.log(files);
       files.forEach((file) => {
         formData.append('multipartFiles', file.object);
       });
@@ -186,6 +202,9 @@ const AutoChatModal = forwardRef<HTMLDivElement, addWorkspaceMemberType>(
       console.log(formData);
       const response = await reserveMessage(formData);
       console.log(response);
+
+      setFiles([]);
+      setContent('');
     };
     return (
       <Modal isOpen={isOpen}>
@@ -206,7 +225,8 @@ const AutoChatModal = forwardRef<HTMLDivElement, addWorkspaceMemberType>(
               defaultValue={inputValue}
             />
           </Time>
-          <Editor onClick={() => {}} />
+          <AutoFiles />
+          <AutoChatEditor onClick={() => {}} />
           <ButtonBox>
             <Button
               width="125"
