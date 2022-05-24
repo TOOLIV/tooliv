@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { currentChannel } from 'recoil/atom';
+import { colors } from 'shared/color';
 import { fileListModalPropsType } from 'types/channel/fileModalType';
 import { FileDTO } from 'types/common/fileTypes';
 import FileItem from './FileItem';
@@ -48,6 +49,15 @@ const FilesContainer = styled.div`
   flex-direction: column;
   gap: 10px;
   width: 100%;
+  overflow-y: auto;
+`;
+const BlankContainer = styled.div`
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  color: ${colors.gray400};
 `;
 
 const FileListModal = ({
@@ -79,12 +89,16 @@ fileListModalPropsType) => {
             />
           </ButtonContainer>
         </ModalHeader>
-        {files && (
+        {files.length > 0 ? (
           <FilesContainer>
             {files.map((file, idx) => (
               <FileItem file={file} key={idx} />
             ))}
           </FilesContainer>
+        ) : (
+          <BlankContainer>
+            <div>등록된 파일이 없습니다.</div>
+          </BlankContainer>
         )}
       </ModalContainer>
     </BulrContainer>
