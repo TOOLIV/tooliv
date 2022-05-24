@@ -1,5 +1,6 @@
 package com.tooliv.server.domain.channel.domain;
 
+import com.tooliv.server.domain.channel.application.dto.response.WebhookResponseDTO;
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.global.common.BaseEntity;
 import java.time.LocalDateTime;

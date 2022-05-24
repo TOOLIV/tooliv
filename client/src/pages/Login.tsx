@@ -2,10 +2,8 @@ import styled from '@emotion/styled';
 import LoginForm from '../organisms/login/LoginForm';
 import LoginLogo from '../organisms/login/LoginLogo';
 import { ReactComponent as LoginImg } from '../assets/img/loginImg.svg';
-import bgImage from '../assets/img/wavy.svg';
 import bgImageDark from '../assets/img/wavy_dark.svg';
 import enterWavy from '../assets/img/enter_wavy.svg';
-
 import { appThemeMode } from 'recoil/atom';
 import { useRecoilValue } from 'recoil';
 
