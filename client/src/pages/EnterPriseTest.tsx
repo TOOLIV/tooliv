@@ -6,7 +6,7 @@ import { InputArea, TextBox } from 'organisms/login/LoginForm';
 import React, { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { colors } from 'shared/color';
-import bgImage from '../assets/img/wavy.svg';
+import enterWavy from '../assets/img/enter_wavy.svg';
 
 const Container = styled.div`
   display: flex;
@@ -14,7 +14,7 @@ const Container = styled.div`
   align-items: center;
   background-color: ${colors.lightPrimary};
   height: 100vh;
-  background-image: url(${bgImage});
+  background-image: url(${enterWavy});
   background-repeat: no-repeat;
   background-size: cover;
   background-position: 0 70px;
