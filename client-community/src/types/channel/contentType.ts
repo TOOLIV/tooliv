@@ -91,6 +91,7 @@ export type channelHeaderDropdownType = {
   onMemberListOpen: () => void;
   onMemberAddOpen: () => void;
   onAutoChatOpen: () => void;
+  onWebHookOpen: () => void;
 };
 
 export type channelModifyModalType = {
@@ -109,6 +110,12 @@ export type publicChannelType = {
 export type modifyChannelType = {
   id: string;
   name: string;
+};
+
+export type webHookModalType = {
+  isOpen: boolean;
+  onClose: () => void;
+  channelId: string;
 };
 
 export type channelNotiType = {
