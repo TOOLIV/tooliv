@@ -13,6 +13,7 @@ import { reserveMessage } from 'api/reservationApi';
 import { FileTypes } from 'types/common/fileTypes';
 import AutoChatEditor from 'molecules/chat/AutoChatEditor';
 import AutoFiles from 'organisms/chat/AutoFiles';
+import { toast } from 'react-toastify';
 
 const Modal = styled.div<{ isOpen: boolean }>`
   display: none;
@@ -190,8 +191,19 @@ const AutoChatModal = forwardRef<HTMLDivElement, addWorkspaceMemberType>(
           }
         )
       );
+<<<<<<< HEAD
+      const response = await reserveMessage(formData).then((res) => {
+        if (res.status === 201) toast.success('예약메세지를 등록하였습니다.');
+        else {
+          toast.error('예약메세지 등록에 실패했습니다.');
+        }
+        exitModal();
+      });
+
+=======
       const response = await reserveMessage(formData);
       console.log(response);
+>>>>>>> 9556a5c3163e3d0108716115122b5c87cb1a5586
       setFiles([]);
       setContent('');
     };

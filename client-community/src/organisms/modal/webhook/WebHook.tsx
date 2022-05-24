@@ -7,8 +7,12 @@ const WebHookContainer = styled.div`
   height: 40px;
   align-items: center;
   text-align: center;
+  font-size: 14px;
+  color: ${(props) => props.theme.textColor};
   .name {
     width: 25%;
+    font-weight: 700;
+    border-right: 1px solid ${colors.gray200};
   }
   .webhookid {
     width: 75%;
@@ -17,13 +21,17 @@ const WebHookContainer = styled.div`
     background-color: ${colors.gray100};
   }
   cursor: default;
+
+  & + & {
+    border-top: 1px solid ${colors.gray200};
+  }
 `;
 
 type webHookPropsType = {
   webHook: webhookResponseDTOList;
 };
 
-type webhookResponseDTOList = {
+export type webhookResponseDTOList = {
   created_at: '2022-05-24T14:11:48.827';
   name: 'test';
   userId: '1bc45d6d-8673-4c0e-8f22-763256881370';

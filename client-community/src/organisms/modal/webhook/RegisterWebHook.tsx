@@ -6,6 +6,7 @@ import Label from 'atoms/label/Label';
 import InputBox from 'molecules/inputBox/InputBox';
 import React, { useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { useRecoilValue } from 'recoil';
 import { user } from 'recoil/auth';
 import { colors } from 'shared/color';
@@ -48,7 +49,14 @@ const RegisterWebHook = ({ onClose }: registerWebHookPropsType) => {
   });
 
   const onSubmit = () => {
-    createWebHook(channelId!, webHookName, userInfo.userId).then(() => {});
+    createWebHook(channelId!, webHookName, userInfo.userId).then((res) => {
+      if (res.status === 201) {
+        toast.success('webhook을 생성하였습니다.');
+      } else {
+        toast.error('webhook 생성에 실패하였습니다.');
+      }
+      onClose();
+    });
   };
   const handleChangeUser = (data: userSelectorTypes) => {
     setSelectedOption(data);

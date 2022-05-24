@@ -3,14 +3,11 @@ import { getWebHookList } from 'api/chatApi';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { colors } from 'shared/color';
-import WebHook from './WebHook';
+import WebHook, { webhookResponseDTOList } from './WebHook';
 
 const WebHookListContainer = styled.div`
   width: 100%;
   height: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
 `;
 
 const BlankContainer = styled.div`
@@ -26,6 +23,10 @@ const WebHookContainer = styled.div`
   height: 20px;
   align-items: center;
   text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+  border-bottom: 1px solid ${colors.gray400};
+  color: ${(props) => props.theme.textColor};
   .name {
     width: 25%;
   }
@@ -33,13 +34,16 @@ const WebHookContainer = styled.div`
     width: 75%;
   }
 `;
+const List = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
 
 const WebHookList = () => {
   const [webHookList, setWebHookList] = useState([]);
   const { channelId } = useParams();
   useEffect(() => {
     getWebHookList(channelId!).then((res) => {
-      console.log('webHookList', res);
       setWebHookList(res.data.webhookResponseDTOList);
     });
   }, [channelId]);
@@ -52,9 +56,11 @@ const WebHookList = () => {
             <div className="name">webhook 이름</div>
             <div className="webhookid">webhook id</div>
           </WebHookContainer>
-          {webHookList.map((webHook) => (
-            <WebHook webHook={webHook} />
-          ))}
+          <List>
+            {webHookList.map((webHook: webhookResponseDTOList) => (
+              <WebHook webHook={webHook} key={webHook.webhookId} />
+            ))}
+          </List>
         </>
       ) : (
         <BlankContainer>
