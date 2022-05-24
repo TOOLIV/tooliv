@@ -108,16 +108,21 @@ const AutoChatModal = forwardRef<HTMLDivElement, addWorkspaceMemberType>(
     }, []);
     useEffect(() => {
       const date = new Date();
-      const year = Number(date.toISOString().split('T')[0].split('-')[0]);
-      const month = Number(date.toISOString().split('T')[0].split('-')[1]);
-      let day = Number(date.toISOString().split('T')[0].split('-')[2]);
+      console.log(date.getFullYear());
+      console.log(date.getMonth() + 1);
+      console.log(date.getDate());
+      const year = Number(date.getFullYear());
+      const month = Number(date.getMonth() + 1);
+      let day = Number(date.getDate());
 
       const currentHour = Number(date.getHours());
       const currentMinutes = Number(date.getMinutes());
 
       const settingHour =
-        timeValue.type === 'PM'
+        timeValue.type === 'PM' && timeValue.hour !== '12'
           ? Number(timeValue.hour) + 12
+          : timeValue.type === 'AM' && timeValue.hour === '12'
+          ? '00'
           : Number(timeValue.hour);
       const settingMinutes = Number(timeValue.minutes);
 

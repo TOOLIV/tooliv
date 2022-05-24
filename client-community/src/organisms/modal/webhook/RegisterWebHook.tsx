@@ -49,6 +49,9 @@ const RegisterWebHook = ({ onClose }: registerWebHookPropsType) => {
   });
 
   const onSubmit = () => {
+    if (!inputNameRef.current?.value) {
+      toast.error('웹 훅 이름을 설정해주세요.');
+    }
     createWebHook(channelId!, webHookName, userInfo.userId).then((res) => {
       if (res.status === 201) {
         toast.success('webhook을 생성하였습니다.');
@@ -88,7 +91,13 @@ const RegisterWebHook = ({ onClose }: registerWebHookPropsType) => {
           bgColor="gray300"
           onClick={onClose}
         />
-        <Button width="125" height="35" text="등록" onClick={onSubmit} />
+        <Button
+          width="125"
+          height="35"
+          text="등록"
+          onClick={onSubmit}
+          disabled={!inputNameRef.current?.value}
+        />
       </ButtonBox>
     </>
   );
