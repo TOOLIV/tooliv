@@ -24,6 +24,7 @@ import { user } from 'recoil/auth';
 import LoadSpinner from 'atoms/common/LoadSpinner';
 import { send } from 'services/wsconnect';
 import { workspaceListType } from 'types/workspace/workspaceTypes';
+import { ReactComponent as Empty } from 'assets/img/empty.svg';
 
 const Container = styled.div`
   width: 100%;
@@ -37,6 +38,19 @@ const LoadContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+`;
+
+const InfoContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+`;
+
+const Info = styled.div`
+  padding: 10px;
 `;
 
 const Channel = () => {
@@ -139,8 +153,14 @@ const Channel = () => {
           <LoadContainer>
             <LoadSpinner />
           </LoadContainer>
-        ) : (
+        ) : contents.length > 0 ? (
           <Messages />
+        ) : (
+          <InfoContainer>
+            <Empty />
+            <Info>아직 채널에 메시지가 존재하지 않습니다.</Info>
+            <Info>채널에 첫 메시지를 보내 보세요!</Info>
+          </InfoContainer>
         )}
         <Files />
         <Editor onClick={onSendClick} sendMessage={sendMessage} />

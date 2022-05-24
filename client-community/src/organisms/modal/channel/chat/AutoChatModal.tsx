@@ -191,6 +191,7 @@ const AutoChatModal = forwardRef<HTMLDivElement, addWorkspaceMemberType>(
           }
         )
       );
+<<<<<<< HEAD
       const response = await reserveMessage(formData).then((res) => {
         if (res.status === 201) toast.success('예약메세지를 등록하였습니다.');
         else {
@@ -199,6 +200,10 @@ const AutoChatModal = forwardRef<HTMLDivElement, addWorkspaceMemberType>(
         exitModal();
       });
 
+=======
+      const response = await reserveMessage(formData);
+      console.log(response);
+>>>>>>> 9556a5c3163e3d0108716115122b5c87cb1a5586
       setFiles([]);
       setContent('');
     };
