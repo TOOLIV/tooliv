@@ -2,7 +2,7 @@
   "name": "client-enterprise",
   "main": "public/electron.js",
   "homepage": ".",
-  "version": "2.3.3",
+  "version": "2.4.1",
   "description": "ToolivEnterprise",
   "author": "TOOLIV",
   "license": "MIT",

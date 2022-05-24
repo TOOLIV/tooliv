@@ -34,6 +34,10 @@ const ModalHeader = styled.div`
   height: 28px;
   display: flex;
   align-items: center;
+
+  .title {
+    color: ${(props) => props.theme.textColor};
+  }
 `;
 
 const ButtonContainer = styled.div`
@@ -78,7 +82,7 @@ fileListModalPropsType) => {
     <BulrContainer>
       <ModalContainer>
         <ModalHeader>
-          파일 서랍
+          <div className="title">파일 서랍</div>
           <ButtonContainer>
             <Button
               text="취소"

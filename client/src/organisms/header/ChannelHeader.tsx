@@ -188,6 +188,14 @@ const ChannelHeader = () => {
             <Text size={18}>튜토리얼 채널</Text>
             <Icons icon="dropdown" />
           </Title>
+        ) : location.pathname.includes('/admin') ? (
+          <Title onClick={() => {}}>
+            {location.pathname.includes('/auth') ? (
+              <Text size={18}>회원 관리</Text>
+            ) : (
+              <Text size={18}>회원 추가</Text>
+            )}
+          </Title>
         ) : (
           <Title onClick={() => setDropdownOpen(!dropdownOpen)}>
             <Text size={18} pointer>
@@ -237,6 +245,7 @@ const ChannelHeader = () => {
           <Icons icon="solidVideoOn" width="28" height="28" />
         </MemberListWrapper>
       ) : !location.pathname.includes('/main') &&
+        !location.pathname.includes('/admin') &&
         !location.pathname.includes('/direct') ? (
         <MemberListWrapper ref={memberListRef}>
           <Members
@@ -258,6 +267,7 @@ const ChannelHeader = () => {
               {String(channelMemberNum)}
             </Text>
           </Members>
+
           <Members>
             <Icons
               icon="folder"
