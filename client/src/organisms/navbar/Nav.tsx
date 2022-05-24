@@ -94,6 +94,12 @@ const DropdownWrapper = styled.div`
 `;
 const TextWrapper = styled.div`
   display: flex;
+  align-items: flex-end;
+  gap: 10px;
+`;
+
+const Tooliv = styled.div`
+  display: flex;
 `;
 const Nav = () => {
   const userInfo = useRecoilValue(user);
@@ -275,14 +281,19 @@ const Nav = () => {
       <LeftContainer onClick={clickLogo}>
         <Logo />
         <TextWrapper>
-          <Text size={18} pointer color="secondary">
-            TOO
-          </Text>
-          <Text size={18} pointer color="third">
-            L
-          </Text>
-          <Text size={18} pointer color="primary">
-            IV
+          <Tooliv>
+            <Text size={18} pointer color="secondary">
+              TOO
+            </Text>
+            <Text size={18} pointer color="third">
+              L
+            </Text>
+            <Text size={18} pointer color="primary">
+              IV
+            </Text>
+          </Tooliv>
+          <Text size={12} color="gray500">
+            for ENTERPRISE
           </Text>
         </TextWrapper>
       </LeftContainer>
