@@ -8,7 +8,7 @@ import ChannelAddMemberModal from 'organisms/modal/channel/header/ChannelAddMemb
 import ChannelHeaderDropdown from 'organisms/modal/channel/header/ChannelHeaderDropdown';
 import ChannelMemberListModal from 'organisms/modal/channel/header/ChannelMemberListModal';
 import ChannelModifyModal from 'organisms/modal/channel/header/ChannelModifyModal';
-import WebHookModal from 'organisms/modal/WebHookModal';
+import WebHookModal from 'organisms/modal/webhook/WebHookModal';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
