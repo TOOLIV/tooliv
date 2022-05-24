@@ -49,7 +49,9 @@ const FileItem = ({ file }: FileItemPropType) => {
   const extension = file.fileName
     .split('.')
     [file.fileName.split('.').length - 1].toLowerCase() as DefaultExtensionType;
-  console.log(extension);
+  const onDownload = () => {
+    const ret = window.open(file.fileUrl);
+  };
   return (
     <FileContainer>
       <div className="icon">
@@ -64,7 +66,12 @@ const FileItem = ({ file }: FileItemPropType) => {
         </div>
       </div>
       <div className="download">
-        <Icons icon="download" width="28px" height="28px" onClick={() => {}} />
+        <Icons
+          icon="download"
+          width="28px"
+          height="28px"
+          onClick={onDownload}
+        />
       </div>
     </FileContainer>
   );
