@@ -12,6 +12,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
   currentChannel,
+  currentChannelNum,
   currentWorkspace,
   exitChannelId,
   isOpenSide,

@@ -135,8 +135,12 @@ const DM = () => {
             <Info>{directName} 님과 개인 메시지를 시작해 보세요.</Info>
           </InfoContainer>
         )}
-        <Files />
-        <Editor type="DM" onClick={onSendClick} sendMessage={sendMessage} />
+        {files.length > 0 && <Files />}
+        <Editor
+          isButton={true}
+          onClick={onSendClick}
+          sendMessage={sendMessage}
+        />
       </Container>
     </>
   );

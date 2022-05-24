@@ -129,7 +129,9 @@ const Nav = () => {
 
   useEffect(() => {
     setSearchList([]);
-    setSearchedIndex(contents.length - 1);
+    if (contents) {
+      setSearchedIndex(contents.length - 1);
+    }
   }, []);
 
   useEffect(() => {

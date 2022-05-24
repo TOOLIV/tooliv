@@ -1,13 +1,8 @@
-import Stomp from 'stompjs';
 import { atom } from 'recoil';
 import { DMInfoType } from 'types/channel/chatTypes';
 import { FileTypes } from 'types/common/fileTypes';
 import { workspaceListType } from 'types/workspace/workspaceTypes';
-import {
-  channelListTypes,
-  channelNotiType,
-  contentTypes,
-} from '../types/channel/contentType';
+import { channelNotiType, contentTypes } from '../types/channel/contentType';
 import { ThemeMode } from '../types/common/themeTypes';
 import {
   userCreationTypes,
@@ -157,7 +152,22 @@ export const workspaceCreateModalOpen = atom<boolean>({
   default: false,
 });
 
-export const isBulr = atom<boolean>({
-  key: 'isBulr',
-  default: false,
+export const autoChatMessage = atom<string>({
+  key: 'autoChatMessage',
+  default: '',
+});
+
+export const autoChatFiles = atom<FileTypes[]>({
+  key: 'autoChatFiles',
+  default: [],
+});
+
+export const autoChatFileUrl = atom<string[]>({
+  key: 'autoChatFileUrl',
+  default: [],
+});
+
+export const autoChatFileNames = atom<string[]>({
+  key: 'autoChatFilesName',
+  default: [],
 });
