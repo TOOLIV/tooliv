@@ -45,41 +45,48 @@ const ListItem = styled.div`
 const ChannelHeaderDropdown = forwardRef<
   HTMLDivElement,
   channelHeaderDropdownType
->(({ isOpen, onClick, onClose, onMemberListOpen, onMemberAddOpen }, ref) => {
-  const handleOpenModifyModal = () => {
-    onClick();
-    onClose();
-  };
+>(
+  (
+    { userCode, isOpen, onClick, onClose, onMemberListOpen, onMemberAddOpen },
+    ref
+  ) => {
+    const handleOpenModifyModal = () => {
+      onClick();
+      onClose();
+    };
 
-  const handleOpenMemberList = () => {
-    onMemberListOpen();
-    onClose();
-  };
-  const handleOpenAddMember = () => {
-    onMemberAddOpen();
-    onClose();
-  };
-  return (
-    <Modal isOpen={isOpen} ref={ref}>
-      <Container>
-        <ListItem onClick={handleOpenModifyModal}>
-          <Text size={14} pointer>
-            채널 수정
-          </Text>
-        </ListItem>
-        <ListItem onClick={handleOpenMemberList}>
-          <Text size={14} pointer>
-            멤버 목록
-          </Text>
-        </ListItem>
-        <ListItem onClick={handleOpenAddMember}>
-          <Text size={14} pointer>
-            멤버 초대
-          </Text>
-        </ListItem>
-      </Container>
-    </Modal>
-  );
-});
+    const handleOpenMemberList = () => {
+      onMemberListOpen();
+      onClose();
+    };
+    const handleOpenAddMember = () => {
+      onMemberAddOpen();
+      onClose();
+    };
+    return (
+      <Modal isOpen={isOpen} ref={ref}>
+        <Container>
+          {userCode === 'CADMIN' ? (
+            <ListItem onClick={handleOpenModifyModal}>
+              <Text size={14} pointer>
+                채널 수정
+              </Text>
+            </ListItem>
+          ) : null}
+          <ListItem onClick={handleOpenMemberList}>
+            <Text size={14} pointer>
+              멤버 목록
+            </Text>
+          </ListItem>
+          <ListItem onClick={handleOpenAddMember}>
+            <Text size={14} pointer>
+              멤버 초대
+            </Text>
+          </ListItem>
+        </Container>
+      </Modal>
+    );
+  }
+);
 
 export default ChannelHeaderDropdown;
