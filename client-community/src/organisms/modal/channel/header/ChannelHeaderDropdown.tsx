@@ -55,6 +55,7 @@ const ChannelHeaderDropdown = forwardRef<
       onMemberListOpen,
       onMemberAddOpen,
       onAutoChatOpen,
+      onWebHookOpen,
     },
     ref
   ) => {
@@ -72,6 +73,10 @@ const ChannelHeaderDropdown = forwardRef<
     };
     const handleOpenAutoChat = () => {
       onAutoChatOpen();
+      onClose();
+    };
+    const handleOpenWebHook = () => {
+      onWebHookOpen();
       onClose();
     };
 
@@ -98,6 +103,11 @@ const ChannelHeaderDropdown = forwardRef<
           <ListItem onClick={handleOpenAutoChat}>
             <Text size={14} pointer>
               예약 메세지 설정
+            </Text>
+          </ListItem>
+          <ListItem onClick={handleOpenWebHook}>
+            <Text size={14} pointer>
+              WebHook
             </Text>
           </ListItem>
         </Container>

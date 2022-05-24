@@ -8,6 +8,7 @@ import ChannelAddMemberModal from 'organisms/modal/channel/header/ChannelAddMemb
 import ChannelHeaderDropdown from 'organisms/modal/channel/header/ChannelHeaderDropdown';
 import ChannelMemberListModal from 'organisms/modal/channel/header/ChannelMemberListModal';
 import ChannelModifyModal from 'organisms/modal/channel/header/ChannelModifyModal';
+import WebHookModal from 'organisms/modal/WebHookModal';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
@@ -67,6 +68,7 @@ const ChannelHeader = () => {
   const [memberListOpen, setMemberListOpen] = useState(false);
   const [addMemeberOpen, setAddMemberOpen] = useState(false);
   const [autoMessage, setAutoMessage] = useState(false);
+  const [webHook, setWebHook] = useState(false);
   const [userCode, setUserCode] = useState('');
   const [directName, setDirectName] = useRecoilState<string>(dmName);
   const isTutorialOpen = useRecoilValue(isTutorial);
@@ -153,6 +155,9 @@ const ChannelHeader = () => {
   const handleAutoChatModalOpen = () => {
     setAutoMessage(true);
   };
+  const handleWebHookModalOpen = () => {
+    setWebHook(true);
+  };
 
   const closeMemberList = () => {
     setMemberListOpen(false);
@@ -170,6 +175,9 @@ const ChannelHeader = () => {
   };
   const closeAutoChatModal = () => {
     setAutoMessage(false);
+  };
+  const closeWebHookModal = () => {
+    setWebHook(false);
   };
 
   return (
@@ -202,6 +210,9 @@ const ChannelHeader = () => {
           }}
           onAutoChatOpen={() => {
             setAutoMessage(true);
+          }}
+          onWebHookOpen={() => {
+            setWebHook(true);
           }}
           onClose={closeDropdown}
         />
@@ -291,6 +302,11 @@ const ChannelHeader = () => {
         channelId={channelId!}
       />
       <AutoChatModal isOpen={autoMessage} onClose={closeAutoChatModal} />
+      <WebHookModal
+        isOpen={webHook}
+        onClose={closeWebHookModal}
+        channelId={channelId!}
+      />
     </Container>
   );
 };
