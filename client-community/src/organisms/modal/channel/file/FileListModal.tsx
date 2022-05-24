@@ -61,7 +61,7 @@ fileListModalPropsType) => {
     fileList(channelId!).then((res) => {
       setFiles(res.data.fileInfoDTOList);
     });
-  }, [channelId]);
+  }, [channelId, isOpen]);
 
   if (!isOpen) return <></>;
   return (
