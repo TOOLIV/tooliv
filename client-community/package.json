@@ -2,7 +2,7 @@
   "name": "client-community",
   "main": "public/electron.js",
   "homepage": ".",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "author": "TOOLIV",
   "description": "TOOLIV",
   "license": "MIT",
