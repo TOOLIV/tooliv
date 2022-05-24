@@ -40,3 +40,19 @@ export const searchChat = async (
 export const updateLoggedTime = async (channelId?: string, type?: string) => {
   return instance.post(`/notification/update`, { channelId, type });
 };
+
+export const createWebHook = async (
+  channelId: string,
+  name: string,
+  senderId: string
+) => {
+  return instance.post(`/webhook`, {
+    channelId: channelId,
+    name: name,
+    senderId: senderId,
+  });
+};
+
+export const getWebHookList = async (channelId: string) => {
+  return instance.get(`/webhook/list/${channelId}`);
+};
