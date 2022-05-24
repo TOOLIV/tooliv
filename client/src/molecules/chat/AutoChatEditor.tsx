@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
 import Icons from 'atoms/common/Icons';
-import FileModal from 'organisms/modal/FileModal';
+import AutoChatFileModal from 'organisms/modal/AutoChatFileModal';
 import React, { useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import Button from '../../atoms/common/Button';
-import { channelMessage, isOpenChat } from '../../recoil/atom';
+import { autoChatMessage, channelMessage, isOpenChat } from '../../recoil/atom';
 import { editorProps } from '../../types/common/buttonTypes';
 
 const Container = styled.div`
@@ -42,8 +42,9 @@ const Wrapper = styled.div`
   gap: 16px;
 `;
 
-const Editor = ({ onClick, sendMessage, isButton }: editorProps) => {
-  const [message, setMessage] = useRecoilState<string>(channelMessage);
+const AutoChatEditor = ({ onClick, sendMessage, isButton }: editorProps) => {
+  const [message, setMessage] = useRecoilState<string>(autoChatMessage);
+
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const isChatOpen = useRecoilValue(isOpenChat);
 
@@ -90,9 +91,9 @@ const Editor = ({ onClick, sendMessage, isButton }: editorProps) => {
           )}
         </Wrapper>
       </Container>
-      {isModalOpen && <FileModal onClick={handleFileModal} />}
+      {isModalOpen && <AutoChatFileModal onClick={handleFileModal} />}
     </>
   );
 };
 
-export default Editor;
+export default AutoChatEditor;

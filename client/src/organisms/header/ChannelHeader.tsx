@@ -2,15 +2,19 @@ import styled from '@emotion/styled';
 import { getChannelInfo, getChannelUserCode } from 'api/channelApi';
 import Icons from 'atoms/common/Icons';
 import Text from 'atoms/text/Text';
+import AutoChatModal from 'organisms/modal/channel/chat/AutoChatModal';
 import ChannelAddMemberModal from 'organisms/modal/channel/header/ChannelAddMemberModal';
 import ChannelHeaderDropdown from 'organisms/modal/channel/header/ChannelHeaderDropdown';
 import ChannelMemberListModal from 'organisms/modal/channel/header/ChannelMemberListModal';
 import ChannelModifyModal from 'organisms/modal/channel/header/ChannelModifyModal';
+import FileListModal from 'organisms/modal/channel/file/FileListModal';
+import WebHookModal from 'organisms/modal/webhook/WebHookModal';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
   currentChannelNum,
+  currentWorkspace,
   dmName,
   isTutorial,
   modifyChannelName,
@@ -30,7 +34,6 @@ const Members = styled.div`
   display: flex;
   align-items: center;
   width: fit-content;
-  padding: 0 5px;
   border-radius: 8px;
   cursor: pointer;
 
@@ -49,22 +52,26 @@ const DropdownWrapper = styled.div`
 const MemberListWrapper = styled.div`
   width: fit-content;
   display: flex;
+  align-items: center;
   gap: 10px;
 `;
 const ChannelHeader = () => {
   const { workspaceId, channelId } = useParams();
+  const currentWorkspaceId = useRecoilValue(currentWorkspace);
   const [channelName, setChannelName] = useState('');
   const [channelMemberNum, setChannelMemberNum] = useState(0);
   const [channelCode, setChannelCode] = useState('');
   const [isMeeting, setIsMeeting] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [modifyModalOpen, setModifyModalOpen] = useState(false);
+  const [fileListModalOpen, setFileListModalOpen] = useState(false);
   const [memberListOpen, setMemberListOpen] = useState(false);
   const [addMemeberOpen, setAddMemberOpen] = useState(false);
+  const [autoMessage, setAutoMessage] = useState(false);
+  const [webHook, setWebHook] = useState(false);
   const [userCode, setUserCode] = useState('');
   const [directName, setDirectName] = useRecoilState<string>(dmName);
   const isTutorialOpen = useRecoilValue(isTutorial);
-
   const [currentChannelMemberNum, setCurrentChannelMemberNum] =
     useRecoilState(currentChannelNum);
   const modChannelName = useRecoilValue(modifyChannelName);
@@ -123,11 +130,15 @@ const ChannelHeader = () => {
   }, [channelId, modChannelName, currentChannelMemberNum]);
 
   const handleChannelInfo = async () => {
-    const { data } = await getChannelInfo(channelId!);
-    setChannelName(data.name);
-    setChannelMemberNum(data.numOfPeople);
-    setCurrentChannelMemberNum(data.numOfPeople);
-    setChannelCode(data.channelCode);
+    try {
+      const { data } = await getChannelInfo(channelId!);
+      setChannelName(data.name);
+      setChannelMemberNum(data.numOfPeople);
+      setCurrentChannelMemberNum(data.numOfPeople);
+      setChannelCode(data.channelCode);
+    } catch (error) {
+      // console.log(error);
+    }
   };
 
   const getUserCode = async () => {
@@ -140,6 +151,12 @@ const ChannelHeader = () => {
   };
   const handleModifyModalOpen = () => {
     setModifyModalOpen(true);
+  };
+  const handleAutoChatModalOpen = () => {
+    setAutoMessage(true);
+  };
+  const handleWebHookModalOpen = () => {
+    setWebHook(true);
   };
 
   const closeMemberList = () => {
@@ -156,6 +173,12 @@ const ChannelHeader = () => {
   const closeModifyModal = () => {
     setModifyModalOpen(false);
   };
+  const closeAutoChatModal = () => {
+    setAutoMessage(false);
+  };
+  const closeWebHookModal = () => {
+    setWebHook(false);
+  };
 
   return (
     <Container>
@@ -164,14 +187,6 @@ const ChannelHeader = () => {
           <Title onClick={() => {}}>
             <Text size={18}>튜토리얼 채널</Text>
             <Icons icon="dropdown" />
-          </Title>
-        ) : location.pathname.includes('/admin') ? (
-          <Title onClick={() => {}}>
-            {location.pathname.includes('/auth') ? (
-              <Text size={18}>회원 관리</Text>
-            ) : (
-              <Text size={18}>회원 추가</Text>
-            )}
           </Title>
         ) : (
           <Title onClick={() => setDropdownOpen(!dropdownOpen)}>
@@ -192,6 +207,12 @@ const ChannelHeader = () => {
           }}
           onMemberAddOpen={() => {
             setAddMemberOpen(true);
+          }}
+          onAutoChatOpen={() => {
+            setAutoMessage(true);
+          }}
+          onWebHookOpen={() => {
+            setWebHook(true);
           }}
           onClose={closeDropdown}
         />
@@ -216,8 +237,7 @@ const ChannelHeader = () => {
           <Icons icon="solidVideoOn" width="28" height="28" />
         </MemberListWrapper>
       ) : !location.pathname.includes('/main') &&
-        !location.pathname.includes('/direct') &&
-        !location.pathname.includes('/admin') ? (
+        !location.pathname.includes('/direct') ? (
         <MemberListWrapper ref={memberListRef}>
           <Members
             onClick={() => {
@@ -238,13 +258,23 @@ const ChannelHeader = () => {
               {String(channelMemberNum)}
             </Text>
           </Members>
-          {channelCode === 'VIDEO' && !isMeeting ? (
+          <Members>
             <Icons
-              icon="solidVideoOn"
+              icon="folder"
               width="28"
               height="28"
-              onClick={() => navigate(`meeting/${workspaceId}/${channelId}`)}
+              onClick={() => setFileListModalOpen(!fileListModalOpen)}
             />
+          </Members>
+          {channelCode === 'VIDEO' && !isMeeting ? (
+            <Members>
+              <Icons
+                icon="solidVideoOn"
+                width="28"
+                height="28"
+                onClick={() => navigate(`meeting/${workspaceId}/${channelId}`)}
+              />
+            </Members>
           ) : null}
           <ChannelMemberListModal
             isOpen={memberListOpen}
@@ -264,6 +294,18 @@ const ChannelHeader = () => {
         isOpen={modifyModalOpen}
         onClose={closeModifyModal}
         channelName={channelName}
+      />
+
+      <FileListModal
+        isOpen={fileListModalOpen}
+        onClose={setFileListModalOpen}
+        channelId={channelId!}
+      />
+      <AutoChatModal isOpen={autoMessage} onClose={closeAutoChatModal} />
+      <WebHookModal
+        isOpen={webHook}
+        onClose={closeWebHookModal}
+        channelId={channelId!}
       />
     </Container>
   );

@@ -1,44 +1,37 @@
 import styled from '@emotion/styled';
-import { createDMRoom } from 'api/chatApi';
 import React, { useEffect, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { user } from 'recoil/auth';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { colors } from 'shared/color';
-import { DMInfoType } from 'types/channel/chatTypes';
 import { FileTypes } from 'types/common/fileTypes';
 import { korDate } from 'utils/formatTime';
 import Message from '../../molecules/chat/Message';
 import {
   channelContents,
   chatFiles,
-  DMList,
-  dmName,
   searchIndex,
   searchResults,
 } from '../../recoil/atom';
-import {
-  channelMemberType,
-  contentTypes,
-} from '../../types/channel/contentType';
+import { contentTypes } from '../../types/channel/contentType';
 
 const Container = styled.div<{ isFile: boolean }>`
-  width: calc(100% + 38px);
-  height: ${(props) => (props.isFile ? 'calc(100% - 70px)' : '100%')};
-  padding-right: 32px;
+  width: 100%;
+  height: ${(props) =>
+    props.isFile ? 'calc(100% - 130px)' : 'calc(100% - 72px)'};
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
 `;
 const MessageContainer = styled.div`
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 `;
 const Date = styled.div`
   color: ${colors.gray400};
 `;
 
 const MessageWrapper = styled.div``;
-
 const Messages = () => {
   const contents = useRecoilValue<contentTypes[]>(channelContents);
   const [files, setFiles] = useRecoilState<FileTypes[]>(chatFiles);
@@ -51,6 +44,7 @@ const Messages = () => {
 
   const scrollToBottom = () => {
     if (messageBoxRef.current) {
+      // messageBoxRef.current.scrollTop = messageBoxRef.current.scrollHeight;
       messageBoxRef.current.scrollTo({
         top: messageBoxRef.current.scrollHeight,
       });
@@ -102,6 +96,7 @@ const Messages = () => {
                           ? searchedMsgRef
                           : null
                       }
+                      // key={content.chatId}
                       {...content}
                       isSearched={
                         Number(content.chatId) === searchList[searchedIndex]

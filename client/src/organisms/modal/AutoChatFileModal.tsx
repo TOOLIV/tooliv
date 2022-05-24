@@ -1,15 +1,15 @@
 import styled from '@emotion/styled';
-import DragDrop from 'organisms/chat/DragDrop';
+import AutoDragDrop from 'organisms/chat/AutoDragDrop';
 import React, { useCallback } from 'react';
 import { colors } from 'shared/color';
 import { ButtonBox, Title } from './sidemenu/WorkspaceModal';
 import Text from 'atoms/text/Text';
 import { useRecoilState } from 'recoil';
 import { FileTypes } from 'types/common/fileTypes';
-import { chatFiles } from 'recoil/atom';
+import { autoChatFiles, chatFiles } from 'recoil/atom';
 import Button from 'atoms/common/Button';
 import { fileModalType } from 'types/channel/fileModalType';
-import FileItem from 'molecules/modal/FileItem';
+import AutoFileItem from 'molecules/modal/AutoFileItem';
 
 const Modal = styled.div`
   display: none;
@@ -67,8 +67,8 @@ const BlackContainer = styled.div`
   text-align: center;
 `;
 
-const FileModal = ({ onClick }: fileModalType) => {
-  const [files, setFiles] = useRecoilState<FileTypes[]>(chatFiles);
+const AutoChatFileModal = ({ onClick }: fileModalType) => {
+  const [files, setFiles] = useRecoilState<FileTypes[]>(autoChatFiles);
   const handleFilterFile = useCallback(
     (id: number): void => {
       setFiles(files.filter((file: FileTypes) => file.id !== id));
@@ -85,12 +85,12 @@ const FileModal = ({ onClick }: fileModalType) => {
         <Container>
           첨부하고 싶은 파일을 드래그하거나 <br />
           클릭하여 선택하세요.
-          <DragDrop />
+          <AutoDragDrop />
         </Container>
         <FilesContainer>
           {files.length > 0 ? (
             files.map((file: FileTypes) => (
-              <FileItem file={file} key={file.id} />
+              <AutoFileItem file={file} key={file.id} />
             ))
           ) : (
             <BlackContainer>선택된 파일이 없습니다.</BlackContainer>
@@ -114,4 +114,4 @@ const FileModal = ({ onClick }: fileModalType) => {
   );
 };
 
-export default FileModal;
+export default AutoChatFileModal;

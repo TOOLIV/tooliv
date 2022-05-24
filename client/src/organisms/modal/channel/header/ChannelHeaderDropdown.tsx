@@ -9,7 +9,7 @@ const Modal = styled.div<{ isOpen: boolean }>`
   display: none;
   position: absolute;
   top: 100px;
-  left: 320px;
+  left: 380px;
 
   ${(props) =>
     props.isOpen &&
@@ -47,14 +47,22 @@ const ChannelHeaderDropdown = forwardRef<
   channelHeaderDropdownType
 >(
   (
-    { userCode, isOpen, onClick, onClose, onMemberListOpen, onMemberAddOpen },
+    {
+      userCode,
+      isOpen,
+      onClick,
+      onClose,
+      onMemberListOpen,
+      onMemberAddOpen,
+      onAutoChatOpen,
+      onWebHookOpen,
+    },
     ref
   ) => {
     const handleOpenModifyModal = () => {
       onClick();
       onClose();
     };
-
     const handleOpenMemberList = () => {
       onMemberListOpen();
       onClose();
@@ -63,6 +71,15 @@ const ChannelHeaderDropdown = forwardRef<
       onMemberAddOpen();
       onClose();
     };
+    const handleOpenAutoChat = () => {
+      onAutoChatOpen();
+      onClose();
+    };
+    const handleOpenWebHook = () => {
+      onWebHookOpen();
+      onClose();
+    };
+
     return (
       <Modal isOpen={isOpen} ref={ref}>
         <Container>
@@ -81,6 +98,16 @@ const ChannelHeaderDropdown = forwardRef<
           <ListItem onClick={handleOpenAddMember}>
             <Text size={14} pointer>
               멤버 초대
+            </Text>
+          </ListItem>
+          <ListItem onClick={handleOpenAutoChat}>
+            <Text size={14} pointer>
+              예약 메세지 설정
+            </Text>
+          </ListItem>
+          <ListItem onClick={handleOpenWebHook}>
+            <Text size={14} pointer>
+              WebHook
             </Text>
           </ListItem>
         </Container>
