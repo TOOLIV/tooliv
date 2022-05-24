@@ -127,6 +127,7 @@ const AutoChatModal = forwardRef<HTMLDivElement, addWorkspaceMemberType>(
       }
 
       const formatMonth = month < 10 ? '0' + month : month;
+      const formatHour = settingHour < 10 ? '0' + settingHour : settingHour;
       const formatMinutes =
         settingMinutes < 10 ? '0' + settingMinutes : settingMinutes;
       const returnTime =
@@ -136,7 +137,7 @@ const AutoChatModal = forwardRef<HTMLDivElement, addWorkspaceMemberType>(
         '-' +
         day +
         'T' +
-        settingHour +
+        formatHour +
         ':' +
         formatMinutes +
         ':00';
