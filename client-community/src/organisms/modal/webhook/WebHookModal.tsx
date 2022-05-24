@@ -42,8 +42,8 @@ const Menu = styled.div`
 
 const SubMenu = styled.div<{ selected?: boolean }>`
   border-radius: 10px 10px 0 0;
-  border: 1px solid ${(props) => props.theme.sideBgColor};
-  border-bottom: ${(props) => props.selected && 'none'};
+  border: 1px solid ${colors.gray400};
+  border: ${(props) => props.selected && 'none'};
   background-color: ${(props) => props.selected && colors.secondary};
   color: ${(props) => props.theme.textColor};
   padding: 4px 8px;
