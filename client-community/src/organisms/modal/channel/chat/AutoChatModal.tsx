@@ -108,9 +108,6 @@ const AutoChatModal = forwardRef<HTMLDivElement, addWorkspaceMemberType>(
     }, []);
     useEffect(() => {
       const date = new Date();
-      console.log(date.getFullYear());
-      console.log(date.getMonth() + 1);
-      console.log(date.getDate());
       const year = Number(date.getFullYear());
       const month = Number(date.getMonth() + 1);
       let day = Number(date.getDate());
@@ -134,6 +131,7 @@ const AutoChatModal = forwardRef<HTMLDivElement, addWorkspaceMemberType>(
       }
 
       const formatMonth = month < 10 ? '0' + month : month;
+      const formatHour = settingHour < 10 ? '0' + settingHour : settingHour;
       const formatMinutes =
         settingMinutes < 10 ? '0' + settingMinutes : settingMinutes;
       const returnTime =
@@ -143,11 +141,10 @@ const AutoChatModal = forwardRef<HTMLDivElement, addWorkspaceMemberType>(
         '-' +
         day +
         'T' +
-        settingHour +
+        formatHour +
         ':' +
         formatMinutes +
         ':00';
-      console.log(returnTime);
       setReturnTimeValue(returnTime);
     }, [inputValue]);
 
@@ -177,7 +174,6 @@ const AutoChatModal = forwardRef<HTMLDivElement, addWorkspaceMemberType>(
 
     const reserveMessageApi = async () => {
       const formData = new FormData();
-      console.log(files);
       files.forEach((file) => {
         formData.append('multipartFiles', file.object);
       });
