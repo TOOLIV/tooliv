@@ -72,7 +72,6 @@ const ChannelHeader = () => {
   const [userCode, setUserCode] = useState('');
   const [directName, setDirectName] = useRecoilState<string>(dmName);
   const isTutorialOpen = useRecoilValue(isTutorial);
-
   const [currentChannelMemberNum, setCurrentChannelMemberNum] =
     useRecoilState(currentChannelNum);
   const modChannelName = useRecoilValue(modifyChannelName);
@@ -190,20 +189,17 @@ const ChannelHeader = () => {
             <Icons icon="dropdown" />
           </Title>
         ) : (
-          <Title
-            onClick={
-              userCode === 'CADMIN'
-                ? () => setDropdownOpen(!dropdownOpen)
-                : undefined
-            }
-          >
-            <Text size={18}>{channelName}</Text>
-            {userCode === 'CADMIN' && !location.pathname.includes('/direct') ? (
+          <Title onClick={() => setDropdownOpen(!dropdownOpen)}>
+            <Text size={18} pointer>
+              {channelName}
+            </Text>
+            {!location.pathname.includes('/direct') ? (
               <Icons icon="dropdown" />
             ) : null}
           </Title>
         )}
         <ChannelHeaderDropdown
+          userCode={userCode}
           isOpen={dropdownOpen}
           onClick={handleModifyModalOpen}
           onMemberListOpen={() => {

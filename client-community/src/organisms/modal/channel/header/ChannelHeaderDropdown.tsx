@@ -48,6 +48,7 @@ const ChannelHeaderDropdown = forwardRef<
 >(
   (
     {
+      userCode,
       isOpen,
       onClick,
       onClose,
@@ -82,11 +83,13 @@ const ChannelHeaderDropdown = forwardRef<
     return (
       <Modal isOpen={isOpen} ref={ref}>
         <Container>
-          <ListItem onClick={handleOpenModifyModal}>
-            <Text size={14} pointer>
-              채널 수정
-            </Text>
-          </ListItem>
+          {userCode === 'CADMIN' ? (
+            <ListItem onClick={handleOpenModifyModal}>
+              <Text size={14} pointer>
+                채널 수정
+              </Text>
+            </ListItem>
+          ) : null}
           <ListItem onClick={handleOpenMemberList}>
             <Text size={14} pointer>
               멤버 목록

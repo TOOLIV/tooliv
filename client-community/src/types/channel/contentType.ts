@@ -84,6 +84,7 @@ export type exitChannelModalType = {
 };
 
 export type channelHeaderDropdownType = {
+  userCode: string;
   isOpen: boolean;
   onClose: () => void;
   onClick: () => void;
