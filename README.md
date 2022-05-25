@@ -10,12 +10,13 @@
 1. [**서비스 소개**](#1)
 2. [**Git Book 보러가기**](#2)
 3. [**UCC 보러가기**](#3)
-4. [**프로젝트 기간**](#4)
-5. [**팀원 소개**](#5)
-6. [**기술 스택**](#6)
-7. [**시스템 아키텍처**](#7)
-8. [**주요 기능**](#8)
-9. [**프로젝트 관련 문서**](#9)
+4. [**Microsoft Store 바로가기**](#4)
+4. [**프로젝트 기간**](#5)
+5. [**팀원 소개**](#6)
+6. [**기술 스택**](#7)
+7. [**시스템 아키텍처**](#8)
+8. [**주요 기능**](#9)
+9. [**프로젝트 관련 문서**](#10)
 
 <br/>
 
@@ -44,6 +45,14 @@
 
 <div id="4"></div>
 
+## 🌷 [Microsoft Store 바로가기 - Community Edition](ms-windows-store://pdp/?ProductId=9NKJZGWHDTNN)
+## 🥀 [Microsoft Store 바로가기 - Enterprise Edition](ms-windows-store://pdp/?ProductId=9NK71CQQ5F2N)
+<img src="./readme_assets/microsoft_store.gif" alt="Microsoft Store" />
+
+<br />
+
+<div id="5"></div>
+
 ## 📆 프로젝트 기간
 
 ### 22.04.11 ~ 05.20
@@ -54,7 +63,7 @@
 
 <br/>
 
-<div id="5"></div>
+<div id="6"></div>
 
 ## 👪 팀원 소개
 
@@ -89,7 +98,7 @@
 
 <br/>
 
-<div id="6"></div>
+<div id="7"></div>
 
 ## 🛠️ 기술 스택
 
@@ -146,7 +155,7 @@
 
 <br />
 
-<div id="7"></div>
+<div id="8"></div>
 
 ## 🗂️ 시스템 아키텍처
 
@@ -156,7 +165,7 @@
 
 <br/>
 
-<div id="8"></div>
+<div id="9"></div>
 
 ## 🖥️ 주요기능
 
@@ -254,6 +263,8 @@
 | <img src="./readme_assets/file_manager.gif" alt="파일 모아보기" /> |
 
 <br/>
+
+<div id="10"></div>
 
 ## 📋 프로젝트 관련 문서
 
