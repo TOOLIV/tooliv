@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import isElectron from 'is-electron';
 import { useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { memberStatus } from 'recoil/atom';
 import { user } from 'recoil/auth';
@@ -9,6 +9,7 @@ import { login } from '../../api/userApi';
 import Button from '../../atoms/common/Button';
 import Text from '../../atoms/text/Text';
 import InputBox from '../../molecules/inputBox/InputBox';
+import { toast } from 'react-toastify';
 
 const Container = styled.div`
   width: 480px;
@@ -62,10 +63,10 @@ const LoginForm = () => {
     };
     try {
       if (!email) {
-        alert('이메일을 입력해주세요.');
+        toast.error('이메일을 입력해주세요.');
         inputEmailRef.current?.focus();
       } else if (!password) {
-        alert('비밀번호를 입력해주세요.');
+        toast.error('비밀번호를 입력해주세요.');
         inputPasswordRef.current?.focus();
       } else {
         const { data } = await login(body);
@@ -79,16 +80,16 @@ const LoginForm = () => {
           statusCode: data.statusCode,
           userCode: data.userCode,
         });
+
         setMembersStatus({ ...membersStatus, [data.email]: data.statusCode });
         navigate('/');
       }
     } catch (error) {
-      console.log(error);
+      toast.error('아이디 또는 비밀번호를 확인하세요.');
     }
   };
 
   const onKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    console.log('hello');
     if (event.code === 'Enter') {
       handleLogin();
     }
@@ -96,9 +97,6 @@ const LoginForm = () => {
 
   return (
     <Container>
-      <SignUpBox>
-        {/* <Link to="/enterprisetest">for enterprise</Link> */}
-      </SignUpBox>
       <TextBox>
         <Text size={36} weight={'bold'}>
           로그인
@@ -120,23 +118,10 @@ const LoginForm = () => {
         />
       </InputArea>
       <Button width="350" text="로그인" onClick={handleLogin} />
-      <SignUpBox>
-        <Text size={12} color={'gray400'}>
-          TOOLIV이 처음이신가요?
-        </Text>
-        <Text
-          size={12}
-          onClick={() => {
-            navigate('/join');
-          }}
-        >
-          회원가입
-        </Text>
-      </SignUpBox>
       {isElectron() && (
         <SignUpBox>
           <Text size={12} color={'gray400'}>
-            기업용으로 로그인
+            기업용 서버 URL 변경
           </Text>
           <Text
             size={12}
@@ -144,7 +129,7 @@ const LoginForm = () => {
               navigate('/enterprisetest');
             }}
           >
-            서버 등록
+            서버 변경
           </Text>
         </SignUpBox>
       )}

@@ -6,26 +6,19 @@ import Button from 'atoms/common/Button';
 import Text from 'atoms/text/Text';
 import InputBox from 'molecules/inputBox/InputBox';
 import FileUploader from 'molecules/uploader/FileUploader';
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import {
-  channelContents,
   channelNotiList,
   currentChannel,
   currentWorkspace,
   userLog,
-  wsList,
 } from 'recoil/atom';
-import { user } from 'recoil/auth';
 import { sub, unsub } from 'services/wsconnect';
-import { colors } from 'shared/color';
-import { channelNotiType, contentTypes } from 'types/channel/contentType';
-import {
-  workspaceListType,
-  workspaceModalType,
-} from 'types/workspace/workspaceTypes';
-
+import { channelNotiType } from 'types/channel/contentType';
+import { workspaceModalType } from 'types/workspace/workspaceTypes';
+import { toast } from 'react-toastify';
 const Modal = styled.div<{ isOpen: boolean }>`
   display: none;
   position: fixed;
@@ -54,6 +47,7 @@ const Container = styled.div`
   padding: 25px;
   background-color: ${(props) => props.theme.bgColor};
   border-radius: 30px;
+  border: 1px solid ${(props) => props.theme.borderColor};
   box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.06);
   display: flex;
   flex-direction: column;
@@ -67,8 +61,7 @@ export const Title = styled.div`
 
 export const ButtonBox = styled.div`
   display: flex;
-  justify-content: space-between;
-  width: 80%;
+  gap: 20px;
   margin: 0 auto;
 `;
 
@@ -78,13 +71,8 @@ const WorkspaceModal = ({ isOpen, onClose }: workspaceModalType) => {
   const setCurrentWorkspace = useSetRecoilState(currentWorkspace);
   const setCurrentChannel = useSetRecoilState(currentChannel);
   const [userLogList, setUserLogList] = useRecoilState(userLog);
-  const [contents, setContents] =
-    useRecoilState<contentTypes[]>(channelContents);
   const [notiList, setNotiList] =
     useRecoilState<channelNotiType[]>(channelNotiList);
-  const [workspaceList, setWorkspaceList] =
-    useRecoilState<workspaceListType[]>(wsList);
-  const userInfo = useRecoilValue(user);
   const handleSetImg = (file: FileList) => {
     setFile(file[0]);
   };
@@ -110,13 +98,10 @@ const WorkspaceModal = ({ isOpen, onClose }: workspaceModalType) => {
     );
     try {
       if (!name) {
-        alert('워크스페이스명을 입력해주세요.');
+        toast.error('워크스페이스명을 입력해주세요.');
         inputWorkspaceRef.current?.focus();
-      }
-
-      if (name) {
+      } else {
         const response = await createWorkspace(formData);
-        console.log(response);
         const workspaceId = response.data.id;
         const channelList = await getChannelList(workspaceId);
         const channelId = channelList.data.channelGetResponseDTOList[0].id;
@@ -141,8 +126,13 @@ const WorkspaceModal = ({ isOpen, onClose }: workspaceModalType) => {
         onClose();
       }
     } catch (error) {
-      console.log(error);
+      toast.error('워크스페이스 생성에 실패하였습니다.');
     }
+  };
+
+  const exitModal = () => {
+    inputWorkspaceRef.current!.value = '';
+    onClose();
   };
   return (
     <Modal isOpen={isOpen}>
@@ -162,7 +152,7 @@ const WorkspaceModal = ({ isOpen, onClose }: workspaceModalType) => {
             height="35"
             text="취소"
             bgColor="gray300"
-            onClick={onClose}
+            onClick={exitModal}
           />
           <Button
             width="125"

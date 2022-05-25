@@ -24,8 +24,10 @@ import java.util.Arrays;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.tika.Tika;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -36,6 +38,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
@@ -70,7 +73,7 @@ public class UserController {
 
         try {
             logInResponseDTO = userService.logIn(logInRequestDTO);
-        } catch (UserNotFoundException | BadCredentialsException e) {
+        } catch (UserNotFoundException | BadCredentialsException | InternalAuthenticationServiceException e) {
             return ResponseEntity.status(409).body(BaseResponseDTO.of(e.getMessage()));
         }
         return ResponseEntity.status(201).body(LogInResponseDTO.of("로그인 성공", logInResponseDTO));

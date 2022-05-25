@@ -8,8 +8,7 @@ import { OpenVidu, Publisher, Session, StreamManager } from 'openvidu-browser';
 import FunctionButtons from 'organisms/meeting/FunctionButtons';
 import ScreenShareModal from 'organisms/meeting/video/ScreenShareModal';
 import Videos from 'organisms/meeting/video/Videos';
-import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { isOpenChat } from 'recoil/atom';
@@ -166,28 +165,6 @@ const Meeting = () => {
         newSession
           .connect(token, { clientData: initUserData.myUserName })
           .then(async () => {
-            // const devices = await newOV.getDevices();
-            // console.log(devices);
-            // const videoDevices = devices.filter(
-            //   (device) => device.kind === 'videoinput'
-            // );
-
-            // const newPublisher = newOV.initPublisher(initUserData.myUserName, {
-            //   audioSource: undefined,
-            //   videoSource: videoDevices[0].deviceId,
-            //   publishAudio: isAudioOn,
-            //   publishVideo: isVideoOn,
-            //   resolution: '1080x720',
-            //   frameRate: 10,
-            //   insertMode: 'APPEND',
-            //   mirror: true,
-            // });
-
-            // newPublisher.once('accessAllowed', () => {
-            //   newSession.publish(newPublisher);
-            //   setPublisher(newPublisher);
-            // });
-
             newOV
               .getUserMedia({
                 audioSource: false,
@@ -205,8 +182,6 @@ const Meeting = () => {
                     videoSource: videoTrack,
                     publishAudio: isAudioOn,
                     publishVideo: isVideoOn,
-                    // resolution: '1280x720',
-                    // frameRate: 10,
                     insertMode: 'APPEND',
                     mirror: true,
                   }
@@ -395,12 +370,13 @@ const Meeting = () => {
         </ButtonContainer>
       )}
       <MeetingInnerContainer>
-        {publisher && !isHideCam && (
+        {publisher && (
           <Videos
             publisher={publisher}
             subscribers={subscribers}
             isScreenSharing={isScreenSharing}
             isSpeakList={isSpeakList}
+            isHideCam={isHideCam}
           />
         )}
         {mainStreamManager && (

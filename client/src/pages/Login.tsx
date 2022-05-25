@@ -2,9 +2,8 @@ import styled from '@emotion/styled';
 import LoginForm from '../organisms/login/LoginForm';
 import LoginLogo from '../organisms/login/LoginLogo';
 import { ReactComponent as LoginImg } from '../assets/img/loginImg.svg';
-import bgImage from '../assets/img/wavy.svg';
 import bgImageDark from '../assets/img/wavy_dark.svg';
-
+import enterWavy from '../assets/img/enter_wavy.svg';
 import { appThemeMode } from 'recoil/atom';
 import { useRecoilValue } from 'recoil';
 
@@ -13,7 +12,7 @@ const Container = styled.div<{ mode: string }>`
   justify-content: center;
   align-items: center;
   background-image: ${(props) =>
-    props.mode === 'light' ? `url(${bgImage})` : `url(${bgImageDark})`};
+    props.mode === 'light' ? `url(${enterWavy})` : `url(${bgImageDark})`};
   background-repeat: no-repeat;
   background-size: cover;
   background-position: 0 70px;

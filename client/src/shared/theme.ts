@@ -15,11 +15,13 @@ export const light: Theme = {
   loginFormBgColor: '#FFFFFF',
   dropdownHoverColor: colors.gray100,
   selectedItemColor: colors.gray200,
+  notiColor: colors.gray700,
+  downloadHoverColor: colors.gray200,
 };
 
 export const dark: Theme = {
-  bgColor: '#31363B',
-  sideBgColor: '#292D32',
+  bgColor: '#53585B',
+  sideBgColor: '#3A3E43',
   pointColor: colors.secondary,
   secondPointColor: colors.lightSecondary,
   lightPointColor: colors.lightSecondary,
@@ -31,4 +33,6 @@ export const dark: Theme = {
   loginFormBgColor: colors.gray600,
   dropdownHoverColor: 'rgba(255, 255, 255, 0.3)',
   selectedItemColor: colors.gray500,
+  notiColor: colors.secondary,
+  downloadHoverColor: colors.gray600,
 };

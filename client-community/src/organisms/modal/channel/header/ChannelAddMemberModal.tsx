@@ -39,6 +39,7 @@ const Container = styled.div`
   width: 600px;
   padding: 25px;
   background-color: ${(props) => props.theme.bgColor};
+  border: 1px solid ${(props) => props.theme.borderColor};
   border-radius: 30px;
   box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.06);
   display: flex;
@@ -97,6 +98,11 @@ const UserInfoWrapper = styled.div`
     background-color: ${(props) => props.theme.dropdownHoverColor};
   }
 `;
+const TextContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
 
 const ChannelAddMemberModal = ({
   isOpen,
@@ -146,7 +152,6 @@ const ChannelAddMemberModal = ({
           setEndCheck(true);
           return;
         }
-        console.log(data);
         if (data) {
           const list = data.filter((user: channelMemberType) => {
             return userBadgeList.find((badge) => badge.email === user.email)
@@ -219,7 +224,6 @@ const ChannelAddMemberModal = ({
 
   const initModal = useCallback(() => {
     setAllUserList([]);
-    setUserBadgeList([]);
     setInviteUserList([]);
     setUserList([]);
     setSequence(1);
@@ -230,6 +234,7 @@ const ChannelAddMemberModal = ({
     inputRef.current!.value = '';
     setKeyword('');
     initModal();
+    setUserBadgeList([]);
     onClose();
   }, [onClose, initModal]);
 
@@ -258,9 +263,15 @@ const ChannelAddMemberModal = ({
     <Modal isOpen={isOpen}>
       <Container>
         <Header>
-          <Text size={18}>멤버 초대</Text>
+          <TextContainer>
+            <Text size={18}>멤버 초대</Text>
+            <Text size={12} color="gray500">
+              워크스페이스 내의 멤버를 채널에 초대할 수 있습니다.
+            </Text>
+          </TextContainer>
           <Icons icon="xMark" width="32" height="32" onClick={exitModal} />
         </Header>
+
         <InputBox
           label="검색"
           placeholder="이름을 입력해주세요."

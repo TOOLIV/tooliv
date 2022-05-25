@@ -2,12 +2,14 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { deleteWorkspaceMember } from 'api/workspaceApi';
 import Text from 'atoms/text/Text';
-import { useEffect } from 'react';
+import { BulrContainer } from 'organisms/meeting/video/ScreenShareModal';
+import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { currentWorkspace } from 'recoil/atom';
 import { user } from 'recoil/auth';
 import { workspaceDropdownType } from 'types/workspace/workspaceTypes';
+import Swal from 'sweetalert2';
 
 const Modal = styled.div<{ isOpen: boolean }>`
   display: none;
@@ -27,6 +29,7 @@ const Container = styled.div`
   padding: 15px 0;
   background-color: ${(props) => props.theme.bgColor};
   border-radius: 8px;
+  border: 1px solid ${(props) => props.theme.borderColor};
   box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.06);
   display: flex;
   flex-direction: column;
@@ -52,6 +55,8 @@ const WorkspaceDropDown = ({
   const { workspaceId } = useParams();
   const setCurrentWorkspaceId = useSetRecoilState(currentWorkspace);
   const { email, userCode } = useRecoilValue(user);
+  const [isBulr, setIsBulr] = useState(false);
+
   const navigate = useNavigate();
   const handleMemberList = () => {
     openMemberList();
@@ -67,6 +72,26 @@ const WorkspaceDropDown = ({
     onClose();
   };
 
+  // 워크스페이스 떠나기 클릭시 이벤트
+  const exitWorkspaceClick = () => {
+    setIsBulr(true);
+    Swal.fire({
+      title: '워크스페이스 탈퇴 확인',
+      text: '해당 워크스페이스를 떠나시겠습니까?',
+      icon: 'info',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: '확인',
+      cancelButtonText: '취소',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        exitWorkspace();
+      }
+      setIsBulr(false);
+    });
+  };
+
   const exitWorkspace = async () => {
     await deleteWorkspaceMember(workspaceId!, email);
     setCurrentWorkspaceId('main');
@@ -76,6 +101,7 @@ const WorkspaceDropDown = ({
 
   return (
     <Modal isOpen={isOpen}>
+      {isBulr && <BulrContainer />}
       <Container>
         <ListItem onClick={handleMemberList}>
           <Text size={16} pointer>
@@ -94,7 +120,7 @@ const WorkspaceDropDown = ({
             </Text>
           </ListItem>
         ) : null}
-        <ListItem onClick={() => exitWorkspace()}>
+        <ListItem onClick={exitWorkspaceClick}>
           <Text color="secondary" size={16} pointer>
             워크스페이스 떠나기
           </Text>

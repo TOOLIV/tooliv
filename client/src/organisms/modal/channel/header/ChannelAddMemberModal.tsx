@@ -40,6 +40,7 @@ const Container = styled.div`
   padding: 25px;
   background-color: ${(props) => props.theme.bgColor};
   border-radius: 30px;
+  border: 1px solid ${(props) => props.theme.borderColor};
   box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.06);
   display: flex;
   flex-direction: column;
@@ -146,7 +147,6 @@ const ChannelAddMemberModal = ({
           setEndCheck(true);
           return;
         }
-        console.log(data);
         if (data) {
           const list = data.filter((user: channelMemberType) => {
             return userBadgeList.find((badge) => badge.email === user.email)
@@ -219,7 +219,6 @@ const ChannelAddMemberModal = ({
 
   const initModal = useCallback(() => {
     setAllUserList([]);
-    setUserBadgeList([]);
     setInviteUserList([]);
     setUserList([]);
     setSequence(1);
@@ -230,6 +229,7 @@ const ChannelAddMemberModal = ({
     inputRef.current!.value = '';
     setKeyword('');
     initModal();
+    setUserBadgeList([]);
     onClose();
   }, [onClose, initModal]);
 

@@ -3,11 +3,22 @@ import Button from 'atoms/common/Button';
 import Text from 'atoms/text/Text';
 import InputBox from 'molecules/inputBox/InputBox';
 import { InputArea, TextBox } from 'organisms/login/LoginForm';
-import { ButtonBox } from 'organisms/modal/sidemenu/WorkspaceModal';
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { colors } from 'shared/color';
-import { Container } from './Join';
+import enterWavy from '../assets/img/enter_wavy.svg';
+
+const Container = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: ${colors.lightPrimary};
+  height: 100vh;
+  background-image: url(${enterWavy});
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 0 70px;
+`;
 
 const FormContainer = styled.div`
   width: 480px;
@@ -21,23 +32,23 @@ const FormContainer = styled.div`
   /* align-items: center; */
 `;
 
+const ButtonBox = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 80%;
+  margin: 0 auto;
+`;
+
 const EnterPriseTest = () => {
-  const [url, setUrl] = useState<string>('');
   const navigate = useNavigate();
   const inputServerNameRef = useRef<HTMLInputElement>(null);
   const inputServerUrlRef = useRef<HTMLInputElement>(null);
-  const onChange = (event: React.FormEvent<HTMLInputElement>) => {
-    const {
-      currentTarget: { value },
-    } = event;
-    setUrl(value);
-  };
   const onClick = () => {
     const name = inputServerNameRef.current?.value!;
     const url = inputServerUrlRef.current?.value!;
 
     localStorage.setItem('baseURL', JSON.stringify({ name: name, url: url }));
-    navigate(`/main`);
+    navigate(`/login`);
     window.location.reload();
   };
   return (

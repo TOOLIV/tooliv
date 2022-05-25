@@ -4,7 +4,7 @@ import { getChannelList } from 'api/channelApi';
 import Icons from 'atoms/common/Icons';
 import WorkSpaces from 'molecules/sidemenu/WorkSpaces';
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
   channelNotiList,
@@ -13,8 +13,10 @@ import {
   currentWorkspace,
   DMList,
   isOpenSide,
+  isTutorial,
   modifyWorkspaceName,
   userLog,
+  workspaceCreateModalOpen,
   wsList,
 } from 'recoil/atom';
 import { workspaceListType } from 'types/workspace/workspaceTypes';
@@ -28,6 +30,7 @@ import { user } from 'recoil/auth';
 const Container = styled.div<{ isOpen: boolean }>`
   padding-top: 16px;
   display: ${(props) => (props.isOpen ? 'block' : 'none')};
+  height: 100px;
   margin-bottom: 10px;
 `;
 
@@ -47,11 +50,17 @@ const WorkSpaceSection = () => {
   const setCurrentChannel = useSetRecoilState(currentChannel);
   const [userLogList, setUserLogList] = useRecoilState(userLog);
   const modWorkspaceName = useRecoilValue(modifyWorkspaceName);
+  const [workspaceCreateOpen, setWorkspaceCreateOpen] = useRecoilState(
+    workspaceCreateModalOpen
+  );
   const [notiList, setNotiList] =
     useRecoilState<channelNotiType[]>(channelNotiList);
   const [dMList, setDmList] = useRecoilState<DMInfoType[]>(DMList);
   const userInfo = useRecoilValue(user);
+  const isTutorialOpen = useRecoilValue(isTutorial);
+
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleOpenModal = () => {
     setIsOpen(true);
@@ -76,7 +85,6 @@ const WorkSpaceSection = () => {
 
     setDmList(directInfoDTOList);
     setNotiList(newNotiList);
-    console.log(notificationChannelList);
 
     const notiWorkspace = newNotiList.filter((noti) => {
       if (noti.notificationRead) {
@@ -120,14 +128,6 @@ const WorkSpaceSection = () => {
         [id]: channelId,
       });
       setCurrentChannel(channelId);
-      // setWorkspaceList(
-      //   workspaceList.map((dto: any) => {
-      //     console.log(dto.id, id);
-      //     if (id === dto.id) {
-      //       return { ...dto, noti: false };
-      //     } else return dto;
-      //   })
-      // );
       navigate(`${id}/${channelId}`);
     }
   };
@@ -136,11 +136,20 @@ const WorkSpaceSection = () => {
     if (curWorkspaceId) handleWorkspace();
   }, [curWorkspaceId, modWorkspaceName]);
 
+  useEffect(() => {
+    if (workspaceCreateOpen) {
+      setIsOpen(true);
+      setWorkspaceCreateOpen(false);
+    }
+  }, [workspaceCreateOpen]);
   return (
     <Container isOpen={isSideOpen}>
       <Header>
         <Text size={14}>워크스페이스</Text>
-        <Icons icon="plus" onClick={handleOpenModal} />
+        <Icons
+          icon="plus"
+          onClick={isTutorialOpen ? undefined : handleOpenModal}
+        />
       </Header>
       <WorkSpaces
         workspaceList={workspaceList}

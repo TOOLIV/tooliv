@@ -6,15 +6,14 @@ import Text from 'atoms/text/Text';
 import InputBox from 'molecules/inputBox/InputBox';
 import ChannelRadio from 'molecules/radio/channelRadio/ChannelRadio';
 import VisibilityRadio from 'molecules/radio/visibiltyRadio/VisibilityRadio';
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { channelNotiList, currentChannel } from 'recoil/atom';
 import { sub, unsub } from 'services/wsconnect';
-import { colors } from 'shared/color';
 import { channelNotiType } from 'types/channel/contentType';
 import { workspaceModalType } from 'types/workspace/workspaceTypes';
-
+import { toast } from 'react-toastify';
 const Modal = styled.div<{ isOpen: boolean }>`
   display: none;
   position: fixed;
@@ -38,6 +37,7 @@ const Container = styled.div`
   width: 430px;
   padding: 25px 50px;
   background-color: ${(props) => props.theme.bgColor};
+  border: 1px solid ${(props) => props.theme.borderColor};
   border-radius: 30px;
   box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.06);
   display: flex;
@@ -75,7 +75,7 @@ const ChannelModal = ({ isOpen, onClose }: workspaceModalType) => {
 
     try {
       if (!name) {
-        alert('채널명을 입력해주세요.');
+        toast.error('채널명을 입력해주세요.');
         inputChannelRef.current?.focus();
       }
 
@@ -88,7 +88,6 @@ const ChannelModal = ({ isOpen, onClose }: workspaceModalType) => {
           workspaceId: workspaceId!,
         };
         const response = await createChannel(body);
-        console.log(response);
         const channelId = response.data.id;
         setCurrentChannelId(channelId);
         setNotiList([
@@ -103,7 +102,7 @@ const ChannelModal = ({ isOpen, onClose }: workspaceModalType) => {
         onClose();
       }
     } catch (error) {
-      console.log(error);
+      toast.error('채널을 생성할 수 없습니다.');
     }
   };
 
@@ -114,6 +113,10 @@ const ChannelModal = ({ isOpen, onClose }: workspaceModalType) => {
     setPrivateYn(value);
   };
 
+  const exitModal = () => {
+    inputChannelRef.current!.value = '';
+    onClose();
+  };
   return (
     <Modal isOpen={isOpen}>
       <Container>
@@ -137,7 +140,7 @@ const ChannelModal = ({ isOpen, onClose }: workspaceModalType) => {
             height="35"
             text="취소"
             bgColor="gray300"
-            onClick={onClose}
+            onClick={exitModal}
           />
           <Button width="160" height="35" text="생성" onClick={registChannel} />
         </ButtonBox>

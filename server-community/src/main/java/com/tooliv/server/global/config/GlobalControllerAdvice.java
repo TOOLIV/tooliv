@@ -45,6 +45,7 @@ public class GlobalControllerAdvice {
     @ExceptionHandler(Exception.class)
     public ResponseEntity handleAllException(Exception e, HttpServletRequest req) {
         e.printStackTrace();
+
         notificationManager.sendNotification(e, req.getMethod(), req.getRequestURI(), getParams(req));
 
         return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

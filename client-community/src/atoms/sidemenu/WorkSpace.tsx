@@ -1,16 +1,17 @@
 import styled from '@emotion/styled';
 import Tooltip from 'atoms/tooltip/Tooltip';
-import { useParams } from 'react-router-dom';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { BulrContainer } from 'organisms/meeting/video/ScreenShareModal';
+import { useState } from 'react';
+import { useLocation, useParams } from 'react-router-dom';
+import { useSetRecoilState } from 'recoil';
 import { currentWorkspace } from 'recoil/atom';
-import { colors } from 'shared/color';
 import { workspaceListType } from 'types/workspace/workspaceTypes';
-
+import Swal from 'sweetalert2';
 const Wrapper = styled.div`
-  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 `;
 const Container = styled.div<{
   isSelected: boolean;
@@ -26,7 +27,7 @@ const Container = styled.div<{
   justify-content: center;
   align-items: center;
   border: ${(props) =>
-    props.isSelected && `1px solid ${props.theme.pointColor}`};
+    props.isSelected && `2px solid ${props.theme.pointColor}`};
   background-image: url(${(props) => props.thumbnail});
   background-size: contain;
   background-repeat: no-repeat;
@@ -34,6 +35,7 @@ const Container = styled.div<{
   cursor: pointer;
   &:hover {
     position: relative;
+    /* opacity: 0.5; */
   }
 
   &:hover > div:last-child {
@@ -44,6 +46,7 @@ const Container = styled.div<{
 const WorkspaceName = styled.div`
   font-size: 12px;
   text-align: center;
+  /* word-break: keep-all; */
   color: ${(props) => props.theme.textColor};
   cursor: pointer;
 `;
@@ -63,16 +66,39 @@ const WorkSpace = ({
   onClick,
   noti,
 }: workspaceListType) => {
-  // const setCurrentWorkSpaceId = useSetRecoilState(currentWorkspace);
+  const setCurrentWorkSpaceId = useSetRecoilState(currentWorkspace);
+  const [isBulr, setIsBulr] = useState(false);
+  const location = useLocation();
   const { workspaceId } = useParams();
   const currentWorkSpace = workspaceId ? workspaceId : 'main';
   const handleClickWorkspace = () => {
-    // setCurrentWorkSpaceId(id);
-    onClick(id);
+    if (location.pathname.split('/')[1] === 'meeting') {
+      setIsBulr(true);
+      Swal.fire({
+        title: '현재 미팅에 참여중입니다.',
+        text: '다른 채널 또는 워크스페이스로 이동하면 참여중인 미팅을 떠납니다. 정말 나가시겠습니까?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: '확인',
+        cancelButtonText: '취소',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          setCurrentWorkSpaceId(id);
+          onClick(id);
+        }
+        setIsBulr(false);
+      });
+    } else {
+      setCurrentWorkSpaceId(id);
+      onClick(id);
+    }
   };
 
   return (
     <Wrapper>
+      {isBulr && <BulrContainer />}
       <Container
         isSelected={id === currentWorkSpace}
         thumbnail={thumbnailImage}

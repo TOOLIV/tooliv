@@ -47,6 +47,7 @@ const Container = styled.div`
   padding: 25px;
   background-color: ${(props) => props.theme.bgColor};
   border-radius: 30px;
+  border: 1px solid ${(props) => props.theme.borderColor};
   box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.06);
   display: flex;
   flex-direction: column;
@@ -152,7 +153,6 @@ const WorkspaceAddMemberModal = forwardRef<
           setEndCheck(true);
           return;
         }
-        console.log(data);
         if (data) {
           const list = data.filter((user: workspaceMemberType) => {
             return userBadgeList.find((badge) => badge.email === user.email)
@@ -170,7 +170,6 @@ const WorkspaceAddMemberModal = forwardRef<
 
   useEffect(() => {
     if (workspaceId && isOpen) {
-      console.log('하이');
       initModal();
       userListApi(debouncedValue);
     }
@@ -209,8 +208,6 @@ const WorkspaceAddMemberModal = forwardRef<
 
   const initModal = useCallback(() => {
     setAllUserList([]);
-    setUserBadgeList([]);
-    setInviteUserList([]);
     setUserList([]);
     setSequence(1);
     setEndCheck(false);
@@ -220,6 +217,8 @@ const WorkspaceAddMemberModal = forwardRef<
     inputRef.current!.value = '';
     setKeyword('');
     initModal();
+    setUserBadgeList([]);
+    setInviteUserList([]);
     onClose();
   }, [onClose]);
 
@@ -238,9 +237,7 @@ const WorkspaceAddMemberModal = forwardRef<
         const newMember = body.emailList.length;
         setCurrentChannelMemberNum((prev) => prev + newMember);
         exitModal();
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) {}
     },
     [workspaceId]
   );

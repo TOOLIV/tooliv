@@ -8,7 +8,7 @@ export const localStorageEffect =
       setSelf(JSON.parse(savedValue));
     }
     onSet((newValue: any) => {
-      console.log(newValue);
+      // console.log(newValue);
       if (newValue instanceof DefaultValue) {
         localStorage.removeItem(key);
       } else {

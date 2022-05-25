@@ -4,8 +4,10 @@ import com.tooliv.server.domain.channel.application.dto.request.ChatDirectDTO;
 import com.tooliv.server.domain.channel.application.dto.request.ChatRequestDTO;
 import com.tooliv.server.domain.channel.application.dto.request.ChatUpdatedDTO;
 import com.tooliv.server.domain.channel.application.dto.response.DirectRoomInfoResponseDTO;
+import com.tooliv.server.domain.channel.application.dto.response.FileListGetResponseDTO;
 import com.tooliv.server.domain.channel.application.dto.response.FileUrlListResponseDTO;
 import com.tooliv.server.domain.channel.domain.Channel;
+import com.tooliv.server.domain.channel.domain.Reservation;
 import java.util.List;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,8 +37,11 @@ public interface ChatService {
 
     FileUrlListResponseDTO getFileURL(List<MultipartFile> multipartFiles);
 
+    void getReservationFileURL(List<MultipartFile> multipartFiles, Reservation reservation);
+
     void updateMessage(ChatUpdatedDTO chatUpdatedDTO);
 
     void updateDirectMessage(ChatUpdatedDTO chatUpdatedDTO);
 
+    FileListGetResponseDTO getFileInfoList(String channelId);
 }

@@ -10,25 +10,23 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
   appThemeMode,
   channelContents,
-  channelNotiList,
   chatMember,
+  currentWorkspace,
   DMList,
   dmMember,
+  isTutorial,
   memberStatus,
   searchIndex,
   searchResults,
-  wsList,
 } from 'recoil/atom';
-import { channelNotiType, contentTypes } from 'types/channel/contentType';
+import { contentTypes } from 'types/channel/contentType';
 import Avatar from 'atoms/profile/Avatar';
 import { DarkModeSwitch } from 'react-toggle-dark-mode';
 import UserDropdown from 'organisms/modal/user/UserDropdown';
 import UserConfigModal from 'organisms/modal/user/UserConfigModal';
-import { getChannels, getDMList, searchChat } from 'api/chatApi';
-import { useNavigate, useParams } from 'react-router-dom';
+import { searchChat } from 'api/chatApi';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { DMInfoType } from 'types/channel/chatTypes';
-import { workspaceListType } from 'types/workspace/workspaceTypes';
-import { getWorkspaceList } from 'api/workspaceApi';
 import {
   statusType,
   usersStatusType,
@@ -37,6 +35,9 @@ import {
 import { getUserStatus } from 'api/userApi';
 import { useInterval } from 'hooks/useInterval';
 import { useDebounce } from 'hooks/useHooks';
+import ResetPwdModal from 'organisms/modal/user/ResetPwdModal';
+import Swal from 'sweetalert2';
+import { BulrContainer } from 'organisms/meeting/video/ScreenShareModal';
 
 const NavContainer = styled.div`
   padding: 0px 20px;
@@ -80,7 +81,7 @@ const Search = styled.div`
 const RightContainer = styled.div`
   display: flex;
   align-items: center;
-  width: 8vw;
+  width: 65px;
   justify-content: space-between;
 `;
 
@@ -93,37 +94,50 @@ const DropdownWrapper = styled.div`
 `;
 const TextWrapper = styled.div`
   display: flex;
+  align-items: flex-end;
+  gap: 10px;
+`;
+
+const Tooliv = styled.div`
+  display: flex;
 `;
 const Nav = () => {
   const userInfo = useRecoilValue(user);
   const [mode, setMode] = useRecoilState(appThemeMode);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [profileConfigOpen, setProfileConfigOpen] = useState(false);
+  const [resetPwdOpen, setResetPwdOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const [dMList, setDmList] = useRecoilState<DMInfoType[]>(DMList);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const dMList = useRecoilValue<DMInfoType[]>(DMList);
   const [dmMemberList, setDmMemberList] = useRecoilState<string[]>(dmMember);
-  const [chatMemberList, setChatMemberList] =
-    useRecoilState<string[]>(chatMember);
-  const [membersStatus, setMembersStatus] =
-    useRecoilState<userStatusInfoType>(memberStatus);
+  const chatMemberList = useRecoilValue<string[]>(chatMember);
+  const setMembersStatus = useSetRecoilState<userStatusInfoType>(memberStatus);
   const [searchList, setSearchList] = useRecoilState<number[]>(searchResults);
   const [searchedIndex, setSearchedIndex] = useRecoilState<number>(searchIndex);
+  const setCurrentWorkSpaceId = useSetRecoilState(currentWorkspace);
+  const isTutorialOpen = useRecoilValue(isTutorial);
+
   const contents = useRecoilValue<contentTypes[]>(channelContents);
 
   const { channelId } = useParams();
   const navigate = useNavigate();
-
   const inputRef = useRef<HTMLInputElement>(null);
   const [keyword, setKeyword] = useState('');
   const debouncedValue = useDebounce<string>(keyword, 500);
+  const [isBulr, setIsBulr] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
-    setIsLoading(true);
     setSearchList([]);
-    setSearchedIndex(contents.length - 1);
-    setIsLoading(false);
+    if (contents) {
+      setSearchedIndex(contents.length - 1);
+    }
   }, []);
+
+  useEffect(() => {
+    setKeyword('');
+    inputRef.current!.value = '';
+  }, [channelId]);
 
   useEffect(() => {
     // dm 리스트에서 유저 이메일 뽑아서 저장
@@ -161,7 +175,6 @@ const Nav = () => {
     const body = {
       emailList,
     };
-    console.log(body);
     handleUsersStatus(body);
   }, 30000);
 
@@ -186,6 +199,13 @@ const Nav = () => {
     setProfileConfigOpen(false);
   };
 
+  const openResetPwd = () => {
+    setResetPwdOpen(true);
+  };
+  const closeResetPwd = () => {
+    setResetPwdOpen(false);
+  };
+
   // 모달창 밖 클릭시 close
   useEffect(() => {
     // 클릭 요소 체크
@@ -208,13 +228,15 @@ const Nav = () => {
   }, []);
 
   useEffect(() => {
+    if (debouncedValue === '') {
+      setSearchList([]);
+    }
+
     if (channelId && debouncedValue !== '') {
       searchChat(debouncedValue, channelId).then((res) => {
         const {
           data: { chatSearchInfoDTOList },
         } = res;
-        console.log(res);
-        console.log(chatSearchInfoDTOList);
 
         setSearchList(
           chatSearchInfoDTOList.map((c: any) => {
@@ -226,19 +248,54 @@ const Nav = () => {
     }
   }, [debouncedValue]);
 
+  // 미팅 화면에서 로고 클릭시 alert 띄어줌.
+  const clickLogo = () => {
+    if (location.pathname.includes('meeting')) {
+      setIsBulr(true);
+      Swal.fire({
+        title: '현재 미팅에 참여중입니다.',
+        text: '홈으로 이동하면 참여중인 미팅을 떠납니다. 정말 나가시겠습니까?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: '확인',
+        cancelButtonText: '취소',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          handleNavigateMain();
+        }
+        setIsBulr(false);
+      });
+    } else {
+      handleNavigateMain();
+    }
+  };
+
+  const handleNavigateMain = () => {
+    setCurrentWorkSpaceId('main');
+    navigate('/main');
+  };
+
   return (
     <NavContainer>
-      <LeftContainer onClick={() => navigate('/')}>
+      {isBulr && <BulrContainer />}
+      <LeftContainer onClick={clickLogo}>
         <Logo />
         <TextWrapper>
-          <Text size={18} pointer color="secondary">
-            TOO
-          </Text>
-          <Text size={18} pointer color="third">
-            L
-          </Text>
-          <Text size={18} pointer color="primary">
-            IV
+          <Tooliv>
+            <Text size={18} pointer color="secondary">
+              TOO
+            </Text>
+            <Text size={18} pointer color="third">
+              L
+            </Text>
+            <Text size={18} pointer color="primary">
+              IV
+            </Text>
+          </Tooliv>
+          <Text size={12} color="gray500">
+            for COMMUNITY
           </Text>
         </TextWrapper>
       </LeftContainer>
@@ -246,7 +303,7 @@ const Nav = () => {
         <MidContainer>
           <InputBox
             label=""
-            placeholder="검색"
+            placeholder="현재 채널 내 검색"
             ref={inputRef}
             onChange={search}
           />
@@ -273,7 +330,11 @@ const Nav = () => {
           size={25}
         />
         <DropdownWrapper ref={dropdownRef}>
-          <AvatarWrapper onClick={() => setDropdownOpen(!dropdownOpen)}>
+          <AvatarWrapper
+            onClick={
+              isTutorialOpen ? undefined : () => setDropdownOpen(!dropdownOpen)
+            }
+          >
             <Avatar
               size="32"
               src={userInfo.profileImage}
@@ -284,6 +345,7 @@ const Nav = () => {
             isOpen={dropdownOpen}
             onClose={closeDropdown}
             openProfileConfig={openProfileConfig}
+            openResetPwd={openResetPwd}
           />
         </DropdownWrapper>
       </RightContainer>
@@ -291,6 +353,7 @@ const Nav = () => {
         isOpen={profileConfigOpen}
         onClose={closeProfileConfig}
       />
+      <ResetPwdModal isOpen={resetPwdOpen} onClose={closeResetPwd} />
     </NavContainer>
   );
 };

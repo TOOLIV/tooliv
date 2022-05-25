@@ -7,9 +7,11 @@ export type contentTypes = {
   deleted: boolean;
   updated: boolean;
   sendTime?: string;
-  files?: string[];
-  originFiles?: string[];
+  files: string[];
+  originFiles: string[];
   isSearched?: boolean;
+  setProfileModal?: React.Dispatch<React.SetStateAction<boolean>>;
+  // handleDM:() => void;
 };
 
 export type channelRadioTypes = {
@@ -75,15 +77,21 @@ export type channelDropdownType = {
 
 export type exitChannelModalType = {
   isOpen: boolean;
+  onClose: () => void;
   channelId: string;
   top: number;
   left: number;
 };
 
 export type channelHeaderDropdownType = {
+  userCode: string;
   isOpen: boolean;
   onClose: () => void;
   onClick: () => void;
+  onMemberListOpen: () => void;
+  onMemberAddOpen: () => void;
+  onAutoChatOpen: () => void;
+  onWebHookOpen: () => void;
 };
 
 export type channelModifyModalType = {
@@ -102,6 +110,12 @@ export type publicChannelType = {
 export type modifyChannelType = {
   id: string;
   name: string;
+};
+
+export type webHookModalType = {
+  isOpen: boolean;
+  onClose: () => void;
+  channelId: string;
 };
 
 export type channelNotiType = {

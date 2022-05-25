@@ -1,14 +1,19 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { searchChannelMemberList } from 'api/channelApi';
+import { createDMRoom } from 'api/chatApi';
 import Icons from 'atoms/common/Icons';
 import Text from 'atoms/text/Text';
 import { useDebounce } from 'hooks/useHooks';
 import InputBox from 'molecules/inputBox/InputBox';
 import UserInfo from 'molecules/userInfo/UserInfo';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { DMList, dmName } from 'recoil/atom';
+import { user } from 'recoil/auth';
 import { colors } from 'shared/color';
+import { DMInfoType } from 'types/channel/chatTypes';
 import {
   channelMemberListType,
   channelMemberType,
@@ -65,15 +70,19 @@ const ChannelMemberListModal = ({
   onClick,
   onClose,
 }: channelMemberListType) => {
+  const [dmList, setDmList] = useRecoilState<DMInfoType[]>(DMList);
   const [channelMemberList, setChannelMemberList] = useState<
     channelMemberType[]
   >([]);
+  const setDirectName = useSetRecoilState<string>(dmName);
+  const userInfo = useRecoilValue(user);
   const [searchKeyword, setSearchKeyword] = useState('');
   const debouncedValue = useDebounce<string>(searchKeyword, 500);
   const [sequence, setSequence] = useState(1);
   const [target, setTarget] = useState<any>(null);
   const [endCheck, setEndCheck] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const navigate = useNavigate();
 
   const sequenceRef = useRef(sequence);
   sequenceRef.current = sequence;
@@ -82,10 +91,40 @@ const ChannelMemberListModal = ({
   endCheckRef.current = endCheck;
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { channelId } = useParams();
+  const { workspaceId, channelId } = useParams();
 
-  const handleDirectMessage = (email: string) => {
-    console.log(`${email}로 개인메시지 보내는 링크`);
+  const handleDirectMessage = (member: channelMemberType) => {
+    let flag = true;
+
+    dmList.forEach((dm) => {
+      if (dm.receiverEmail === member.email) {
+        navigate(`/direct/${workspaceId}/${dm.channelId}`);
+        setDirectName(member.nickname);
+        flag = false;
+      }
+    });
+    if (flag) {
+      createDMRoom(member.email).then((res) => {
+        const {
+          data: { roomId },
+        } = res;
+
+        setDmList([
+          ...dmList,
+          {
+            receiveName: member.name,
+            channelId: roomId,
+            notificationRead: false,
+            statusCode: member.statusCode,
+            profileImage: member.profileImage,
+            receiverEmail: member.email,
+            senderEmail: userInfo.email,
+          },
+        ]);
+        setDirectName(member.name);
+        navigate(`/direct/${workspaceId}/${roomId}`);
+      });
+    }
   };
 
   const searchChannelMember = useCallback(
@@ -106,7 +145,7 @@ const ChannelMemberListModal = ({
           setChannelMemberList((prev) => [...prev, ...data]);
           setSequence((prev) => prev + 1);
         } catch (error) {
-          console.log(error);
+          // console.log(error);
         }
       }
     },
@@ -189,7 +228,7 @@ const ChannelMemberListModal = ({
           {channelMemberList.map((member: channelMemberType) => (
             <UserInfoWrapper
               key={member.email}
-              onClick={() => handleDirectMessage(member.email)}
+              onClick={() => handleDirectMessage(member)}
             >
               <UserInfo
                 name={member.name}

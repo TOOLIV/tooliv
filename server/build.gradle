@@ -12,8 +12,6 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
-    integrationTestImplementation.extendsFrom testImplementation
-    integrationTestRuntimeOnly.extendsFrom testRuntimeOnly
 }
 
 repositories {
@@ -72,36 +70,15 @@ dependencies {
     implementation ("org.webjars:jquery:3.1.1-1")
     implementation ("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 
-    // mime-type=
+    // mime-type
     implementation ("org.apache.tika:tika-parsers:2.3.0")
     implementation ("org.apache.tika:tika-core:2.3.0")
 
+    // batch
+    implementation ("org.springframework.boot:spring-boot-starter-batch")
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
-    testImplementation("org.testcontainers:junit-jupiter:1.17.1")
-    testImplementation("org.testcontainers:mysql:1.17.1")
-//    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
-//    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
-
-    // Openvidu 의존성
-//    implementation group: 'io.openvidu', name: 'openvidu-java-client', version: '2.20.0'
-}
-
-sourceSets {
-    integrationTest {
-        compileClasspath += main.output + test.output
-        runtimeClasspath += main.output + test.output
-    }
-}
-
-task integrationTest(type: Test) {
-    description = 'Runs integration tests.'
-    group = 'verification'
-
-    testClassesDirs = sourceSets.integrationTest.output.classesDirs
-    classpath = sourceSets.integrationTest.runtimeClasspath
-
-    shouldRunAfter test
 }
 
 test {

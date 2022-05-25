@@ -1,6 +1,7 @@
 package com.tooliv.server.domain.channel.application;
 
 import com.tooliv.server.domain.channel.application.dto.request.RegisterChannelMemberRequestDTO;
+import com.tooliv.server.domain.channel.application.dto.response.ChannelMemberDeleteResponseDTO;
 import com.tooliv.server.domain.channel.application.dto.response.ChannelInfoGetResponseDTO;
 import com.tooliv.server.domain.channel.application.dto.response.ChannelMemberCodeGetResponseDTO;
 import com.tooliv.server.domain.channel.application.dto.response.ChannelMemberGetResponseDTO;
@@ -14,6 +15,7 @@ import com.tooliv.server.domain.channel.execption.ChannelMemberNotFoundException
 import com.tooliv.server.domain.channel.execption.ChannelNotFoundException;
 import com.tooliv.server.domain.user.domain.User;
 import com.tooliv.server.domain.user.domain.repository.UserRepository;
+import com.tooliv.server.domain.workspace.domain.Workspace;
 import com.tooliv.server.domain.workspace.domain.WorkspaceMembers;
 import com.tooliv.server.domain.workspace.domain.repository.WorkspaceMemberRepository;
 import com.tooliv.server.global.common.AwsS3Service;
@@ -72,14 +74,21 @@ public class ChannelMemberServiceImpl implements ChannelMemberService {
 
     @Transactional
     @Override
-    public void deleteChannelMember(String channelId, String email) {
+    public ChannelMemberDeleteResponseDTO deleteChannelMember(String channelId, String email) {
         User user = userRepository.findByEmailAndDeletedAt(email, null)
             .orElseThrow(() -> new UserNotFoundException("회원 정보가 존재하지 않습니다."));
 
         Channel channel = channelRepository.findByIdAndDeletedAt(channelId, null)
             .orElseThrow(() -> new ChannelNotFoundException("채널 정보가 존재하지 않습니다."));
 
+        Workspace currentWorkspace = channel.getWorkspace();
+
+        Channel defaultChannel = channelRepository.findByWorkspaceAndName(currentWorkspace, "공지사항")
+            .orElseThrow(() -> new ChannelNotFoundException("공지사항 채널을 찾을 수 없습니다."));
+
         channelMembersRepository.deleteByUserAndChannel(user, channel);
+
+        return new ChannelMemberDeleteResponseDTO(defaultChannel.getId());
     }
 
     @Override
@@ -88,7 +97,7 @@ public class ChannelMemberServiceImpl implements ChannelMemberService {
             .orElseThrow(() -> new IllegalArgumentException("채널 정보가 존재하지 않습니다."));
 
         List<ChannelMemberGetResponseDTO> channelMemberGetResponseDTOList = new ArrayList<>();
-        List<ChannelMembers> channelMembersList = channelMembersRepository.findByChannel(channel);
+        List<ChannelMembers> channelMembersList = channelMembersRepository.findByChannelIsNotBot(channelId);
         channelMembersList.forEach(channelMembers -> {
             User member = channelMembers.getUser();
             String profileImage = awsS3Service.getFilePath(member.getProfileImage());
@@ -192,7 +201,7 @@ public class ChannelMemberServiceImpl implements ChannelMemberService {
         List<String> channelMemberEmails = new ArrayList<>();
         Channel channel = channelRepository.findByIdAndDeletedAt(channelId, null)
             .orElseThrow(() -> new IllegalArgumentException("채널 정보가 존재하지 않습니다."));
-        List<ChannelMembers> channelMembersList = channelMembersRepository.findByChannel(channel);
+        List<ChannelMembers> channelMembersList = channelMembersRepository.findByChannelIsNotBot(channelId);
         for(ChannelMembers channelMembers: channelMembersList){
             channelMemberEmails.add(channelMembers.getUser().getEmail());
         }

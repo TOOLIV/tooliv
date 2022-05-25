@@ -91,7 +91,18 @@ public class WorkspaceMemberServiceImpl implements WorkspaceMemberService {
         Workspace workspace = workspaceRepository.findByIdAndDeletedAt(workspaceId, null)
             .orElseThrow(() -> new WorkspaceNotFoundException("워크스페이스 정보가 존재하지 않습니다."));
 
+        List<Channel> channelList = channelRepository.findByWorkspaceIdAndUser(workspaceId, user.getId());
+        channelList.forEach(channel -> {
+            channelMembersRepository.deleteByUserAndChannel(user, channel);
+        });
+
         workspaceMemberRepository.deleteByUserAndWorkspace(user, workspace);
+
+        long countOfMembers = workspaceMemberRepository.countByWorkspace(workspace);
+
+        if(countOfMembers == 0) {
+            workspace.deleteWorkspace();
+        }
     }
 
     @Override

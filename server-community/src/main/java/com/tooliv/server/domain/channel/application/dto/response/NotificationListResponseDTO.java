@@ -9,6 +9,7 @@ import lombok.Getter;
 @ApiModel("NotificationListResponseDTO")
 @Getter
 public class NotificationListResponseDTO extends BaseResponseDTO {
+
     @ApiModelProperty("알람 List 목록")
     private List<NotificationInfoDTO> notificationChannelList;
 

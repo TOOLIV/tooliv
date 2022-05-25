@@ -1,18 +1,22 @@
 import styled from '@emotion/styled';
 import { getTotalUserNum } from 'api/adminApi';
 import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import Info from '../../../molecules/info/Info';
 
 const InfoBox = styled.div`
   display: flex;
-
-  & > div {
-    margin-right: 40px;
-  }
+  gap: 30px;
 `;
 const InfoSection = () => {
   const baseURL = localStorage.getItem('baseURL');
-  const domain = JSON.parse(baseURL!);
+  let domain = '';
+  if (baseURL) {
+    const JUrl = JSON.parse(baseURL!);
+    domain = JUrl['url'];
+  } else {
+    domain = window.location.host;
+  }
   const [totalUser, setTotalUser] = useState(0);
   useEffect(() => {
     getUserNum();
@@ -25,7 +29,7 @@ const InfoSection = () => {
 
   return (
     <InfoBox>
-      <Info label="도메인" value={domain['url']} />
+      <Info label="도메인" value={domain} />
       <Info label="회원 수" value={`총 ${totalUser}명`} />
     </InfoBox>
   );

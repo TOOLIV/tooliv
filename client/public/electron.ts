@@ -6,8 +6,8 @@ let mainWindow: BrowserWindow;
 
 const createWindow = () => {
   mainWindow = new BrowserWindow({
-    width: 1080,
-    height: 720,
+    width: 1280,
+    height: 968,
     center: true,
     kiosk: !isDev,
     resizable: true,
@@ -35,9 +35,9 @@ const createWindow = () => {
       : `file://${path.join(__dirname, '../build/index.html')}`
   );
 
-  if (isDev) {
-    mainWindow.webContents.openDevTools({ mode: 'detach' });
-  }
+  // if (isDev) {
+  mainWindow.webContents.openDevTools();
+  // }
 
   mainWindow.setResizable(true);
 
@@ -76,4 +76,39 @@ app.on(
 
 ipcMain.handle('DESKTOP_CAPTURER_GET_SOURCES', (event, opts) =>
   desktopCapturer.getSources(opts)
+);
+
+const Alert = require('electron-alert');
+
+const alert = new Alert();
+
+let alertToastOpt = {
+  position: 'top',
+  timer: 3000,
+  showConfirmButton: false,
+};
+
+ipcMain.handle('ALERT_TOAST', (event, opt) =>
+  Alert.fireToast({
+    ...alertToastOpt,
+    title: opt.title,
+    icon: opt.icon,
+  })
+);
+
+let alertConfirmOpt = {
+  showCancelButton: true,
+};
+ipcMain.handle('ALERT_CONFIRM', (event, opt) =>
+  alert.fireFrameless(
+    {
+      ...alertConfirmOpt,
+      title: opt.title,
+      text: opt.text,
+      icon: opt.icon,
+    },
+    null,
+    true,
+    false
+  )
 );

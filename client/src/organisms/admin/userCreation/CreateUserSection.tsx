@@ -71,8 +71,6 @@ const CreateUserSection = () => {
     try {
       setUserCreationList((prev) => [...prev, body]);
       await createUser(body);
-      // setEmail('');
-      // setName('');
       setEmailStatus('default');
       setInputMsg('');
       inputEmailRef.current!.value = '';

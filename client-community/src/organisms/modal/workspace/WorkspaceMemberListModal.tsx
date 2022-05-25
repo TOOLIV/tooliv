@@ -37,6 +37,7 @@ const Container = styled.div`
   padding: 25px;
   background-color: ${(props) => props.theme.bgColor};
   border-radius: 30px;
+  border: 1px solid ${(props) => props.theme.borderColor};
   box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.06);
   display: flex;
   flex-direction: column;
@@ -88,7 +89,7 @@ const WorkspaceMemberListModal = ({
   const { workspaceId } = useParams();
 
   const handleDirectMessage = (email: string) => {
-    console.log(`${email}로 개인메시지 보내는 링크`);
+    // console.log(`${email}로 개인메시지 보내는 링크`);
   };
 
   const handleSearchUser = useCallback(

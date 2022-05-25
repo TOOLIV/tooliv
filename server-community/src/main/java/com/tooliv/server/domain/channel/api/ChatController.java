@@ -7,13 +7,7 @@ import com.tooliv.server.domain.channel.application.chatService.RedisPublisher;
 import com.tooliv.server.domain.channel.application.dto.request.ChatDirectDTO;
 import com.tooliv.server.domain.channel.application.dto.request.ChatRequestDTO;
 import com.tooliv.server.domain.channel.application.dto.request.NotificationLoggedAtUpdateRequestDTO;
-import com.tooliv.server.domain.channel.application.dto.response.ChatRoomChatListResponseDTO;
-import com.tooliv.server.domain.channel.application.dto.response.ChatSearchInfoListResponseDTO;
-import com.tooliv.server.domain.channel.application.dto.response.DirectChatListResponseDTO;
-import com.tooliv.server.domain.channel.application.dto.response.DirectListResponseDTO;
-import com.tooliv.server.domain.channel.application.dto.response.DirectRoomInfoResponseDTO;
-import com.tooliv.server.domain.channel.application.dto.response.FileUrlListResponseDTO;
-import com.tooliv.server.domain.channel.application.dto.response.NotificationListResponseDTO;
+import com.tooliv.server.domain.channel.application.dto.response.*;
 import com.tooliv.server.global.common.BaseResponseDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -248,5 +242,23 @@ public class ChatController {
             return ResponseEntity.status(409).body(BaseResponseDTO.of("파일 등록 실패"));
         }
         return ResponseEntity.status(201).body(FileUrlListResponseDTO.of("파일 등록 완료", fileUrlListResponseDTO));
+    }
+
+    @GetMapping("/api/fileList/{channelId}")
+    @ApiOperation(value = "채널 파일 리스트")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "파일 리스트 조회 성공"),
+            @ApiResponse(code = 409, message = "파일 리스트 조회 실패"),
+    })
+    public ResponseEntity<? extends BaseResponseDTO> getFileList(
+            @ApiParam(value = "채널, 채팅방 ID", required = true) @PathVariable String channelId
+    ) {
+        FileListGetResponseDTO fileListGetResponseDTO;
+        try {
+            fileListGetResponseDTO = chatService.getFileInfoList(channelId);
+        } catch (Exception e) {
+            return ResponseEntity.status(409).body(BaseResponseDTO.of("파일 등록 실패"));
+        }
+        return ResponseEntity.status(201).body(FileListGetResponseDTO.of("파일 등록 완료", fileListGetResponseDTO));
     }
 }

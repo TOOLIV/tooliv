@@ -47,6 +47,7 @@ const Container = styled.div`
   border: 1px solid ${(props) => props.theme.borderColor};
   background-color: ${(props) => props.theme.bgColor};
   border-radius: 30px;
+  border: 1px solid ${(props) => props.theme.borderColor};
   box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.06);
   display: flex;
   flex-direction: column;
@@ -99,28 +100,40 @@ const DirectMessageModal = ({ isOpen, onClose }: userDirectMessageType) => {
   const { workspaceId } = useParams();
 
   const handleDirectMessage = (member: channelMemberType) => {
-    // console.log(`${email}로 개인메시지 보내는 링크`);
-    createDMRoom(member.email).then((res) => {
-      const {
-        data: { roomId },
-      } = res;
+    let flag = true;
 
-      setDmList([
-        ...dmList,
-        {
-          receiveName: member.name,
-          channelId: roomId,
-          notificationRead: false,
-          statusCode: member.statusCode,
-          profileImage: member.profileImage,
-          receiverEmail: member.email,
-          senderEmail: userInfo.email,
-        },
-      ]);
-      setDirectName(member.name);
-      navigate(`/direct/${workspaceId}/${roomId}`);
-      onClose();
+    dmList.forEach((dm) => {
+      if (dm.receiverEmail === member.email) {
+        navigate(`/direct/${workspaceId}/${dm.channelId}`);
+        flag = false;
+        setDirectName(member.nickname);
+        onClose();
+      }
     });
+
+    if (flag) {
+      createDMRoom(member.email).then((res) => {
+        const {
+          data: { roomId },
+        } = res;
+
+        setDmList([
+          ...dmList,
+          {
+            receiveName: member.name,
+            channelId: roomId,
+            notificationRead: false,
+            statusCode: member.statusCode,
+            profileImage: member.profileImage,
+            receiverEmail: member.email,
+            senderEmail: userInfo.email,
+          },
+        ]);
+        setDirectName(member.name);
+        navigate(`/direct/${workspaceId}/${roomId}`);
+        onClose();
+      });
+    }
   };
 
   const searchChannelMember = useCallback(async (keyword: string) => {
@@ -128,7 +141,6 @@ const DirectMessageModal = ({ isOpen, onClose }: userDirectMessageType) => {
       try {
         const response = await getUserList(keyword, sequenceRef.current);
         const data = response.data.userInfoResponseDTOList;
-        console.log(data);
         if (data.length === 0) {
           setIsLoaded(false);
           setEndCheck(true);
@@ -136,9 +148,7 @@ const DirectMessageModal = ({ isOpen, onClose }: userDirectMessageType) => {
         }
         setChannelMemberList((prev) => [...prev, ...data]);
         setSequence((prev) => prev + 1);
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) {}
     }
   }, []);
 

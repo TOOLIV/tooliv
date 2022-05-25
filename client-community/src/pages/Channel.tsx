@@ -11,6 +11,8 @@ import {
   chatFiles,
   chatFileUrl,
   chatMember,
+  searchIndex,
+  searchResults,
   wsList,
 } from '../recoil/atom';
 import { channelNotiType, contentTypes } from '../types/channel/contentType';
@@ -22,11 +24,14 @@ import { user } from 'recoil/auth';
 import LoadSpinner from 'atoms/common/LoadSpinner';
 import { send } from 'services/wsconnect';
 import { workspaceListType } from 'types/workspace/workspaceTypes';
+import { ReactComponent as Empty } from 'assets/img/empty.svg';
 
-const Container = styled.div`
+const Container = styled.div<{ isFiles: boolean }>`
   width: 100%;
   height: 100%;
-  padding-bottom: 70px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 `;
 
 const LoadContainer = styled.div`
@@ -37,14 +42,26 @@ const LoadContainer = styled.div`
   align-items: center;
 `;
 
+const InfoContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+`;
+
+const Info = styled.div`
+  padding: 10px;
+`;
 const Channel = () => {
   const [message, setMessage] = useRecoilState<string>(channelMessage);
   const [files, setFiles] = useRecoilState<FileTypes[]>(chatFiles);
+  const [fileUrl, setFileUrl] = useRecoilState<string[]>(chatFileUrl);
+  const [fileNames, setFileNames] = useRecoilState<string[]>(chatFileNames);
   const [contents, setContents] =
     useRecoilState<contentTypes[]>(channelContents);
   const [chatMembers, setChatMembers] = useRecoilState<string[]>(chatMember);
-  const [fileUrl, setFileUrl] = useRecoilState<string[]>(chatFileUrl);
-  const [fileNames, setFileNames] = useRecoilState<string[]>(chatFileNames);
   const { email } = useRecoilValue(user);
   const [notiList, setNotiList] =
     useRecoilState<channelNotiType[]>(channelNotiList);
@@ -52,8 +69,13 @@ const Channel = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [workspaceList, setWorkspaceList] =
     useRecoilState<workspaceListType[]>(wsList);
+  const [searchList, setSearchList] = useRecoilState<number[]>(searchResults);
+  const [searchedIndex, setSearchedIndex] = useRecoilState<number>(searchIndex);
 
   useEffect(() => {
+    setSearchList([]);
+    setSearchedIndex(-1);
+
     let flag = false;
     const newList: channelNotiType[] = notiList.map((noti) => {
       if (
@@ -81,7 +103,6 @@ const Channel = () => {
     setIsLoading(true);
     enterChannel(channelId!).then(() => {
       subChannel(channelId!).then((res) => {
-        console.log(res);
         setContents(res.data.chatMessageDTOList);
         setIsLoading(false);
 
@@ -93,6 +114,11 @@ const Channel = () => {
         setChatMembers(result);
       });
     });
+
+    return () => {
+      setFiles([]);
+      setFileUrl([]);
+    };
   }, [channelId]);
 
   useEffect(() => {
@@ -103,7 +129,8 @@ const Channel = () => {
 
   const onSendClick = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
-    sendMessage();
+    if (message !== '') sendMessage();
+    else if (files.length > 0) sendMessage();
   };
 
   const sendMessage = () => {
@@ -121,19 +148,23 @@ const Channel = () => {
   };
 
   return (
-    <>
-      <Container>
-        {isLoading ? (
-          <LoadContainer>
-            <LoadSpinner />
-          </LoadContainer>
-        ) : (
-          <Messages />
-        )}
-        <Files />
-        <Editor onClick={onSendClick} sendMessage={sendMessage} />
-      </Container>
-    </>
+    <Container isFiles={files.length > 0}>
+      {isLoading ? (
+        <LoadContainer>
+          <LoadSpinner />
+        </LoadContainer>
+      ) : contents.length > 0 ? (
+        <Messages />
+      ) : (
+        <InfoContainer>
+          <Empty />
+          <Info>아직 채널에 메시지가 존재하지 않습니다.</Info>
+          <Info>채널에 첫 메시지를 보내 보세요!</Info>
+        </InfoContainer>
+      )}
+      {files.length > 0 && <Files />}
+      <Editor isButton={true} onClick={onSendClick} sendMessage={sendMessage} />
+    </Container>
   );
 };
 

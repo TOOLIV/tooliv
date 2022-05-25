@@ -6,6 +6,7 @@ import { join } from '../../api/userApi';
 import Button from '../../atoms/common/Button';
 import Text from '../../atoms/text/Text';
 import InputBox from '../../molecules/inputBox/InputBox';
+import { toast } from 'react-toastify';
 
 const Container = styled.div`
   width: 480px;
@@ -57,7 +58,6 @@ const JoinForm = () => {
   const [passwordType, setPasswordType] = useState(true);
 
   const clickPwdIcon = () => {
-    console.log('hji');
     setPasswordType(!passwordType);
   };
 
@@ -102,11 +102,11 @@ const JoinForm = () => {
       password,
     };
     try {
-      const response = await join(body);
-      console.log(response);
+      await join(body);
+      toast.success('회원가입에 성공했습니다.');
       navigate('/login');
     } catch (error) {
-      console.log(error);
+      toast.error('회원가입에 실패했습니다.');
     }
   };
 

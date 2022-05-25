@@ -28,7 +28,7 @@ const Container = styled.button<{
     props.textColor ? colors[props.textColor] : props.theme.textColor};
   border-radius: 8px;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: ${(props) => (props.disabled ? 'default' : 'pointer')};
 `;
 

@@ -16,13 +16,15 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     boolean existsByEmailAndDeletedAt(String email, LocalDateTime localDateTime);
 
+    Optional<User> findByIdAndDeletedAt(String id, LocalDateTime localDateTime);
+
     Optional<User> findByEmailAndDeletedAt(String email, LocalDateTime localDateTime);
 
     Optional<User> findByNickname(String nickname);
 
     Optional<List<User>> findAllByUserCodeNotAndDeletedAtOrderByNameAsc(UserCode userCode, LocalDateTime localDateTime);
 
-    Optional<List<User>> findAllByDeletedAtAndNameContainingOrderByNameAsc(LocalDateTime localDateTime, String keyword, Pageable pageable);
+    Optional<List<User>> findAllByDeletedAtAndUserCodeNotAndNameContainingOrderByNameAsc(LocalDateTime localDateTime, UserCode userCode, String keyword, Pageable pageable);
 
     Optional<List<User>> findAllByUserCodeNotAndDeletedAtAndNameContainingOrderByNameAsc(UserCode userCode, LocalDateTime localDateTime, String keyword);
 
@@ -31,7 +33,7 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     @Query(value = "SELECT * \n"
         + "FROM user u\n"
-        + "WHERE u.deleted_at IS NULL  AND u.name LIKE %:keyword% AND u.id NOT IN (\n"
+        + "WHERE u.deleted_at IS NULL  AND u.name LIKE %:keyword% AND u.user_code != 'U04' AND u.id NOT IN (\n"
         + "SELECT DISTINCT m.user_id\n"
         + "FROM workspace_members m\n"
         + "JOIN workspace w ON m.workspace_id = w.id \n"

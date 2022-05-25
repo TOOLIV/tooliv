@@ -14,27 +14,40 @@ import {
 import { contentTypes } from '../../types/channel/contentType';
 
 const Container = styled.div<{ isFile: boolean }>`
-  width: calc(100% + 38px);
-  height: ${(props) => (props.isFile ? 'calc(100% - 70px)' : '100%')};
-  overflow-y: auto;
-  padding-right: 32px;
+  width: 100%;
+  height: ${(props) =>
+    props.isFile ? 'calc(100% - 130px)' : 'calc(100% - 72px)'};
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 `;
-
+const MessageContainer = styled.div`
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
 const Date = styled.div`
   color: ${colors.gray400};
 `;
 
+const MessageWrapper = styled.div``;
 const Messages = () => {
   const contents = useRecoilValue<contentTypes[]>(channelContents);
   const [files, setFiles] = useRecoilState<FileTypes[]>(chatFiles);
   const [searchList, setSearchList] = useRecoilState<number[]>(searchResults);
   const [searchedIndex, setSearchedIndex] = useRecoilState<number>(searchIndex);
+  const [isProfileModal, setIsProfileModal] = useState<boolean>(false);
   const messageBoxRef = useRef<HTMLDivElement>(null);
+  const searchedMsgRef = useRef<HTMLDivElement>(null);
   let date = korDate().toISOString().slice(0, 10);
 
   const scrollToBottom = () => {
     if (messageBoxRef.current) {
-      messageBoxRef.current.scrollTop = messageBoxRef.current.scrollHeight;
+      // messageBoxRef.current.scrollTop = messageBoxRef.current.scrollHeight;
+      messageBoxRef.current.scrollTo({
+        top: messageBoxRef.current.scrollHeight,
+      });
     }
   };
 
@@ -43,48 +56,76 @@ const Messages = () => {
   }, [contents]);
 
   useEffect(() => {
-    const searchedChatId: number = searchList[searchedIndex];
-    if (messageBoxRef.current && searchedIndex !== -1) {
-      messageBoxRef.current.scrollTop =
-        messageBoxRef.current.scrollHeight -
-        160 * (contents.length - searchedChatId);
-      console.log(messageBoxRef.current.scrollTop);
+    if (
+      messageBoxRef.current &&
+      searchedIndex !== -1 &&
+      searchedMsgRef.current
+    ) {
+      messageBoxRef.current.scrollTo({
+        top:
+          searchedMsgRef.current.offsetTop -
+          searchedMsgRef.current?.scrollHeight -
+          150,
+      });
     }
   }, [searchedIndex]);
 
   return (
-    <Container isFile={files.length > 0 ? true : false} ref={messageBoxRef}>
-      {contents &&
-        contents.map((content) => {
-          if (content.sendTime && content.sendTime.slice(0, 10) !== date) {
-            date = content.sendTime.slice(0, 10);
-            return (
-              <>
-                <Date>
-                  {date.slice(0, 4)}년 {date.slice(5, 7)}월 {date.slice(8, 10)}
-                  일
-                </Date>
-                <Message
-                  key={content.chatId}
-                  {...content}
-                  isSearched={
-                    Number(content.chatId) === searchList[searchedIndex]
-                  }
-                />
-              </>
-            );
-          } else {
-            return (
-              <Message
-                key={content.chatId}
-                {...content}
-                isSearched={
-                  Number(content.chatId) === searchList[searchedIndex]
-                }
-              />
-            );
-          }
-        })}
+    <Container isFile={files.length > 0 ? true : false}>
+      <MessageContainer ref={messageBoxRef}>
+        {contents &&
+          contents.map((content) => {
+            if (
+              content.contents === '' &&
+              content.files &&
+              content.files.length === 0
+            ) {
+              return;
+            } else {
+              if (content.sendTime && content.sendTime.slice(0, 10) !== date) {
+                date = content.sendTime.slice(0, 10);
+                return (
+                  <MessageWrapper key={content.chatId}>
+                    <Date>
+                      {date.slice(0, 4)}년 {date.slice(5, 7)}월{' '}
+                      {date.slice(8, 10)}일
+                    </Date>
+                    <Message
+                      ref={
+                        Number(content.chatId) === searchList[searchedIndex]
+                          ? searchedMsgRef
+                          : null
+                      }
+                      // key={content.chatId}
+                      {...content}
+                      isSearched={
+                        Number(content.chatId) === searchList[searchedIndex]
+                      }
+                      // setProfileModal={handleDirectMessage}
+                    />
+                  </MessageWrapper>
+                );
+              } else {
+                return (
+                  <Message
+                    ref={
+                      Number(content.chatId) === searchList[searchedIndex]
+                        ? searchedMsgRef
+                        : null
+                    }
+                    key={content.chatId}
+                    {...content}
+                    isSearched={
+                      Number(content.chatId) === searchList[searchedIndex]
+                    }
+                    setProfileModal={setIsProfileModal}
+                  />
+                );
+              }
+            }
+          })}
+        {/* {isProfileModal && <UserProfileModal />} */}
+      </MessageContainer>
     </Container>
   );
 };

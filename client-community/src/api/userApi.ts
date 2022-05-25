@@ -1,3 +1,4 @@
+import { userPwdType } from './../types/common/userTypes';
 import instance from '../services/axios';
 import {
   userCreationTypes,
@@ -20,9 +21,6 @@ export const login = async (body: userLoginTypes) => {
   };
 
   localStorage.setItem('tooliv_info', JSON.stringify(user));
-  if (response.data.userCode === 'ADMIN')
-    localStorage.setItem('isAdmin', JSON.stringify(true));
-  else localStorage.removeItem('isAdmin');
   return response;
 };
 
@@ -45,6 +43,7 @@ export const getUserList = async (keyword: string, sequence: number) => {
   const response = await instance.get(
     `/user/search?keyword=${keyword}&sequence=${sequence}`
   );
+
   return response;
 };
 
@@ -60,5 +59,10 @@ export const updateUserStatus = async (body: userStatusType) => {
 
 export const getUserStatus = async (body: usersStatusType) => {
   const response = await instance.post(`user/status`, body);
+  return response;
+};
+
+export const changeUserPwd = async (body: userPwdType) => {
+  const response = await instance.patch(`user/password`, body);
   return response;
 };

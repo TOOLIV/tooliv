@@ -6,11 +6,12 @@ import Icons from 'atoms/common/Icons';
 import Avatar from 'atoms/profile/Avatar';
 import Text from 'atoms/text/Text';
 import InputBox from 'molecules/inputBox/InputBox';
+import { BulrContainer } from 'organisms/meeting/video/ScreenShareModal';
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { user } from 'recoil/auth';
 import { userConfigType } from 'types/common/userTypes';
+import Swal from 'sweetalert2';
 
 const Modal = styled.div<{ isOpen: boolean }>`
   display: none;
@@ -36,6 +37,7 @@ const Container = styled.div`
   padding: 25px;
   background-color: ${(props) => props.theme.bgColor};
   border-radius: 30px;
+  border: 1px solid ${(props) => props.theme.borderColor};
   box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.06);
   display: flex;
   flex-direction: column;
@@ -65,7 +67,7 @@ const AvatarBox = styled.div`
 `;
 
 const InputContainer = styled.div`
-  height: 30vh;
+  height: 200px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -79,6 +81,7 @@ const UserConfigModal = ({ isOpen, onClose }: userConfigType) => {
   const inputNickNameRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [userInfo, setUserInfo] = useRecoilState(user);
+  const [isBulr, setIsBulr] = useState(false);
   // const localUserInfo = localStorage.getItem('user');
   // const Juser = JSON.parse(localUserInfo!);
 
@@ -106,14 +109,33 @@ const UserConfigModal = ({ isOpen, onClose }: userConfigType) => {
 
   const handleUploadFile = async (event: any) => {
     const file = event.target.files;
-    console.log(file);
     setImgFile(file[0]);
     setImgSrc(URL.createObjectURL(file[0]));
   };
 
+  // 프로필 수정 클릭시 이벤트
+  const updateProfileClick = () => {
+    setIsBulr(true);
+    Swal.fire({
+      title: '프로필 수정 확인',
+      text: '프로필을 수정하시겠습니까?',
+      icon: 'info',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: '확인',
+      cancelButtonText: '취소',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        updateprofile();
+      }
+      setIsBulr(false);
+    });
+  };
+
   const updateprofile = async () => {
     if (!nickName) {
-      alert('닉네임을 확인해주세요.');
+      inputNickNameRef.current?.focus();
     } else {
       const formData = new FormData();
       formData.append('multipartFile', imgFile);
@@ -135,6 +157,7 @@ const UserConfigModal = ({ isOpen, onClose }: userConfigType) => {
 
   return (
     <Modal isOpen={isOpen}>
+      {isBulr && <BulrContainer />}
       <Container>
         <Header>
           <Text size={18}>회원 정보 수정</Text>
@@ -185,8 +208,8 @@ const UserConfigModal = ({ isOpen, onClose }: userConfigType) => {
             width="85"
             height="35"
             text="수정"
-            // disabled={inputRef.current?.value === ''}
-            onClick={updateprofile}
+            disabled={inputNickNameRef.current?.value === ''}
+            onClick={updateProfileClick}
           />
         </ButtonBox>
       </Container>

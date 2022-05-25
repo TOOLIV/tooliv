@@ -65,10 +65,6 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             fileName = awsS3Service.uploadFile(multipartFile);
         }
 
-        boolean existWorkspace = workspaceRepository.existsByNameAndDeletedAt(registerWorkspaceRequestDTO.getName(), null);
-        if (existWorkspace) {
-            throw new DuplicateWorkspaceException("동일한 이름의 워크스페이스가 존재합니다.");
-        }
         Workspace workspace = Workspace.builder()
             .name(registerWorkspaceRequestDTO.getName())
             .createdAt(now)
@@ -118,7 +114,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         Workspace workspace = workspaceRepository.findById(modifyWorkspaceRequestDTO.getId())
             .orElseThrow(() -> new WorkspaceNotFoundException("해당 워크스페이스를 찾을 수 없습니다."));
 
-        String fileName = null;
+        String fileName = workspace.getThumbnailImage();
         if (multipartFile != null) {
             fileName = awsS3Service.uploadFile(multipartFile);
         }
