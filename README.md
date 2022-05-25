@@ -49,7 +49,7 @@
 ## 🥀 [Microsoft Store 바로가기 - Enterprise Edition](ms-windows-store://pdp/?ProductId=9NK71CQQ5F2N)
 <img src="./readme_assets/microsoft_store.gif" alt="Microsoft Store" />
 
-<br />
+<br /><br />
 
 <div id="5"></div>
 
