@@ -277,3 +277,19 @@
 | 포팅매뉴얼      |     [포팅매뉴얼 바로가기](/exec/서울_4반_A402_포팅매뉴얼.pdf)      |
 | 외부서비스 이용 | [외부서비스 이용 바로가기](/exec/서울_4반_A402_외부서비스이용.pdf) |
 | 시연 시나리오   |   [시연 시나리오 바로가기](/exec/서울_4반_A402_시연시나리오.pdf)   |
+
+
+<br/><br/>
+
+
+# TOOLIV Enterprise Edition (설치형) 서비스 이용하기 - 배포
+
+<br/><br/>
+
+## Deployment <br/>
+[TOOLIV Enterprise Edition - Deployment](https://undefined-291.gitbook.io/tooliv-docs/guides/deployment) - Follow the guide we provide.
+
+<br/>
+
+## API References <br/>
+[TOOLIV Enterprise Edition - API References](https://undefined-291.gitbook.io/tooliv-docs/reference/api-reference)
