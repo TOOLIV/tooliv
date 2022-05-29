@@ -1,7 +1,6 @@
 package com.tooliv.server.domain.user.api;
 
 import com.tooliv.server.domain.user.application.dto.request.PasswordUpdateRequestDTO;
-import com.tooliv.server.domain.user.application.dto.request.SignUpRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.StatusRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.StatusUpdateRequestDTO;
 import com.tooliv.server.domain.user.application.dto.response.ProfileInfoResponseDTO;
@@ -12,7 +11,6 @@ import com.tooliv.server.domain.user.application.dto.request.LogInRequestDTO;
 import com.tooliv.server.domain.user.application.dto.request.NicknameUpdateRequestDTO;
 import com.tooliv.server.domain.user.application.dto.response.LogInResponseDTO;
 import com.tooliv.server.domain.user.application.dto.response.NicknameResponseDTO;
-import com.tooliv.server.global.exception.DuplicateEmailException;
 import com.tooliv.server.global.common.BaseResponseDTO;
 import com.tooliv.server.global.exception.NotImageFileException;
 import com.tooliv.server.global.exception.UserNotFoundException;
