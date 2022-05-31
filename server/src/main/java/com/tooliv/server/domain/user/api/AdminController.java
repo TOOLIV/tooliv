@@ -11,8 +11,6 @@ import com.tooliv.server.global.exception.UserNotFoundException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -109,7 +107,7 @@ public class AdminController {
     @DeleteMapping()
     @ApiOperation(value = "회원 삭제")
     public ResponseEntity<? extends BaseResponseDTO> deleteUser(
-        @ApiParam(value="삭제할 회원 이메일", required = true) @RequestParam String email) {
+        @ApiParam(value = "삭제할 회원 이메일", required = true) @RequestParam String email) {
         try {
             adminService.deleteUser(email);
         } catch (UserNotFoundException e) {
