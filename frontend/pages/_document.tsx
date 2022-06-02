@@ -7,11 +7,11 @@ const MyDocument = () => {
       <Head>
         <title>Tooliv</title>
         <meta property="og:tpye" content="website" />
-        <meta property="og:url" content="https://k6a402.p.ssafy.io" />
+        <meta property="og:url" content="https://tooliv.io" />
         <meta property="og:site_name" content="Tooliv" />
         <meta
           property="og:image"
-          content="http://k6a402.p.ssafy.io//_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fthumbnail.0f144253.png&w=3840&q=75"
+          content="http://tooliv.io//_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fthumbnail.0f144253.png&w=3840&q=75"
         />
         <meta
           property="og:keywords"

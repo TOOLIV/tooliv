@@ -4,4 +4,4 @@ Disallow: /nogooglebot/
 User-agent: *
 Allow: /
 
-Sitemap: http://k6a402.p.ssafy.io/sitemap.xml
+Sitemap: http://tooliv.io/sitemap.xml
