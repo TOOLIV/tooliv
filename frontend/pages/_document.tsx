@@ -11,10 +11,14 @@ const MyDocument = () => {
         <meta property="og:site_name" content="Tooliv" />
         <meta
           property="og:image"
-          content="http://tooliv.io//_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fthumbnail.0f144253.png&w=3840&q=75"
+          content="https://tooliv.io//_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fthumbnail.0f144253.png&w=3840&q=75"
         />
         <meta
           property="og:keywords"
+          content="Tooliv, voice chat, free voice chat, video chat, free video chat, meeting, conference, 화상회의, 협업툴, 음성채팅, 화상채팅, 회의"
+        />
+        <meta
+          property="keywords"
           content="Tooliv, voice chat, free voice chat, video chat, free video chat, meeting, conference, 화상회의, 협업툴, 음성채팅, 화상채팅, 회의"
         />
         <meta
