@@ -19,7 +19,7 @@ const MyDocument = () => {
         />
         <meta
           name="google-site-verification"
-          content="lM7FTbW9B1qchSUs_O5c-oRPZ0GNlmeZx0thQCNUFxw"
+          content="70Z-aBYB2DutRuo4QIMBWf0V_zsGRM_nkRar9d-GyME"
         />
         <meta property="og:locale" content="en_US, ko" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
