@@ -83,6 +83,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/api/v3/**", "/swagger-ui/**", "/swagger/**", "/swagger-resources/**", "/v3/api-docs").permitAll()
             .antMatchers("/chatting/**").permitAll()
             .antMatchers("/api/webhook/message").permitAll()
+            .antMatchers("/actuator/**").permitAll()
             // 나머지 요청들은 모두 인증되어야 한다.
             .anyRequest().authenticated()
             .and()
