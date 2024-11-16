@@ -83,11 +83,11 @@
             <img src="https://avatars.githubusercontent.com/jejinmyeong" width="140px" /> <br><br> 😶 제진명 <br>(Front-End) </a> <br></td>
     </tr>
     <tr>
-        <td align="center">REST API<br/></td>
+        <td align="center">Server<br/></td>
         <td align="center">UI/UX<br/></td>
-        <td align="center">REST API<br/></td>
+        <td align="center">Server<br/></td>
         <td align="center">UI/UX<br/></td>
-        <td align="center">REST API<br/></td>
+        <td align="center">Server<br/></td>
         <td align="center">UI/UX<br/></td>
     </tr>
 </table>
